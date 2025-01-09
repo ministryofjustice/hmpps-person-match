@@ -74,7 +74,6 @@ jobs:
       registry_org: 'ministryofjustice'
       additional_docker_tag: ${{ inputs.additional_docker_tag }}
       push: ${{ github.ref == 'refs/heads/main' }}
-      docker_multiplatform: true
 
   deploy_dev:
     name: Deploy to the development environment
