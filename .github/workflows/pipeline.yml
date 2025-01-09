@@ -11,11 +11,6 @@ on:
         required: false
         default: ''
         type: string
-      push:
-        description: Push docker image to registry flag
-        required: true
-        default: false
-        type: boolean
 
 permissions:
   contents: read
@@ -40,19 +35,17 @@ jobs:
     
   build:
     name: Build docker image from hmpps-github-actions
-    if: github.ref == 'refs/heads/main'
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2 # WORKFLOW_VERSION
-    needs:
-      - kotlin_validate
     with:
       docker_registry: 'ghcr.io'
       registry_org: 'ministryofjustice'
       additional_docker_tag: ${{ inputs.additional_docker_tag }}
-      push: ${{ inputs.push || true }}
+      push: ${{ github.ref == 'refs/heads/main' }}
       docker_multiplatform: true
 
   deploy_dev:
     name: Deploy to the development environment
+    if: github.ref == 'refs/heads/main'
     needs:
       - build
       - helm_lint
