@@ -1,5 +1,3 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/ministryofjustice/hmpps-person-match/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/ministryofjustice/hmpps-person-match/tree/main)
-
 # HMPPS Person Match API
 
 An API wrapper around a model developed by the MoJ Analytical Platform for scoring the confidence 
