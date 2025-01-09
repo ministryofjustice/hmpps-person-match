@@ -1,0 +1,45 @@
+generic-service:
+  nameOverride: hmpps-person-match
+
+  replicaCount: 2
+
+  image:
+    repository: quay.io/hmpps/hmpps-person-match
+    tag: latest # override at deployment time
+    port: 5000
+
+  ingress:
+    enabled: true
+    host: app-hostname.local # override per environment
+    path: /
+
+  livenessProbe:
+    httpGet:
+      path: /health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: /health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 10
+
+  # Pre-existing kubernetes secrets to load as environment variables in the deployment.
+  namespace_secrets:
+    hmpps-person-match:
+      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+
+  env:
+    APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
+
+  allowlist:
+    groups:
+      - internal
+
+generic-prometheus-alerts:
+  targetApplication: hmpps-person-match
+  alertSeverity: hmpps-person-record-alerts-prod
