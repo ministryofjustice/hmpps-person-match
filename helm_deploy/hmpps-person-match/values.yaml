@@ -4,7 +4,7 @@ generic-service:
   replicaCount: 2
 
   image:
-    repository: quay.io/hmpps/hmpps-person-match
+    repository: ghcr.io/ministryofjustice/hmpps-person-match
     tag: latest # override at deployment time
     port: 5000
 
