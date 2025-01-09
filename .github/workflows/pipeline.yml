@@ -32,6 +32,36 @@ jobs:
     secrets: inherit
     with:
       environment: ${{ matrix.environments }}
+
+  test:
+    runs-on: ubuntu-latest
+    name: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12.7"
+
+      - name: Install poetry
+        run: poetry self update 1.8.2
+
+      - name: Install dependencies
+        run: make install
+      
+      - name: Run linting
+        run: make lint
+      
+      - name: Run unit tests
+        run: make test-ci
+        
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test_results/pytest-report.xml
     
   build:
     name: Build docker image from hmpps-github-actions
