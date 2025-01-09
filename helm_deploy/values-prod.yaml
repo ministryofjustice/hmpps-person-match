@@ -1,7 +1,5 @@
 ---
 generic-service:
-  replicaCount: 8
-
   ingress:
     host: hmpps-person-match.hmpps.service.justice.gov.uk
     tlsSecretName: hmpps-person-record-cert-secret
