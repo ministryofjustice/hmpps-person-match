@@ -1,0 +1,14 @@
+---
+generic-service:
+  scheduledDowntime:
+    enabled: true
+
+  ingress:
+    host: hmpps-person-match-preprod.hmpps.service.justice.gov.uk
+    tlsSecretName: hmpps-person-record-preprod-cert-secret
+
+  env:
+    OAUTH_BASE_URL: https://sign-in-preprod.hmpps.service.justice.gov.uk
+
+generic-prometheus-alerts:
+  businessHoursOnly: true
