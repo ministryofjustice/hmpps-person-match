@@ -45,8 +45,11 @@ jobs:
         with:
           python-version: "3.12.7"
 
-      - name: Install poetry
-        run: poetry self update 1.8.2
+      - name: Install Poetry
+        run: |
+          export POETRY_VERSION=1.8.3
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
 
       - name: Install dependencies
         run: make install
@@ -85,6 +88,7 @@ jobs:
     with:
       environment: 'dev'
       app_version: '${{ needs.build.outputs.app_version }}'
+
   # deploy_preprod:
   #   name: Deploy to pre-production environment
   #   needs:
