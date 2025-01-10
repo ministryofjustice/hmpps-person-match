@@ -15,7 +15,7 @@ generic-service:
     path: /
 
   imagePullSecrets:
-   - name: github-docker-registry-secret
+   - name: docker-cfg
 
   livenessProbe:
     httpGet:
