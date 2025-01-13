@@ -14,6 +14,9 @@ generic-service:
     tlsSecretName: hmpps-person-record-cert
     path: /
 
+  imagePullSecrets:
+    - name: dockerconfigjson-github-com
+
   livenessProbe:
     httpGet:
       path: /health
