@@ -17,7 +17,6 @@ import flask
 
 from hmpps_person_match.views.health_view import HealthView
 from hmpps_person_match.views.info_view import InfoView
-from hmpps_person_match.views.match_view import MatchView
 from hmpps_person_match.views.person_match_view import PersonMatchView
 
 
@@ -55,7 +54,7 @@ class PersonMatchFlaskApplication:
         Set up request handlers, passes logger to each view
         Each request handler can define ROUTE const as url rule
         """
-        for request_handler in [HealthView, MatchView, InfoView, PersonMatchView]:
+        for request_handler in [HealthView, InfoView, PersonMatchView]:
             self.app.add_url_rule(
                 request_handler.ROUTE,
                 view_func=request_handler.as_view(request_handler.__name__, self.logger),
