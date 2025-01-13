@@ -11,3 +11,4 @@ test_results/
 .venv
 .vscode
 .trivy
+.pytest_cache
