@@ -1,4 +1,4 @@
-from hmpps_person_match.views.health_view import HealthView
+from hmpps_person_match.views.health_view import ROUTE
 
 
 class TestHealthView:
@@ -10,7 +10,7 @@ class TestHealthView:
         """
         Test a get to the health endpoint returns a 200 ok
         """
-        response = client.get(HealthView.ROUTE)
+        response = client.get(ROUTE)
         assert response.status_code == 200
         assert response.headers.get("Content-Type") == "application/json"
-        assert response.json == {"status": "UP"}
+        assert response.json() == {"status": "UP"}

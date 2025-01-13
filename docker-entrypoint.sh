@@ -3,10 +3,9 @@ set -e
 
 source /opt/pysetup/.venv/bin/activate
 
-exec gunicorn \
-    --bind 0.0.0.0:5000 \
+exec uvicorn \
+    --host 0.0.0.0 \
+    --port 5000 \
     --forwarded-allow-ips='*' \
-    wsgi:app \
-    --timeout 120 \
+    asgi:app \
     --workers 4 \
-    --worker-class gevent

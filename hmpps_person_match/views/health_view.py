@@ -1,15 +1,12 @@
-from hmpps_person_match.views.base_view import BaseView
+from fastapi import APIRouter
 
+ROUTE = "/health"
 
-class HealthView(BaseView):
+router = APIRouter()
+
+@router.get(ROUTE)
+def get_health():
     """
-    Health View
+    GET request handler
     """
-
-    ROUTE = "/health"
-
-    def get(self):
-        """
-        GET request handler
-        """
-        return {"status": "UP"}
+    return {"status": "UP"}

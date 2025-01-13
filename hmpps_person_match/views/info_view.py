@@ -1,24 +1,21 @@
 import os
 
-from hmpps_person_match.views.base_view import BaseView
+from fastapi import APIRouter
 
+ROUTE = "/info"
 
-class InfoView(BaseView):
+router = APIRouter()
+
+@router.get(ROUTE)
+def info():
     """
-    Info View
+    GET request handler
     """
-
-    ROUTE = "/info"
-
-    def get(self):
-        """
-        GET request handler
-        """
-        version = os.environ.get("APP_BUILD_NUMBER", "unknown")
-        commit_id = os.environ.get("APP_GIT_REF", "unknown")
-        branch = os.environ.get("APP_GIT_BRANCH", "unknown")
-        return dict(
-            version=version,
-            commit_id=commit_id,
-            branch=branch,
-        )
+    version = os.environ.get("APP_BUILD_NUMBER", "unknown")
+    commit_id = os.environ.get("APP_GIT_REF", "unknown")
+    branch = os.environ.get("APP_GIT_BRANCH", "unknown")
+    return dict(
+        version=version,
+        commit_id=commit_id,
+        branch=branch,
+    )
