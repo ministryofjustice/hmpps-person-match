@@ -1,11 +1,13 @@
 from fastapi import APIRouter
 
+from hmpps_person_match.domain.constants.openapi.tags import OpenAPITags
+
 ROUTE = "/person/match"
 
-router = APIRouter()
+router = APIRouter(tags=[OpenAPITags.MATCH])
 
 
-@router.post(ROUTE, tags=["person"])
+@router.post(ROUTE)
 def post_person_match():
     """
     Person Match POST request handler

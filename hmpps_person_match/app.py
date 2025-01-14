@@ -15,6 +15,7 @@ if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
 
 from fastapi import FastAPI
 
+from hmpps_person_match.domain.constants.openapi.config import OpenAPIConfig
 from hmpps_person_match.views.health_view import router as health_router
 from hmpps_person_match.views.info_view import router as info_router
 from hmpps_person_match.views.person_match_view import router as person_match_router
@@ -25,11 +26,14 @@ class PersonMatchApplication:
     Person Match Fast API Application
     """
 
-    APPLICATION_TITLE = "HMPPS Person Match"
     LOGGER_NAME = "hmpps-person-match-logger"
 
     def __init__(self) -> None:
-        self.app = FastAPI(title=self.APPLICATION_TITLE)
+        self.app = FastAPI(
+            title=OpenAPIConfig.APPLICATION_TITLE,
+            summary=OpenAPIConfig.APPLICATION_SUMMARY,
+            version=OpenAPIConfig.APPLICATION_VERSION,
+        )
         self.initialise()
 
     def initialise(self):
