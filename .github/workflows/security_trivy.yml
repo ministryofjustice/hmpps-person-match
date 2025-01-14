@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "34 7 * * 1-5" # Every weekday
+
+permissions:
+  packages: read
+
 jobs:
   security-kotlin-trivy-check:
     name: Project security trivy dependency check
