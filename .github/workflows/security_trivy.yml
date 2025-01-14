@@ -5,6 +5,7 @@ on:
     - cron: "34 7 * * 1-5" # Every weekday
 
 permissions:
+  packages: read
   actions: read
   contents: read
   security-events: write
