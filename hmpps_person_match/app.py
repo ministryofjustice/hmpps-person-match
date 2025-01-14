@@ -13,24 +13,23 @@ if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     os.environ["OTEL_SERVICE_NAME"] = "hmpps-person-match"
     configure_azure_monitor(logger_name="hmpps-person-match-logger")
 
-import flask
+from fastapi import FastAPI
 
-from hmpps_person_match.views.health_view import HealthView
-from hmpps_person_match.views.info_view import InfoView
-from hmpps_person_match.views.person_match_view import PersonMatchView
+from hmpps_person_match.views.health_view import router as health_router
+from hmpps_person_match.views.info_view import router as info_router
+from hmpps_person_match.views.person_match_view import router as person_match_router
 
 
-class PersonMatchFlaskApplication:
+class PersonMatchApplication:
     """
-    Person Match Flask Application
+    Person Match Fast API Application
     """
 
-    APPLICATION_NAME = "hmpps-person-match"
+    APPLICATION_TITLE = "HMPPS Person Match"
     LOGGER_NAME = "hmpps-person-match-logger"
 
     def __init__(self) -> None:
-        self.app = flask.Flask(self.APPLICATION_NAME)
-        self.wsgi_app = self.app.wsgi_app
+        self.app = FastAPI(title=self.APPLICATION_TITLE)
         self.initialise()
 
     def initialise(self):
@@ -51,14 +50,11 @@ class PersonMatchFlaskApplication:
 
     def initialise_request_handlers(self):
         """
-        Set up request handlers, passes logger to each view
-        Each request handler can define ROUTE const as url rule
+        Set up request handlers
         """
-        for request_handler in [HealthView, InfoView, PersonMatchView]:
-            self.app.add_url_rule(
-                request_handler.ROUTE,
-                view_func=request_handler.as_view(request_handler.__name__, self.logger),
-            )
+        self.app.include_router(person_match_router)
+        self.app.include_router(health_router)
+        self.app.include_router(info_router)
 
     def initialise_logger(self):
         """
@@ -82,4 +78,4 @@ class PersonMatchFlaskApplication:
 
 
 if __name__ == "__main__":
-    PersonMatchFlaskApplication().run()
+    PersonMatchApplication().run()

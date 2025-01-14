@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.12.7-slim-bullseye as base
+FROM python:3.12.7-slim-bullseye AS base
 
 # load in build details
 ARG BUILD_NUMBER
@@ -47,7 +47,7 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 ##############
 # BUILD stage
 ##############
-FROM base as build
+FROM base AS build
 RUN apt-get install --no-install-recommends -y \
         # deps for installing poetry
         curl \
@@ -68,13 +68,13 @@ RUN poetry install --no-dev
 ##############
 # FINAL stage
 ##############
-FROM base as final
+FROM base AS final
 
 # copy the built virtual environment and entry point
 COPY --from=build $PYSETUP_PATH $PYSETUP_PATH
 
 COPY ./hmpps_person_match /app/hmpps_person_match/
-COPY docker-entrypoint.sh wsgi.py /app/
+COPY docker-entrypoint.sh asgi.py /app/
 
 WORKDIR /app/
 
