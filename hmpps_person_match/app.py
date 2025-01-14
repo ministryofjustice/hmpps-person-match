@@ -14,6 +14,7 @@ if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     configure_azure_monitor(logger_name="hmpps-person-match-logger")
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from hmpps_person_match.views.health_view import router as health_router
 from hmpps_person_match.views.info_view import router as info_router
@@ -39,6 +40,7 @@ class PersonMatchApplication:
         self.initialise_logger()
         self.log_version()
         self.initialise_request_handlers()
+        self.initialise_cors()
 
     def log_version(self):
         """
@@ -69,6 +71,18 @@ class PersonMatchApplication:
         )
         self.logger = logging.getLogger(self.LOGGER_NAME)
         self.logger.setLevel(logging.INFO)
+
+    def initialise_cors(self):
+        """
+        Set up middleware for the application
+        """
+        self.app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
     def run(self):
         """
