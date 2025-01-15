@@ -1,3 +1,5 @@
+import asyncio
+
 import jwt
 import requests
 from authlib.jose import JsonWebKey
@@ -58,11 +60,13 @@ class JWKS:
         response.raise_for_status()
         return response
 
-    async def _get_jwks(self):
+    def _get_jwks(self):
         """
         Get the keys from the JWKS endpoint
         """
         if "keys" not in jwks_cache:
-            response = await RetryExecutor.retry(self._call_jwks_endpoint, retry_exceptions=self.RETRY_EXCEPTIONS)
+            response = asyncio.run(
+                RetryExecutor.retry(self._call_jwks_endpoint, retry_exceptions=self.RETRY_EXCEPTIONS),
+            )
             jwks_cache["keys"] = response.json()["keys"]
         return jwks_cache["keys"]
