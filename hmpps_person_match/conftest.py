@@ -6,16 +6,29 @@ import jwt
 import pytest
 from authlib.jose import JsonWebKey
 from cryptography.hazmat.primitives.asymmetric import rsa
+from fastapi.testclient import TestClient
 
 from hmpps_person_match.app import PersonMatchApplication
 
 
-@pytest.fixture(scope="module")
+def pytest_configure():
+    # pytest hook that runs before collection
+    os.environ["APP_BUILD_NUMBER"] = "number"
+    os.environ["APP_GIT_REF"] = "ref"
+    os.environ["APP_GIT_BRANCH"] = "branch"
+    os.environ["OAUTH_BASE_URL"] = "http://localhost:5000"
+
+
+@pytest.fixture()
 def app():
     app = PersonMatchApplication().app
     # other setup can go here
     yield app
     # clean up / reset resources here
+
+@pytest.fixture()
+def client(app):
+    return TestClient(app)
 
 
 @pytest.fixture(autouse=True)
@@ -35,17 +48,9 @@ def context():
 
         def __init__(self):
             self.kid = self.DEFAULT_KID
-            self.issuer = f"{os.environ["OAUTH_BASE_URL"]}/auth/issuer"
+            self.issuer = "http://localhost:5000/auth/issuer"
 
     return TestContext()
-
-
-@pytest.fixture(autouse=True)
-def set_env_vars():
-    os.environ["APP_BUILD_NUMBER"] = "number"
-    os.environ["APP_GIT_REF"] = "ref"
-    os.environ["APP_GIT_BRANCH"] = "branch"
-    os.environ["OAUTH_BASE_URL"] = "http://localhost:5000"
 
 
 @pytest.fixture
@@ -122,7 +127,7 @@ def mock_jwks_call_factory(jwks, requests_mock):
         """
         Mock call to JWKS endpoint.
         """
-        url = f"{os.environ.get("OAUTH_BASE_URL")}/auth/.well-known/jwks.json"
+        url = "http://localhost:5000/auth/.well-known/jwks.json"
 
         if headers is None:
             headers = {"Content-Type": "application/json"}

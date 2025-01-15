@@ -9,14 +9,14 @@ from hmpps_person_match.domain.constants.error_messages import ErrorMessages
 from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
 
-class JWTBearer(HTTPBearer()):
+class JWTBearer(HTTPBearer):
     """
     JWT Authentication dependency class
     Validates JWT tokens and raises an HTTPException if invalid or expired
     """
 
-    def __init__(self, auto_error: bool = True, required_roles: list = None):
-        super().__init__(auto_error=auto_error)
+    def __init__(self, required_roles: list = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         if required_roles is None:
             required_roles = []
         self.required_roles = required_roles
@@ -31,26 +31,28 @@ class JWTBearer(HTTPBearer()):
         credentials: HTTPAuthorizationCredentials = await super().__call__(request)
         if credentials:
             if not credentials.scheme == "Bearer":
-                raise HTTPException(status_code=403, detail=ErrorMessages.INVALID_AUTH_SCHEME)
-            self.verify_jwt(credentials.credentials)
+                raise HTTPException(status_code=401, detail=ErrorMessages.INVALID_AUTH_SCHEME)
+            await self.verify_jwt(credentials.credentials)
         else:
-            raise HTTPException(status_code=403, detail=ErrorMessages.INVALID_AUTH_HEADER)
+            raise HTTPException(status_code=401, detail=ErrorMessages.INVALID_AUTH_HEADER)
 
-    def verify_jwt(self, token: str) -> bool:
+    async def verify_jwt(self, token: str) -> bool:
         """
         Verify JWT validity
         """
         try:
             # Fetch the public key based on the 'kid' in the JWT header
-            public_key = JWKS().get_public_key_from_jwt(token)
+            public_key = await JWKS().get_public_key_from_jwt(token)
             pem_key = public_key.as_pem(is_private=False)
+
+            issuer = f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/issuer"
 
             # Decode and validate the JWT with the public key
             payload = jwt.decode(
                 token,
                 pem_key,
                 algorithms=JWKS.ALGORITHMS,
-                issuer=f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/issuer",
+                issuer=issuer,
             )
 
             # Check if the required role is in the JWT's roles claim
@@ -59,4 +61,4 @@ class JWTBearer(HTTPBearer()):
                 raise HTTPException(status_code=403, detail=ErrorMessages.FORBIDDEN)
 
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, ValueError) as error:
-            raise HTTPException(status_code=403, detail=ErrorMessages.INVALID_OR_EXPIRED_TOKEN) from error
+            raise HTTPException(status_code=401, detail=ErrorMessages.INVALID_OR_EXPIRED_TOKEN) from error

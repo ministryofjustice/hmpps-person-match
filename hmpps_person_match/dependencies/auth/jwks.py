@@ -1,5 +1,3 @@
-import asyncio
-
 import jwt
 import requests
 from authlib.jose import JsonWebKey
@@ -29,14 +27,14 @@ class JWKS:
     def __init__(self):
         self._jwk_url = self._get_jwk_url()
 
-    def get_public_key_from_jwt(self, jwt_token):
+    async def get_public_key_from_jwt(self, jwt_token):
         """
         Fetch the public key from the JWT token
         """
         unverified_header = jwt.get_unverified_header(jwt_token)
         kid = unverified_header.get("kid")
 
-        jwks = self._get_jwks()
+        jwks = await self._get_jwks()
 
         for jwk in jwks:
             if jwk["kid"] == kid:
@@ -49,7 +47,8 @@ class JWKS:
         """
         Construct JWKS URL
         """
-        return f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/.well-known/jwks.json"
+        oauth_base_url = get_env_var(EnvVars.OAUTH_BASE_URL_KEY)
+        return f"{oauth_base_url}/auth/.well-known/jwks.json"
 
     def _call_jwks_endpoint(self):
         """
@@ -60,13 +59,11 @@ class JWKS:
         response.raise_for_status()
         return response
 
-    def _get_jwks(self):
+    async def _get_jwks(self):
         """
         Get the keys from the JWKS endpoint
         """
         if "keys" not in jwks_cache:
-            response = asyncio.run(
-                RetryExecutor.retry(self._call_jwks_endpoint, retry_exceptions=self.RETRY_EXCEPTIONS),
-            )
+            response = await RetryExecutor.retry(self._call_jwks_endpoint, retry_exceptions=self.RETRY_EXCEPTIONS)
             jwks_cache["keys"] = response.json()["keys"]
         return jwks_cache["keys"]
