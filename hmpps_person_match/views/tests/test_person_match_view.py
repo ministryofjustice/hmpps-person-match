@@ -8,7 +8,7 @@ class TestPersonMatchView:
     """
 
     def test_complete_message(self, post_to_endpoint):
-        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json={"source_system": "DELIUS"})
+        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json={"sourceSystem": "DELIUS"})
         assert response.status_code == 200
         assert response.json() == {}
 
