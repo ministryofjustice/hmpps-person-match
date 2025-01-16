@@ -15,13 +15,12 @@ class JWTBearer(HTTPBearer):
     Validates JWT tokens and raises an HTTPException if invalid or expired
     """
 
-    def __init__(self, required_roles: list = None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, required_roles: list = None):
+        super().__init__()
         if required_roles is None:
             required_roles = []
         self.required_roles = required_roles
-        self.jwks = JWKS()
-        self.logger = logging.getLogger("hmpps-person-match-score-logger")
+        self.logger = logging.getLogger("hmpps-person-match-logger")
 
     async def __call__(self, request: Request):
         """
@@ -30,13 +29,11 @@ class JWTBearer(HTTPBearer):
         """
         credentials: HTTPAuthorizationCredentials = await super().__call__(request)
         if credentials:
-            if not credentials.scheme == "Bearer":
-                raise HTTPException(status_code=401, detail=ErrorMessages.INVALID_AUTH_SCHEME)
             await self.verify_jwt(credentials.credentials)
         else:
             raise HTTPException(status_code=401, detail=ErrorMessages.INVALID_AUTH_HEADER)
 
-    async def verify_jwt(self, token: str) -> bool:
+    async def verify_jwt(self, token: str):
         """
         Verify JWT validity
         """

@@ -101,3 +101,22 @@ class TestAuth:
         response = test_app.get(self.SINGLE_ROLE_ROUTE, headers=token_header)
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json()["detail"] == "Invalid or expired token."
+
+    def test_forbidden_when_wrong_auth_scheme(self, test_app, jwt_token_factory, mock_jwks):
+        """
+        Test that token with wrong auth scheme returns forbidden
+        """
+        token = jwt_token_factory(roles=[self.TEST_ROLE])
+        token_header = {"Authorization": f"Invalid {token}"}
+
+        response = test_app.get(self.SINGLE_ROLE_ROUTE, headers=token_header)
+        assert response.status_code == HTTPStatus.FORBIDDEN
+        assert response.json()["detail"] == "Invalid authentication credentials"
+
+    def test_forbidden_when_no_token_provided(self, test_app, jwt_token_factory, mock_jwks):
+        """
+        Test that token with wrong auth scheme returns forbidden
+        """
+        response = test_app.get(self.SINGLE_ROLE_ROUTE)
+        assert response.status_code == HTTPStatus.FORBIDDEN
+        assert response.json()["detail"] == "Not authenticated"

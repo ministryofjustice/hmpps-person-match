@@ -1,13 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.domain.constants.openapi.tags import OpenAPITags
+from hmpps_person_match.domain.roles import Roles
 
 ROUTE = "/person/match"
 
 router = APIRouter(tags=[OpenAPITags.MATCH])
 
 
-@router.post(ROUTE)
+@router.post(ROUTE, dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))])
 def post_person_match():
     """
     Person Match POST request handler
