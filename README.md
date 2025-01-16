@@ -1,5 +1,7 @@
 # HMPPS Person Match API
 
+[![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hmpps-person-match-dev.hmpps.service.justice.gov.uk/swagger-ui.html)
+
 An API wrapper around a model developed by the MoJ Analytical Platform for scoring the confidence 
 of people matches across MoJ systems.
 
@@ -28,18 +30,14 @@ curl -sSL https://install.python-poetry.org | python -
 
 `make install`
 
-### Run
+### Run locally
 
-`make run`
+`make run-local`
 
-Ping:
-```
-curl -i \-H "Content-Type: application/json" http://127.0.0.1:5000/ping
-``````
 
 Check health:
 ```
-curl -i \-H "Content-Type: application/json" http://127.0.0.1:5000/health
+curl -i \-H "Content-Type: application/json" http://127.0.0.1:8000/health
 ```
 
 Generate a score:
@@ -47,7 +45,7 @@ Generate a score:
 curl -i \
     -H "Content-Type: application/json" \
     -X POST -d "{\"unique_id\":{\"0\":\"861\",\"1\":\"862\"},\"first_name\":{\"0\":\"Lily\",\"1\":\"Lily\"},\"surname\":{\"0\":\"Robinson\",\"1\":\"Robibnson\"},\"dob\":{\"0\":\"2009-07-06\",\"1\":\"2009-07-06\"},\"pnc_number\":{\"0\":\"2001/0141640Y\",\"1\":\"None\"},\"source_dataset\":{\"0\":\"libra\",\"1\":\"delius\"}}" \
-    http://127.0.0.1:5000/match
+    http://127.0.0.1:8000/match
 ```
 
 The key data item in the response is `match_probability`:

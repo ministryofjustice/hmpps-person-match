@@ -12,7 +12,7 @@ lint-fix:
 format:
 	poetry run ruff format 
 
-run-dev:
+run-local:
 	poetry run fastapi dev asgi.py
 
 build:

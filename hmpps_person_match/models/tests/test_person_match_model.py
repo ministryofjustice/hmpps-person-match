@@ -1,5 +1,3 @@
-
-
 class TestPersonMatchModel:
     """
     Test person matching model
@@ -9,4 +7,3 @@ class TestPersonMatchModel:
         """
         Test model populates the source dataset property accordingly
         """
-
