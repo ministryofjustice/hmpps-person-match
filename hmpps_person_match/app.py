@@ -33,7 +33,7 @@ class PersonMatchApplication:
             title=OpenAPIConfig.APPLICATION_TITLE,
             summary=OpenAPIConfig.APPLICATION_SUMMARY,
             version=OpenAPIConfig.APPLICATION_VERSION,
-            docs_url="/swagger-ui.html",
+            docs_url=OpenAPIConfig.DOCS_URL,
         )
         self.initialise()
 

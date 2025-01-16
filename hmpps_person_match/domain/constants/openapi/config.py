@@ -1,8 +1,8 @@
 class OpenAPIConfig:
     """
-    Confgiuration for OpenAPI documentation
+    Confgiuration for OpenAPI
     """
-
+    DOCS_URL = "/swagger-ui.html"
     APPLICATION_TITLE = "HMPPS Person Match"
     APPLICATION_SUMMARY = """
         An API wrapper around a model developed by the MoJ Analytical Platform
