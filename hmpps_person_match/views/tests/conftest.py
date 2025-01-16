@@ -1,16 +1,16 @@
-import os
-
 import pytest
-from fastapi.testclient import TestClient
+from fastapi import Response
 
 
-@pytest.fixture(scope="module")
-def client(app):
-    return TestClient(app)
+@pytest.fixture()
+def post_to_endpoint(client, jwt_token_factory, mock_jwks):
+    def _call_endpoint(
+        route: str,
+        json: dict,
+        roles: list[str] = None,
+    ) -> Response:
+        token = jwt_token_factory(roles=roles)
+        headers = {"Authorization": f"Bearer {token}"}
+        return client.post(route, json=json, headers=headers)
 
-@pytest.fixture(autouse=True)
-def set_env_vars():
-    os.environ["APP_BUILD_NUMBER"] = "number"
-    os.environ["APP_GIT_REF"] = "ref"
-    os.environ["APP_GIT_BRANCH"] = "branch"
-    os.environ["OAUTH_BASE_URL"] = "http://localhost:5000"
+    return _call_endpoint

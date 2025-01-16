@@ -12,10 +12,8 @@ lint-fix:
 format:
 	poetry run ruff format 
 
-run:
-	export FLASK_APP=hmpps_person_match; \
-	export FLASK_ENV=development; \
-	poetry run python hmpps_person_match/app.py
+run-dev:
+	poetry run fastapi dev asgi.py
 
 build:
 	docker build . --tag hmpps_person_match \

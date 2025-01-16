@@ -73,13 +73,3 @@ class PersonMatchApplication:
         )
         self.logger = logging.getLogger(self.LOGGER_NAME)
         self.logger.setLevel(logging.INFO)
-
-    def run(self):
-        """
-        Run the Application
-        """
-        self.app.run()
-
-
-if __name__ == "__main__":
-    PersonMatchApplication().run()
