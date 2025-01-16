@@ -8,19 +8,21 @@ class TestPersonMatchView:
     """
 
     def test_complete_message(self, post_to_endpoint):
-        json = {"sourceSystem": "DELIUS",
-                "firstName" : "Henry",
-                "middleNames": "Ahmed",
-                "lastName": "Junaed",
-                "crn": "1234",
-                "dateOfBirth": "01/02/1992",
-                "firstNameAliases": ["Henry"],
-                "lastNameAliases": ["Junaed"],
-                "dateOfBirthAliases": ["01/02/1992"],
-                "postcodes": ["B10 1EJ"],
-                "cros": ["4444566"],
-                "pncs": ["22224555"],
-                "sentenceDates": ["02/03/2001"]}
+        json = {
+            "sourceSystem": "DELIUS",
+            "firstName": "Henry",
+            "middleNames": "Ahmed",
+            "lastName": "Junaed",
+            "crn": "1234",
+            "dateOfBirth": "01/02/1992",
+            "firstNameAliases": ["Henry"],
+            "lastNameAliases": ["Junaed"],
+            "dateOfBirthAliases": ["01/02/1992"],
+            "postcodes": ["B10 1EJ"],
+            "cros": ["4444566"],
+            "pncs": ["22224555"],
+            "sentenceDates": ["02/03/2001"],
+        }
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
         assert response.json() == {}

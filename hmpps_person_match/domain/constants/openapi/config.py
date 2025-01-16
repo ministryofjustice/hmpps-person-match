@@ -2,6 +2,7 @@ class OpenAPIConfig:
     """
     Confgiuration for OpenAPI
     """
+
     DOCS_URL = "/swagger-ui.html"
     APPLICATION_TITLE = "HMPPS Person Match"
     APPLICATION_SUMMARY = """
