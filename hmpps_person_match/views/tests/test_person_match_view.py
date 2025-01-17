@@ -27,6 +27,33 @@ class TestPersonMatchView:
         assert response.status_code == 200
         assert response.json() == {}
 
+    def test_bad_request_on_empty(self, post_to_endpoint):
+        json = None
+        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Invalid request"
+
+    def test_bad_request_different_data_types(self, post_to_endpoint):
+        json = {
+            "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"], # Should be string
+            "firstName": "Henry",
+            "middleNames": "Ahmed",
+            "lastName": "Junaed",
+            "crn": "1234",
+            "dateOfBirth": "01/02/1992",
+            "firstNameAliases": ["Henry"],
+            "lastNameAliases": ["Junaed"],
+            "dateOfBirthAliases": ["01/02/1992"],
+            "postcodes": ["B10 1EJ"],
+            "cros": ["4444566"],
+            "pncs": ["22224555"],
+            "sentenceDates": ["02/03/2001"],
+        }
+        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Invalid request"
+
+
     def test_bad_request_on_missing_fields(self, post_to_endpoint):
         json = {
             "sourceSystem": "DELIUS",
