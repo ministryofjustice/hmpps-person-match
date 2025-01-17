@@ -5,12 +5,11 @@ class Person(BaseModel):
     """
     Pydantic Person Model
     """
-
+    id: str
     source_system: str = Field(alias="sourceSystem")
     first_name: str = Field(alias="firstName")
     middle_names: str = Field(alias="middleNames")
     last_name: str = Field(alias="lastName")
-    crn: str
     date_of_birth: str = Field(alias="dateOfBirth")
     first_name_aliases: list[str] = Field(alias="firstNameAliases")
     last_name_aliases: list[str] = Field(alias="lastNameAliases")

@@ -13,7 +13,7 @@ format:
 	poetry run ruff format 
 
 run-local:
-	poetry run fastapi dev asgi.py
+	poetry run fastapi dev asgi.py --port 5000
 
 build:
 	docker build . --tag hmpps_person_match \

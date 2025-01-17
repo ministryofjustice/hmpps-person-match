@@ -9,6 +9,7 @@ class TestPersonMatchView:
 
     def test_complete_message(self, post_to_endpoint):
         json = {
+            "id": "123",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
@@ -35,7 +36,8 @@ class TestPersonMatchView:
 
     def test_bad_request_different_data_types(self, post_to_endpoint):
         json = {
-            "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"], # Should be string
+            "id": "123",
+            "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],  # Should be string
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
@@ -52,7 +54,14 @@ class TestPersonMatchView:
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request"
-
+        assert response.json()["errors"] == [
+            {
+                "type": "string_type",
+                "loc": ["body", "sourceSystem"],
+                "msg": "Input should be a valid string",
+                "input": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],
+            },
+        ]
 
     def test_bad_request_on_missing_fields(self, post_to_endpoint):
         json = {

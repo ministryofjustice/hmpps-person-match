@@ -1,3 +1,6 @@
+from hmpps_person_match.models.error_response import ErrorResponse
+
+
 class OpenAPIConfig:
     """
     Confgiuration for OpenAPI
@@ -10,3 +13,9 @@ class OpenAPIConfig:
         for scoring the confidence of people matches across MoJ systems.
     """
     APPLICATION_VERSION = "0.1.0"
+    DEFAULT_RESPONSES = {
+        400: {
+            "description": "Validation Error",
+            "model": ErrorResponse,
+        },
+    }
