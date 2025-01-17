@@ -5,6 +5,8 @@ import sys
 
 # Must be imported before flask
 from azure.monitor.opentelemetry import configure_azure_monitor
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 from hmpps_person_match.log_formatter import LogFormatter
 
@@ -13,7 +15,7 @@ if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     os.environ["OTEL_SERVICE_NAME"] = "hmpps-person-match"
     configure_azure_monitor(logger_name="hmpps-person-match-logger")
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
 from hmpps_person_match.domain.constants.openapi.config import OpenAPIConfig
 from hmpps_person_match.views.health_view import router as health_router
@@ -28,13 +30,14 @@ class PersonMatchApplication:
 
     LOGGER_NAME = "hmpps-person-match-logger"
 
+    app: FastAPI = FastAPI(
+        title=OpenAPIConfig.APPLICATION_TITLE,
+        summary=OpenAPIConfig.APPLICATION_SUMMARY,
+        version=OpenAPIConfig.APPLICATION_VERSION,
+        docs_url=OpenAPIConfig.DOCS_URL,
+    )
+
     def __init__(self) -> None:
-        self.app = FastAPI(
-            title=OpenAPIConfig.APPLICATION_TITLE,
-            summary=OpenAPIConfig.APPLICATION_SUMMARY,
-            version=OpenAPIConfig.APPLICATION_VERSION,
-            docs_url=OpenAPIConfig.DOCS_URL,
-        )
         self.initialise()
 
     def initialise(self):
@@ -74,3 +77,15 @@ class PersonMatchApplication:
         )
         self.logger = logging.getLogger(self.LOGGER_NAME)
         self.logger.setLevel(logging.INFO)
+
+    @staticmethod
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        """
+        Custom exception handler for validation errors
+        """
+        error_response = {
+            "detail": "Invalid request",
+            "errors": exc.errors(),
+        }
+        return JSONResponse(status_code=400, content=error_response)
