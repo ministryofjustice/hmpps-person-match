@@ -10,7 +10,13 @@ ROUTE = "/person/match"
 router = APIRouter(tags=[OpenAPITags.MATCH])
 
 
-@router.post(ROUTE, dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))])
+@router.post(ROUTE, dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))],
+             description = """
+            ** Authorization Required:**
+             - Bearer Token must be provided.
+             - Role: 'ROLE_PERSON_MATCH'
+             """,
+             )
 def post_person_match(person: Person):
     """
     Person Match POST request handler
