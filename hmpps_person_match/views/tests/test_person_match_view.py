@@ -27,6 +27,17 @@ class TestPersonMatchView:
         assert response.status_code == 200
         assert response.json() == {}
 
+    def test_bad_request_on_missing_fields(self, post_to_endpoint):
+        json = {
+            "sourceSystem": "DELIUS",
+            "firstName": "Henry",
+            "middleNames": "Ahmed",
+            "lastName": "Junaed",
+        }
+        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Invalid request"
+
     def test_invalid_role_unauthorized(self, post_to_endpoint):
         response = post_to_endpoint(ROUTE, roles=["Invalid Role"], json={})
         assert response.status_code == 403
