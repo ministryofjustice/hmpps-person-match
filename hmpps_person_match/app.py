@@ -17,7 +17,7 @@ if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     os.environ["OTEL_SERVICE_NAME"] = "hmpps-person-match"
     configure_azure_monitor(logger_name="hmpps-person-match-logger")
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 
 from hmpps_person_match.domain.constants.openapi.config import OpenAPIConfig
 from hmpps_person_match.views.health_view import router as health_router
@@ -92,5 +92,18 @@ class PersonMatchApplication:
             content=ErrorResponse(
                 detail=ErrorMessages.INVALID_REQUEST,
                 errors=exc.errors(),
+            ).model_dump(),
+        )
+
+    @staticmethod
+    @app.exception_handler(HTTPException)
+    async def custom_http_exception_handler(request: Request, exc: HTTPException):
+        """
+        Custom exception handler for http errors
+        """
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=ErrorResponse(
+                detail=exc.detail,
             ).model_dump(),
         )
