@@ -5,6 +5,7 @@ class Person(BaseModel):
     """
     Pydantic Person Model
     """
+
     id: str
     source_system: str = Field(alias="sourceSystem")
     first_name: str = Field(alias="firstName")

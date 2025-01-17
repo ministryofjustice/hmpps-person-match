@@ -32,7 +32,7 @@ class TestPersonMatchView:
         json = None
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
-        assert response.json()["detail"] == "Invalid request"
+        assert response.json()["detail"] == "Invalid request."
 
     def test_bad_request_different_data_types(self, post_to_endpoint):
         json = {
@@ -53,7 +53,7 @@ class TestPersonMatchView:
         }
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
-        assert response.json()["detail"] == "Invalid request"
+        assert response.json()["detail"] == "Invalid request."
         assert response.json()["errors"] == [
             {
                 "type": "string_type",
@@ -72,7 +72,7 @@ class TestPersonMatchView:
         }
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
-        assert response.json()["detail"] == "Invalid request"
+        assert response.json()["detail"] == "Invalid request."
 
     def test_invalid_role_unauthorized(self, post_to_endpoint):
         response = post_to_endpoint(ROUTE, roles=["Invalid Role"], json={})

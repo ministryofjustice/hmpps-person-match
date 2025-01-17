@@ -18,4 +18,12 @@ class OpenAPIConfig:
             "description": "Validation Error",
             "model": ErrorResponse,
         },
+        401: {
+            "description": "Unauthorized",
+            "model": ErrorResponse,
+        },
+        403: {
+            "description": "Forbidden",
+            "model": ErrorResponse,
+        },
     }

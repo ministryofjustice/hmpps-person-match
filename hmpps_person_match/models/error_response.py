@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -10,4 +11,4 @@ class ErrorResponse(BaseModel):
 
     timestamp: str = datetime.datetime.now(datetime.timezone.utc).isoformat()
     detail: str
-    errors: list[dict]
+    errors: Optional[list[dict]] = []
