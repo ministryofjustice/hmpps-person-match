@@ -4,6 +4,7 @@ ROUTE = "/health"
 
 router = APIRouter()
 
+
 @router.get(ROUTE)
 def get_health():
     """

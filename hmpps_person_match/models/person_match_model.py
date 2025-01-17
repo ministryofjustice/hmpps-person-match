@@ -1,7 +1,4 @@
-from typing import Annotated, Optional
-
-from annotated_types import Len
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Person(BaseModel):
@@ -9,27 +6,16 @@ class Person(BaseModel):
     Pydantic Person Model
     """
 
-    unique_id: str
-    pnc: Optional[str] = None
-    dob: Optional[str] = None
-    lastname: Optional[str] = None
-    firstname1: Optional[str] = None
-    firstname2: Optional[str] = None
-    firstname3: Optional[str] = None
-
-
-class MatchingFromPerson(Person):
-    source_dataset: str = "matching_from"
-
-
-class MatchingToPerson(Person):
-    source_dataset: str = "matching_to"
-
-
-class PersonMatching(BaseModel):
-    """
-    List of people to match
-    """
-
-    matching_from: MatchingFromPerson
-    matching_to: Annotated[list[MatchingToPerson], Len(min_length=1, max_length=100)]
+    source_system: str = Field(alias="sourceSystem")
+    first_name: str = Field(alias="firstName")
+    middle_names: str = Field(alias="middleNames")
+    last_name: str = Field(alias="lastName")
+    crn: str
+    date_of_birth: str = Field(alias="dateOfBirth")
+    first_name_aliases: list[str] = Field(alias="firstNameAliases")
+    last_name_aliases: list[str] = Field(alias="lastNameAliases")
+    date_of_birth_aliases: list[str] = Field(alias="dateOfBirthAliases")
+    postcodes: list[str] = Field(alias="postcodes")
+    cros: list[str]
+    pncs: list[str]
+    sentence_dates: list[str] = Field(alias="sentenceDates")

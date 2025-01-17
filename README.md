@@ -1,5 +1,7 @@
 # HMPPS Person Match API
 
+[![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hmpps-person-match-dev.hmpps.service.justice.gov.uk/swagger-ui.html)
+
 An API wrapper around a model developed by the MoJ Analytical Platform for scoring the confidence 
 of people matches across MoJ systems.
 
@@ -17,7 +19,7 @@ In the event that changes are needed  to it either to improve performance or to 
 * Python 3.12+
 * [Poetry](https://python-poetry.org/docs/)
 
-```
+```shell
 export POETRY_VERSION=1.8.2
 curl -sSL https://install.python-poetry.org | python -
 ```
@@ -26,44 +28,67 @@ curl -sSL https://install.python-poetry.org | python -
 
 ### Install
 
-`make install`
+To install the dependencies and setup the virtual environment, run the following command:
 
-### Run
-
-`make run`
-
-Ping:
+```shell
+make install
 ```
-curl -i \-H "Content-Type: application/json" http://127.0.0.1:5000/ping
-``````
 
-Check health:
+### Run locally
+
+To start the development server locally, run the following command:
+
+```shell
+make run-local
 ```
+
+Utilises hot reloading so you can make changes to the application without having to restart the server.
+
+Which means you can now call the locally running application.
+
+Calling the health endpoint:
+
+```shell
 curl -i \-H "Content-Type: application/json" http://127.0.0.1:5000/health
 ```
 
-Generate a score:
-```
-curl -i \
-    -H "Content-Type: application/json" \
-    -X POST -d "{\"unique_id\":{\"0\":\"861\",\"1\":\"862\"},\"first_name\":{\"0\":\"Lily\",\"1\":\"Lily\"},\"surname\":{\"0\":\"Robinson\",\"1\":\"Robibnson\"},\"dob\":{\"0\":\"2009-07-06\",\"1\":\"2009-07-06\"},\"pnc_number\":{\"0\":\"2001/0141640Y\",\"1\":\"None\"},\"source_dataset\":{\"0\":\"libra\",\"1\":\"delius\"}}" \
-    http://127.0.0.1:5000/match
-```
-
-The key data item in the response is `match_probability`:
-```  
-"match_probability": {
-    "0": 0.9172587927
-  },
-  ```
-
 ### Test
 
-`make test`
+To run the test suite run the following command:
+
+```shell
+make test
+```
+
+### Linting
+
+To run the linter, run the following command:
+
+```shell
+make lint
+```
+
+If any errors are auto fixable run the following command:
+
+```shell
+make lint-fix
+```
+
+### Formating
+
+To run the automatic python file formatter, run the following command:
+
+```shell
+make format
+```
 
 ### Docker build
 
-```make build```
+To build the application as a Docker image, run the following command:
+
+```shell
+make build
+```
 
 ## Monitoring
 

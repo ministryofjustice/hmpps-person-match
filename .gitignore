@@ -12,3 +12,4 @@ test_results/
 .vscode
 .trivy
 .pytest_cache
+.python-version

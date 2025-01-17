@@ -6,6 +6,7 @@ ROUTE = "/info"
 
 router = APIRouter()
 
+
 @router.get(ROUTE)
 def info():
     """
