@@ -8,7 +8,9 @@ from azure.monitor.opentelemetry import configure_azure_monitor
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from hmpps_person_match.domain.constants.error_messages import ErrorMessages
 from hmpps_person_match.log_formatter import LogFormatter
+from hmpps_person_match.models.error_response import ErrorResponse
 
 # required to be able to log result code to appinsights
 if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
@@ -35,6 +37,7 @@ class PersonMatchApplication:
         summary=OpenAPIConfig.APPLICATION_SUMMARY,
         version=OpenAPIConfig.APPLICATION_VERSION,
         docs_url=OpenAPIConfig.DOCS_URL,
+        responses=OpenAPIConfig.DEFAULT_RESPONSES,
     )
 
     def __init__(self) -> None:
@@ -84,8 +87,10 @@ class PersonMatchApplication:
         """
         Custom exception handler for validation errors
         """
-        error_response = {
-            "detail": "Invalid request",
-            "errors": exc.errors(),
-        }
-        return JSONResponse(status_code=400, content=error_response)
+        return JSONResponse(
+            status_code=400,
+            content=ErrorResponse(
+                detail=ErrorMessages.INVALID_REQUEST,
+                errors=exc.errors(),
+            ).model_dump(),
+        )
