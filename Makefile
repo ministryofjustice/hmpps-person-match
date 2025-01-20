@@ -4,7 +4,7 @@ install:
 	poetry install
 
 lint:
-	poetry run ruff check hmpps_person_match/
+	poetry run ruff check .
 	
 lint-fix:
 	poetry run ruff check hmpps_person_match/ --fix
@@ -24,8 +24,19 @@ build:
 run-docker:
 	docker run -p 5000:5000 -t hmpps_person_match
 
+start-containers:
+	docker compose up -d --build
+
+stop-containers::
+	docker compose down
+
+restart-containers: stop-containers start-containers
+
 test: lint
-	poetry run pytest -v
+	poetry run pytest hmpps_person_match/ -v
 
 test-ci:
-	poetry run pytest --junitxml=test_results/pytest-report.xml
+	poetry run pytest hmpps_person_match/ --junitxml=test_results/pytest-report.xml
+
+test-integration: lint
+	poetry run pytest integration/

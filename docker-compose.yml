@@ -14,9 +14,15 @@ services:
 
   hmpps-person-match:
     image: hmpps-person-match:latest
+    networks:
+      - hmpps
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        BUILD_NUMBER: local
+        GIT_REF: ref
+        GIT_BRANCH: branch
     depends_on: 
       - postgres-hmpps-person-match
     ports: 
