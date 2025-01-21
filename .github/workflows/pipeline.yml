@@ -110,6 +110,7 @@ jobs:
       - build
       - helm_lint
       - test
+      - int-test
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
     secrets: inherit
     with:
