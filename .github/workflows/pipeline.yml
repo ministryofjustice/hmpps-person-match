@@ -22,6 +22,9 @@ concurrency:
 # If this pipeline is on the main branch, it will wait until existing runs complete
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
+env:
+  PYTHON_VERSION: "3.12.7"
+
 jobs:
   helm_lint:
     strategy:
@@ -43,7 +46,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12.7"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Poetry
         run: |
@@ -73,7 +76,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12.7"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Poetry
         run: |

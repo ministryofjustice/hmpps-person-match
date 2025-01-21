@@ -27,7 +27,7 @@ run-docker:
 start-containers:
 	docker compose up -d --build
 
-stop-containers::
+stop-containers:
 	docker compose down
 
 restart-containers: stop-containers start-containers
