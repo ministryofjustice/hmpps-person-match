@@ -1,9 +1,9 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import URL, engine_from_config, pool
+from sqlalchemy import engine_from_config, pool
 
-from db.config import Config
+from db import database_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -13,15 +13,6 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# Construct the database URL
-database_url: str = URL.create(
-    drivername="postgres",
-    username=Config.DB_USER,
-    password=Config.DB_PASSWORD,  # plain (unescaped) text
-    host=Config.DB_HOST,
-    database=Config.DB_NAME,
-)
 
 # Set the SQLAlchemy URL dynamically
 config.set_main_option("sqlalchemy.url", database_url.render_as_string())

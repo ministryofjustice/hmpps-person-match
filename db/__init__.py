@@ -4,11 +4,9 @@ from sqlmodel import Session
 
 from db.config import Config
 
-driver = "postgres"
-dialect = ""
 # Construct the database URL
 database_url: str = URL.create(
-    drivername="postgresql",
+    drivername=Config.DB_DRIVER,
     username=Config.DB_USER,
     password=Config.DB_PASSWORD,
     host=Config.DB_HOST,
