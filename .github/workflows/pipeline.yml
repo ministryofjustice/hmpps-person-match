@@ -54,17 +54,44 @@ jobs:
       - name: Install dependencies
         run: make install
       
-      - name: Run linting
-        run: make lint
-      
       - name: Run unit tests
         run: make test-ci
         
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: test_results/pytest-report.xml
+          name: unit-test-results
+          path: test_results/pytest-unit-test-report.xml
+  
+  int-test:
+    runs-on: ubuntu-latest
+    name: int-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+
+      - name: Install Poetry
+        run: |
+          export POETRY_VERSION=1.8.3
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Install dependencies
+        run: make install
+      
+      - name: Run unit tests
+        run: make test-integration-ci
+        
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: int-test-results
+          path: test_results/pytest-integration-test-report.xml
     
   build:
     name: Build docker image from hmpps-github-actions

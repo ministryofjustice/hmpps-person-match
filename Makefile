@@ -7,7 +7,7 @@ lint:
 	poetry run ruff check .
 	
 lint-fix:
-	poetry run ruff check hmpps_person_match/ --fix
+	poetry run ruff check . --fix
 
 format:
 	poetry run ruff format 
@@ -35,8 +35,11 @@ restart-containers: stop-containers start-containers
 test: lint
 	poetry run pytest hmpps_person_match/ -v
 
-test-ci:
-	poetry run pytest hmpps_person_match/ --junitxml=test_results/pytest-report.xml
+test-ci: lint
+	poetry run pytest hmpps_person_match/ --junitxml=test_results/pytest-unit-test-report.xml
 
 test-integration: lint
 	poetry run pytest integration/
+
+test-integration-ci: lint
+	poetry run pytest integration/ --junitxml=test_results/pytest-integration-test-report.xml

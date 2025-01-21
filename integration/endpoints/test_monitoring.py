@@ -20,6 +20,6 @@ class TestMonitoring:
         """
         response = requests.get(f"{person_match_url}/info")
         assert response.status_code == 200
-        assert "version" in response.json()
-        assert "commit_id" in response.json()
-        assert "branch" in response.json()
+        assert response.json()["version"] == "local"
+        assert response.json()["commit_id"] == "ref"
+        assert response.json()["branch"] == "branch"
