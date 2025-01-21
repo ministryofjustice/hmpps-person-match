@@ -1,0 +1,32 @@
+services:
+
+  postgres-hmpps-person-match:
+    image: postgres:16.3-alpine
+    ports:
+      - 5432:5432
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+    tmpfs:
+      - /var/lib/postgresql
+
+  hmpps-person-match:
+    image: hmpps-person-match:latest
+    networks:
+      - hmpps
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_NUMBER: local
+        GIT_REF: ref
+        GIT_BRANCH: branch
+    depends_on: 
+      - postgres-hmpps-person-match
+    ports: 
+      - 5000:5000
+
+networks:
+  hmpps:

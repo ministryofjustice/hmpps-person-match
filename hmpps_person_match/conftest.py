@@ -1,5 +1,4 @@
 import datetime
-import os
 from unittest.mock import patch
 
 import jwt
@@ -55,7 +54,7 @@ def context():
     return TestContext()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def private_key():
     """
     Returns a generated private key for testing purposes.
@@ -67,7 +66,7 @@ def private_key():
     return private_key
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def public_key(private_key):
     """
     Returns the public key from the private key for testing purposes.
@@ -129,7 +128,7 @@ def mock_jwks_call_factory(jwks, requests_mock):
         """
         Mock call to JWKS endpoint.
         """
-        url = f"{os.environ.get("OAUTH_BASE_URL")}/auth/.well-known/jwks.json"
+        url = f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/.well-known/jwks.json"
 
         if headers is None:
             headers = {"Content-Type": "application/json"}
