@@ -40,7 +40,7 @@ generic-service:
       DATABASE_NAME: "database_name"
       DATABASE_USERNAME: "database_username"
       DATABASE_PASSWORD: "database_password"
-      DATABASE_HOST: "rds_instance_endpoint"
+      DATABASE_HOST: "rds_instance_address"
 
   env:
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
