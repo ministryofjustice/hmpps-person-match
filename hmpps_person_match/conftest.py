@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
 
 from hmpps_person_match.app import PersonMatchApplication
-from hmpps_person_match.dependencies.db import get_db_session
+from hmpps_person_match.db import get_db_session
 from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
 

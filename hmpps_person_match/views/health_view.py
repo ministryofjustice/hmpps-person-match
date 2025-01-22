@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import OperationalError
 from sqlmodel import Session, select
 
-from hmpps_person_match.dependencies.db import get_db_session
+from hmpps_person_match.db import get_db_session
 from hmpps_person_match.dependencies.logging import get_logger
 
 ROUTE = "/health"
