@@ -4,9 +4,9 @@ from sqlmodel import Session
 
 from hmpps_person_match.db.config import Config
 
-db_query = None
+db_query_string_params = None
 if Config.DB_SSL_ENABLED:
-    db_query = {
+    db_query_string_params = {
         "sslmode": "verify-full",
     }
 
@@ -18,7 +18,7 @@ database_url: str = URL.create(
     host=Config.DB_HOST,
     port=Config.DB_PORT,
     database=Config.DB_NAME,
-    query=db_query,
+    query=db_query_string_params,
 )
 
 engine = create_engine(
