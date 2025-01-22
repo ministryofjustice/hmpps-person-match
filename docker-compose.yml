@@ -1,6 +1,7 @@
 services:
 
   postgres-hmpps-person-match:
+    container_name: postgres-hpm
     image: postgres:16.3-alpine
     ports:
       - 5432:5432
@@ -13,6 +14,7 @@ services:
       - /var/lib/postgresql
 
   hmpps-person-match:
+    container_name: hmpps-person-match
     image: hmpps-person-match:latest
     networks:
       - hmpps
@@ -23,6 +25,13 @@ services:
         BUILD_NUMBER: local
         GIT_REF: ref
         GIT_BRANCH: branch
+    environment:
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: dev
+      DATABASE_NAME: postgres
+      DATABASE_PORT: 5432
+      DATABASE_HOST: postgres-hmpps-person-match
+      DB_SSL_ENABLED: False
     depends_on: 
       - postgres-hmpps-person-match
     ports: 

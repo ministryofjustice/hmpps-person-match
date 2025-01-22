@@ -1,5 +1,5 @@
 import datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import jwt
 import pytest
@@ -8,6 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
 
 from hmpps_person_match.app import PersonMatchApplication
+from hmpps_person_match.db import get_db_session
 from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
 
@@ -19,7 +20,7 @@ def set_env_vars(monkeypatch):
     monkeypatch.setenv("OAUTH_BASE_URL", "http://localhost:5000")
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture()
 def app():
     app = PersonMatchApplication().app
     # other setup can go here
@@ -27,7 +28,14 @@ def app():
     # clean up / reset resources here
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
+def mock_db_session(app):
+    mock_session = MagicMock()
+    app.dependency_overrides[get_db_session] = lambda: mock_session
+    yield mock_session
+
+
+@pytest.fixture()
 def client(app):
     return TestClient(app)
 
@@ -147,3 +155,4 @@ def mock_jwks(mock_jwks_call_factory, jwks):
     """
     default_response_json = jwks
     mock_jwks_call_factory(json_data=default_response_json)
+
