@@ -15,7 +15,6 @@ cachetools = "^5.5.0"
 pyjwt = "^2.10.1"
 requests-mock = "^1.12.1"
 cryptography = "^44.0.0"
-alembic = "^1.14.1"
 sqlmodel = "^0.0.22"
 psycopg2-binary = "^2.9.10"
 
