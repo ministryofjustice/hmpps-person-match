@@ -82,6 +82,9 @@ WORKDIR /app/
 RUN groupadd -g 1001 appuser && \
     useradd -u 1001 -g appuser -m -s /bin/bash appuser
 
+RUN mkdir /home/appuser/.postgresql
+ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
+
 RUN chown appuser:appuser /app/
 USER 1001
 
