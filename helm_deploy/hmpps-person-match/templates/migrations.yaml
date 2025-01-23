@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: migrations
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: '{{ index .Values "generic-service" "image" "repository" }}:{{ index .Values "generic-service" "image" "tag" }}'
           command: ["alembic", "upgrade", "head"]
           env:
             - name: DATABASE_NAME
