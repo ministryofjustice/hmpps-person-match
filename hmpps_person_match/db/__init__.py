@@ -27,12 +27,8 @@ engine = create_engine(
 )
 
 DatabaseSession = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-    class_=Session,
+    autocommit=False, autoflush=False, bind=engine, class_=Session,
 )
-
 
 def get_db_session():
     """

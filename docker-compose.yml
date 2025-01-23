@@ -49,6 +49,8 @@ services:
     build: .
     container_name: db-migrations
     command: alembic upgrade head
+    networks:
+      - hmpps
     environment:
       <<: *database_config
     depends_on:
