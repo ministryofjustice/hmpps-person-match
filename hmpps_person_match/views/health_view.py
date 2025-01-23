@@ -15,8 +15,7 @@ router = APIRouter()
 
 
 @router.get(ROUTE)
-def get_health(session: Annotated[Session,  Depends(get_db_session)],
-               logger: Annotated[Logger, Depends(get_logger)]):
+def get_health(session: Annotated[Session, Depends(get_db_session)], logger: Annotated[Logger, Depends(get_logger)]):
     """
     GET request handler
     """

@@ -155,4 +155,3 @@ def mock_jwks(mock_jwks_call_factory, jwks):
     """
     default_response_json = jwks
     mock_jwks_call_factory(json_data=default_response_json)
-
