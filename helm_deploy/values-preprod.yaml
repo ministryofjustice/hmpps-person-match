@@ -12,3 +12,5 @@ generic-service:
 
 generic-prometheus-alerts:
   businessHoursOnly: true
+  rdsAlertsDatabases:
+    cloud-platform-05509d3640870a0b: "hmpps-person-match-database"
