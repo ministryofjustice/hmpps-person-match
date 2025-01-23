@@ -49,6 +49,26 @@ generic-service:
     groups:
       - internal
 
+envVars:
+  DATABASE_NAME:
+    secret:
+      name: hmpps-person-match-rds-instance-output
+      key: database_name
+  DATABASE_USERNAME:
+    secret:
+      name: hmpps-person-match-rds-instance-output
+      key: database_username
+  DATABASE_PASSWORD:
+    secret:
+      name: hmpps-person-match-rds-instance-output
+      key: database_password
+  DATABASE_HOST:
+    secret:
+      name: hmpps-person-match-rds-instance-output
+      key: rds_instance_address
+  DB_PORT:
+    value: 5432
+
 generic-prometheus-alerts:
   targetApplication: hmpps-person-match
   alertSeverity: hmpps-person-record-alerts-prod

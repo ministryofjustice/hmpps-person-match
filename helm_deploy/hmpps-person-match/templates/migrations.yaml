@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-migrations"
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+        - name: migrations
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["alembic", "upgrade", "head"]
+          env:
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: hmpps-person-match-rds-instance-output
+                  key: database_name
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hmpps-person-match-rds-instance-output
+                  key: database_username
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hmpps-person-match-rds-instance-output
+                  key: database_password
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: hmpps-person-match-rds-instance-output
+                  key: rds_instance_address
+            - name: DB_PORT
+              value: 5432
+      restartPolicy: Never
+  backoffLimit: 4
