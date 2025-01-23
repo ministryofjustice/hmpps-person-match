@@ -17,6 +17,7 @@ To upgrade the database to the latest migration run:
 ```bash
 poetry run alembic upgrade head
 ```
+
 To upgrade the database to a given migration run:
 ```bash
 poetry run alembic upgrade [RevisionTag]
@@ -30,11 +31,11 @@ To revert the database to a previous migration state run:
 poetry run alembic downgrade [RevisionTag]
 ```
 
-## View the databases current migration state
+## View the database's current migration state
 To view the current revision tag of the database run:
 ```bash
 poetry run alembic current
 ```
-### How does the database know it's current migration state?
+### How does the database know its current migration state?
 A table is created in the database called alembic_version; with one field named: 'version_num'.
 This holds the current revision tag of the database.

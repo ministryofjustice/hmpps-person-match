@@ -12,6 +12,13 @@ services:
       POSTGRES_PASSWORD: dev
     tmpfs:
       - /var/lib/postgresql
+    healthcheck:
+      test: pg_isready -U root -d postgres
+      start_period: 5s
+      start_interval: 0.2s
+      interval: 30s
+      timeout: 3s
+      retries: 3
 
   hmpps-person-match:
     container_name: hmpps-person-match
@@ -25,7 +32,7 @@ services:
         BUILD_NUMBER: local
         GIT_REF: ref
         GIT_BRANCH: branch
-    environment:
+    environment: &database_config
       DATABASE_USERNAME: root
       DATABASE_PASSWORD: dev
       DATABASE_NAME: postgres
@@ -33,9 +40,20 @@ services:
       DATABASE_HOST: postgres-hmpps-person-match
       DB_SSL_ENABLED: False
     depends_on: 
-      - postgres-hmpps-person-match
+      migrations:
+          condition: service_completed_successfully
     ports: 
       - 5000:5000
+
+  migrations:
+    build: .
+    container_name: db-migrations
+    command: alembic upgrade head
+    environment:
+      <<: *database_config
+    depends_on:
+      postgres-hmpps-person-match:
+        condition: service_healthy
 
 networks:
   hmpps:
