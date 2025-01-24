@@ -34,7 +34,15 @@ spec:
                 secretKeyRef:
                   name: hmpps-person-match-rds-instance-output
                   key: rds_instance_address
-            - name: DB_PORT
-              value: "5432"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ["ALL"]
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
       restartPolicy: Never
   backoffLimit: 4
