@@ -35,6 +35,6 @@ spec:
                   name: hmpps-person-match-rds-instance-output
                   key: rds_instance_address
             - name: DB_PORT
-              value: 5432
+              value: "5432"
       restartPolicy: Never
   backoffLimit: 4
