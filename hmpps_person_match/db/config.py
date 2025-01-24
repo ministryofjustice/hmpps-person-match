@@ -5,6 +5,7 @@ class Config:
     """
     Database configuration
     """
+
     DB_DRIVER = "postgresql"
     DB_USER = os.environ.get("DATABASE_USERNAME")
     DB_PASSWORD = os.environ.get("DATABASE_PASSWORD")

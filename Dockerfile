@@ -74,7 +74,7 @@ FROM base AS final
 COPY --from=build $PYSETUP_PATH $PYSETUP_PATH
 
 COPY ./hmpps_person_match /app/hmpps_person_match/
-COPY docker-entrypoint.sh asgi.py /app/
+COPY docker-entrypoint.sh asgi.py alembic.ini /app/
 
 WORKDIR /app/
 

@@ -17,6 +17,7 @@ requests-mock = "^1.12.1"
 cryptography = "^44.0.0"
 sqlmodel = "^0.0.22"
 psycopg2-binary = "^2.9.10"
+alembic = "^1.14.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.0.0"
