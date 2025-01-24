@@ -42,5 +42,7 @@ spec:
               type: RuntimeDefault
             capabilities:
               drop: ["ALL"]
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
       restartPolicy: Never
   backoffLimit: 4
