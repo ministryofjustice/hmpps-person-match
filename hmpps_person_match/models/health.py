@@ -7,6 +7,7 @@ class Status(str, Enum):
     """
     Application status enum
     """
+
     UP = "UP"
     DOWN = "DOWN"
 
@@ -15,4 +16,5 @@ class Health(BaseModel):
     """
     Health response model
     """
+
     status: Status

@@ -2,21 +2,20 @@ import os
 
 from fastapi import APIRouter
 
+from hmpps_person_match.models.info import Info
+
 ROUTE = "/info"
 
 router = APIRouter()
 
 
 @router.get(ROUTE)
-def info():
+def info() -> Info:
     """
     GET request handler
     """
-    version = os.environ.get("APP_BUILD_NUMBER", "unknown")
-    commit_id = os.environ.get("APP_GIT_REF", "unknown")
-    branch = os.environ.get("APP_GIT_BRANCH", "unknown")
-    return dict(
-        version=version,
-        commit_id=commit_id,
-        branch=branch,
+    return Info(
+        version=os.environ.get("APP_BUILD_NUMBER", "unknown"),
+        commit_id=os.environ.get("APP_GIT_REF", "unknown"),
+        branch=os.environ.get("APP_GIT_BRANCH", "unknown"),
     )
