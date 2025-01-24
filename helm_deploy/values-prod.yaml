@@ -6,3 +6,7 @@ generic-service:
 
   env:
     OAUTH_BASE_URL: https://sign-in.hmpps.service.justice.gov.uk
+
+generic-prometheus-alerts:
+  rdsAlertsDatabases:
+    cloud-platform-ee08837ab8b048b1: "hmpps-person-match-database"
