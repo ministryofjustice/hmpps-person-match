@@ -3,9 +3,9 @@ from enum import Enum
 from pydantic import BaseModel
 
 
-class Status(Enum):
+class Status(str, Enum):
     """
-    Applciation status enum
+    Application status enum
     """
     UP = "UP"
     DOWN = "DOWN"

@@ -25,11 +25,11 @@ def get_health(session: Annotated[Session, Depends(get_db_session)],
         session.exec(select(1))
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content=Health(status=Status.UP),
+            content=Health(status=Status.UP).model_dump(),
         )
     except OperationalError as e:
         logger.error("Error executing health check query: %s", e)
         return JSONResponse(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            content=Health(status=Status.DOWN),
+            content=Health(status=Status.DOWN).model_dump(),
         )
