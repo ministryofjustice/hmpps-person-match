@@ -8,6 +8,25 @@ test_results/
 *.iml
 
 .ruff_cache
+
+# Prevent accidentally committing html files that could contain sensitive data
+*.html
+
+del*
+
+.vscode
+**/secrets_file.py
+secret_data/
+.tmp/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.parquet
+*.DS_Store
 .venv
 .vscode
 .trivy
