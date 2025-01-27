@@ -48,12 +48,6 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install Poetry
-        run: |
-          export POETRY_VERSION=1.8.3
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
-
       - name: Setup uv
         id: setup-uv
         uses: astral-sh/setup-uv@v2
@@ -85,11 +79,12 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install Poetry
-        run: |
-          export POETRY_VERSION=1.8.3
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
+       - name: Setup uv
+          id: setup-uv
+          uses: astral-sh/setup-uv@v2
+          with:
+            enable-cache: true
+            cache-dependency-glob: "hmpps_cpr_splink/uv.lock"
 
       - name: Install dependencies
         run: make install
