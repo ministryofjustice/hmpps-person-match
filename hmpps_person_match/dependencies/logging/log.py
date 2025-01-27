@@ -6,7 +6,7 @@ LOGGER_NAME = "hmpps-person-match-logger"
 
 logging.Formatter = LogFormatter
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format="%(asctime)s.%(msecs)03d %(levelname)-8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
@@ -15,4 +15,6 @@ def get_logger():
     """
     Return the logger
     """
-    return logging.getLogger(LOGGER_NAME)
+    logger = logging.getLogger(LOGGER_NAME)
+    logger.setLevel(logging.INFO)
+    return logger
