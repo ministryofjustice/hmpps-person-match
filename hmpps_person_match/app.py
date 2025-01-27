@@ -1,3 +1,4 @@
+import logging
 import os
 import platform
 import sys
@@ -64,6 +65,8 @@ class PersonMatchApplication:
         """
         Set up application logger
         """
+        # Stops console logs from requests, still sends telemetry
+        logging.getLogger("uvicorn.access").disabled = True
         self.logger = get_logger()
 
     @staticmethod
