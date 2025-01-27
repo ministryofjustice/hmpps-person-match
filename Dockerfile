@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.12.7-slim-bullseye
+FROM python:3.12.7-slim-bullseye AS base
 
 # load in build details
 ARG BUILD_NUMBER
@@ -26,36 +26,43 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    # paths
-    # this is where our requirements + virtual environment will live
-    UV_PROJECT_ENVIRONMENT="/opt/.venv"
+    # uv args
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
 
+##############
+# BUILD stage
+##############
+FROM base AS build
+COPY --from=ghcr.io/astral-sh/uv:0.4.9 /uv /bin/uv
 
 RUN apt-get install --no-install-recommends -y \
         # deps for installing uv
         curl \
-        ca-certificates \
         # deps for building python deps
         build-essential
 
-ADD https://astral.sh/uv/0.5.24/install.sh /uv-installer.sh
+WORKDIR /app
 
-# Run the installer then remove it
-RUN sh /uv-installer.sh && rm /uv-installer.sh
-
-ENV PATH="/root/.local/bin/:$PATH"
-
-# copy project requirement files here to ensure they will be cached.
 COPY uv.lock pyproject.toml ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-dev
 
 COPY ./hmpps_person_match /app/hmpps_person_match/
 COPY docker-entrypoint.sh asgi.py alembic.ini /app/
 
-# install Python dependencies in virtual environment
-RUN uv venv $UV_PROJECT_ENVIRONMENT && \
+RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
-WORKDIR /app/
+##############
+# FINAL stage
+##############
+FROM base AS final
+COPY --from=build /app /app
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+WORKDIR /app
 
 # create app user
 RUN groupadd -g 1001 appuser && \
@@ -65,7 +72,6 @@ RUN mkdir /home/appuser/.postgresql
 ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
 
 RUN chown appuser:appuser /app/
-RUN chown -R appuser:appuser $UV_PROJECT_ENVIRONMENT
 
 USER 1001
 
