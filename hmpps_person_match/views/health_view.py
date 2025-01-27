@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError
 from sqlmodel import Session, select
 
 from hmpps_person_match.db import get_db_session
-from hmpps_person_match.dependencies.logging import get_logger
+from hmpps_person_match.dependencies.logging.log import get_logger
 from hmpps_person_match.models.health import Health, Status
 
 ROUTE = "/health"
