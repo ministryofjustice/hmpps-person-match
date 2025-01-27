@@ -33,10 +33,14 @@ stop-containers:
 restart-containers: stop-containers start-containers
 
 test: lint
-	poetry run pytest hmpps_person_match/ -v
+	poetry run pytest hmpps_person_match/ -v \
+	&& cd hmpps_cpr_splink/ \
+	&& uv run pytest -v
 
 test-ci: lint
-	poetry run pytest hmpps_person_match/ --junitxml=test_results/pytest-unit-test-report.xml
+	poetry run pytest hmpps_person_match/ --junitxml=test_results/pytest-unit-test-report.xml \
+	&& cd hmpps_cpr_splink/ \
+	&& uv run pytest -v
 
 test-integration: lint
 	poetry run pytest integration/

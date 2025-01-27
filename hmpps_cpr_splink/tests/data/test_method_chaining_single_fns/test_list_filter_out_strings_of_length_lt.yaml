@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=../schema_data_format_short.json
+
+format: "short"
+
+schema:
+  input_column_type: "VARCHAR[]"
+  output_column_type: "VARCHAR[]"
+
+data:
+  - input_value: ["a", "ab", "abc", "abcd"]
+    output_value: ["ab", "abc", "abcd"]
+  - input_value: ["", "x", "xy", "xyz"]
+    output_value: ["xy", "xyz"]
+  - input_value: []
+    output_value: []
+  - input_value: null
+    output_value: null

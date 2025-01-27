@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../schema_data_format_full.json
+
+# test_method_chaining_compound_fns.py::test_list_append_from_scalar
+format: "full"
+
+schema:
+  input_table:
+    input_column: "VARCHAR[]"
+    scalar_column: "VARCHAR"
+  output_table:
+    output_column: "VARCHAR[]"
+
+data:
+  - input_table:
+      - input_column: ["JOHN", "JOHNNY"]
+        scalar_column: "JONATHAN"
+    output_table:
+      - output_column: ["JOHN", "JOHNNY", "JONATHAN"]
+  - input_table:
+      - input_column: []
+        scalar_column: "SMITH"
+    output_table:
+      - output_column: ["SMITH"]
+  - input_table:
+      - input_column: null
+        scalar_column: "DOE"
+    output_table:
+      - output_column: ["DOE"]
+  - input_table:
+      - input_column: null
+        scalar_column: null
+    output_table:
+      - output_column: [null]
+  - input_table:
+      - input_column: ["BOB", null, "BOBBY"]
+        scalar_column: "ROBERT"
+    output_table:
+      - output_column: ["BOB", null, "BOBBY", "ROBERT"]
+  - input_table:
+      - input_column: ["1980-01-01", "1980-02-02"]
+        scalar_column: "1980-03-03"
+    output_table:
+      - output_column: ["1980-01-01", "1980-02-02", "1980-03-03"]

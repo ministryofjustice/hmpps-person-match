@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "definitions": {
+        "DuckDBTypes": {
+            "type": "string",
+            "enum": [
+                "VARCHAR",
+                "VARCHAR[]",
+                "DATE",
+                "DATE[]",
+                "INTEGER"
+            ]
+        }
+    },
+    "properties": {
+        "format": {
+            "type": "string",
+            "enum": [
+                "full"
+            ],
+            "description": "Indicates which data schema this is using - the full, flexible format, or the shorthand single-column version. This schema is for the full version."
+        },
+        "schema": {
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "description": "The name of a yaml file specifying the schema, in data/tables"
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/definitions/DuckDBTypes"
+                        },
+                        "description": "column_name: column_type pairs of the table"
+                    }
+                ]
+            },
+            "description": "Describes the database schema of all tables involved in the test."
+        },
+        "data": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "description": "column_name: column_value pairs, specifying a single table row."
+                    },
+                    "description": "The rows to be inserted into the specified table"
+                },
+                "description": "table_name: rows. Specify the data to be inserted into the specified table"
+            },
+            "description": "The data to test, each specified as a table name, and the rows to be inserted."
+        }
+    },
+    "required": [
+        "schema",
+        "data"
+    ]
+}
