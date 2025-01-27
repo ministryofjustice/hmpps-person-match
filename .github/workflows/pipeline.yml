@@ -79,12 +79,12 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-       - name: Setup uv
-          id: setup-uv
-          uses: astral-sh/setup-uv@v2
-          with:
-            enable-cache: true
-            cache-dependency-glob: "hmpps_cpr_splink/uv.lock"
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          enable-cache: true
+          cache-dependency-glob: "hmpps_cpr_splink/uv.lock"
 
       - name: Install dependencies
         run: make install
