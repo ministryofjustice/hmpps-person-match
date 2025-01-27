@@ -64,6 +64,8 @@ RUN mkdir /home/appuser/.postgresql
 ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
 
 RUN chown appuser:appuser /app/
+RUN chown -R appuser:appuser /.venv/
+
 USER 1001
 
 EXPOSE 5000

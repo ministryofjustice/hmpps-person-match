@@ -48,7 +48,7 @@ services:
   migrations:
     build: .
     container_name: db-migrations
-    command: alembic upgrade head
+    command: uv run alembic upgrade head
     networks:
       - hmpps
     environment:
