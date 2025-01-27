@@ -1,11 +1,11 @@
-from cpr_splink.data_cleaning.table import Table
-from cpr_splink.model_cleaning.clean import (
+from hmpps_cpr_splink.cpr_splink.data_cleaning.table import Table
+from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import (
     columns_basic,
     columns_reshaping,
     columns_simple_select,
 )
-from cpr_splink.model_cleaning.term_frequencies import lookup_term_frequencies
-from tests.utils.table_assertions import check_data
+from hmpps_cpr_splink.cpr_splink.model_cleaning.term_frequencies import lookup_term_frequencies
+from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 
 def filter_columns(columns, columns_to_keep):

@@ -9,7 +9,7 @@ Also means we don't need users to know anything about how we acceess database.
 ## score
 
 ```python
-from cpr_splink import clean, score
+from hmpps_cpr_splink.cpr_splink import clean, score
 
 pg_connexion = get_postgres_connexion()  # however this comes
 

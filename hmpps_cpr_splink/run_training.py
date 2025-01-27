@@ -4,9 +4,9 @@ from datetime import datetime
 import duckdb
 from splink import DuckDBAPI, Linker
 
-from cpr_splink.data_cleaning.join_raw_tables import join_raw_tables_sql
-from cpr_splink.model_cleaning import clean_whole_joined_table
-from cpr_splink.model_cleaning.tables import create_postcode_tf_from_cpr_joined
+from hmpps_cpr_splink.cpr_splink.data_cleaning.join_raw_tables import join_raw_tables_sql
+from hmpps_cpr_splink.cpr_splink.model_cleaning import clean_whole_joined_table
+from hmpps_cpr_splink.cpr_splink.model_cleaning.tables import create_postcode_tf_from_cpr_joined
 
 joined_data_exists = False
 test_con = duckdb.connect()

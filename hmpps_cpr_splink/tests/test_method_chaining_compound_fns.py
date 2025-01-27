@@ -1,9 +1,9 @@
-from cpr_splink.data_cleaning.transformation import (
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformation import (
     LIST_TRANSFORM_NAME_CLEANING,
     NAME_CLEANING,
 )
-from cpr_splink.model_cleaning.clean import POSTCODE_BASIC
-from tests.utils.table_assertions import check_data
+from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import POSTCODE_BASIC
+from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 sql_name_cleaning = f"""
 SELECT

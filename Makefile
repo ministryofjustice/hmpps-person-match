@@ -1,19 +1,19 @@
 export PYTHONDONTWRITEBYTECODE=1
 
 install:
-	poetry install
+	uv sync
 
 lint:
-	poetry run ruff check .
+	uv run ruff check hmpps_person_match/
 	
 lint-fix:
-	poetry run ruff check . --fix
+	uv run ruff check . --fix
 
 format:
-	poetry run ruff format 
+	uv run ruff format 
 
 run-local:
-	poetry run fastapi dev asgi.py --port 5000
+	uv run fastapi dev asgi.py --port 5000
 
 build:
 	docker build . --tag hmpps_person_match \
@@ -33,17 +33,15 @@ stop-containers:
 restart-containers: stop-containers start-containers
 
 test: lint
-	poetry run pytest hmpps_person_match/ -v \
-	&& cd hmpps_cpr_splink/ \
-	&& uv run pytest -v
+	uv run pytest hmpps_person_match/ -v && \
+	uv run pytest hmpps_cpr_splink/ -v
 
 test-ci: lint
-	poetry run pytest hmpps_person_match/ --junitxml=test_results/pytest-unit-test-report.xml \
-	&& cd hmpps_cpr_splink/ \
-	&& uv run pytest -v
+	uv run pytest hmpps_person_match/ --junitxml=test_results/pytest-unit-test-report.xml &&\
+	uv run pytest hmpps_cpr_splink/ -v
 
 test-integration: lint
-	poetry run pytest integration/
+	uv run pytest integration/
 
 test-integration-ci: lint
-	poetry run pytest integration/ --junitxml=test_results/pytest-integration-test-report.xml
+	uv run pytest integration/ --junitxml=test_results/pytest-integration-test-report.xml
