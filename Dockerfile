@@ -28,7 +28,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_DEFAULT_TIMEOUT=100 \
     # paths
     # this is where our requirements + virtual environment will live
-    VENV_PATH=".venv"
+    UV_PROJECT_ENVIRONMENT="/opt/.venv"
 
 
 RUN apt-get install --no-install-recommends -y \
@@ -52,7 +52,8 @@ COPY ./hmpps_person_match /app/hmpps_person_match/
 COPY docker-entrypoint.sh asgi.py alembic.ini /app/
 
 # install Python dependencies in virtual environment
-RUN uv sync --frozen --no-dev
+RUN uv venv $UV_PROJECT_ENVIRONMENT && \
+    uv sync --frozen --no-dev
 
 WORKDIR /app/
 
@@ -64,7 +65,7 @@ RUN mkdir /home/appuser/.postgresql
 ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
 
 RUN chown appuser:appuser /app/
-RUN chown -R appuser:appuser /.venv/
+RUN chown -R appuser:appuser $UV_PROJECT_ENVIRONMENT
 
 USER 1001
 
