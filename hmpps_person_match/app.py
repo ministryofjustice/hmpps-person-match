@@ -4,21 +4,23 @@ import platform
 import sys
 
 from azure.monitor.opentelemetry import configure_azure_monitor
+
+from hmpps_person_match.dependencies.logging.log import LOGGER_NAME, get_logger
+
+if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+    os.environ["OTEL_SERVICE_NAME"] = "hmpps-person-match"
+    configure_azure_monitor(logger_name=LOGGER_NAME)
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from hmpps_person_match.dependencies.logging.log import LOGGER_NAME, get_logger
 from hmpps_person_match.domain.constants.error_messages import ErrorMessages
 from hmpps_person_match.domain.constants.openapi.config import OpenAPIConfig
 from hmpps_person_match.models.error_response import ErrorResponse
 from hmpps_person_match.views.health_view import router as health_router
 from hmpps_person_match.views.info_view import router as info_router
 from hmpps_person_match.views.person_match_view import router as person_match_router
-
-if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
-    os.environ["OTEL_SERVICE_NAME"] = "hmpps-person-match"
-    configure_azure_monitor(logger_name=LOGGER_NAME)
 
 
 class PersonMatchApplication:
