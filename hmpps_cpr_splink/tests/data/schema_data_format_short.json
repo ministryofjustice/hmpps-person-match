@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "definitions": {
+        "DuckDBTypes": {
+            "type": "string",
+            "enum": [
+                "VARCHAR",
+                "VARCHAR[]",
+                "DATE",
+                "DATE[]",
+                "INTEGER"
+            ]
+        }
+    },
+    "properties": {
+        "format": {
+            "type": "string",
+            "enum": [
+                "short"
+            ],
+            "description": "Indicates which data schema this is using - the full, flexible format, or the shorthand single-column version. This schema is for the shorthand version."
+        },
+        "schema": {
+            "type": "object",
+            "properties": {
+                "input_column_type": {
+                    "$ref": "#/definitions/DuckDBTypes",
+                    "description": "DuckDB type of the input column"
+                },
+                "output_column_type": {
+                    "$ref": "#/definitions/DuckDBTypes",
+                    "description": "DuckDB type of the output column"
+                }
+            },
+            "description": "Describes the database schema of the input and output columns",
+            "required": [
+                "input_column_type",
+                "output_column_type"
+            ]
+        },
+        "data": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "input_value": {
+                        "description": "An input value. Must match the type specified in schema.input"
+                    },
+                    "output_value": {
+                        "description": "The expected output value, given the input. Must match the type specified in schema.output"
+                    }
+                },
+                "required": [
+                    "input_value",
+                    "output_value"
+                ],
+                "description": "A single test instance, defined by a single input and expected output value"
+            },
+            "description": "The data to test, each specified as pairs of input values, and the expected output value"
+        }
+    },
+    "required": [
+        "schema",
+        "data",
+        "format"
+    ]
+}

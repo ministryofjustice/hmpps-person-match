@@ -1,0 +1,2 @@
+fk_person_id: "INTEGER"
+postcode: "VARCHAR"

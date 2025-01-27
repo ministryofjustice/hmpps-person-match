@@ -1,0 +1,4 @@
+fk_person_id: "INTEGER"
+first_name: "VARCHAR"
+last_name: "VARCHAR"
+date_of_birth: "DATE"

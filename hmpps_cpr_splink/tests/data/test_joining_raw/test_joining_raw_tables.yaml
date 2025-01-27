@@ -1,0 +1,106 @@
+# yaml-language-server: $schema=../schema_data_format_full.json
+
+# test_joining_raw.py::test_join_raw_tables
+schema:
+  candidate_search_return_format: "schema_candidate_search_return_format.yaml"
+  person: "schema_person.yaml"
+  pseudonym: "schema_pseudonym.yaml"
+  address: "schema_address.yaml"
+  reference: "schema_reference.yaml"
+  sentence_info: "schema_sentence_info.yaml"
+
+data:
+  - candidate_search_return_format:
+      - id: 1200000
+        source_system: "NOMIS"
+        first_name: "JOHN"
+        middle_names: "JAMES"
+        last_name: "SMITH"
+        crn: NULL
+        prison_number: "A1111AA"
+        date_of_birth: "1955-05-05"
+        sex: NULL
+        ethnicity: "W"
+        first_name_alias_arr: ["JONNY", "JOHN"]
+        last_name_alias_arr: ["SMYTH", "SMYTH"]
+        date_of_birth_alias_arr: ["1955-03-28", "1955-03-28"]
+        postcode_arr: ["AB1 2CD", "XY1 9YZ"]
+        cro_arr: ["123456/99X"]
+        pnc_arr: NULL
+        sentence_date_arr: ["2000-12-17", "2001-12-17"]
+    person:
+      - id: 1200000
+        source_system: "NOMIS"
+        first_name: "JOHN"
+        middle_names: "JAMES"
+        last_name: "SMITH"
+        crn: NULL
+        prison_number: "A1111AA"
+        date_of_birth: "1955-05-05"
+        sex: NULL
+        ethnicity: "W"
+    pseudonym:
+      - fk_person_id: 1200000
+        first_name: "JONNY"
+        last_name: "SMYTH"
+        date_of_birth: "1955-03-28"
+      - fk_person_id: 1200000
+        first_name: "JOHN"
+        last_name: "SMYTH"
+        date_of_birth: "1955-03-28"
+    address:
+      - fk_person_id: 1200000
+        postcode: "AB1 2CD"
+      - fk_person_id: 1200000
+        postcode: "XY1 9YZ"
+    reference:
+      - fk_person_id: 1200000
+        identifier_type: "CRO"
+        identifier_value: "123456/99X"
+    sentence_info:
+      - fk_person_id: 1200000
+        sentence_date: "2000-12-17"
+      - fk_person_id: 1200000
+        sentence_date: "2001-12-17"
+  # This test validates correctness in the case FK tables have no values
+  - candidate_search_return_format:
+      - id: 1300000
+        source_system: "DELIUS"
+        first_name: "JANE"
+        middle_names: "ELIZABETH"
+        last_name: "DOE"
+        crn: "X123456"
+        prison_number: NULL
+        date_of_birth: "1980-01-15"
+        sex: "F"
+        ethnicity: "A"
+        first_name_alias_arr: NULL
+        last_name_alias_arr: NULL
+        date_of_birth_alias_arr: NULL
+        postcode_arr: ["EF3 4GH"]
+        cro_arr: ["789012/00Y"]
+        pnc_arr: ["2000/0123456A"]
+        sentence_date_arr: NULL
+    person:
+      - id: 1300000
+        source_system: "DELIUS"
+        first_name: "JANE"
+        middle_names: "ELIZABETH"
+        last_name: "DOE"
+        crn: "X123456"
+        prison_number: NULL
+        date_of_birth: "1980-01-15"
+        sex: "F"
+        ethnicity: "A"
+    pseudonym: []
+    address:
+      - fk_person_id: 1300000
+        postcode: "EF3 4GH"
+    reference:
+      - fk_person_id: 1300000
+        identifier_type: "CRO"
+        identifier_value: "789012/00Y"
+      - fk_person_id: 1300000
+        identifier_type: "PNC"
+        identifier_value: "2000/0123456A"
+    sentence_info: []

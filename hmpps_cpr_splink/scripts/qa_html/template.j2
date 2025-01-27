@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Splink Model Labelling Tool</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .record-table,
+    .diff-cell,
+    code,
+    #copy-text {
+      font-family: Monaco, 'Cascadia Code', 'Source Code Pro', Consolas, monospace;
+      font-size: 13px;  /* Monaco looks better slightly smaller */
+    }
+
+    h1, h2, h3, summary {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 600;
+    }
+
+    .record-table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .record-table th,
+    .record-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .record-table th {
+      background-color: #f2f2f2;
+    }
+
+    .record-table tr:nth-child(odd) {
+      background-color: #f9f9f9;
+    }
+
+    .nav-controls {
+      display: flex;
+      gap: 1rem;
+      margin: 1rem 0;
+      align-items: center;
+    }
+
+    .nav-button {
+      padding: 0.5rem 1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .nav-button:disabled {
+      background: #ccc;
+    }
+
+    /* Add new styles for diffs */
+    .diff-added {
+      background-color: #e6ffe6;
+      text-decoration: none;
+      color: #2a2;
+      padding: 0 1px;
+    }
+
+    .diff-removed {
+      background-color: #ffe6e6;
+      text-decoration: none;
+      color: #a22;
+      padding: 0 1px;
+    }
+
+    .diff-unchanged {
+      color: #333;
+    }
+
+    .diff-cell {
+      font-family: monospace;
+    }
+
+    /* Add styles for the instructions */
+    details {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 1rem 0;
+      color: #333;
+    }
+
+    .diff-row td {
+      border: none;
+
+
+    }
+
+    .copy-feedback {
+      opacity: 0;
+      color: #22c55e; /* Green color */
+      margin-left: 8px;
+      transition: opacity 0.2s ease-out;
+      display: inline-block;
+    }
+
+    .copy-feedback.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+
+<body>
+  <h1>Splink Model Labelling Tool</h1>
+
+  <details>
+    <summary>Instructions</summary>
+    <p>Review each record, using the previous and next controls.</p>
+
+    <p>You should primary looking for false positives (record pairs which are not a true match)</p>
+
+    <p>If you find a possible false positive, record it with notes in <a href="https://docs.google.com/spreadsheets/d/1t4dAIuZiHK4xWGSaAtPW5AGPNionrlJCAKL2DCuTHew/edit?gid=0#gid=0">this spreadsheet</a></p>
+
+    <p>Use the 'Copy Record to Clipboard' button to copy the record ID to your clipboard, ready to paste into the spreadsheet.</p>
+
+    <p>You should also use the spreadsheet to record any other interesting findings such as:</p>
+    <ul>
+      <li>Problems with data cleaning</li>
+      <li>Interesting record pairs for discussion</li>
+    </ul>
+  </details>
+  <div class="nav-controls">
+    <button id="prev" class="nav-button">← Previous</button>
+    <span id="counter">Record 1 of 1</span>
+    <button id="next" class="nav-button">Next →</button>
+  </div>
+  <div id="vis"></div>
+  <div id="comparison-table"></div>
+  <details>
+    <summary>Detailed Match Information</summary>
+    <table class="record-table">
+      <tr>
+        <th>Metric</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>Match Probability</td>
+        <td id="match-probability"></td>
+      </tr>
+      <tr>
+        <td>Match Weight</td>
+        <td id="match-weight"></td>
+      </tr>
+      <tr>
+        <td>Comparison Vector Pattern</td>
+        <td id="gamma-concat"></td>
+      </tr>
+      <tr>
+        <td>Number of Record Pairs with this Pattern</td>
+        <td id="count-rows"></td>
+      </tr>
+    </table>
+
+    <h3>Comparison Details</h3>
+    <div id="waterfall-table"></div>
+  </details>
+  <div style="margin-top: 20px;">
+
+    <div>
+        <button id="copy" class="nav-button">Copy Record to Clipboard to paste into Google Sheet</button>
+        <span id="copyFeedback" class="copy-feedback">✓</span>
+        <a href="https://docs.google.com/spreadsheets/d/1t4dAIuZiHK4xWGSaAtPW5AGPNionrlJCAKL2DCuTHew/edit?gid=0#gid=0" style="margin-left: 10px;">Open Google Sheet</a>
+    </div>
+    <textarea id="copy-text" rows="4" style="width: 100%; margin-bottom: 10px; margin-top: 10px;" readonly></textarea>
+  </div>
+
+
+  <script type="application/json" id="record-data">
+    {{ data_to_display | safe }}
+  </script>
+
+  <script type="application/json" id="spec-data">
+    {{ spec_json | safe }}
+  </script>
+
+  <script>
+    const data_to_display = JSON.parse(document.getElementById('record-data').textContent);
+    const spec_json = JSON.parse(document.getElementById('spec-data').textContent);
+
+    const records = data_to_display;
+    const spec = spec_json;
+    let currentIndex = 0;
+
+    function generateDiffHtml(leftVal, rightVal) {
+      // Handle arrays/lists
+      if (Array.isArray(leftVal) || Array.isArray(rightVal)) {
+        // Convert to arrays if they're not already (handle null/undefined cases)
+        const leftArray = Array.isArray(leftVal) ? leftVal : [];
+        const rightArray = Array.isArray(rightVal) ? rightVal : [];
+
+        // If arrays are identical, return empty string
+        if (JSON.stringify(leftArray) === JSON.stringify(rightArray)) {
+          return '';
+        }
+
+        // Find values unique to left (removed) and right (added)
+        const leftOnly = leftArray.filter(x => !rightArray.includes(x));
+        const rightOnly = rightArray.filter(x => !leftArray.includes(x));
+        const common = leftArray.filter(x => rightArray.includes(x));
+
+        let result = '';
+
+        // Add removed values (in red)
+        if (leftOnly.length > 0) {
+          result += `<span class="diff-removed">${leftOnly.join(', ')}</span>`;
+        }
+
+        // Add separator if needed
+        if (leftOnly.length > 0 && (common.length > 0 || rightOnly.length > 0)) {
+          result += ', ';
+        }
+
+        // Add common values (unchanged)
+        if (common.length > 0) {
+          result += `<span class="diff-unchanged">${common.join(', ')}</span>`;
+        }
+
+        // Add separator if needed
+        if (common.length > 0 && rightOnly.length > 0) {
+          result += ', ';
+        }
+
+        // Add new values (in green)
+        if (rightOnly.length > 0) {
+          result += `<span class="diff-added">${rightOnly.join(', ')}</span>`;
+        }
+
+        return result;
+      }
+
+      // Handle strings (existing logic)
+      if (leftVal === rightVal) return String(leftVal);
+
+      leftVal = String(leftVal);
+      rightVal = String(rightVal);
+
+      const dmp = new diff_match_patch();
+      const diffs = dmp.diff_main(leftVal, rightVal);
+      dmp.diff_cleanupSemantic(diffs);
+
+      let result = '';
+      for (const [operation, text] of diffs) {
+        if (operation === 1) { // Insertion
+          result += `<span class="diff-added">${text}</span>`;
+        } else if (operation === -1) { // Deletion
+          result += `<span class="diff-removed">${text}</span>`;
+        } else { // No change
+          result += `<span class="diff-unchanged">${text}</span>`;
+        }
+      }
+
+      return result;
+    }
+
+    function updateView() {
+      const record = records[currentIndex];
+
+      document.getElementById('counter').textContent = `Record ${currentIndex + 1} of ${records.length}`;
+      document.getElementById('prev').disabled = currentIndex === 0;
+      document.getElementById('next').disabled = currentIndex === records.length - 1;
+
+      document.getElementById('match-probability').textContent = record.match_probability.toFixed(8);
+      document.getElementById('match-weight').textContent = record.match_weight.toFixed(4);
+      document.getElementById('gamma-concat').textContent = record.gamma_concat;
+      document.getElementById('count-rows').textContent = record.count_rows_in_comparison_vector_group.toLocaleString();
+
+      const specCopy = structuredClone(spec);
+      specCopy.datasets['data-1'] = record.as_waterfall;
+      vegaEmbed('#vis', specCopy);
+
+      const orderedFields = [
+        'source_system',
+        'id',
+        'cro_single',
+        'pnc_single',
+        'name_1_std',
+        'last_name_std',
+        'date_of_birth',
+        'postcode_arr',
+        'name_2_std',
+      ];
+
+
+
+      // Create a new sorted array based on the preferred order
+      const sortedTableData = [...record.for_table].sort((a, b) => {
+        const aIndex = orderedFields.indexOf(a.field.toLowerCase());
+        const bIndex = orderedFields.indexOf(b.field.toLowerCase());
+
+        // If both fields are in orderedFields, sort by their position
+        if (aIndex !== -1 && bIndex !== -1) {
+          return aIndex - bIndex;
+        }
+        // If only a is in orderedFields, it should come first
+        if (aIndex !== -1) return -1;
+        // If only b is in orderedFields, it should come first
+        if (bIndex !== -1) return 1;
+        // If neither is in orderedFields, maintain original order
+        return 0;
+      });
+
+      const table = `
+        <table class="record-table">
+          <tr>${['', ...sortedTableData.map(d => d.field)].map(h => `<th>${h}</th>`).join('')}</tr>
+          <tr><td>Left Record</td>${sortedTableData.map(d => `<td>${d.left_value}</td>`).join('')}</tr>
+          <tr><td>Right Record</td>${sortedTableData.map(d => `<td>${d.right_value}</td>`).join('')}</tr>
+          <tr class="diff-row"><td></td>${sortedTableData.map(d =>
+        `<td>${d.field.toLowerCase() === 'source_system' || d.field.toLowerCase() === 'id' ?
+          '' :
+          d.left_value === d.right_value ? '' : generateDiffHtml(d.left_value, d.right_value)}</td>`
+      ).join('')}</tr>
+        </table>
+      `;
+      document.getElementById('comparison-table').innerHTML = table;
+
+      const waterfallTable = `
+        <table class="record-table">
+          <tr>
+            <th>Comparison</th>
+            <th>Comparison Vector Value</th>
+            <th>Description</th>
+          </tr>
+          ${record.as_waterfall
+            .filter(w => w.column_name !== 'Prior' && w.column_name !== 'Final score' && !w.term_frequency_adjustment)
+            .map(w => `
+              <tr>
+                <td>${w.label_for_charts}</td>
+                <td>${w.comparison_vector_value}</td>
+
+                <td><code>${w.sql_condition}</code></td>
+
+              </tr>
+            `).join('')}
+          <tr>
+            <td colspan="3"><strong>Final Match Weight</strong></td>
+
+          </tr>
+        </table>
+      `;
+      document.getElementById('waterfall-table').innerHTML = waterfallTable;
+
+      const rawRecord = record.for_table;
+      debugger;
+      const copyText = [
+        record.batch_filename,
+        `${currentIndex + 1}`,
+        rawRecord[0]["left_value"],
+        rawRecord[1]["left_value"],
+        rawRecord[0]["right_value"],
+        rawRecord[1]["right_value"]
+      ].join('\t');
+      document.getElementById('copy-text').value = copyText;
+    }
+
+    function copyCurrentRecord() {
+      const textArea = document.getElementById('copy-text');
+      const feedback = document.getElementById('copyFeedback');
+
+      navigator.clipboard.writeText(textArea.value).then(() => {
+        feedback.classList.add('show');
+        setTimeout(() => {
+          feedback.classList.remove('show');
+        }, 1500); // Fade out after 1.5 seconds
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy to clipboard');
+      });
+    }
+
+    document.getElementById('prev').onclick = () => currentIndex > 0 && (currentIndex--, updateView());
+    document.getElementById('next').onclick = () => currentIndex < records.length - 1 && (currentIndex++, updateView());
+    document.getElementById('copy').onclick = copyCurrentRecord;
+
+    updateView();
+  </script>
+</body>
+
+</html>

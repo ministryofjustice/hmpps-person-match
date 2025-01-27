@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=../schema_data_format_short.json
+
+# test_method_chaining_compound_fns.py::test_postcode_cleaning
+format: "short"
+
+schema:
+  input_column_type: "VARCHAR[]"
+  output_column_type: "VARCHAR[]"
+
+# https://en.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom
+data:
+  - # Test various valid UK postcode formats
+    input_value: [
+        "CR2 6XH", # Format: AA9 9AA
+        "DN55 1PT", # Format: AA99 9AA
+        "M1 1AE", # Format: A9 9AA
+        "B33 8TH", # Format: A99 9AA
+        "W1A 0AX", # Format: A9A 9AA (London)
+        "EC1A 1BB", # Format: AA9A 9AA (London)
+      ]
+    output_value: ["B338TH", "CR26XH", "DN551PT", "EC1A1BB", "M11AE", "W1A0AX"]
+  - # Test invalid formats
+    input_value: [
+        "ABC 123", # Three letters in area
+        "A1A 1A1", # Canadian format
+        "12345", # US ZIP code
+        "W1W ABC", # Invalid inward code
+        "1AA 1AA", # Starts with number
+        "AP@ 1AA", # Contains special character
+        null,
+      ]
+    output_value: NULL
