@@ -1,10 +1,10 @@
-from cpr_splink.data_cleaning.transformation import (
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformation import (
     LIST_FILTER_PROBLEM_CROS,
     LIST_TRANSFORM_REMOVE_ALL_SPACES,
     list_append_from_scalar_column,
     list_filter_out_strings_of_length_lt,
 )
-from tests.utils.table_assertions import check_data
+from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 sql_list_transform_remove_spaces = f"""
 SELECT

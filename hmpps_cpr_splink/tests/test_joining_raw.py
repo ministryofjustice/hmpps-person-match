@@ -1,5 +1,5 @@
-from cpr_splink.data_cleaning.join_raw_tables import join_raw_tables_sql
-from tests.utils.table_assertions import check_data
+from hmpps_cpr_splink.cpr_splink.data_cleaning.join_raw_tables import join_raw_tables_sql
+from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 sql_join_raw_tables = join_raw_tables_sql(
     "person", "pseudonym", "address", "reference", "sentence_info"

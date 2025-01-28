@@ -1,7 +1,7 @@
-from cpr_splink.model_cleaning.tables import (
+from hmpps_cpr_splink.cpr_splink.model_cleaning.tables import (
     clean_whole_joined_table,
 )
-from tests.utils.table_assertions import check_data
+from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 
 def sql_for_test_all_cleaning():

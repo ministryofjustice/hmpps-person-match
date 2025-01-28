@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-source /opt/pysetup/.venv/bin/activate
+source /app/.venv/bin/activate
 
 exec uvicorn \
     --host 0.0.0.0 \

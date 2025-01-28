@@ -6,7 +6,7 @@ from yaml import safe_load
 
 from .create_table import load_frame
 
-_TEST_DATA_DIR = "tests/data/"
+_TEST_DATA_DIR = "hmpps_cpr_splink/tests/data/"
 
 
 def cols_from_rows(rows: list[dict[str, Any]]) -> list[str]:

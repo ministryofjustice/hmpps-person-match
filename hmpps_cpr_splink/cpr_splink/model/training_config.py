@@ -1,6 +1,6 @@
 from splink import DuckDBAPI, Linker, block_on
 
-from cpr_splink.model.settings import settings
+from hmpps_cpr_splink.cpr_splink.model.settings import settings
 
 
 class ModelTraining:

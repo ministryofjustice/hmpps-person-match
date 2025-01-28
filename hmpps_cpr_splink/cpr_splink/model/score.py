@@ -5,12 +5,12 @@ import duckdb
 from splink import DuckDBAPI
 from splink.internals.realtime import compare_records
 
-from cpr_splink.model_cleaning.create_table_sql import create_table_from_records
-from cpr_splink.model_cleaning.tables import (
+from hmpps_cpr_splink.cpr_splink.model_cleaning.create_table_sql import create_table_from_records
+from hmpps_cpr_splink.cpr_splink.model_cleaning.tables import (
     clean_and_explode_distinct_postcode_arr,
     clean_whole_joined_table,
 )
-from cpr_splink.schemas.joined import DUCKDB_COLUMNS_WITH_TYPES, JoinedRecord
+from hmpps_cpr_splink.cpr_splink.schemas.joined import DUCKDB_COLUMNS_WITH_TYPES, JoinedRecord
 
 from .model import MODEL_PATH
 

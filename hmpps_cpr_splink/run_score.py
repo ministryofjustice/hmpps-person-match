@@ -3,8 +3,8 @@ from datetime import datetime
 from splink import SettingsCreator
 from splink.internals.charts import waterfall_chart
 
-from cpr_splink.model import score
-from cpr_splink.schemas.joined import JoinedRecord
+from hmpps_cpr_splink.cpr_splink.model import score
+from hmpps_cpr_splink.cpr_splink.schemas.joined import JoinedRecord
 
 # TODO: probably worth maintaining some dummy data more centrally
 # we can then access for test-scripts like this (and ultimatelt actual tests)

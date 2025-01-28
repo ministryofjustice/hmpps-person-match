@@ -17,11 +17,11 @@ In the event that changes are needed  to it either to improve performance or to 
 ## Pre-Requisites
 
 * Python 3.12+
-* [Poetry](https://python-poetry.org/docs/)
+* [uv](https://docs.astral.sh/uv/)
+
 
 ```shell
-export POETRY_VERSION=1.8.2
-curl -sSL https://install.python-poetry.org | python -
+curl -LsSf https://astral.sh/uv/0.5.24/install.sh | sh
 ```
 
 ## Quickstart
