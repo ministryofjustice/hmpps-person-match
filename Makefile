@@ -7,7 +7,7 @@ lint:
 	uv run ruff check hmpps_person_match/ integration/
 	
 lint-fix:
-	uv run ruff check . --fix
+	uv run ruff check hmpps_person_match/ integration/ --fix
 
 format:
 	uv run ruff format 
