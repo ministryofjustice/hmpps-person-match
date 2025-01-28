@@ -108,6 +108,21 @@ jobs:
       push: ${{ github.ref == 'refs/heads/main' }}
       docker_multiplatform: false
 
+  database_report:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    name: Generate Database Schema Report
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start Required Services
+        run: make start-containers
+    
+      - uses: ministryofjustice/hmpps-github-actions/.github/actions/database_schema_report@v2.1.9 # WORKFLOW_VERSION
+        with:
+          schema: personmatch
+
   deploy_dev:
     name: Deploy to the development environment
     if: github.ref == 'refs/heads/main'
