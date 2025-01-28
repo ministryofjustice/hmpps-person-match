@@ -119,9 +119,8 @@ jobs:
       - name: Start Required Services
         run: make start-containers
     
-      - uses: ministryofjustice/hmpps-github-actions/.github/actions/database-schema-report@feat/CPR-544-add-database-schema-report-to-gh-actions # WORKFLOW_VERSION
+      - uses: ministryofjustice/hmpps-github-actions/.github/actions/database_schema_report@v2.1.9 # WORKFLOW_VERSION
         with:
-          host: postgres-hmpps-person-match
           schema: personmatch
 
   deploy_dev:
