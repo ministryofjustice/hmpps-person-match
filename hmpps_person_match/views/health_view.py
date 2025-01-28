@@ -7,7 +7,8 @@ from sqlalchemy.exc import OperationalError
 from sqlmodel import Session, select
 
 from hmpps_person_match.db import get_db_session
-from hmpps_person_match.dependencies.logging import get_logger
+from hmpps_person_match.dependencies.logging.log import get_logger
+from hmpps_person_match.models.health import Health, Status
 
 ROUTE = "/health"
 
@@ -15,7 +16,10 @@ router = APIRouter()
 
 
 @router.get(ROUTE)
-def get_health(session: Annotated[Session, Depends(get_db_session)], logger: Annotated[Logger, Depends(get_logger)]):
+def get_health(
+    session: Annotated[Session, Depends(get_db_session)],
+    logger: Annotated[Logger, Depends(get_logger)],
+) -> Health:
     """
     GET request handler
     """
@@ -23,15 +27,11 @@ def get_health(session: Annotated[Session, Depends(get_db_session)], logger: Ann
         session.exec(select(1))
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={
-                "status": "UP",
-            },
+            content=Health(status=Status.UP).model_dump(),
         )
     except OperationalError as e:
         logger.error("Error executing health check query: %s", e)
         return JSONResponse(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            content={
-                "status": "DOWN",
-            },
+            content=Health(status=Status.DOWN).model_dump(),
         )

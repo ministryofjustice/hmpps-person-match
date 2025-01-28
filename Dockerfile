@@ -6,6 +6,8 @@ ARG BUILD_NUMBER
 ARG GIT_REF
 ARG GIT_BRANCH
 
+ENV TZ=Europe/London
+
 ENV APP_BUILD_NUMBER=${BUILD_NUMBER} \
     APP_GIT_REF=${GIT_REF} \
     APP_GIT_BRANCH=${GIT_BRANCH}
@@ -24,59 +26,44 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    \
-    # poetry
-    # https://python-poetry.org/docs/configuration/#using-environment-variables
-    POETRY_VERSION=1.8.3 \
-    # make poetry install to this location
-    POETRY_HOME="/opt/poetry" \
-    # make poetry create the virtual environment in the project's root
-    # it gets named `.venv`
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    # do not ask any interactive question
-    POETRY_NO_INTERACTION=1 \
-    \
-    # paths
-    # this is where our requirements + virtual environment will live
-    PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="/opt/pysetup/.venv"
-
-# prepend poetry and venv to path
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+    # uv args
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
 
 ##############
 # BUILD stage
 ##############
 FROM base AS build
+COPY --from=ghcr.io/astral-sh/uv:0.5.24 /uv /bin/uv
+
 RUN apt-get install --no-install-recommends -y \
-        # deps for installing poetry
+        # deps for installing uv
         curl \
         # deps for building python deps
         build-essential
 
-# install poetry - respects $POETRY_VERSION & $POETRY_HOME
-# poetry suggested install, rather than using pip
-RUN curl -sSL https://install.python-poetry.org | python -
+WORKDIR /app
 
-# copy project requirement files here to ensure they will be cached.
-WORKDIR $PYSETUP_PATH
-COPY poetry.lock pyproject.toml ./
+COPY uv.lock pyproject.toml ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-dev
 
-# install Python dependencies in virtual environment
-RUN poetry install --no-dev
+COPY ./hmpps_person_match /app/hmpps_person_match/
+COPY ./hmpps_cpr_splink /app/hmpps_cpr_splink/
+COPY docker-entrypoint.sh asgi.py alembic.ini /app/
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
 ##############
 # FINAL stage
 ##############
 FROM base AS final
+COPY --from=build /app /app
 
-# copy the built virtual environment and entry point
-COPY --from=build $PYSETUP_PATH $PYSETUP_PATH
+ENV PATH="/app/.venv/bin:$PATH"
 
-COPY ./hmpps_person_match /app/hmpps_person_match/
-COPY docker-entrypoint.sh asgi.py alembic.ini /app/
-
-WORKDIR /app/
+WORKDIR /app
 
 # create app user
 RUN groupadd -g 1001 appuser && \
@@ -86,6 +73,7 @@ RUN mkdir /home/appuser/.postgresql
 ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
 
 RUN chown appuser:appuser /app/
+
 USER 1001
 
 EXPOSE 5000

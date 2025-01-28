@@ -1,0 +1,3 @@
+fk_person_id: "INTEGER"
+identifier_type: "VARCHAR"
+identifier_value: "VARCHAR"

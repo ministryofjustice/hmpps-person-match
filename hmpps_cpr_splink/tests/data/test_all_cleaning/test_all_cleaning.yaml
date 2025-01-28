@@ -1,0 +1,55 @@
+schema:
+  candidate_search_return_format: "schema_candidate_search_return_format.yaml"
+  splink_model_format: "schema_splink_model_format.yaml"
+  postcode_lookup_temp: "schema_postcode_lookup.yaml"
+
+data:
+  - postcode_lookup_temp:
+      - value: "AB12CD"
+        rel_freq: 0.0001
+      - value: "XY19YZ"
+        rel_freq: 0.00005
+
+    candidate_search_return_format:
+      - id: 1200000
+        source_system: "NOMIS"
+        first_name: "john    james"
+        middle_names: "JR"
+        last_name: "o'connor"
+        crn: NULL
+        prison_number: "A1111AA"
+        date_of_birth: "1955-05-05"
+        sex: NULL
+        ethnicity: "W"
+        first_name_alias_arr: ["JONNY"]
+        last_name_alias_arr: ["SMYTH", "SMYTH"]
+        date_of_birth_alias_arr: ["1955-03-28", "1955-03-28"]
+        postcode_arr: ["AB1 2CD", "XY1 9YZ", "1AB 2YX", "NF1 1NF"]
+        cro_arr: ["123456/99X"]
+        pnc_arr: NULL
+        sentence_date_arr: ["2000-11-11", "2001-12-17"]
+    splink_model_format:
+      - id: 1200000
+        source_system: "NOMIS"
+        name_1_std: "JOHN"
+        name_2_std: "JAMES"
+        name_3_std: "JR"
+        last_name_std: "OCONNOR"
+        first_and_last_name_std: "JOHN OCONNOR"
+        forename_std_arr: ["JOHN", "JONNY"]
+        last_name_std_arr: ["OCONNOR", "SMYTH"]
+        date_of_birth: "1955-05-05"
+        date_of_birth_arr: ["1955-03-28", "1955-05-05"]
+        sentence_date_single: "2001-12-17"
+        sentence_date_arr: ["2000-11-11", "2001-12-17"]
+        postcode_arr: ["AB12CD", "XY19YZ"]
+        postcode_outcode_arr: ["AB1", "XY1"]
+        cro_single: "123456/99X"
+        pnc_single: NULL
+        crn: NULL
+        prison_number: "A1111AA"
+        postcode_arr_with_freq:
+          [
+            { "value": "AB12CD", "rel_freq": 0.0001 },
+            { "value": "XY19YZ", "rel_freq": 0.00005 },
+          ]

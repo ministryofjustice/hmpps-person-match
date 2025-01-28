@@ -1,0 +1,89 @@
+# yaml-language-server: $schema=../schema_data_format_full.json
+
+schema:
+  input_table:
+    first_name: "VARCHAR"
+    middle_names: "VARCHAR"
+    last_name: "VARCHAR"
+    first_name_alias_arr: "VARCHAR[]"
+    last_name_alias_arr: "VARCHAR[]"
+  cleaned_2:
+    name_1_std: "VARCHAR"
+    name_2_std: "VARCHAR"
+    name_3_std: "VARCHAR"
+    last_name_std: "VARCHAR"
+    first_and_last_name_std: "VARCHAR"
+    forename_std_arr: "VARCHAR[]"
+    last_name_std_arr: "VARCHAR[]"
+
+data:
+  - input_table:
+      - first_name: "John"
+        middle_names: "Robert James"
+        last_name: "Smith"
+        first_name_alias_arr: ["Johnny", "Bennie"]
+        last_name_alias_arr: ["Smyth"]
+    cleaned_2:
+      - name_1_std: "JOHN"
+        name_2_std: "ROBERT"
+        name_3_std: "JAMES"
+        last_name_std: "SMITH"
+        first_and_last_name_std: "JOHN SMITH"
+        forename_std_arr: ["BENNIE", "JOHN", "JOHNNY"]
+        last_name_std_arr: ["SMITH", "SMYTH"]
+  - input_table:
+      - first_name: "Mary-Jane"
+        middle_names: NULL
+        last_name: "O'Connor"
+        first_name_alias_arr: NULL
+        last_name_alias_arr: NULL
+    cleaned_2:
+      - name_1_std: "MARY"
+        name_2_std: "JANE"
+        name_3_std: NULL
+        last_name_std: "OCONNOR"
+        first_and_last_name_std: "MARY OCONNOR"
+        forename_std_arr: ["MARY"]
+        last_name_std_arr: ["OCONNOR"]
+  - input_table:
+      - first_name: "MIG_ERROR_Tom"
+        middle_names: "NO_SHOW_William"
+        last_name: "DUPLICATE_Brown"
+        first_name_alias_arr: ["Tommy"]
+        last_name_alias_arr: ["Browne"]
+    cleaned_2:
+      - name_1_std: "TOM"
+        name_2_std: "WILLIAM"
+        name_3_std: NULL
+        last_name_std: "BROWN"
+        first_and_last_name_std: "TOM BROWN"
+        forename_std_arr: ["TOM", "TOMMY"]
+        last_name_std_arr: ["BROWN", "BROWNE"]
+  - input_table:
+      - first_name: ""
+        middle_names: ""
+        last_name: ""
+        first_name_alias_arr: [""]
+        last_name_alias_arr: [""]
+    cleaned_2:
+      - name_1_std: NULL
+        name_2_std: NULL
+        name_3_std: NULL
+        last_name_std: NULL
+        first_and_last_name_std: NULL
+        forename_std_arr: NULL
+        last_name_std_arr: NULL
+  - input_table:
+      - first_name: "a"
+        middle_names: ""
+        last_name: "Smith"
+        first_name_alias_arr: []
+        last_name_alias_arr: []
+    cleaned_2:
+      - name_1_std: NULL
+        name_2_std: NULL
+        name_3_std: NULL
+        last_name_std: "SMITH"
+        first_and_last_name_std: "SMITH"
+        forename_std_arr: NULL
+        last_name_std_arr: ["SMITH"]

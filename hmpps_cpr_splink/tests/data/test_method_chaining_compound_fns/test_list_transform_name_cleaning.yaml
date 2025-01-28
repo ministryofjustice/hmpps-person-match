@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../schema_data_format_short.json
+
+# test_method_chaining_compound_fns.py::test_list_transform_name_cleaning
+format: "short"
+
+schema:
+  input_column_type: "VARCHAR[]"
+  output_column_type: "VARCHAR[]"
+
+data:
+  - input_value: ["JOHN", "MARY-ANN-MAY", "O'CONNOR"]
+    output_value: ["JOHN", "MARY ANN MAY", "OCONNOR"]
+  - input_value: ["MIG_ERROR_JANE ALICE", "NO_SHOW_SMITH", "DUPLICATE_DOE"]
+    output_value: ["JANE ALICE", "SMITH", "DOE"]
+  - input_value: ["ALICE", "BOB", null, "CHARLIE"]
+    output_value: ["ALICE", "BOB", null, "CHARLIE"]
+  - input_value: []
+    output_value: []
+  - input_value: null
+    output_value: null

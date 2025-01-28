@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=../schema_data_format_short.json
+
+# test_method_chaining_compound_fns.py::test_list_filter_problem_cros
+format: "short"
+
+schema:
+  input_column_type: "VARCHAR[]"
+  output_column_type: "VARCHAR[]"
+
+data:
+  - input_value: ["123456/99A", "000000/00Z", "999999/99Z"]
+    output_value: ["123456/99A", "999999/99Z"]
+  - input_value: []
+    output_value: []
+  - input_value: null
+    output_value: null

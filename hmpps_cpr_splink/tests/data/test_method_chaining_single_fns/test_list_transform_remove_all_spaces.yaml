@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../schema_data_format_short.json
+
+# test_method_chaining_basic.py::test_list_transform_remove_all_spaces
+format: "short"
+
+schema:
+  input_column_type: "VARCHAR[]"
+  output_column_type: "VARCHAR[]"
+
+data:
+  - input_value: ["     a ", "b ", " c"]
+    output_value: ["a", "b", "c"]
+  - input_value: [" a "]
+    output_value: ["a"]
+  - input_value: null
+    output_value: null
+  - input_value: ["spaces in interior", "more like that", " and a mix "]
+    output_value: ["spacesininterior", "morelikethat", "andamix"]
+  - input_value: ["array with a null ", null]
+    output_value: ["arraywithanull", null]
