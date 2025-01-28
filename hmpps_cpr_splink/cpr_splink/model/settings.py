@@ -5,10 +5,10 @@ from .blocking_rules import (
 )
 from .comparisons import (
     date_of_birth_comparison,
+    ids_comparison,
     name_2_comparison,
     name_comparison,
     postcode_comparison,
-    ids_comparison,
     sentence_date_comparison,
 )
 
