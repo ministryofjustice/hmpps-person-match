@@ -53,14 +53,9 @@ REGEX_REPLACE_ALL_SPACES = ChainableTransformation(
     "REGEXP_REPLACE('\\s', '', 'g')",
     # "Remove all spaces"
 )
-REGEX_REPLACE_ALL_NEWLINES = ChainableTransformation(
-    r"REGEXP_REPLACE('\n', ' ', 'g')",
-    # "Replace all newlines with spaces"
-)
 
-REGEX_REPLACE_ALL_NON_DIGITS = ChainableTransformation(
-    "REGEXP_REPLACE('[^0-9]', '', 'g')",
-    # "Remove all non-digit characters",
+REGEX_FIX_MC_WITH_SPACES = ChainableTransformation(
+    "REGEXP_REPLACE('\\bMC\\s+', 'MC', 'g')",
 )
 
 
@@ -154,7 +149,9 @@ LIST_APPEND_DOB_FROM_SCALAR_COLUMN = list_append_from_scalar_column("date_of_bir
 
 
 LIST_FILTER_PROBLEM_CROS = list_filter_remove_specific_str_values("000000/00Z")
-LIST_FILTER_PROBLEM_POSTCODES = list_filter_remove_specific_str_values("NF11NF")
+LIST_FILTER_PROBLEM_POSTCODES = list_filter_remove_specific_str_values(
+    "NF11NF", "NF11FA"
+)
 
 LIST_FILTER_EXCLUDE_1ST_JAN_DATES = ChainableTransformation(
     "LIST_FILTER(x -> CAST(x AS VARCHAR).SUBSTR(6, 5) != '01-01')"
@@ -182,6 +179,7 @@ LIST_DISTINCT = ChainableTransformation("LIST_DISTINCT()")
 NAME_CLEANING = ChainableTransformation(f"""
 {CLEAN_NAMES_BY_REPLACEMENT}
 .{CLEAN_NAME_PUNCTUATION}
+.{REGEX_FIX_MC_WITH_SPACES}
 """)
 
 LIST_TRANSFORM_NAME_CLEANING = ChainableTransformation(

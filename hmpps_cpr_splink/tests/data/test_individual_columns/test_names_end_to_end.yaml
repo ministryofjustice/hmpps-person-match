@@ -87,3 +87,17 @@ data:
         first_and_last_name_std: "SMITH"
         forename_std_arr: NULL
         last_name_std_arr: ["SMITH"]
+  - input_table:
+      - first_name: "NAMAMC"
+        middle_names: "JONES Mc Kenzie"
+        last_name: "MC DUFF-MCDONALD"
+        first_name_alias_arr: ["JAMES"]
+        last_name_alias_arr: ["MC CARTHY"]
+    cleaned_2:
+      - name_1_std: "NAMAMC"
+        name_2_std: "JONES"
+        name_3_std: "MCKENZIE"
+        last_name_std: "MCDONALD"
+        first_and_last_name_std: "NAMAMC MCDONALD"
+        forename_std_arr: ["JAMES", "NAMAMC"]
+        last_name_std_arr: ["MCCARTHY", "MCDONALD"]
