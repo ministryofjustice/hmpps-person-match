@@ -49,6 +49,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
 COPY ./hmpps_person_match /app/hmpps_person_match/
+COPY ./hmpps_cpr_splink /app/hmpps_cpr_splink/
 COPY docker-entrypoint.sh asgi.py alembic.ini /app/
 
 RUN --mount=type=cache,target=/root/.cache/uv \
