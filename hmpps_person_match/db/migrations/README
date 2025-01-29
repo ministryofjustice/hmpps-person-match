@@ -8,7 +8,7 @@ These migration scripts are found in `hmpps_persom_match/db/migrations/versions`
 Whenever you update a model you need to create a migration to instruct the database what changes need to be made to the schema.
 This can be auto generated for you by running the following:
 ```bash
-uv run alembic revision --autogenerate -m "[RevisionName]"
+uv run alembic revision -m "[RevisionName]"
 ```
 This will create a migration script in app/db/migrations/versions with a hex revision tag.
 
