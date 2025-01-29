@@ -59,8 +59,6 @@ columns_basic = [
     TransformedColumn("first_name", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("middle_names", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("last_name", [UPPER, NAME_CLEANING], "VARCHAR"),
-    TransformedColumn("crn", [UPPER], "VARCHAR"),
-    TransformedColumn("prison_number", [UPPER], "VARCHAR"),
     # TransformedColumn("defendant_id", [UPPER], "VARCHAR"),
     # TransformedColumn("master_defendant_id", [UPPER], "VARCHAR"),
     TransformedColumn(
@@ -148,8 +146,6 @@ columns_reshaping = [
     TransformedColumn("source_system"),
     TransformedColumn("sentence_date_arr"),
     TransformedColumn("postcode_arr"),
-    TransformedColumn("crn"),
-    TransformedColumn("prison_number"),
     TransformedColumn(
         CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
         [
@@ -261,8 +257,6 @@ columns_simple_select = [
     # identifiers
     TransformedColumn("cro_single"),
     TransformedColumn("pnc_single"),
-    TransformedColumn("crn"),
-    TransformedColumn("prison_number"),
     # origin
     # TransformedColumn("birth_place"),
     # TransformedColumn("birth_country"),
