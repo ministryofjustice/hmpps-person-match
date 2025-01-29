@@ -106,7 +106,7 @@ def candidate_search(primary_record_id: str) -> str:
     pipeline = CTEPipeline()
 
     # TODO: table name from?
-    cleaned_table_name = "cleaned_persons"
+    cleaned_table_name = "person"
 
     table_name_primary = "primary_record"
     sql = (
@@ -116,7 +116,7 @@ def candidate_search(primary_record_id: str) -> str:
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     # need source dataset to be later alphabetically to get the right condition
-    table_name_potential_candidates = "cleaned_persons_ws"
+    table_name_potential_candidates = "person_ws"
     sql = f"SELECT *, 'z_candidates' AS source_dataset FROM {cleaned_table_name}"
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_potential_candidates)
 

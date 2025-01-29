@@ -20,25 +20,25 @@ CREATE TABLE df_cleaned_with_arr_freq AS (
       sexual_orientation.UPPER() AS sexual_orientation,
       ethnicity.UPPER() AS ethnicity,
       version AS version,
-      first_name_alias_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
+      first_name_aliases.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
         x -> x.REPLACE('MIG_ERROR_', '').REPLACE('NO_SHOW_', '').REPLACE('DUPLICATE_', '').REPLACE('-', ' ').REPLACE('''', '')
       ) AS first_name_alias_arr,
-      last_name_alias_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
+      last_name_aliases.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
         x -> x.REPLACE('MIG_ERROR_', '').REPLACE('NO_SHOW_', '').REPLACE('DUPLICATE_', '').REPLACE('-', ' ').REPLACE('''', '')
       ) AS last_name_alias_arr,
-      date_of_birth_alias_arr AS date_of_birth_arr,
+      date_of_birth_aliases AS date_of_birth_arr,
       mobile_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('\n', ' ', 'g')).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('[^0-9]', '', 'g')).LIST_TRANSFORM(x -> x.SUBSTR(-10)) AS mobile_arr,
       email_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.TRIM().NULLIF('')).LIST_FILTER(
         x -> x.REGEXP_MATCHES(
           '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         )
       ).NULLIF(ARRAY []) AS email_arr,
-      postcode_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('\s', '', 'g')).LIST_FILTER(x -> x not in ('NF11NF')).LIST_SORT() AS postcode_arr,
-      cro_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_FILTER(x -> x not in ('000000/00Z')).LIST_SORT() AS cro_arr,
+      postcodes.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('\s', '', 'g')).LIST_FILTER(x -> x not in ('NF11NF')).LIST_SORT() AS postcode_arr,
+      cros.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_FILTER(x -> x not in ('000000/00Z')).LIST_SORT() AS cro_arr,
       driver_license_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS driver_license_number_arr,
       national_insurance_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS national_insurance_number_arr,
-      pnc_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_SORT() AS pnc_arr,
-      sentence_date_arr.LIST_FILTER(x -> x not in ('1970-01-01', '1990-01-01')) AS sentence_date_arr
+      pncs.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_SORT() AS pnc_arr,
+      sentence_dates.LIST_FILTER(x -> x not in ('1970-01-01', '1990-01-01')) AS sentence_date_arr
     FROM
       df_raw
   ),
