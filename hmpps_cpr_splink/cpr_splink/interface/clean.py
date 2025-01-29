@@ -3,7 +3,7 @@ import duckdb
 from hmpps_person_match.models.person import Person
 
 from ..model_cleaning import create_table_from_records, simple_clean_whole_joined_table
-from ..schemas import DUCKDB_COLUMNS_WITH_TYPES, JoinedRecord
+from ..schemas import DUCKDB_COLUMNS_WITH_TYPES
 from .db import insert_duckdb_table_into_postgres_table
 
 
