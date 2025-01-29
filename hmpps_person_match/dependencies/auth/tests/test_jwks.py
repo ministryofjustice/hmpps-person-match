@@ -68,7 +68,7 @@ class TestJwks:
                 {"status_code": status_code, "headers": {"Content-Type": "application/json"}},
                 {"status_code": 200, "headers": {"Content-Type": "application/json"}, "json": jwks},
             ]
-            mock_requests = mock.get(f"{os.environ.get("OAUTH_BASE_URL")}/auth/.well-known/jwks.json", response_list)
+            mock_requests = mock.get(f"{os.environ.get('OAUTH_BASE_URL')}/auth/.well-known/jwks.json", response_list)
 
             jwk = await JWKS().get_public_key_from_jwt(token)
             assert jwk is not None
@@ -87,7 +87,7 @@ class TestJwks:
                 {"exc": exception},
                 {"status_code": 200, "headers": {"Content-Type": "application/json"}, "json": jwks},
             ]
-            mock_requests = mock.get(f"{os.environ.get("OAUTH_BASE_URL")}/auth/.well-known/jwks.json", response_list)
+            mock_requests = mock.get(f"{os.environ.get('OAUTH_BASE_URL')}/auth/.well-known/jwks.json", response_list)
 
             jwk = await JWKS().get_public_key_from_jwt(token)
             assert jwk is not None
