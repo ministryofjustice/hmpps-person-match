@@ -88,8 +88,8 @@ data:
         forename_std_arr: NULL
         last_name_std_arr: ["SMITH"]
   - input_table:
-      - first_name: "NAMAMC"
-        middle_names: "JONES Mc Kenzie"
+      - first_name: "NOT ENTERED NAMAMC"
+        middle_names: "JONES NOT\n  ENTERED   Mc Kenzie"
         last_name: "MC DUFF-MCDONALD"
         first_name_aliases: ["JAMES"]
         last_name_aliases: ["MC CARTHY"]

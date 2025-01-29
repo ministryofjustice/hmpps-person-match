@@ -59,6 +59,10 @@ REGEX_FIX_MC_WITH_SPACES = ChainableTransformation(
 )
 
 
+REGEX_REPLACE_NOT_ENTERED = ChainableTransformation(
+    r"REGEXP_REPLACE('NOT\s+ENTERED', '', 'g')",
+)
+
 # https://stackoverflow.com/a/51885364/1779128
 REGEXP_MATCHES_POSTCODE = ChainableTransformation(
     r"REGEXP_MATCHES('^([A-Z][A-HJ-Y]?\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$')"
@@ -180,6 +184,7 @@ NAME_CLEANING = ChainableTransformation(f"""
 {CLEAN_NAMES_BY_REPLACEMENT}
 .{CLEAN_NAME_PUNCTUATION}
 .{REGEX_FIX_MC_WITH_SPACES}
+.{REGEX_REPLACE_NOT_ENTERED}
 """)
 
 LIST_TRANSFORM_NAME_CLEANING = ChainableTransformation(
