@@ -31,7 +31,7 @@ target_metadata = None
 # ... etc.
 
 
-async def run_migrations_offline() -> None:
+def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
     This configures the context with just a URL
@@ -51,8 +51,8 @@ async def run_migrations_offline() -> None:
         dialect_opts={"paramstyle": "named"},
     )
 
-    async with context.begin_transaction():
-        await context.run_migrations()
+    with context.begin_transaction():
+        context.run_migrations()
 
 
 
@@ -84,7 +84,12 @@ def run_migrations_online():
     """
     Run migrations in 'online' mode.
     """
-    asyncio.run(run_async_migrations())
+    connectable = config.attributes.get("connection", None)
+
+    if connectable is None:
+        asyncio.run(run_async_migrations())
+    else:
+        do_run_migrations(connectable)
 
 
 if context.is_offline_mode():
