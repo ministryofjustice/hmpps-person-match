@@ -21,9 +21,9 @@ def join_raw_tables_sql(
     pseudonym_agg AS (
         SELECT
             fk_person_id,
-            array_agg(first_name) as first_name_alias_arr,
-            array_agg(last_name) as last_name_alias_arr,
-            array_agg(date_of_birth) as date_of_birth_alias_arr
+            array_agg(first_name) as first_name_aliases,
+            array_agg(last_name) as last_name_aliases,
+            array_agg(date_of_birth) as date_of_birth_aliases
         FROM {pseudonym_in}
         group by fk_person_id
     ),
@@ -31,22 +31,22 @@ def join_raw_tables_sql(
     address_agg AS (
         SELECT
             fk_person_id,
-            array_agg(postcode) as postcode_arr
+            array_agg(postcode) as postcodes
         FROM {address_in}
         group by fk_person_id
     ),
     reference_agg AS (
         SELECT
             fk_person_id,
-            array_agg(identifier_value) FILTER (WHERE identifier_type = 'CRO') as cro_arr,
-            array_agg(identifier_value) FILTER (WHERE identifier_type = 'PNC') as pnc_arr
+            array_agg(identifier_value) FILTER (WHERE identifier_type = 'CRO') as cros,
+            array_agg(identifier_value) FILTER (WHERE identifier_type = 'PNC') as pncs
         FROM {reference_in}
         group by fk_person_id
     ),
     sentence_info_agg    AS (
         SELECT
             fk_person_id,
-            array_agg(sentence_date) as sentence_date_arr
+            array_agg(sentence_date) as sentence_dates
         FROM {sentence_info_in}
         group by fk_person_id
     )
@@ -61,13 +61,13 @@ def join_raw_tables_sql(
     p.date_of_birth,
     p.sex,
     p.ethnicity,
-    a.first_name_alias_arr,
-    a.last_name_alias_arr,
-    a.date_of_birth_alias_arr,
-    addr.postcode_arr,
-    r.cro_arr,
-    r.pnc_arr,
-    s.sentence_date_arr
+    a.first_name_aliases,
+    a.last_name_aliases,
+    a.date_of_birth_aliases,
+    addr.postcodes,
+    r.cros,
+    r.pncs,
+    s.sentence_dates
     FROM
         person_out p
     LEFT JOIN

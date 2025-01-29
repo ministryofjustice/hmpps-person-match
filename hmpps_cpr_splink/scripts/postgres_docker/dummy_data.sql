@@ -1,5 +1,5 @@
 -- create some dummy data
-CREATE TABLE cleaned_persons (
+CREATE TABLE person (
     id INT PRIMARY KEY,
 
     name_1_std TEXT,
@@ -32,7 +32,7 @@ CREATE TABLE cleaned_persons (
 -- not been explicitly run through cleaning
 -- so may not be conistent
 INSERT INTO
-    cleaned_persons (
+    person (
         id,
 
         name_1_std,
