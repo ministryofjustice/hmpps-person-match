@@ -34,7 +34,7 @@ CREATE TABLE df_cleaned_with_arr_freq AS (
         )
       ).NULLIF(ARRAY []) AS email_arr,
       postcodes.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('\s', '', 'g')).LIST_FILTER(x -> x not in ('NF11NF')).LIST_SORT() AS postcode_arr,
-      cro_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_FILTER(x -> x not in ('000000/00Z')).LIST_SORT() AS cro_arr,
+      cros.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_FILTER(x -> x not in ('000000/00Z')).LIST_SORT() AS cro_arr,
       driver_license_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS driver_license_number_arr,
       national_insurance_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS national_insurance_number_arr,
       pnc_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_SORT() AS pnc_arr,

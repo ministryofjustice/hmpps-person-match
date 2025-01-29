@@ -115,9 +115,10 @@ columns_basic = [
     # ),
     POSTCODE_BASIC,
     TransformedColumn(
-        "cro_arr",
+        "cros",
         [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_FILTER_PROBLEM_CROS, LIST_SORT],
         "VARCHAR[]",
+        alias="cro_arr",
     ),
     # TransformedColumn("driver_license_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"), # noqa: E501
     # TransformedColumn(
