@@ -11,7 +11,7 @@ CREATE TABLE person (
     sex TEXT,
     ethnicity TEXT,
     first_name_alias_arr TEXT [],
-    last_name_alias_arr TEXT []
+    last_name_aliases TEXT []
 );
 
 CREATE TABLE pseudonym (
@@ -59,7 +59,7 @@ INSERT INTO
         sex,
         ethnicity,
         first_name_alias_arr,
-        last_name_alias_arr
+        last_name_aliases
     )
 VALUES
     (

@@ -42,7 +42,7 @@ NAME_COLUMNS = [
     "middle_names",
     "last_name",
     "first_name_alias_arr",
-    "last_name_alias_arr",
+    "last_name_aliases",
     "name_1_std",
     "name_2_std",
     "name_3_std",

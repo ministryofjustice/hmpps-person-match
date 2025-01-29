@@ -23,7 +23,7 @@ CREATE TABLE df_cleaned_with_arr_freq AS (
       first_name_alias_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
         x -> x.REPLACE('MIG_ERROR_', '').REPLACE('NO_SHOW_', '').REPLACE('DUPLICATE_', '').REPLACE('-', ' ').REPLACE('''', '')
       ) AS first_name_alias_arr,
-      last_name_alias_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
+      last_name_aliases.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
         x -> x.REPLACE('MIG_ERROR_', '').REPLACE('NO_SHOW_', '').REPLACE('DUPLICATE_', '').REPLACE('-', ' ').REPLACE('''', '')
       ) AS last_name_alias_arr,
       date_of_birth_alias_arr AS date_of_birth_arr,

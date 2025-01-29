@@ -19,7 +19,7 @@ class JoinedRecord(TypedDict):
     last_name: str | None
     date_of_birth: date | None
     first_name_alias_arr: list[str] | None
-    last_name_alias_arr: list[str] | None
+    last_name_aliases: list[str] | None
     date_of_birth_alias_arr: list[date] | None
     postcode_arr: list[str] | None
     cro_arr: list[str] | None

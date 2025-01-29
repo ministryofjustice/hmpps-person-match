@@ -80,9 +80,10 @@ columns_basic = [
         "VARCHAR[]",
     ),
     TransformedColumn(
-        "last_name_alias_arr",
+        "last_name_aliases",
         [LIST_TRANSFORM_UPPER, LIST_TRANSFORM_NAME_CLEANING],
         "VARCHAR[]",
+        alias="last_name_alias_arr",
     ),
     TransformedColumn(
         "date_of_birth_alias_arr",

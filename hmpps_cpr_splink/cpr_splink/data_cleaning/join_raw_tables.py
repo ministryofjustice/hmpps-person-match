@@ -22,7 +22,7 @@ def join_raw_tables_sql(
         SELECT
             fk_person_id,
             array_agg(first_name) as first_name_alias_arr,
-            array_agg(last_name) as last_name_alias_arr,
+            array_agg(last_name) as last_name_aliases,
             array_agg(date_of_birth) as date_of_birth_alias_arr
         FROM {pseudonym_in}
         group by fk_person_id
@@ -62,7 +62,7 @@ def join_raw_tables_sql(
     p.sex,
     p.ethnicity,
     a.first_name_alias_arr,
-    a.last_name_alias_arr,
+    a.last_name_aliases,
     a.date_of_birth_alias_arr,
     addr.postcode_arr,
     r.cro_arr,
