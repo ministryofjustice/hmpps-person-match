@@ -468,11 +468,7 @@ dependencies = [
     { name = "duckdb" },
     { name = "fastapi" },
     { name = "psycopg", extra = ["binary"] },
-<<<<<<< Updated upstream
-    { name = "psycopg2-binary" },
     { name = "pyarrow" },
-=======
->>>>>>> Stashed changes
     { name = "pyjwt" },
     { name = "pytz" },
     { name = "requests-mock" },
@@ -504,11 +500,7 @@ requires-dist = [
     { name = "duckdb", specifier = ">=1.1.1" },
     { name = "fastapi", specifier = ">=0.115.7" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.4" },
-<<<<<<< Updated upstream
-    { name = "psycopg2-binary", specifier = ">=2.9.10" },
     { name = "pyarrow", specifier = ">=19.0.0" },
-=======
->>>>>>> Stashed changes
     { name = "pyjwt", specifier = ">=2.10.1" },
     { name = "pytz", specifier = ">=2024.2" },
     { name = "requests-mock", specifier = ">=1.12.1" },
