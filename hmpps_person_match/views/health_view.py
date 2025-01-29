@@ -3,8 +3,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy import Connection, select
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.dependencies.logging.log import get_logger
@@ -17,7 +18,7 @@ router = APIRouter()
 
 @router.get(ROUTE)
 async def get_health(
-    connection: Annotated[Connection, Depends(get_db_connection)],
+    connection: Annotated[AsyncConnection, Depends(get_db_connection)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Health:
     """

@@ -1,7 +1,7 @@
 from collections.abc import AsyncGenerator
 
-from sqlalchemy import URL, Connection
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
+from sqlalchemy import URL
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, create_async_engine
 
 from hmpps_person_match.db.config import Config
 
@@ -32,9 +32,9 @@ engine: AsyncEngine = create_async_engine(
     pool_pre_ping=Config.DB_CON_POOL_PRE_PING,
 )
 
-async def get_db_connection() -> AsyncGenerator[Connection]:
+async def get_db_connection() -> AsyncGenerator[AsyncConnection]:
     """
     Get the database connection
     """
-    async with engine.connect() as connection:
+    async with engine.begin() as connection:
         yield connection
