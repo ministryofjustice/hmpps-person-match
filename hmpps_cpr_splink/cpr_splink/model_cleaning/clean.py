@@ -59,8 +59,6 @@ columns_basic = [
     TransformedColumn("first_name", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("middle_names", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("last_name", [UPPER, NAME_CLEANING], "VARCHAR"),
-    TransformedColumn("crn", [UPPER], "VARCHAR"),
-    TransformedColumn("prison_number", [UPPER], "VARCHAR"),
     # TransformedColumn("defendant_id", [UPPER], "VARCHAR"),
     # TransformedColumn("master_defendant_id", [UPPER], "VARCHAR"),
     TransformedColumn(

@@ -14,21 +14,25 @@ class JoinedRecord(TypedDict):
 
     id: int
     source_system: str
-    first_name: Optional[str]
-    middle_names: Optional[str]
-    last_name: Optional[str]
-    crn: Optional[str]
-    prison_number: Optional[str]
-    date_of_birth: Optional[date]
-    sex: Optional[str]
-    ethnicity: Optional[str]
-    first_name_alias_arr: Optional[list[str]]
-    last_name_alias_arr: Optional[list[str]]
-    date_of_birth_alias_arr: Optional[list[date]]
-    postcode_arr: Optional[list[str]]
-    cro_arr: Optional[list[str]]
-    pnc_arr: Optional[list[str]]
-    sentence_date_arr: Optional[list[date]]
+    first_name: str | None
+    middle_names: str | None
+    last_name: str | None
+    date_of_birth: date | None
+    first_name_alias_arr: list[str] | None
+    last_name_alias_arr: list[str] | None
+    date_of_birth_alias_arr: list[date] | None
+    postcode_arr: list[str] | None
+    cro_arr: list[str] | None
+    pnc_arr: list[str] | None
+    sentence_date_arr: list[date] | None
+    date_of_birth: date | None
+    first_name_alias_arr: list[str] | None
+    last_name_alias_arr: list[str] | None
+    date_of_birth_alias_arr: list[date] | None
+    postcode_arr: list[str] | None
+    cro_arr: list[str] | None
+    pnc_arr: list[str] | None
+    sentence_date_arr: list[date] | None
 
 
 PYDANTIC_TO_DUCKDB_TYPE_MAPPING = {
