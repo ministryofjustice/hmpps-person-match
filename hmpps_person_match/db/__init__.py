@@ -1,4 +1,6 @@
-from sqlalchemy import URL, QueuePool, create_engine
+from collections.abc import Generator
+
+from sqlalchemy import URL, Connection, QueuePool, create_engine
 
 from hmpps_person_match.db.config import Config
 
@@ -30,7 +32,7 @@ engine = create_engine(
     pool_pre_ping=Config.DB_CON_POOL_PRE_PING,
 )
 
-def get_db_connection():
+def get_db_connection() -> Generator[Connection]:
     """
     Get the database connection
     """
