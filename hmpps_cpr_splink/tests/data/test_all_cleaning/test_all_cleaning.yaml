@@ -16,18 +16,16 @@ data:
         first_name: "john    james"
         middle_names: "JR"
         last_name: "o'connor"
-        crn: NULL
-        prison_number: "A1111AA"
         date_of_birth: "1955-05-05"
         sex: NULL
         ethnicity: "W"
-        first_name_alias_arr: ["JONNY"]
-        last_name_alias_arr: ["SMYTH", "SMYTH"]
-        date_of_birth_alias_arr: ["1955-03-28", "1955-03-28"]
-        postcode_arr: ["AB1 2CD", "XY1 9YZ", "1AB 2YX", "NF1 1NF"]
-        cro_arr: ["123456/99X"]
-        pnc_arr: NULL
-        sentence_date_arr: ["2000-11-11", "2001-12-17"]
+        first_name_aliases: ["JONNY"]
+        last_name_aliases: ["SMYTH", "SMYTH"]
+        date_of_birth_aliases: ["1955-03-28", "1955-03-28"]
+        postcodes: ["AB1 2CD", "XY1 9YZ", "1AB 2YX", "NF1 1NF"]
+        cros: ["123456/99X"]
+        pncs: NULL
+        sentence_dates: ["2000-11-11", "2001-12-17"]
     splink_model_format:
       - id: 1200000
         source_system: "NOMIS"
@@ -46,8 +44,6 @@ data:
         postcode_outcode_arr: ["AB1", "XY1"]
         cro_single: "123456/99X"
         pnc_single: NULL
-        crn: NULL
-        prison_number: "A1111AA"
         postcode_arr_with_freq:
           [
             { "value": "AB12CD", "rel_freq": 0.0001 },

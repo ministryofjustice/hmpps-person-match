@@ -16,7 +16,7 @@ def filter_columns(columns, columns_to_keep):
     ]
 
 
-DOB_COLUMNS = ["date_of_birth", "date_of_birth_arr", "date_of_birth_alias_arr"]
+DOB_COLUMNS = ["date_of_birth", "date_of_birth_arr", "date_of_birth_aliases"]
 
 
 # DOB test setup
@@ -41,6 +41,8 @@ NAME_COLUMNS = [
     "first_name",
     "middle_names",
     "last_name",
+    "first_name_aliases",
+    "last_name_aliases",
     "first_name_alias_arr",
     "last_name_alias_arr",
     "name_1_std",
@@ -73,7 +75,7 @@ t_name_simple_select = Table(
 def test_name_processing_end_to_end(): ...
 
 
-SENTENCE_DATE_COLUMNS = ["sentence_date_arr", "sentence_date_single"]
+SENTENCE_DATE_COLUMNS = ["sentence_dates", "sentence_date_arr", "sentence_date_single"]
 
 sentence_date_columns_basic = filter_columns(columns_basic, SENTENCE_DATE_COLUMNS)
 sentence_date_columns_reshaping = filter_columns(
@@ -98,6 +100,7 @@ def test_sentence_date_processing_end_to_end(): ...
 
 POSTCODE_COLUMNS = [
     "id",
+    "postcodes",
     "postcode_arr",
     "postcode_outcode_arr",
     "postcode_arr_with_freq",

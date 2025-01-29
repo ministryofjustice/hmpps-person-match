@@ -3,7 +3,7 @@
 schema:
   input_table:
     date_of_birth: "DATE"
-    date_of_birth_alias_arr: "DATE[]"
+    date_of_birth_aliases: "DATE[]"
   cleaned_2:
     date_of_birth: "DATE"
     date_of_birth_arr: "DATE[]"
@@ -11,31 +11,31 @@ schema:
 data:
   - input_table:
       - date_of_birth: "1955-05-05"
-        date_of_birth_alias_arr: ["1955-03-28"]
+        date_of_birth_aliases: ["1955-03-28"]
     cleaned_2:
       - date_of_birth: "1955-05-05"
         date_of_birth_arr: ["1955-03-28", "1955-05-05"]
   - input_table:
       - date_of_birth: "1980-01-15"
-        date_of_birth_alias_arr: NULL
+        date_of_birth_aliases: NULL
     cleaned_2:
       - date_of_birth: "1980-01-15"
         date_of_birth_arr: ["1980-01-15"]
   - input_table:
       - date_of_birth: NULL
-        date_of_birth_alias_arr: ["1990-12-25"]
+        date_of_birth_aliases: ["1990-12-25"]
     cleaned_2:
       - date_of_birth: "1990-12-25"
         date_of_birth_arr: ["1990-12-25"]
   - input_table:
       - date_of_birth: "1970-01-01"
-        date_of_birth_alias_arr: NULL
+        date_of_birth_aliases: NULL
     cleaned_2:
       - date_of_birth: NULL
         date_of_birth_arr: NULL
   - input_table:
       - date_of_birth: "1970-01-01"
-        date_of_birth_alias_arr: ["1900-01-01", "1990-01-01"]
+        date_of_birth_aliases: ["1900-01-01", "1990-01-01"]
     cleaned_2:
       - date_of_birth: "1990-01-01"
         date_of_birth_arr: ["1990-01-01"]

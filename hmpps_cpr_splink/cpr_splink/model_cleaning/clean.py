@@ -37,7 +37,7 @@ def get_column_from_array(
 # first pass at cleaning
 # simple transformations on a per-column basis
 POSTCODE_BASIC = TransformedColumn(
-    "postcode_arr",
+    "postcodes",
     [
         LIST_TRANSFORM_UPPER,
         LIST_TRANSFORM_REMOVE_ALL_SPACES,
@@ -49,6 +49,7 @@ POSTCODE_BASIC = TransformedColumn(
         ZERO_LENGTH_ARRAY_TO_NULL,
     ],
     "VARCHAR[]",
+    alias="postcode_arr",
 )
 
 
@@ -59,8 +60,6 @@ columns_basic = [
     TransformedColumn("first_name", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("middle_names", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("last_name", [UPPER, NAME_CLEANING], "VARCHAR"),
-    TransformedColumn("crn", [UPPER], "VARCHAR"),
-    TransformedColumn("prison_number", [UPPER], "VARCHAR"),
     # TransformedColumn("defendant_id", [UPPER], "VARCHAR"),
     # TransformedColumn("master_defendant_id", [UPPER], "VARCHAR"),
     TransformedColumn(
@@ -77,17 +76,19 @@ columns_basic = [
     # TransformedColumn("ethnicity", [UPPER], "VARCHAR"),
     # TransformedColumn("version", column_type="INTEGER"),
     TransformedColumn(
-        "first_name_alias_arr",
+        "first_name_aliases",
         [LIST_TRANSFORM_UPPER, LIST_TRANSFORM_NAME_CLEANING],
         "VARCHAR[]",
+        alias="first_name_alias_arr",
     ),
     TransformedColumn(
-        "last_name_alias_arr",
+        "last_name_aliases",
         [LIST_TRANSFORM_UPPER, LIST_TRANSFORM_NAME_CLEANING],
         "VARCHAR[]",
+        alias="last_name_alias_arr",
     ),
     TransformedColumn(
-        "date_of_birth_alias_arr",
+        "date_of_birth_aliases",
         [LIST_FILTER_PROBLEM_DOBS],
         column_type="DATE[]",
         alias="date_of_birth_arr",
@@ -114,24 +115,26 @@ columns_basic = [
     # ),
     POSTCODE_BASIC,
     TransformedColumn(
-        "cro_arr",
+        "cros",
         [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_FILTER_PROBLEM_CROS, LIST_SORT],
         "VARCHAR[]",
+        alias="cro_arr",
     ),
     # TransformedColumn("driver_license_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"), # noqa: E501
     # TransformedColumn(
     #     "national_insurance_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"
     # ),
     TransformedColumn(
-        "pnc_arr", [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT], "VARCHAR[]"
+        "pncs", [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT], "VARCHAR[]", alias="pnc_arr",
     ),
     TransformedColumn(
-        "sentence_date_arr",
+        "sentence_dates",
         [
             LIST_FILTER_PROBLEM_DOBS,
             LIST_DISTINCT,
             LIST_SORT,
         ],  # TODO: Remove?  Problem dob vs. sentence dates?
+        alias="sentence_date_arr",
     ),
 ]
 
@@ -148,8 +151,6 @@ columns_reshaping = [
     TransformedColumn("source_system"),
     TransformedColumn("sentence_date_arr"),
     TransformedColumn("postcode_arr"),
-    TransformedColumn("crn"),
-    TransformedColumn("prison_number"),
     TransformedColumn(
         CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
         [
@@ -261,8 +262,6 @@ columns_simple_select = [
     # identifiers
     TransformedColumn("cro_single"),
     TransformedColumn("pnc_single"),
-    TransformedColumn("crn"),
-    TransformedColumn("prison_number"),
     # origin
     # TransformedColumn("birth_place"),
     # TransformedColumn("birth_country"),

@@ -3,7 +3,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from hmpps_person_match.db import database_url
+from hmpps_person_match.db import build_database_url
+from hmpps_person_match.db.config import DatabaseDriver
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -14,9 +15,8 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-
 # Set the SQLAlchemy URL dynamically
-config.set_main_option("sqlalchemy.url", database_url.render_as_string(hide_password=False))
+config.set_main_option("sqlalchemy.url", build_database_url(DatabaseDriver.SYNC).render_as_string(hide_password=False))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
