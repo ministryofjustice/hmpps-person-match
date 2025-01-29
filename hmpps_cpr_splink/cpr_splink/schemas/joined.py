@@ -24,7 +24,7 @@ class JoinedRecord(TypedDict):
     postcodes: list[str] | None
     cros: list[str] | None
     pncs: list[str] | None
-    sentence_date_arr: list[date] | None
+    sentence_dates: list[date] | None
 
 
 PYDANTIC_TO_DUCKDB_TYPE_MAPPING = {

@@ -46,7 +46,7 @@ def join_raw_tables_sql(
     sentence_info_agg    AS (
         SELECT
             fk_person_id,
-            array_agg(sentence_date) as sentence_date_arr
+            array_agg(sentence_date) as sentence_dates
         FROM {sentence_info_in}
         group by fk_person_id
     )
@@ -67,7 +67,7 @@ def join_raw_tables_sql(
     addr.postcodes,
     r.cros,
     r.pncs,
-    s.sentence_date_arr
+    s.sentence_dates
     FROM
         person_out p
     LEFT JOIN

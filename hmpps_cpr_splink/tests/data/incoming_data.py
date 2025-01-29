@@ -21,7 +21,7 @@ def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
             postcodes VARCHAR[],
             cros VARCHAR[],
             pncs VARCHAR[],
-            sentence_date_arr DATE[]
+            sentence_dates DATE[]
         )
         """
     )

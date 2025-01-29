@@ -128,12 +128,13 @@ columns_basic = [
         "pncs", [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT], "VARCHAR[]", alias="pnc_arr",
     ),
     TransformedColumn(
-        "sentence_date_arr",
+        "sentence_dates",
         [
             LIST_FILTER_PROBLEM_DOBS,
             LIST_DISTINCT,
             LIST_SORT,
         ],  # TODO: Remove?  Problem dob vs. sentence dates?
+        alias="sentence_date_arr",
     ),
 ]
 

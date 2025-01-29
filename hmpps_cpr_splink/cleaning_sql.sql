@@ -38,7 +38,7 @@ CREATE TABLE df_cleaned_with_arr_freq AS (
       driver_license_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS driver_license_number_arr,
       national_insurance_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS national_insurance_number_arr,
       pncs.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_SORT() AS pnc_arr,
-      sentence_date_arr.LIST_FILTER(x -> x not in ('1970-01-01', '1990-01-01')) AS sentence_date_arr
+      sentence_dates.LIST_FILTER(x -> x not in ('1970-01-01', '1990-01-01')) AS sentence_date_arr
     FROM
       df_raw
   ),

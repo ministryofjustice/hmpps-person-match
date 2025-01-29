@@ -25,7 +25,7 @@ record_1 = JoinedRecord(
     postcodes=["SW1A 1AA", "SW2 5XF"],
     cros=None,
     pncs=None,
-    sentence_date_arr=[
+    sentence_dates=[
         datetime.strptime("2024-11-27", "%Y-%m-%d").date(),
         datetime.strptime("2020-05-01", "%Y-%m-%d").date(),
     ],
@@ -48,7 +48,7 @@ record_2 = JoinedRecord(
     postcodes=["SW2 5XF"],
     cros=None,
     pncs=None,
-    sentence_date_arr=[datetime.strptime("2024-11-24", "%Y-%m-%d").date()],
+    sentence_dates=[datetime.strptime("2024-11-24", "%Y-%m-%d").date()],
 )
 
 record_3 = JoinedRecord(
@@ -68,7 +68,7 @@ record_3 = JoinedRecord(
     postcodes=["SW1A 1AA", "SW2 5XF"],
     cros=None,
     pncs=None,
-    sentence_date_arr=[
+    sentence_dates=[
         datetime.strptime("2024-11-27", "%Y-%m-%d").date(),
         datetime.strptime("2020-05-01", "%Y-%m-%d").date(),
     ],
