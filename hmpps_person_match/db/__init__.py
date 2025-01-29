@@ -13,7 +13,7 @@ if Config.DB_SSL_ENABLED:
 
 # Construct the database URL
 database_url: URL = URL.create(
-    drivername=Config.DB_DRIVER,
+    drivername=Config.DB_ASYNC_DRIVER,
     username=Config.DB_USER,
     password=Config.DB_PASSWORD,
     host=Config.DB_HOST,
@@ -31,6 +31,7 @@ engine: AsyncEngine = create_async_engine(
     pool_recycle=Config.DB_CON_POOL_RECYCLE,
     pool_pre_ping=Config.DB_CON_POOL_PRE_PING,
 )
+
 
 async def get_db_connection() -> AsyncGenerator[AsyncConnection]:
     """
