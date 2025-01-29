@@ -20,7 +20,7 @@ from hmpps_person_match.domain.constants.openapi.config import OpenAPIConfig
 from hmpps_person_match.models.error_response import ErrorResponse
 from hmpps_person_match.views.health_view import router as health_router
 from hmpps_person_match.views.info_view import router as info_router
-from hmpps_person_match.views.person_match_view import router as person_match_router
+from hmpps_person_match.views.person_view import router as person_match_router
 
 
 class PersonMatchApplication:

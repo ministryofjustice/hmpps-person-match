@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
 
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncConnection
+
+from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.domain.constants.openapi.tags import OpenAPITags
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.models.person import Person
 
-ROUTE = "/person/match"
+ROUTE = "/person"
 
 router = APIRouter(
     tags=[OpenAPITags.MATCH],
@@ -21,7 +25,10 @@ router = APIRouter(
     - Role: **'{Roles.ROLE_PERSON_MATCH}'**
     """,
 )
-def post_person_match(person: Person):
+async def post_person_match(
+        person: Person,
+        connection: Annotated[AsyncConnection, Depends(get_db_connection)],
+    ):
     """
     Person Match POST request handler
     """

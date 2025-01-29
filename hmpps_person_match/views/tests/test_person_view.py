@@ -1,13 +1,13 @@
 from hmpps_person_match.domain.roles import Roles
-from hmpps_person_match.views.person_match_view import ROUTE
+from hmpps_person_match.views.person_view import ROUTE
 
 
-class TestPersonMatchView:
+class TestPersonView:
     """
     Test match view
     """
 
-    def test_complete_message(self, post_to_endpoint):
+    def test_complete_message(self, post_to_endpoint, mock_db_connection):
         json = {
             "id": "123",
             "sourceSystem": "DELIUS",
@@ -15,14 +15,14 @@ class TestPersonMatchView:
             "middleNames": "Ahmed",
             "lastName": "Junaed",
             "crn": "1234",
-            "dateOfBirth": "01/02/1992",
+            "dateOfBirth": "1992-03-02",
             "firstNameAliases": ["Henry"],
             "lastNameAliases": ["Junaed"],
-            "dateOfBirthAliases": ["01/02/1992"],
+            "dateOfBirthAliases": ["1992-01-01"],
             "postcodes": ["B10 1EJ"],
             "cros": ["4444566"],
             "pncs": ["22224555"],
-            "sentenceDates": ["02/03/2001"],
+            "sentenceDates": ["2001-03-01"],
         }
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200

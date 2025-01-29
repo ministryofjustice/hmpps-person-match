@@ -1,4 +1,5 @@
 import duckdb
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 from hmpps_person_match.models.person import Person
 
@@ -7,7 +8,7 @@ from ..schemas import DUCKDB_COLUMNS_WITH_TYPES
 from .db import insert_duckdb_table_into_postgres_table
 
 
-def clean_and_insert(record: Person) -> None:
+def clean_and_insert(record: Person, connection: AsyncConnection) -> None:
     """
     Takes in a single record in joined format.
 
@@ -23,4 +24,5 @@ def clean_and_insert(record: Person) -> None:
     insert_duckdb_table_into_postgres_table(
         con.table(t_cleaned.name),
         "person",
+        connection,
     )

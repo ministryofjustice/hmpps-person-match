@@ -3,6 +3,7 @@ import os
 import adbc_driver_postgresql.dbapi
 from duckdb import DuckDBPyRelation
 from psycopg import Connection, connect
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 host = os.environ.get("CPR_PG_HOST", "localhost")
 port = os.environ.get("CPR_PG_PORT", "5432")
@@ -11,7 +12,7 @@ password = os.environ.get("CPR_PG_PASSWORD", "splink123!")
 database = os.environ.get("CPR_PG_DATABASE", "splink_db")
 # TODO: where?
 
-pg_conn_string = f"postgresql://{user}:{password}@{host}:{port}/{database}"
+pg_conn_string = f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
 
 
 def postgres_db_connector() -> Connection:
@@ -20,9 +21,13 @@ def postgres_db_connector() -> Connection:
 def postgres_arrow_connector() -> Connection:
     return adbc_driver_postgresql.dbapi.connect(pg_conn_string)
 
-def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_table_name: str):
+def insert_duckdb_table_into_postgres_table(
+        ddb_tab: DuckDBPyRelation,
+        pg_table_name: str,
+        connection: AsyncConnection,
+    ):
     rec_arrow = ddb_tab.arrow()
-    arrow_conn = postgres_arrow_connector()
+    arrow_conn = postgres_arrow_connector(connection)
     with arrow_conn.cursor() as cur:
         cur.adbc_ingest(pg_table_name, rec_arrow, mode="append")
 
