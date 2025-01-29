@@ -5,7 +5,7 @@ schema:
     first_name: "VARCHAR"
     middle_names: "VARCHAR"
     last_name: "VARCHAR"
-    first_name_alias_arr: "VARCHAR[]"
+    first_name_aliases: "VARCHAR[]"
     last_name_aliases: "VARCHAR[]"
   cleaned_2:
     name_1_std: "VARCHAR"
@@ -21,7 +21,7 @@ data:
       - first_name: "John"
         middle_names: "Robert James"
         last_name: "Smith"
-        first_name_alias_arr: ["Johnny", "Bennie"]
+        first_name_aliases: ["Johnny", "Bennie"]
         last_name_aliases: ["Smyth"]
     cleaned_2:
       - name_1_std: "JOHN"
@@ -35,7 +35,7 @@ data:
       - first_name: "Mary-Jane"
         middle_names: NULL
         last_name: "O'Connor"
-        first_name_alias_arr: NULL
+        first_name_aliases: NULL
         last_name_aliases: NULL
     cleaned_2:
       - name_1_std: "MARY"
@@ -49,7 +49,7 @@ data:
       - first_name: "MIG_ERROR_Tom"
         middle_names: "NO_SHOW_William"
         last_name: "DUPLICATE_Brown"
-        first_name_alias_arr: ["Tommy"]
+        first_name_aliases: ["Tommy"]
         last_name_aliases: ["Browne"]
     cleaned_2:
       - name_1_std: "TOM"
@@ -63,7 +63,7 @@ data:
       - first_name: ""
         middle_names: ""
         last_name: ""
-        first_name_alias_arr: [""]
+        first_name_aliases: [""]
         last_name_aliases: [""]
     cleaned_2:
       - name_1_std: NULL
@@ -77,7 +77,7 @@ data:
       - first_name: "a"
         middle_names: ""
         last_name: "Smith"
-        first_name_alias_arr: []
+        first_name_aliases: []
         last_name_aliases: []
     cleaned_2:
       - name_1_std: NULL

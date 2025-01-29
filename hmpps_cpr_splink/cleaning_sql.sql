@@ -20,7 +20,7 @@ CREATE TABLE df_cleaned_with_arr_freq AS (
       sexual_orientation.UPPER() AS sexual_orientation,
       ethnicity.UPPER() AS ethnicity,
       version AS version,
-      first_name_alias_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
+      first_name_aliases.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
         x -> x.REPLACE('MIG_ERROR_', '').REPLACE('NO_SHOW_', '').REPLACE('DUPLICATE_', '').REPLACE('-', ' ').REPLACE('''', '')
       ) AS first_name_alias_arr,
       last_name_aliases.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(

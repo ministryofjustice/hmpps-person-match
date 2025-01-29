@@ -10,7 +10,7 @@ CREATE TABLE person (
     date_of_birth DATE,
     sex TEXT,
     ethnicity TEXT,
-    first_name_alias_arr TEXT [],
+    first_name_aliases TEXT [],
     last_name_aliases TEXT []
 );
 
@@ -58,7 +58,7 @@ INSERT INTO
         date_of_birth,
         sex,
         ethnicity,
-        first_name_alias_arr,
+        first_name_aliases,
         last_name_aliases
     )
 VALUES

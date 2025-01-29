@@ -75,9 +75,10 @@ columns_basic = [
     # TransformedColumn("ethnicity", [UPPER], "VARCHAR"),
     # TransformedColumn("version", column_type="INTEGER"),
     TransformedColumn(
-        "first_name_alias_arr",
+        "first_name_aliases",
         [LIST_TRANSFORM_UPPER, LIST_TRANSFORM_NAME_CLEANING],
         "VARCHAR[]",
+        alias="first_name_alias_arr",
     ),
     TransformedColumn(
         "last_name_aliases",

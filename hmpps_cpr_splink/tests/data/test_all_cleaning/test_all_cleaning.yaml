@@ -19,7 +19,7 @@ data:
         date_of_birth: "1955-05-05"
         sex: NULL
         ethnicity: "W"
-        first_name_alias_arr: ["JONNY"]
+        first_name_aliases: ["JONNY"]
         last_name_aliases: ["SMYTH", "SMYTH"]
         date_of_birth_alias_arr: ["1955-03-28", "1955-03-28"]
         postcode_arr: ["AB1 2CD", "XY1 9YZ", "1AB 2YX", "NF1 1NF"]

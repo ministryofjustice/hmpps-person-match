@@ -41,7 +41,7 @@ NAME_COLUMNS = [
     "first_name",
     "middle_names",
     "last_name",
-    "first_name_alias_arr",
+    "first_name_aliases",
     "last_name_aliases",
     "name_1_std",
     "name_2_std",
