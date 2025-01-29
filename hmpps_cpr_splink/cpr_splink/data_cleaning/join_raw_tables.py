@@ -31,7 +31,7 @@ def join_raw_tables_sql(
     address_agg AS (
         SELECT
             fk_person_id,
-            array_agg(postcode) as postcode_arr
+            array_agg(postcode) as postcodes
         FROM {address_in}
         group by fk_person_id
     ),
@@ -64,7 +64,7 @@ def join_raw_tables_sql(
     a.first_name_aliases,
     a.last_name_aliases,
     a.date_of_birth_aliases,
-    addr.postcode_arr,
+    addr.postcodes,
     r.cro_arr,
     r.pnc_arr,
     s.sentence_date_arr

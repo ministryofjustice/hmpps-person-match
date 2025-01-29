@@ -37,7 +37,7 @@ def get_column_from_array(
 # first pass at cleaning
 # simple transformations on a per-column basis
 POSTCODE_BASIC = TransformedColumn(
-    "postcode_arr",
+    "postcodes",
     [
         LIST_TRANSFORM_UPPER,
         LIST_TRANSFORM_REMOVE_ALL_SPACES,
@@ -49,6 +49,7 @@ POSTCODE_BASIC = TransformedColumn(
         ZERO_LENGTH_ARRAY_TO_NULL,
     ],
     "VARCHAR[]",
+    alias="postcode_arr",
 )
 
 

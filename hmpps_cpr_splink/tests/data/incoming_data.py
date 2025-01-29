@@ -18,7 +18,7 @@ def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
             first_name_aliases VARCHAR[],
             last_name_aliases VARCHAR[],
             date_of_birth_aliases DATE[],
-            postcode_arr VARCHAR[],
+            postcodes VARCHAR[],
             cro_arr VARCHAR[],
             pnc_arr VARCHAR[],
             sentence_date_arr DATE[]

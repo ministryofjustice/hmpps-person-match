@@ -33,7 +33,7 @@ CREATE TABLE df_cleaned_with_arr_freq AS (
           '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         )
       ).NULLIF(ARRAY []) AS email_arr,
-      postcode_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('\s', '', 'g')).LIST_FILTER(x -> x not in ('NF11NF')).LIST_SORT() AS postcode_arr,
+      postcodes.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('\s', '', 'g')).LIST_FILTER(x -> x not in ('NF11NF')).LIST_SORT() AS postcode_arr,
       cro_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_DISTINCT().LIST_FILTER(x -> x not in ('000000/00Z')).LIST_SORT() AS cro_arr,
       driver_license_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS driver_license_number_arr,
       national_insurance_number_arr.LIST_TRANSFORM(x -> x.UPPER()) AS national_insurance_number_arr,
