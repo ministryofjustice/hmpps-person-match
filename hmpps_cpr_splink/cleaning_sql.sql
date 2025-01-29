@@ -26,7 +26,7 @@ CREATE TABLE df_cleaned_with_arr_freq AS (
       last_name_aliases.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(
         x -> x.REPLACE('MIG_ERROR_', '').REPLACE('NO_SHOW_', '').REPLACE('DUPLICATE_', '').REPLACE('-', ' ').REPLACE('''', '')
       ) AS last_name_alias_arr,
-      date_of_birth_alias_arr AS date_of_birth_arr,
+      date_of_birth_aliases AS date_of_birth_arr,
       mobile_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('\n', ' ', 'g')).LIST_TRANSFORM(x -> x.REGEXP_REPLACE('[^0-9]', '', 'g')).LIST_TRANSFORM(x -> x.SUBSTR(-10)) AS mobile_arr,
       email_arr.LIST_TRANSFORM(x -> x.UPPER()).LIST_TRANSFORM(x -> x.TRIM().NULLIF('')).LIST_FILTER(
         x -> x.REGEXP_MATCHES(

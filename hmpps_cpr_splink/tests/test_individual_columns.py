@@ -16,7 +16,7 @@ def filter_columns(columns, columns_to_keep):
     ]
 
 
-DOB_COLUMNS = ["date_of_birth", "date_of_birth_arr", "date_of_birth_alias_arr"]
+DOB_COLUMNS = ["date_of_birth", "date_of_birth_arr", "date_of_birth_aliases"]
 
 
 # DOB test setup

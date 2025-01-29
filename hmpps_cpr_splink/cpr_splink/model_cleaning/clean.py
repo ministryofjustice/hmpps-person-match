@@ -87,7 +87,7 @@ columns_basic = [
         alias="last_name_alias_arr",
     ),
     TransformedColumn(
-        "date_of_birth_alias_arr",
+        "date_of_birth_aliases",
         [LIST_FILTER_PROBLEM_DOBS],
         column_type="DATE[]",
         alias="date_of_birth_arr",
