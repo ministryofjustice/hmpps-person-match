@@ -116,4 +116,8 @@ blocking_rules_for_prediction_loose_for_initial_uuid_creation = [
     block_on("first_and_last_name_std", "name_2_std"),
     block_on("name_1_std", "date_of_birth"),
     block_on("last_name_std", "date_of_birth"),
+    # These add very few matches so aren't used in the tighter rules
+    CustomRule("substring(r.cro_single, 1, 6) = substring(l.pnc_single, 7, 6)"),
+    CustomRule("substring(l.cro_single, 1, 6) = substring(r.pnc_single, 7, 6)"),
+    block_on("substring(pnc_single, 1, 5)", "substring(pnc_single, 8, 6)"),
 ]

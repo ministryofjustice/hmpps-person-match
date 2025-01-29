@@ -139,15 +139,47 @@ postcode_comparison = cl.CustomComparison(
     ],
 )
 
-cro_comparison = cl.LevenshteinAtThresholds(
-    "cro_single", distance_threshold_or_thresholds=1
-).configure(
-    term_frequency_adjustments=True,
-)
-
-
-pnc_comparison = cl.LevenshteinAtThresholds(
-    "pnc_single", distance_threshold_or_thresholds=1
-).configure(
-    term_frequency_adjustments=True,
+ids_comparison = cl.CustomComparison(
+    output_column_name="id_comparison",
+    comparison_levels=[
+        {
+            "sql_condition": """
+            (cro_single_l is null or cro_single_r is null)
+            AND (pnc_single_l is null or pnc_single_r is null)
+            AND (pnc_single_l is null or cro_single_r is null)
+            AND (cro_single_l is null or pnc_single_r is null)
+            """,
+            "is_null_level": True,
+        },
+        cll.ExactMatchLevel("pnc_single").configure(tf_adjustment_column="pnc_single"),
+        cll.ExactMatchLevel("cro_single").configure(tf_adjustment_column="cro_single"),
+        {
+            # sometimes we see like 1900/0054321R vs 054321/12U
+            # sometimes (very rarely) we see like 1999/0054321R vs 1999/9954321R
+            "sql_condition": """
+            (
+                substring(pnc_single_l, 7, 6) = substring(cro_single_r, 1, 6)
+                or
+                substring(pnc_single_r, 7, 6) = substring(cro_single_l, 1, 6)
+            )
+            or
+            (
+                substring(pnc_single_l, 1, 5) = substring(pnc_single_r, 1, 5)
+                AND
+                substring(pnc_single_l, 8, 6) = substring(pnc_single_r, 8, 6)
+            )
+            """,
+            "label_for_charts": "PNC and CRO core numbers match",
+        },
+        # If we don't have this 'cro to pnc' match then we want to separate out
+        # the cases of mismatch on PNC-PNC or CRO-CRO, and nulls
+        {
+            "sql_condition": """
+            (cro_single_l is null or cro_single_r is null)
+            AND (pnc_single_l is null or pnc_single_r is null)
+            """,
+            "is_null_level": True,
+        },
+        cll.ElseLevel(),
+    ],
 )
