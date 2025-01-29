@@ -125,7 +125,7 @@ columns_basic = [
     #     "national_insurance_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"
     # ),
     TransformedColumn(
-        "pnc_arr", [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT], "VARCHAR[]"
+        "pncs", [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT], "VARCHAR[]", alias="pnc_arr",
     ),
     TransformedColumn(
         "sentence_date_arr",

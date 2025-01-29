@@ -23,7 +23,7 @@ class JoinedRecord(TypedDict):
     date_of_birth_aliases: list[date] | None
     postcodes: list[str] | None
     cros: list[str] | None
-    pnc_arr: list[str] | None
+    pncs: list[str] | None
     sentence_date_arr: list[date] | None
 
 

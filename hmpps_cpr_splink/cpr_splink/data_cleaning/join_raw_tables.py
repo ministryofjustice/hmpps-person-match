@@ -39,7 +39,7 @@ def join_raw_tables_sql(
         SELECT
             fk_person_id,
             array_agg(identifier_value) FILTER (WHERE identifier_type = 'CRO') as cros,
-            array_agg(identifier_value) FILTER (WHERE identifier_type = 'PNC') as pnc_arr
+            array_agg(identifier_value) FILTER (WHERE identifier_type = 'PNC') as pncs
         FROM {reference_in}
         group by fk_person_id
     ),
@@ -66,7 +66,7 @@ def join_raw_tables_sql(
     a.date_of_birth_aliases,
     addr.postcodes,
     r.cros,
-    r.pnc_arr,
+    r.pncs,
     s.sentence_date_arr
     FROM
         person_out p

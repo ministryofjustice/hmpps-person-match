@@ -24,7 +24,7 @@ data:
         date_of_birth_aliases: ["1955-03-28", "1955-03-28"]
         postcodes: ["AB1 2CD", "XY1 9YZ", "1AB 2YX", "NF1 1NF"]
         cros: ["123456/99X"]
-        pnc_arr: NULL
+        pncs: NULL
         sentence_date_arr: ["2000-11-11", "2001-12-17"]
     splink_model_format:
       - id: 1200000
