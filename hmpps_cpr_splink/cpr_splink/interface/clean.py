@@ -22,5 +22,5 @@ def clean_and_insert(record: Person) -> None:
     con.sql(sql)
     insert_duckdb_table_into_postgres_table(
         con.table(t_cleaned.name),
-        "cleaned_persons",
+        "person",
     )
