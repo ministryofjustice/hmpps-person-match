@@ -146,8 +146,6 @@ columns_reshaping = [
     TransformedColumn("source_system"),
     TransformedColumn("sentence_date_arr"),
     TransformedColumn("postcode_arr"),
-    TransformedColumn("crn"),
-    TransformedColumn("prison_number"),
     TransformedColumn(
         CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
         [
@@ -259,8 +257,6 @@ columns_simple_select = [
     # identifiers
     TransformedColumn("cro_single"),
     TransformedColumn("pnc_single"),
-    TransformedColumn("crn"),
-    TransformedColumn("prison_number"),
     # origin
     # TransformedColumn("birth_place"),
     # TransformedColumn("birth_country"),

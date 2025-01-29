@@ -16,8 +16,6 @@ data:
         first_name: "john    james"
         middle_names: "JR"
         last_name: "o'connor"
-        crn: NULL
-        prison_number: "A1111AA"
         date_of_birth: "1955-05-05"
         sex: NULL
         ethnicity: "W"
@@ -46,8 +44,6 @@ data:
         postcode_outcode_arr: ["AB1", "XY1"]
         cro_single: "123456/99X"
         pnc_single: NULL
-        crn: NULL
-        prison_number: "A1111AA"
         postcode_arr_with_freq:
           [
             { "value": "AB12CD", "rel_freq": 0.0001 },
