@@ -34,7 +34,7 @@ def test_list_transform_name_cleaning(): ...
 
 
 POSTCODE_BASIC_INPUT_COLUMN = POSTCODE_BASIC.__str__().replace(
-    "postcode_arr", "input_column"
+    "postcodes", "input_column"
 )
 sql_postcode_cleaning = f"""
 SELECT
