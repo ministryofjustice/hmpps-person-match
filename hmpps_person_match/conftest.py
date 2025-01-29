@@ -1,5 +1,5 @@
 import datetime
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import jwt
 import pytest
@@ -29,10 +29,10 @@ def app():
 
 
 @pytest.fixture
-def mock_db_session(app):
-    mock_session = MagicMock()
-    app.dependency_overrides[get_db_connection] = lambda: mock_session
-    yield mock_session
+def mock_db_connection(app):
+    mock_connection = AsyncMock()
+    app.dependency_overrides[get_db_connection] = lambda: mock_connection
+    yield mock_connection
 
 
 @pytest.fixture()

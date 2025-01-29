@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy import Connection
+from sqlalchemy import Connection, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from hmpps_person_match.db import get_db_connection
@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.get(ROUTE)
-def get_health(
+async def get_health(
     connection: Annotated[Connection, Depends(get_db_connection)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Health:
@@ -24,7 +24,7 @@ def get_health(
     GET request handler
     """
     try:
-        connection.execute("SELECT 1")
+        await connection.execute(select(1))
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content=Health(status=Status.UP).model_dump(),
