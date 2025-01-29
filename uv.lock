@@ -473,7 +473,6 @@ dependencies = [
     { name = "pytz" },
     { name = "requests-mock" },
     { name = "splink" },
-    { name = "sqlmodel" },
     { name = "uvicorn" },
 ]
 
@@ -505,7 +504,6 @@ requires-dist = [
     { name = "pytz", specifier = ">=2024.2" },
     { name = "requests-mock", specifier = ">=1.12.1" },
     { name = "splink", specifier = ">=4.0.6" },
-    { name = "sqlmodel", specifier = ">=0.0.22" },
     { name = "uvicorn", specifier = ">=0.34.0" },
 ]
 
@@ -1596,19 +1594,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/74/7d/0e43c996b8eb60f80323c3ffb115fbbbaee14d2a9cc1ff3e899dca81587f/sqlglot-26.3.8.tar.gz", hash = "sha256:225a3645f1fbff3cdb4bf5ef8c8aea867ddc79b567fc5bc5fd21811875c7099a", size = 19957402 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/69/9c/f026482799a1ea133bccc7c187fbbd91d3638454094d845a5d61b589a41f/sqlglot-26.3.8-py3-none-any.whl", hash = "sha256:c408b328b2090d1178ab076514714946c27b55b88dac68f5e565543849502f9d", size = 444988 },
-]
-
-[[package]]
-name = "sqlmodel"
-version = "0.0.22"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "sqlalchemy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/39/8641040ab0d5e1d8a1c2325ae89a01ae659fc96c61a43d158fb71c9a0bf0/sqlmodel-0.0.22.tar.gz", hash = "sha256:7d37c882a30c43464d143e35e9ecaf945d88035e20117bf5ec2834a23cbe505e", size = 116392 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/b1/3af5104b716c420e40a6ea1b09886cae3a1b9f4538343875f637755cae5b/sqlmodel-0.0.22-py3-none-any.whl", hash = "sha256:a1ed13e28a1f4057cbf4ff6cdb4fc09e85702621d3259ba17b3c230bfb2f941b", size = 28276 },
 ]
 
 [[package]]

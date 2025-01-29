@@ -1,4 +1,4 @@
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import SQLAlchemyError
 
 from hmpps_person_match.views.health_view import ROUTE
 
@@ -26,7 +26,7 @@ class TestHealthView:
         When no db connection
         """
         # Mock db response
-        mock_db_session.exec.side_effect = OperationalError("Mocked error", None, None)
+        mock_db_session.exec.side_effect = SQLAlchemyError("Mocked error", None, None)
 
         response = client.get(ROUTE)
         assert response.status_code == 503

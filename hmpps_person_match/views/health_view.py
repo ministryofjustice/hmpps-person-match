@@ -3,8 +3,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import OperationalError
-from sqlmodel import Session, select
+from sqlalchemy import Connection
+from sqlalchemy.exc import SQLAlchemyError
 
 from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.dependencies.logging.log import get_logger
@@ -17,19 +17,19 @@ router = APIRouter()
 
 @router.get(ROUTE)
 def get_health(
-    session: Annotated[Session, Depends(get_db_connection)],
+    connection: Annotated[Connection, Depends(get_db_connection)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Health:
     """
     GET request handler
     """
     try:
-        session.exec(select(1))
+        connection.execute("SELECT 1")
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content=Health(status=Status.UP).model_dump(),
         )
-    except OperationalError as e:
+    except SQLAlchemyError as e:
         logger.error("Error executing health check query: %s", e)
         return JSONResponse(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

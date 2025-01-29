@@ -18,7 +18,6 @@ dependencies = [
   "pyjwt>=2.10.1",
   "requests-mock>=1.12.1",
   "cryptography>=44.0.0",
-  "sqlmodel>=0.0.22",
   "alembic>=1.14.1",
   "adbc-driver-postgresql>=1.4.0",
   "pyarrow>=19.0.0",
