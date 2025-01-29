@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi.testclient import TestClient
 
 from hmpps_person_match.app import PersonMatchApplication
-from hmpps_person_match.db import get_db_session
+from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
 
@@ -31,7 +31,7 @@ def app():
 @pytest.fixture
 def mock_db_session(app):
     mock_session = MagicMock()
-    app.dependency_overrides[get_db_session] = lambda: mock_session
+    app.dependency_overrides[get_db_connection] = lambda: mock_session
     yield mock_session
 
 

@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import OperationalError
 from sqlmodel import Session, select
 
-from hmpps_person_match.db import get_db_session
+from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.dependencies.logging.log import get_logger
 from hmpps_person_match.models.health import Health, Status
 
@@ -17,7 +17,7 @@ router = APIRouter()
 
 @router.get(ROUTE)
 def get_health(
-    session: Annotated[Session, Depends(get_db_session)],
+    session: Annotated[Session, Depends(get_db_connection)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Health:
     """

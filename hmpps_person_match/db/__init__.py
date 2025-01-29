@@ -1,6 +1,4 @@
-from sqlalchemy import URL, create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlmodel import Session
+from sqlalchemy import URL, QueuePool, create_engine
 
 from hmpps_person_match.db.config import Config
 
@@ -24,19 +22,17 @@ database_url: str = URL.create(
 engine = create_engine(
     database_url,
     echo=Config.DB_LOGGING,
+    poolclass=QueuePool,
+    pool_size=Config.DB_CON_POOL_SIZE,
+    max_overflow=Config.DB_CON_POOL_MAX_OVERFLOW,
+    pool_timeout=Config.DB_CON_POOL_TIMEOUT,
+    pool_recycle=Config.DB_CON_POOL_RECYCLE,
+    pool_pre_ping=Config.DB_CON_POOL_PRE_PING,
 )
 
-DatabaseSession = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-    class_=Session,
-)
-
-
-def get_db_session():
+def get_db_connection():
     """
-    Get the database session
+    Get the database connection
     """
-    with DatabaseSession() as db_session:
-        yield db_session
+    with engine.connect() as connection:
+        yield connection
