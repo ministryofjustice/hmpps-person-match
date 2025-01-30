@@ -3,8 +3,8 @@ import os
 from duckdb import DuckDBPyRelation
 from psycopg import Connection as ConnectionPsycopg
 from psycopg import connect
-from sqlalchemy import Connection as ConnectionSQLAlchemy
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 host = os.environ.get("CPR_PG_HOST", "localhost")
 port = os.environ.get("CPR_PG_PORT", "5432")
@@ -20,7 +20,7 @@ def postgres_db_connector() -> ConnectionPsycopg:
     return connect(pg_conn_string)
 
 
-def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_table_name: str, conn: ConnectionSQLAlchemy):
+def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_table_name: str, conn: AsyncConnection):
 
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]
