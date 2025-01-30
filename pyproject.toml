@@ -109,8 +109,6 @@ ignore = [
     "COM",
     # flake8-simplify
     "SIM",
-    # flake8-blind-except
-    "BLE",
     # flake8-bandit
     "S",
     # flake8-logging-format

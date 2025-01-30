@@ -237,7 +237,7 @@ def get_git_commit_hash():
             .decode("utf-8")
             .strip()
         )
-    except Exception:
+    except subprocess.CalledProcessError:
         return "unknown"
 
 
