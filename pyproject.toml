@@ -19,8 +19,6 @@ dependencies = [
   "requests-mock>=1.12.1",
   "cryptography>=44.0.0",
   "alembic>=1.14.1",
-  "adbc-driver-postgresql>=1.4.0",
-  "pyarrow>=19.0.0",
   "asyncpg>=0.30.0",
 ]
 

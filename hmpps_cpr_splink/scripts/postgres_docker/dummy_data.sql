@@ -1,6 +1,6 @@
 -- create some dummy data
 CREATE TABLE person (
-    id INT PRIMARY KEY,
+    id TEXT PRIMARY KEY,
 
     name_1_std TEXT,
     name_2_std TEXT,
