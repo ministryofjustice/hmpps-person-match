@@ -25,7 +25,7 @@ run-docker:
 	docker run -p 5000:5000 -t hmpps_person_match
 
 start-containers:
-	docker compose up -d
+	docker compose up
 
 stop-containers:
 	docker compose down

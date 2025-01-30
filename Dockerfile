@@ -55,6 +55,10 @@ COPY docker-entrypoint.sh asgi.py alembic.ini /app/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
+# Upgrade pip inside the virtual environment
+RUN /app/.venv/bin/python -m ensurepip && \
+    /app/.venv/bin/python -m pip install --upgrade pip
+
 ##############
 # FINAL stage
 ##############
