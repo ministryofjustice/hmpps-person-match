@@ -101,8 +101,6 @@ ignore = [
 # ignores name convention as overriding package function
 "log_formatter.py" = ["N802"]
 "hmpps_cpr_splink/*" = [
-    # pep8-naming
-    "N",
     # flake8-commas
     "COM",
     # flake8-bandit
