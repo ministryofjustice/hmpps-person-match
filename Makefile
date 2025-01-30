@@ -4,10 +4,10 @@ install:
 	uv sync
 
 lint:
-	uv run ruff check hmpps_person_match/ integration/
+	uv run ruff check hmpps_person_match/ hmpps_cpr_splink/ integration/
 	
 lint-fix:
-	uv run ruff check hmpps_person_match/ integration/ --fix
+	uv run ruff check hmpps_person_match/ hmpps_cpr_splink/ integration/ --fix
 
 format:
 	uv run ruff format 

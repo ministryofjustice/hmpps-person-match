@@ -59,8 +59,6 @@ select = [
     "UP",
     # Pyflakes
     "F",
-    # pyupgrade
-    "UP",
     # flake8-builtins
     "A",
     # flake8-commas
@@ -102,3 +100,25 @@ ignore = [
 "test_*.py" = ["S"]
 # ignores name convention as overriding package function
 "log_formatter.py" = ["N802"]
+"hmpps_cpr_splink/*" = [
+    # pep8-naming
+    "N",
+    # pyupgrade
+    "UP",
+    # flake8-commas
+    "COM",
+    # flake8-simplify
+    "SIM",
+    # flake8-blind-except
+    "BLE",
+    # flake8-bandit
+    "S",
+    # flake8-logging-format
+    "G",
+    # flake8-no-pep420
+    "INP",
+    # flake8-self
+    "SLF",
+    # pylint
+    "PL",
+]

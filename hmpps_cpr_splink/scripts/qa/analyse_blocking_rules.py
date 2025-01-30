@@ -1,13 +1,12 @@
 # ruff: noqa: T201
 import duckdb
+from scripts.qa.blocking_performance import blocking_performance_chart
 from splink import DuckDBAPI, Linker, SettingsCreator, block_on
 from splink.blocking_rule_library import CustomRule
 from splink.internals.blocking_analysis import (
     cumulative_comparisons_to_be_scored_from_blocking_rules_data,
     n_largest_blocks,
 )
-
-from scripts.qa.blocking_performance import blocking_performance_chart
 
 con_training = duckdb.connect()
 
