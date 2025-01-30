@@ -105,8 +105,6 @@ ignore = [
     "COM",
     # flake8-bandit
     "S",
-    # flake8-logging-format
-    "G",
     # flake8-no-pep420
     "INP",
     # flake8-self
