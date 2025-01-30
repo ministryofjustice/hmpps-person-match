@@ -14,7 +14,8 @@ schema:
 data:
   - input_table:
       - id: 1
-        postcodes: ["SW1A 1AA", "n16 8ph", "invalid postcode", "SW1A1AA"]
+        postcodes:
+          ["SW1A 1AA", "n16 8ph", "invalid postcode", "SW1A1AA", "NF1 1FA "]
     tf_postcodes:
       - value: "SW1A1AA"
         rel_freq: 0.67
@@ -31,7 +32,7 @@ data:
             rel_freq: 0.33
   - input_table:
       - id: 1
-        postcodes: ["   ab1   4bc   ", "1xy z22", "TEST"]
+        postcodes: [" ab1 4bc ", "1xy z22", "TEST", "NF11NF"]
     tf_postcodes:
       - value: "AB14BC"
         rel_freq: 0.5
