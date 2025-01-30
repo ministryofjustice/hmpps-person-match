@@ -19,8 +19,6 @@ dependencies = [
   "requests-mock>=1.12.1",
   "cryptography>=44.0.0",
   "alembic>=1.14.1",
-  "adbc-driver-postgresql>=1.4.0",
-  "pyarrow>=19.0.0",
   "asyncpg>=0.30.0",
 ]
 
@@ -61,8 +59,6 @@ select = [
     "UP",
     # Pyflakes
     "F",
-    # pyupgrade
-    "UP",
     # flake8-builtins
     "A",
     # flake8-commas
@@ -104,3 +100,25 @@ ignore = [
 "test_*.py" = ["S"]
 # ignores name convention as overriding package function
 "log_formatter.py" = ["N802"]
+"hmpps_cpr_splink/*" = [
+    # pep8-naming
+    "N",
+    # pyupgrade
+    "UP",
+    # flake8-commas
+    "COM",
+    # flake8-simplify
+    "SIM",
+    # flake8-blind-except
+    "BLE",
+    # flake8-bandit
+    "S",
+    # flake8-logging-format
+    "G",
+    # flake8-no-pep420
+    "INP",
+    # flake8-self
+    "SLF",
+    # pylint
+    "PL",
+]

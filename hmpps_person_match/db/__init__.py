@@ -5,15 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, create_async_en
 
 from hmpps_person_match.db.config import Config
 
-db_query_string_params = None
+db_query_string_params = {}
 if Config.DB_SSL_ENABLED:
-    db_query_string_params = {
-        "sslmode": "verify-full",
-    }
+    db_query_string_params["ssl"] =  "verify-full"
 
 # Construct the database URL
-database_url: URL = URL.create(
-    drivername=Config.DB_ASYNC_DRIVER,
+database_url = URL.create(
+    drivername=Config.DB_DRIVER,
     username=Config.DB_USER,
     password=Config.DB_PASSWORD,
     host=Config.DB_HOST,

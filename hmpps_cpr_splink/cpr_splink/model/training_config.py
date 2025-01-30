@@ -20,10 +20,10 @@ class ModelTraining:
         self.train_u_size = train_u_size
 
     em_blocks = [
-        block_on("name_1_std", "last_name_std", "date_of_birth"),
-        block_on("postcode_arr[1]", "sentence_date_arr[1]"),
         block_on("pnc_single"),
         block_on("cro_single"),
+        block_on("name_1_std", "last_name_std", "date_of_birth"),
+        block_on("postcode_arr[1]", "sentence_date_arr[1]"),
     ]
 
     # TODO: need to align default location with where we (will) access it for scoring
