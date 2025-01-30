@@ -1,5 +1,4 @@
 # ruff: noqa: E501  (disable line length for this module)
-from typing import Optional
 
 
 def join_raw_tables_sql(
@@ -8,7 +7,7 @@ def join_raw_tables_sql(
     address_in="address",
     reference_in="reference",
     sentence_info_in="sentence_info",
-    limit: Optional[int] = None,
+    limit: int | None = None,
 ):
     limit_expr = f"LIMIT {limit}" if limit else ""
     sql = f"""

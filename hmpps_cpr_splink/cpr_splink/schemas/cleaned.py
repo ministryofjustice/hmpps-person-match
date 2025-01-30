@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 
 class ArrayWithTF(TypedDict):
@@ -11,31 +11,31 @@ class CleanedRecord(TypedDict):
     # TODO: they are probably almost all Optional
     id: int
     # for name comparison
-    name_1_std: Optional[str]
-    tf_name_1_std: Optional[float]
-    last_name_std: Optional[str]
-    tf_last_name_std: Optional[float]
-    first_and_last_name_std: Optional[str]
-    tf_first_and_last_name_std: Optional[float]
-    forename_std_arr: Optional[list[str]]
-    last_name_std_arr: Optional[list[str]]
+    name_1_std: str | None
+    tf_name_1_std: float | None
+    last_name_std: str | None
+    tf_last_name_std: float | None
+    first_and_last_name_std: str | None
+    tf_first_and_last_name_std: float | None
+    forename_std_arr: list[str] | None
+    last_name_std_arr: list[str] | None
     # name 2
-    name_2_std: Optional[str]
-    tf_name_2_std: Optional[float]
+    name_2_std: str | None
+    tf_name_2_std: float | None
     # sentence date
-    sentence_date_arr: Optional[list[datetime]]
+    sentence_date_arr: list[datetime] | None
     # dob
-    date_of_birth: Optional[datetime]
-    tf_date_of_birth: Optional[float]
-    date_of_birth_arr: Optional[datetime]
+    date_of_birth: datetime | None
+    tf_date_of_birth: float | None
+    date_of_birth_arr: datetime | None
     # pc
-    postcode_arr: Optional[list[str]]
-    postcode_arr_with_freq: Optional[list[ArrayWithTF]]
-    postcode_outcode_arr: Optional[list[str]]
+    postcode_arr: list[str] | None
+    postcode_arr_with_freq: list[ArrayWithTF] | None
+    postcode_outcode_arr: list[str] | None
     # ids
-    cro_single: Optional[str]
-    tf_cro_single: Optional[float]
-    pnc_single: Optional[str]
-    tf_pnc_single: Optional[float]
+    cro_single: str | None
+    tf_cro_single: float | None
+    pnc_single: str | None
+    tf_pnc_single: float | None
     # where from
     source_system: str

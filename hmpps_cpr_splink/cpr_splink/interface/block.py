@@ -1,5 +1,4 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
-from typing import Optional
 
 from splink.internals.blocking import (
     BlockingRule,
@@ -35,7 +34,7 @@ _sd_col = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
 def _create_blocked_pairs_sql(
     blocking_rule: BlockingRule,
     *,
-    source_dataset_input_column: Optional[InputColumn],
+    source_dataset_input_column: InputColumn | None,
     unique_id_input_column: InputColumn,
     input_tablename_l: str,
     input_tablename_r: str,
@@ -70,7 +69,7 @@ def _block_using_rules_sqls(
     input_tablename_r: str,
     blocking_rules: list[BlockingRule],
     link_type: "LinkTypeLiteralType",
-    source_dataset_input_column: Optional[InputColumn],
+    source_dataset_input_column: InputColumn | None,
     unique_id_input_column: InputColumn,
 ) -> dict[str, str]:
     unique_id_input_columns = combine_unique_id_input_columns(

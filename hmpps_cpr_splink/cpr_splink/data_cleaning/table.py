@@ -6,7 +6,7 @@ class Table:
         self,
         name: str,
         *select_expressions,
-        from_table: str | "Table",
+        from_table: str | Table,
         post_from_clauses: str = "",
     ):
         """
@@ -50,7 +50,7 @@ class Table:
         return f"{self.name} AS (\n{self.select_statement_without_lineage}\n)"
 
     @property
-    def with_lineage(self) -> list["Table"]:
+    def with_lineage(self) -> list[Table]:
         """
         All the Tables that are ascendant to this
         """
