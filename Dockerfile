@@ -55,6 +55,10 @@ COPY docker-entrypoint.sh asgi.py alembic.ini /app/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
+# Upgrade pip inside the virtual environment
+RUN /app/.venv/bin/python -m ensurepip && \
+    /app/.venv/bin/python -m pip install --upgrade pip
+
 ##############
 # FINAL stage
 ##############
@@ -72,7 +76,7 @@ RUN groupadd -g 1001 appuser && \
 RUN mkdir /home/appuser/.postgresql
 ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
 
-RUN chown appuser:appuser /app/
+RUN chown -R appuser:appuser /app/
 
 USER 1001
 

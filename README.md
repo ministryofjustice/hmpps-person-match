@@ -52,13 +52,57 @@ Calling the health endpoint:
 curl -i \-H "Content-Type: application/json" http://127.0.0.1:5000/health
 ```
 
-### Test
+### Testing
 
 To run the test suite run the following command:
 
 ```shell
 make test
 ```
+
+To run the integration tests run the following command:
+
+```shell
+make test-integration
+```
+
+## Debugging
+
+We have enabled [debugpy](https://github.com/microsoft/debugpy) when running the containers locally to enable debug support. To attach the applications
+debugger create the following .vscode task within the `.vscode/launch.json`, create the file if you don't already have it:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Remote Attach",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "justMyCode": true,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/app"
+                }
+            ]
+        }
+    ]
+}
+```
+
+When the containers are running using the command `make start-containers` you can run the following task and set breakpoints with the code to begin debugging.
+
+To test this is working as expected:
+
+1. Setting a breakpoint on the health endpoint in health_view.py
+2. Running the command: `curl http://0.0.0.0:5000/health`
+
+It should stop execution at the set breakpoint to allow you to start stepping through the code.
 
 ### Linting
 
