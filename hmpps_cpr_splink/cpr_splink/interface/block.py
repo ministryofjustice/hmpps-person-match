@@ -111,7 +111,7 @@ def candidate_search(primary_record_id: str) -> str:
     table_name_primary = "primary_record"
     sql = (
         f"SELECT *, 'a_primary' AS source_dataset "
-        f"FROM {cleaned_table_name} WHERE id = {primary_record_id}"
+        f"FROM {cleaned_table_name} WHERE id = '{primary_record_id}'"
     )
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
