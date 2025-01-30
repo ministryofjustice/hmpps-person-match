@@ -69,7 +69,7 @@ make test-integration
 ## Debugging
 
 We have enabled [debugpy](https://github.com/microsoft/debugpy) when running the containers locally to enable debug support. To attach the applications
-debugger create the following .vscode task within the `.vscode/launch.json`, create the file if you already have it:
+debugger create the following .vscode task within the `.vscode/launch.json`, create the file if you don't already have it:
 
 ```json
 {
