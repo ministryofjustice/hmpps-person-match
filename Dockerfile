@@ -76,7 +76,7 @@ RUN groupadd -g 1001 appuser && \
 RUN mkdir /home/appuser/.postgresql
 ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
 
-RUN chown appuser:appuser /app/
+RUN chown -R appuser:appuser /app/
 
 USER 1001
 
