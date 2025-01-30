@@ -24,7 +24,9 @@ services:
     container_name: hmpps-person-match
     image: hmpps-person-match:latest
     command: |
-      python -m debugpy --listen 0.0.0.0:5678 -m uvicorn asgi:app --host 0.0.0.0 --port 5000 --reload --log-level debug
+      sh -c "/app/.venv/bin/python -m pip install --no-cache-dir debugpy &&
+             python -m debugpy --listen 0.0.0.0:5678 &
+             uvicorn asgi:app --host 0.0.0.0 --port 5000 --reload --log-level debug"
     networks:
       - hmpps
     build:

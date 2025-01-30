@@ -460,7 +460,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "debugpy" },
     { name = "httpx" },
     { name = "ipykernel" },
     { name = "pytest" },
@@ -491,7 +490,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "debugpy", specifier = ">=1.8.12" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "ipykernel", specifier = ">=6.29.4" },
     { name = "pytest", specifier = ">=8.3.4" },
