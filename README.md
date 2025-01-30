@@ -95,11 +95,11 @@ debugger create the following .vscode task within the `.vscode/launch.json`, cre
 }
 ```
 
-When the containers are running using the command `make start-cotainers` you can run the following task and set breakpoints with the code to begin debugging.
+When the containers are running using the command `make start-containers` you can run the following task and set breakpoints with the code to begin debugging.
 
 To test this is working as expected:
 
-1. Setting a breakpoint on the health endpoint
+1. Setting a breakpoint on the health endpoint in health_view.py
 2. Running the command: `curl http://0.0.0.0:5000/health`
 
 It should stop execution at the set breakpoint to allow you to start stepping through the code.
