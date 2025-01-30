@@ -121,7 +121,7 @@ def extract_comparison_columns(record):
     # Find all columns that end with _l
     left_cols = [
         col
-        for col in record.keys()
+        for col in record
         if col.endswith("_l")
         and not col.startswith("tf_")
         and not col.startswith("bf_")

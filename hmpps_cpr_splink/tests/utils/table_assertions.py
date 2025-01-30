@@ -13,7 +13,7 @@ def cols_from_rows(rows: list[dict[str, Any]]) -> list[str]:
     """
     List of column names, from a list of records in key: value format.
     """
-    return list({k for r in rows for k in r.keys()})
+    return list({k for r in rows for k in r})
 
 
 def assert_tables_equal(

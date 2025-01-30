@@ -138,8 +138,7 @@ def candidate_search(primary_record_id: str) -> str:
         f"{pipeline.generate_cte_pipeline_sql()}"
     )
     # TODO: in a schema?
-    with postgres_db_connector() as conn:
-        with conn.cursor() as cur:
-            cur.execute(sql)
+    with postgres_db_connector() as conn, conn.cursor() as cur:
+        cur.execute(sql)
 
     return pipeline.output_table_name

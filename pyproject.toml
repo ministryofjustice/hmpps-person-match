@@ -107,8 +107,6 @@ ignore = [
     "UP",
     # flake8-commas
     "COM",
-    # flake8-simplify
-    "SIM",
     # flake8-bandit
     "S",
     # flake8-logging-format
