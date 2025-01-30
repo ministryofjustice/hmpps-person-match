@@ -1,4 +1,3 @@
-# ruff: noqa: E501  (disable line length for this module)
 
 
 def join_raw_tables_sql(
