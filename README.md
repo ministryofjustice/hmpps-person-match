@@ -73,18 +73,23 @@ debugger create the following .vscode task within the `.vscode/launch.json`, cre
 
 ```json
 {
-    "name": "Person Match Debugger: Remote Attach",
-    "type": "debugpy",
-    "request": "attach",
-    "connect": {
-        "host": "localhost",
-        "port": 5678
-    },
-    "justMyCode": true,
-    "pathMappings": [
+    "version": "0.2.0",
+    "configurations": [
         {
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/app"
+            "name": "Python Debugger: Remote Attach",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "justMyCode": true,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/app"
+                }
+            ]
         }
     ]
 }
