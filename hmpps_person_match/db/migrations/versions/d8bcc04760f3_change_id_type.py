@@ -31,7 +31,7 @@ def downgrade() -> None:
     op.alter_column(
         table_name="person",
         column_name="id",
-        type_=sqlalchemy.Text,
-        existing_type=sqlalchemy.Integer,
+        type_=sqlalchemy.Integer,
+        existing_type=sqlalchemy.Text,
         schema="personmatch",
     )
