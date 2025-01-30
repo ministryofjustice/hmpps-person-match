@@ -52,13 +52,45 @@ Calling the health endpoint:
 curl -i \-H "Content-Type: application/json" http://127.0.0.1:5000/health
 ```
 
-### Test
+### Testing
 
 To run the test suite run the following command:
 
 ```shell
 make test
 ```
+
+To run the integration tests run the following command:
+
+```shell
+make test-integration
+```
+
+## Debugging
+
+We have enabled [debugpy](https://github.com/microsoft/debugpy) when running the containers locally to enable debug support. To attach the applications
+debugger create the following .vscode task within the `.vscode/launch.json`, create the file if you already have it:
+
+```json
+{
+    "name": "Person Match Debugger: Remote Attach",
+    "type": "debugpy",
+    "request": "attach",
+    "connect": {
+        "host": "localhost",
+        "port": 5678
+    },
+    "justMyCode": true,
+    "pathMappings": [
+        {
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app"
+        }
+    ]
+}
+```
+
+When the containers are running using the command `make start-cotainers` you can run the following task and set breakpoints with the code to begin debugging.
 
 ### Linting
 

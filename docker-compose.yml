@@ -23,6 +23,8 @@ services:
   hmpps-person-match:
     container_name: hmpps-person-match
     image: hmpps-person-match:latest
+    command: |
+      python -m debugpy --listen 0.0.0.0:5678 -m uvicorn asgi:app --host 0.0.0.0 --port 5000 --reload --log-level debug
     networks:
       - hmpps
     build:
@@ -32,6 +34,9 @@ services:
         BUILD_NUMBER: local
         GIT_REF: ref
         GIT_BRANCH: branch
+    volumes:
+      - ./hmpps_person_match:/app/hmpps_person_match/
+      - ./hmpps_cpr_splink:/app/hmpps_cpr_splink/
     environment: &database_config
       DATABASE_USERNAME: root
       DATABASE_PASSWORD: dev
@@ -44,6 +49,7 @@ services:
           condition: service_completed_successfully
     ports: 
       - 5000:5000
+      - 5678:5678
 
   migrations:
     build: .
