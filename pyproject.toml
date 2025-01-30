@@ -59,8 +59,6 @@ select = [
     "UP",
     # Pyflakes
     "F",
-    # pyupgrade
-    "UP",
     # flake8-builtins
     "A",
     # flake8-commas
@@ -105,8 +103,6 @@ ignore = [
 "hmpps_cpr_splink/*" = [
     # pep8-naming
     "N",
-    # pyupgrade
-    "UP",
     # pyupgrade
     "UP",
     # flake8-builtins
