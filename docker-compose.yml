@@ -58,6 +58,8 @@ services:
     command: alembic upgrade head
     networks:
       - hmpps
+    volumes:
+      - ./hmpps_person_match:/app/hmpps_person_match/
     environment:
       <<: *database_config
     depends_on:
