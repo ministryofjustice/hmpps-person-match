@@ -25,12 +25,6 @@ def docker_compose_project_name():
 
 
 @pytest.fixture(scope="session")
-def docker_compose_environment():
-    os.environ["OAUTH_BASE_URL"] = "http://localhost:5000"
-    return os.environ
-
-
-@pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig):
     return os.path.join(str(pytestconfig.rootdir), "docker-compose.yml")
 

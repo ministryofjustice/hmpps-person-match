@@ -45,6 +45,7 @@ services:
       DATABASE_PORT: 5432
       DATABASE_HOST: postgres-hmpps-person-match
       DB_SSL_ENABLED: False
+      OAUTH_BASE_URL: http://hmpps-auth:8080
     depends_on: 
       migrations:
         condition: service_completed_successfully
