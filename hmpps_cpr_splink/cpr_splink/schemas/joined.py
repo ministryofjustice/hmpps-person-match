@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 
 class JoinedRecord(TypedDict):
@@ -30,11 +30,11 @@ class JoinedRecord(TypedDict):
 PYDANTIC_TO_DUCKDB_TYPE_MAPPING = {
     int: "INTEGER",
     str: "VARCHAR",
-    Optional[str]: "VARCHAR",
-    Optional[int]: "INTEGER",
-    Optional[date]: "DATE",
-    Optional[list[str]]: "TEXT[]",
-    Optional[list[date]]: "DATE[]",
+    str | None: "VARCHAR",
+    int | None: "INTEGER",
+    date | None: "DATE",
+    list[str] | None: "TEXT[]",
+    list[date] | None: "DATE[]",
 }
 
 

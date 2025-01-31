@@ -1,4 +1,5 @@
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import duckdb
 from pytest import mark
@@ -13,7 +14,7 @@ def cols_from_rows(rows: list[dict[str, Any]]) -> list[str]:
     """
     List of column names, from a list of records in key: value format.
     """
-    return list({k for r in rows for k in r.keys()})
+    return list({k for r in rows for k in r})
 
 
 def assert_tables_equal(
@@ -184,7 +185,7 @@ def check_output_matches_expected(
 
 
 def load_yaml_file(file_name: str):
-    with open(f"{_TEST_DATA_DIR}/{file_name}", "r") as f:
+    with open(f"{_TEST_DATA_DIR}/{file_name}") as f:
         data = safe_load(f)
     return data
 

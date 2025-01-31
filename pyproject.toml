@@ -29,7 +29,7 @@ default-groups = ["dev"]
 [dependency-groups]
 dev = [
   "ipykernel >= 6.29.4",
-  "ruff ==0.9.3",
+  "ruff ==0.9.4",
   "pyyaml >= 6.0.2",
   "pytest >= 8.3.4",
   "pytest-cov>=6.0.0",
@@ -101,20 +101,10 @@ ignore = [
 # ignores name convention as overriding package function
 "log_formatter.py" = ["N802"]
 "hmpps_cpr_splink/*" = [
-    # pep8-naming
-    "N",
-    # pyupgrade
-    "UP",
     # flake8-commas
     "COM",
-    # flake8-simplify
-    "SIM",
-    # flake8-blind-except
-    "BLE",
     # flake8-bandit
     "S",
-    # flake8-logging-format
-    "G",
     # flake8-no-pep420
     "INP",
     # flake8-self

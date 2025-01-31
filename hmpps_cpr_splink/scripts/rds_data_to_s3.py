@@ -71,10 +71,10 @@ def delete_all_objects_at_path(bucket_name, prefix):
 
     print(f"Deleted {total_deleted} objects from {bucket_name}/{prefix}")
 
+MAX_DIR_DEPTH = 3
+MAX_TOTAL_DIRS = 20
 
 def is_directory_structure_safe_to_delete(directory):
-    MAX_DIR_DEPTH = 3
-    MAX_TOTAL_DIRS = 20
     abs_dir = os.path.abspath(directory)
     abs_main_dir = os.path.abspath(MAIN_DIR)
 

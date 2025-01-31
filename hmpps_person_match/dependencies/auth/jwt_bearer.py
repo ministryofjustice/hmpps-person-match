@@ -42,7 +42,7 @@ class JWTBearer(HTTPBearer):
             public_key = await JWKS().get_public_key_from_jwt(token)
             pem_key = public_key.as_pem(is_private=False)
 
-            issuer = f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/issuer"
+            issuer = f"{get_env_var(EnvVars.OAUTH_ISSUER_URL_KEY)}/auth/issuer"
 
             # Decode and validate the JWT with the public key
             payload = jwt.decode(

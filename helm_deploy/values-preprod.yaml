@@ -9,6 +9,7 @@ generic-service:
 
   env:
     OAUTH_BASE_URL: https://sign-in-preprod.hmpps.service.justice.gov.uk
+    OAUTH_ISSUER_URL_KEY: https://sign-in-preprod.hmpps.service.justice.gov.uk
 
 generic-prometheus-alerts:
   businessHoursOnly: true

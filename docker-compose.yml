@@ -45,9 +45,13 @@ services:
       DATABASE_PORT: 5432
       DATABASE_HOST: postgres-hmpps-person-match
       DB_SSL_ENABLED: False
+      OAUTH_BASE_URL: http://hmpps-auth:8080
+      OAUTH_ISSUER_URL_KEY: http://localhost:8080
     depends_on: 
       migrations:
-          condition: service_completed_successfully
+        condition: service_completed_successfully
+      hmpps-auth:
+        condition: service_healthy
     ports: 
       - 5000:5000
       - 5678:5678
@@ -65,6 +69,19 @@ services:
     depends_on:
       postgres-hmpps-person-match:
         condition: service_healthy
+
+  hmpps-auth:
+    image: quay.io/hmpps/hmpps-auth:latest
+    container_name: hmpps-auth
+    networks:
+      - hmpps
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health"]
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev
 
 networks:
   hmpps:
