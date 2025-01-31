@@ -14,10 +14,9 @@ from secret_data.secrets_file import (
 def execute_postgres_query_direct(sql):
     start_time = time.time()
 
-    with psycopg2.connect(postgres_connection_string) as conn:
-        with conn.cursor() as cur:
-            cur.execute(sql)
-            result = cur.fetchall()
+    with psycopg2.connect(postgres_connection_string) as conn, conn.cursor() as cur:
+        cur.execute(sql)
+        result = cur.fetchall()
 
     end_time = time.time()
     # 0.1330 seconds is length of time for most trivial query

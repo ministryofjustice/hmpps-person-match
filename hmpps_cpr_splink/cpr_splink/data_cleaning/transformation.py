@@ -205,7 +205,7 @@ CONCAT_WS_FIRST_LAST_NAME_STD = NonChainableTransformation(
 
 
 @dataclass
-class case_when_array_length_greater_equal_or_null(NonChainableTransformation):
+class case_when_array_length_greater_equal_or_null(NonChainableTransformation):  # noqa: N801 (reasonable exception)
     threshold: int
     then_clause: str
 
