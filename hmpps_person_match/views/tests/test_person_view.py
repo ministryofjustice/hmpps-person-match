@@ -101,7 +101,7 @@ class TestPersonView:
                 "msg": "Input should be a valid date or datetime, invalid date separator, expected `-`",
                 "input": "1992/03/02",
                 "ctx": {
-                    "error": "invalid date separator, expected `-`"
+                    "error": "invalid date separator, expected `-`",
                 },
             },
         ]
