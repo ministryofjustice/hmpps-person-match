@@ -109,7 +109,7 @@ def score(
     ).as_duckdbpyrelation()
 
     end_time = time.perf_counter()
-    logger.info(f"Time taken: {end_time - start_time:.2f} seconds")
+    logger.info("Time taken: %.2f seconds", end_time - start_time)
 
     if return_scores_only:
         return con.sql("SELECT id_l, id_r, match_probability FROM scores")
@@ -253,7 +253,7 @@ def _score(
     ).as_duckdbpyrelation()
 
     end_time = time.perf_counter()
-    logger.info(f"Time taken: {end_time - start_time:.2f} seconds")
+    logger.info("Time taken: %.2f seconds", end_time - start_time)
 
     if return_scores_only:
         return con.sql("SELECT id_l, id_r, match_probability FROM scores")

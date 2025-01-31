@@ -1,4 +1,3 @@
-# ruff: noqa: E501  (disable line length for this module)
 import splink.comparison_level_library as cll
 import splink.comparison_library as cl
 

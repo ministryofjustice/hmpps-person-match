@@ -35,10 +35,8 @@ blocking_rules_for_prediction_tight_for_candidate_search = [
         "sentence_date_arr[-1]",
     ),
     CustomRule(
-        (
-            "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std "
-            "and l.date_of_birth = r.date_of_birth"
-        )
+        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std "
+        "and l.date_of_birth = r.date_of_birth"
     ),
 ]
 
@@ -108,10 +106,8 @@ blocking_rules_for_prediction_loose_for_initial_uuid_creation = [
         ],
     ),
     CustomRule(
-        (
-            "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std "
-            "and l.date_of_birth = r.date_of_birth"
-        )
+        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std "
+        "and l.date_of_birth = r.date_of_birth"
     ),
     block_on("first_and_last_name_std", "name_2_std"),
     block_on("name_1_std", "date_of_birth"),

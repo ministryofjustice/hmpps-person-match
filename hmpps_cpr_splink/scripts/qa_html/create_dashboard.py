@@ -121,7 +121,7 @@ def extract_comparison_columns(record):
     # Find all columns that end with _l
     left_cols = [
         col
-        for col in record.keys()
+        for col in record
         if col.endswith("_l")
         and not col.startswith("tf_")
         and not col.startswith("bf_")
@@ -237,7 +237,7 @@ def get_git_commit_hash():
             .decode("utf-8")
             .strip()
         )
-    except Exception:
+    except subprocess.CalledProcessError:
         return "unknown"
 
 

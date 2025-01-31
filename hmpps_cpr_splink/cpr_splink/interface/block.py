@@ -1,5 +1,4 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
-from typing import Optional
 
 from splink.internals.blocking import (
     BlockingRule,
@@ -35,7 +34,7 @@ _sd_col = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
 def _create_blocked_pairs_sql(
     blocking_rule: BlockingRule,
     *,
-    source_dataset_input_column: Optional[InputColumn],
+    source_dataset_input_column: InputColumn | None,
     unique_id_input_column: InputColumn,
     input_tablename_l: str,
     input_tablename_r: str,
@@ -70,7 +69,7 @@ def _block_using_rules_sqls(
     input_tablename_r: str,
     blocking_rules: list[BlockingRule],
     link_type: "LinkTypeLiteralType",
-    source_dataset_input_column: Optional[InputColumn],
+    source_dataset_input_column: InputColumn | None,
     unique_id_input_column: InputColumn,
 ) -> dict[str, str]:
     unique_id_input_columns = combine_unique_id_input_columns(
@@ -111,7 +110,7 @@ def candidate_search(primary_record_id: str) -> str:
     table_name_primary = "primary_record"
     sql = (
         f"SELECT *, 'a_primary' AS source_dataset "
-        f"FROM {cleaned_table_name} WHERE id = {primary_record_id}"
+        f"FROM {cleaned_table_name} WHERE id = '{primary_record_id}'"
     )
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
@@ -138,8 +137,7 @@ def candidate_search(primary_record_id: str) -> str:
         f"{pipeline.generate_cte_pipeline_sql()}"
     )
     # TODO: in a schema?
-    with postgres_db_connector() as conn:
-        with conn.cursor() as cur:
-            cur.execute(sql)
+    with postgres_db_connector() as conn, conn.cursor() as cur:
+        cur.execute(sql)
 
     return pipeline.output_table_name
