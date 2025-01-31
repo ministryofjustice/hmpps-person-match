@@ -9,14 +9,23 @@ class TestPersonEndpoint:
     Test match view
     """
 
-    INVALID_CLIENT = "aG1wcHMtdGllcjokMmEkMTAkbEJ3YnppUWxMZmlDbm44S2oxUGZNdWpFY0xkc0pZbFlTTkp2QlJPNjM4Z0NZVFM5eU4weG0="
-
-    def test_complete_message(self):
-        headers = {
-            "Authorization": f"Basic {self.INVALID_CLIENT}",
+    def test_complete_message(self, get_access_token):
+        json = {
+            "id": "123",
+            "sourceSystem": "DELIUS",
+            "firstName": "Henry",
+            "middleNames": "Ahmed",
+            "lastName": "Junaed",
+            "crn": "1234",
+            "dateOfBirth": "01/02/1992",
+            "firstNameAliases": ["Henry"],
+            "lastNameAliases": ["Junaed"],
+            "dateOfBirthAliases": ["01/02/1992"],
+            "postcodes": ["B10 1EJ"],
+            "cros": ["4444566"],
+            "pncs": ["22224555"],
+            "sentenceDates": ["02/03/2001"],
         }
-        params = {
-            "grant_type": "client_credentials",
-        }
-        response = requests.post("http://localhost:8080/auth/oauth/token", headers=headers, params=params)
+        headers = {"Authorization": f"Bearer {get_access_token}"}
+        response = requests.post("http://localhost:5000/person/match", json=json, headers=headers, timeout=30)
         assert response.status_code == 200
