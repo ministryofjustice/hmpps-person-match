@@ -4,6 +4,7 @@ from enum import Enum
 
 class EnvVars(Enum):
     OAUTH_BASE_URL_KEY = "OAUTH_BASE_URL"
+    OAUTH_ISSUER_URL_KEY = "OAUTH_ISSUER_URL_KEY"
 
 
 def get_env_var(key: EnvVars):
