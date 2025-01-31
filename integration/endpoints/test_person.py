@@ -15,14 +15,14 @@ class TestPersonEndpoint:
         "middleNames": "Ahmed",
         "lastName": "Junaed",
         "crn": "1234",
-        "dateOfBirth": "01/02/1992",
+        "dateOfBirth": "1992-03-02",
         "firstNameAliases": ["Henry"],
         "lastNameAliases": ["Junaed"],
-        "dateOfBirthAliases": ["01/02/1992"],
+        "dateOfBirthAliases": ["1992-01-01"],
         "postcodes": ["B10 1EJ"],
         "cros": ["4444566"],
         "pncs": ["22224555"],
-        "sentenceDates": ["02/03/2001"],
+        "sentenceDates": ["2001-03-01"],
     }
 
     def test_complete_message(self, post_to_endpoint):
