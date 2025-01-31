@@ -42,14 +42,14 @@ class TestPersonView:
             "middleNames": "Ahmed",
             "lastName": "Junaed",
             "crn": "1234",
-            "dateOfBirth": "01/02/1992",
+            "dateOfBirth": "1992-03-02",
             "firstNameAliases": ["Henry"],
             "lastNameAliases": ["Junaed"],
-            "dateOfBirthAliases": ["01/02/1992"],
+            "dateOfBirthAliases": ["1992-01-01"],
             "postcodes": ["B10 1EJ"],
             "cros": ["4444566"],
             "pncs": ["22224555"],
-            "sentenceDates": ["02/03/2001"],
+            "sentenceDates": ["2001-03-01"],
         }
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
@@ -73,6 +73,38 @@ class TestPersonView:
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
+
+    def test_invalid_date_format(self, post_to_endpoint, mock_db_connection):
+        json = {
+            "id": "123",
+            "sourceSystem": "DELIUS",
+            "firstName": "Henry",
+            "middleNames": "Ahmed",
+            "lastName": "Junaed",
+            "crn": "1234",
+            "dateOfBirth": "1992/03/02",
+            "firstNameAliases": ["Henry"],
+            "lastNameAliases": ["Junaed"],
+            "dateOfBirthAliases": ["1992-01-01"],
+            "postcodes": ["B10 1EJ"],
+            "cros": ["4444566"],
+            "pncs": ["22224555"],
+            "sentenceDates": ["2001-03-01"],
+        }
+        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Invalid request."
+        assert response.json()["errors"] == [
+            {
+                "type": "date_from_datetime_parsing",
+                "loc": ["body", "dateOfBirth"],
+                "msg": "Input should be a valid date or datetime, invalid date separator, expected `-`",
+                "input": "1992/03/02",
+                "ctx": {
+                    "error": "invalid date separator, expected `-`"
+                },
+            },
+        ]
 
     def test_invalid_role_unauthorized(self, post_to_endpoint):
         response = post_to_endpoint(ROUTE, roles=["Invalid Role"], json={})
