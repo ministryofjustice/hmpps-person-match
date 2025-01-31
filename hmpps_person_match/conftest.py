@@ -18,6 +18,7 @@ def set_env_vars(monkeypatch):
     monkeypatch.setenv("APP_GIT_REF", "ref")
     monkeypatch.setenv("APP_GIT_BRANCH", "branch")
     monkeypatch.setenv("OAUTH_BASE_URL", "http://localhost:5000")
+    monkeypatch.setenv("OAUTH_ISSUER_URL_KEY", "http://localhost:5000")
 
 
 @pytest.fixture()
