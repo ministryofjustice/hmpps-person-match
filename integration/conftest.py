@@ -1,6 +1,8 @@
 import os
+import uuid
 from enum import Enum
 
+import asyncpg
 import pytest
 import requests
 from requests.exceptions import ConnectionError as ReqConnectionError
@@ -63,3 +65,27 @@ def person_match_url(get_service):
     Start and check service is running for hmpps-person-match
     """
     return get_service(Service.HMPPS_PERSON_MATCH)
+
+
+@pytest.fixture()
+async def db():
+    """
+    Get database connection
+    """
+    connection = await asyncpg.connect(
+        host="localhost",
+        port=5432,
+        user="root",
+        password="dev",  # noqa: S106
+        database="postgres",
+    )
+    yield connection
+    await connection.close()
+
+
+@pytest.fixture()
+def generate_uuid():
+    """
+    Generate UUID
+    """
+    return str(uuid.uuid4())

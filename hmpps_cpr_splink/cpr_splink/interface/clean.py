@@ -8,7 +8,7 @@ from ..schemas import DUCKDB_COLUMNS_WITH_TYPES
 from .db import insert_duckdb_table_into_postgres_table
 
 
-def clean_and_insert(record: Person, conn: AsyncConnection) -> None:
+async def clean_and_insert(record: Person, conn: AsyncConnection) -> None:
     """
     Takes in a single record in joined format.
 
@@ -21,8 +21,8 @@ def clean_and_insert(record: Person, conn: AsyncConnection) -> None:
     t_cleaned = simple_clean_whole_joined_table(record_table_name)
     sql = t_cleaned.create_table_sql
     con.sql(sql)
-    insert_duckdb_table_into_postgres_table(
+    await insert_duckdb_table_into_postgres_table(
         con.table(t_cleaned.name),
-        "person",
+        "personmatch.person",
         conn,
     )
