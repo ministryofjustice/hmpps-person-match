@@ -1,7 +1,5 @@
 import datetime
 
-import pytest
-
 from hmpps_person_match.views.person_view import ROUTE
 from integration.client import Client
 
@@ -57,7 +55,6 @@ class TestPersonEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    @pytest.mark.skip("duplicate key value violates unique constraint, need to handle upsert to record TODO.")
     async def test_clean_and_update_message(self, post_to_endpoint, generate_uuid, db):
         """
         Test person cleaned and update existing person on person endpoint
@@ -68,9 +65,32 @@ class TestPersonEndpoint:
         response = post_to_endpoint(ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
 
+        data = self.create_person_data(person_id)
         # Update person
+        data["firstName"] = "andrew"
+        data["firstNameAliases"] = ["andy"]
+        data["dateOfBirthAliases"] = ["1980-01-01"]
+        data["postcodes"] = ["a34 8fr"]
         response = post_to_endpoint(ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
+        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE id = '{person_id}'")
+        assert row["id"] == person_id
+        assert row["name_1_std"] == "ANDREW"
+        assert row["name_2_std"] == "AHMED"
+        assert row["name_3_std"] is None
+        assert row["last_name_std"] == "JUNAED"
+        assert row["first_and_last_name_std"] == "ANDREW JUNAED"
+        assert row["forename_std_arr"] == ["ANDREW", "ANDY"]
+        assert row["last_name_std_arr"] == ["JUNAED"]
+        assert row["sentence_date_single"] == datetime.date(2001, 3, 1)
+        assert row["sentence_date_arr"] == [datetime.date(2001, 3, 1)]
+        assert row["date_of_birth"] == datetime.date(1992, 3, 2)
+        assert row["date_of_birth_arr"] == [datetime.date(1980, 1, 1), datetime.date(1992, 3, 2)]
+        assert row["postcode_arr"] == ["A348FR"]
+        assert row["postcode_outcode_arr"] == ["A34"]
+        assert row["cro_single"] == "4444566"
+        assert row["pnc_single"] == "22224555"
+        assert row["source_system"] == "DELIUS"
 
     def test_invalid_client_returns_forbidden(self, post_to_endpoint, generate_uuid):
         """
