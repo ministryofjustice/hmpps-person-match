@@ -80,7 +80,7 @@ def blocking_performance_chart(linker, predictions):
                                 "field": "fdr",
                                 "format": ".0%",
                                 "type": "quantitative",
-                            }
+                            },
                         },
                     },
                     {
@@ -169,7 +169,7 @@ def blocking_performance_chart(linker, predictions):
                                 "field": "precision",
                                 "format": ".0%",
                                 "type": "quantitative",
-                            }
+                            },
                         },
                     },
                     {
@@ -260,7 +260,7 @@ def blocking_performance_chart(linker, predictions):
                 "joinaggregate": [
                     {"op": "max", "field": "non_matches", "as": "max_non_matches"},
                     {"op": "max", "field": "matches", "as": "max_matches"},
-                ]
+                ],
             },
             {
                 "calculate": "'p < '+format(pow(2, datum.mw_threshold)/(1+pow(2, datum.mw_threshold)), '.3f')",  # NOQA: E501

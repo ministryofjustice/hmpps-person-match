@@ -3,7 +3,9 @@ from .clean import TransformedColumn
 
 
 def calculate_array_element_frequencies_table(
-    input_array_col_name: str, output_col_name: str, source_table: str | Table
+    input_array_col_name: str,
+    output_col_name: str,
+    source_table: str | Table,
 ) -> Table:
     """Calculate frequency distribution of elements in an array column.
 

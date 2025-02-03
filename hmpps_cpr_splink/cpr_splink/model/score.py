@@ -51,7 +51,7 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
         alias_table_name = tf_colname
         tf_lookup_table_name = f"pg_db.public.{tf_colname}"
         join_clauses.append(
-            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}"
+            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
         )
         select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
 
@@ -64,7 +64,7 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
         SELECT {sql_select}
         FROM {records_table} f
         {sql_join}
-        """
+        """,
     )
     return joined_views_name
 
@@ -189,7 +189,7 @@ def _score(
         join_clauses.append(
             f"LEFT JOIN {tf_lookup_name} AS {alias}"
             f" ON (f.{col} = {alias}.value OR (f.{col}::varchar = {alias}.value))"
-            f" AND {alias}.column_name = '{col}'"
+            f" AND {alias}.column_name = '{col}'",
         )
         select_clauses.append(f"{alias}.rel_freq AS tf_{col}")
 
@@ -202,7 +202,7 @@ def _score(
         SELECT {sql_select}
         FROM {final_table_name} f
         {sql_join}
-        """
+        """,
     )
 
     # Create views for source and candidate records
@@ -213,7 +213,7 @@ def _score(
         SELECT *
         FROM {joined_views_name}
         WHERE id = {primary_record["id"]}
-        """
+        """,
     )
 
     candidates_name = "candidates_record"
@@ -223,7 +223,7 @@ def _score(
         SELECT *
         FROM {joined_views_name}
         WHERE id != {primary_record["id"]}
-        """
+        """,
     )
 
     # Compare records

@@ -51,7 +51,7 @@ def load_frame(
                 "required": True,
             }
             for column_name, column_type in table_schema.items()
-        }
+        },
     )
     # insert values from test data - any columns appearing
     # that we don't need are just None
@@ -67,7 +67,7 @@ def load_frame(
     values_str = (
         "("
         + "), (".join(
-            [", ".join(value_to_sql_literal(value) for value in row_values) for row_values in values_to_insert]
+            [", ".join(value_to_sql_literal(value) for value in row_values) for row_values in values_to_insert],
         )
         + ")"
     )

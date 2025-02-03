@@ -56,7 +56,7 @@ new_settings.blocking_rules_to_generate_predictions = [
         "sentence_date_arr[-1]",
     ),
     CustomRule(
-        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std and l.date_of_birth = r.date_of_birth"
+        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std and l.date_of_birth = r.date_of_birth",
     ),
 ]
 
@@ -112,7 +112,7 @@ print("\nSummary:")
 
 print(
     f"{c:,} predictions, resulting in {distinct_cluster_count:,} "
-    f"distinct clusters from {num_input_records:,} input records"
+    f"distinct clusters from {num_input_records:,} input records",
 )
 print(f"Total comparisons: {total_comparisons:,}")
 

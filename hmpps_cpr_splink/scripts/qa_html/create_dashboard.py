@@ -138,7 +138,7 @@ def extract_comparison_columns(record):
                     "field": base_name,
                     "left_value": left_value,
                     "right_value": right_value,
-                }
+                },
             )
 
     return comparisons

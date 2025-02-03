@@ -21,7 +21,7 @@ _blocking_rules_concrete = list(
     map(
         lambda brc: brc.get_blocking_rule("postgres"),
         blocking_rules_for_prediction_tight_for_candidate_search,
-    )
+    ),
 )
 for n, br in enumerate(_blocking_rules_concrete):
     br.add_preceding_rules(_blocking_rules_concrete[:n])

@@ -65,7 +65,7 @@ REGEX_REPLACE_NOT_ENTERED = ChainableTransformation(
 
 # https://stackoverflow.com/a/51885364/1779128
 REGEXP_MATCHES_POSTCODE = ChainableTransformation(
-    r"REGEXP_MATCHES('^([A-Z][A-HJ-Y]?\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$')"
+    r"REGEXP_MATCHES('^([A-Z][A-HJ-Y]?\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$')",
 )
 
 # TODO: template this pattern:
@@ -144,7 +144,7 @@ LIST_FILTER_PROBLEM_CROS = list_filter_remove_specific_str_values("000000/00Z")
 LIST_FILTER_PROBLEM_POSTCODES = list_filter_remove_specific_str_values("NF11NF", "NF11FA")
 
 LIST_FILTER_EXCLUDE_1ST_JAN_DATES = ChainableTransformation(
-    "LIST_FILTER(x -> CAST(x AS VARCHAR).SUBSTR(6, 5) != '01-01')"
+    "LIST_FILTER(x -> CAST(x AS VARCHAR).SUBSTR(6, 5) != '01-01')",
 )
 
 NAME_CLEANING_REPLACEMENTS = [

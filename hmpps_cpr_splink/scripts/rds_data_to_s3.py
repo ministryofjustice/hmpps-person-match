@@ -179,7 +179,7 @@ for table in TABLES:
         con.execute(sql)
         print(
             f"Exported {table} - chunk {(offset // page_size) + 1} "
-            f"to {table_dir}/{table}_{offset // page_size + 1}.parquet"
+            f"to {table_dir}/{table}_{offset // page_size + 1}.parquet",
         )
 
 
@@ -212,7 +212,7 @@ def upload_to_s3(local_path, bucket_name, prefix):
     safe, reason = is_s3_path_safe_to_delete(bucket_name, prefix)
     if not safe:
         raise ValueError(
-            f"Refusing to delete S3 path with unexpected structure: {bucket_name}/{prefix}. Reason: {reason}"
+            f"Refusing to delete S3 path with unexpected structure: {bucket_name}/{prefix}. Reason: {reason}",
         )
 
     # Delete existing data

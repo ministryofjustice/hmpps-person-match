@@ -162,7 +162,7 @@ def check_output_matches_expected(
     con.sql(
         "CREATE OR REPLACE VIEW schema_compare_actual AS "
         "SELECT column_name, data_type FROM information_schema.columns "
-        "WHERE table_name='actual_output_table'"
+        "WHERE table_name='actual_output_table'",
     )
     assert_tables_equal(
         con,
@@ -180,7 +180,9 @@ def load_yaml_file(file_name: str):
 
 
 def check_data(
-    data_file: str, sql: str, expected_output_table: str = "expected_output_table"
+    data_file: str,
+    sql: str,
+    expected_output_table: str = "expected_output_table",
 ) -> Callable[[None], None]:
     """
     Decorator for a test function (whose contents are irrelevant).
@@ -233,7 +235,7 @@ def check_data(
                 {
                     "input_table": [{"input_column": input_value}],
                     "expected_output_table": [{"output_column": output_value}],
-                }
+                },
             )
         data["data"] = long_rows
 

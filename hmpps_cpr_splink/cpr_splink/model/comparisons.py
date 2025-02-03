@@ -7,7 +7,8 @@ name_comparison = cl.CustomComparison(
         cll.And(cll.NullLevel("name_1_std"), cll.NullLevel("last_name_std")).configure(is_null_level=True),
         cll.ExactMatchLevel("first_and_last_name_std").configure(tf_adjustment_column="first_and_last_name_std"),
         cll.JaroWinklerLevel("first_and_last_name_std", distance_threshold=0.9).configure(
-            tf_adjustment_column="first_and_last_name_std", tf_adjustment_weight=0.7
+            tf_adjustment_column="first_and_last_name_std",
+            tf_adjustment_weight=0.7,
         ),
         cll.ColumnsReversedLevel("name_1_std", "last_name_std", symmetrical=True),
         cll.And(
@@ -25,7 +26,7 @@ name_comparison = cl.CustomComparison(
 )
 
 name_2_comparison = cl.JaroWinklerAtThresholds("name_2_std", score_threshold_or_thresholds=[0.85]).configure(
-    term_frequency_adjustments=True
+    term_frequency_adjustments=True,
 )
 
 # Setence date doesn't have much skew so TF adjustments not necesasry

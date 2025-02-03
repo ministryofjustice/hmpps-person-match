@@ -39,7 +39,7 @@ if not joined_data_exists:
         COPY df
         TO './secret_data/cleaned/joined/'
         (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-    """
+    """,
     )
     con_join.close()
 else:
@@ -79,7 +79,7 @@ if not cleaned_data_exists:
         COPY df_cleaned_with_arr_freq
         TO './secret_data/cleaned/cleaned/'
         (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-    """
+    """,
     )
     con_clean.close()
 else:
@@ -117,7 +117,7 @@ con_training.execute(
     COPY {df_predict.physical_name}
     TO './secret_data/cleaned/predictions/'
     (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-"""
+""",
 )
 
 
@@ -134,5 +134,5 @@ con_training.execute(
     COPY {clustered.physical_name}
     TO './secret_data/cleaned/clustered/'
     (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-"""
+""",
 )
