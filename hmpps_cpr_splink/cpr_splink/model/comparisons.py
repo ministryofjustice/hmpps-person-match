@@ -4,16 +4,11 @@ import splink.comparison_library as cl
 name_comparison = cl.CustomComparison(
     output_column_name="name_comparison",
     comparison_levels=[
-        cll.And(cll.NullLevel("name_1_std"), cll.NullLevel("last_name_std")).configure(
-            is_null_level=True
-        ),
-        cll.ExactMatchLevel("first_and_last_name_std").configure(
-            tf_adjustment_column="first_and_last_name_std"
-        ),
-        cll.JaroWinklerLevel(
-            "first_and_last_name_std", distance_threshold=0.9
-        ).configure(
-            tf_adjustment_column="first_and_last_name_std", tf_adjustment_weight=0.7
+        cll.And(cll.NullLevel("name_1_std"), cll.NullLevel("last_name_std")).configure(is_null_level=True),
+        cll.ExactMatchLevel("first_and_last_name_std").configure(tf_adjustment_column="first_and_last_name_std"),
+        cll.JaroWinklerLevel("first_and_last_name_std", distance_threshold=0.9).configure(
+            tf_adjustment_column="first_and_last_name_std",
+            tf_adjustment_weight=0.7,
         ),
         cll.ColumnsReversedLevel("name_1_std", "last_name_std", symmetrical=True),
         cll.And(
@@ -25,21 +20,17 @@ name_comparison = cl.CustomComparison(
             cll.JaroWinklerLevel("last_name_std", distance_threshold=0.7),
         ),
         cll.ExactMatchLevel("name_1_std").configure(tf_adjustment_column="name_1_std"),
-        cll.ExactMatchLevel("last_name_std").configure(
-            tf_adjustment_column="last_name_std"
-        ),
+        cll.ExactMatchLevel("last_name_std").configure(tf_adjustment_column="last_name_std"),
         cll.ElseLevel(),
     ],
 )
 
-name_2_comparison = cl.JaroWinklerAtThresholds(
-    "name_2_std", score_threshold_or_thresholds=[0.85]
-).configure(term_frequency_adjustments=True)
+name_2_comparison = cl.JaroWinklerAtThresholds("name_2_std", score_threshold_or_thresholds=[0.85]).configure(
+    term_frequency_adjustments=True,
+)
 
 # Setence date doesn't have much skew so TF adjustments not necesasry
-intersection_sql = (
-    'array_length(list_intersect("sentence_date_arr_l", "sentence_date_arr_r")) >= 1'
-)
+intersection_sql = 'array_length(list_intersect("sentence_date_arr_l", "sentence_date_arr_r")) >= 1'
 few_elements_sql = 'len("sentence_date_arr_l") * len("sentence_date_arr_r") <= 9'
 date_diff_sql = """
     abs(datediff('day', sentence_date_arr_l[1], sentence_date_arr_r[1])) <= 14
@@ -87,12 +78,8 @@ date_of_birth_comparison = cl.CustomComparison(
             "sql_condition": f"{dob_intersection_sql} >= 1",
             "label_for_charts": "Array intersection size >= 1",
         },
-        cll.DamerauLevenshteinLevel(
-            "cast(date_of_birth as varchar)", distance_threshold=1
-        ),
-        cll.AbsoluteDateDifferenceLevel(
-            "date_of_birth", threshold=5, metric="year", input_is_string=False
-        ),
+        cll.DamerauLevenshteinLevel("cast(date_of_birth as varchar)", distance_threshold=1),
+        cll.AbsoluteDateDifferenceLevel("date_of_birth", threshold=5, metric="year", input_is_string=False),
         cll.ElseLevel(),
     ],
 )

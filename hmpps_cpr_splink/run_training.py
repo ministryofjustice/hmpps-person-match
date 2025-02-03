@@ -13,9 +13,7 @@ test_con = duckdb.connect()
 
 
 try:
-    test_con.execute(
-        "SELECT * FROM read_parquet('secret_data/cleaned/joined/*.parquet') LIMIT 1"
-    )
+    test_con.execute("SELECT * FROM read_parquet('secret_data/cleaned/joined/*.parquet') LIMIT 1")
     joined_data_exists = True
 except duckdb.IOException:
     joined_data_exists = False
@@ -41,7 +39,7 @@ if not joined_data_exists:
         COPY df
         TO './secret_data/cleaned/joined/'
         (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-    """
+    """,
     )
     con_join.close()
 else:
@@ -51,9 +49,7 @@ cleaned_data_exists = False
 test_con = duckdb.connect()
 
 try:
-    test_con.execute(
-        "SELECT * FROM read_parquet('secret_data/cleaned/cleaned/*.parquet') LIMIT 1"
-    )
+    test_con.execute("SELECT * FROM read_parquet('secret_data/cleaned/cleaned/*.parquet') LIMIT 1")
     cleaned_data_exists = True
 except duckdb.IOException:
     cleaned_data_exists = False
@@ -83,7 +79,7 @@ if not cleaned_data_exists:
         COPY df_cleaned_with_arr_freq
         TO './secret_data/cleaned/cleaned/'
         (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-    """
+    """,
     )
     con_clean.close()
 else:
@@ -121,18 +117,14 @@ con_training.execute(
     COPY {df_predict.physical_name}
     TO './secret_data/cleaned/predictions/'
     (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-"""
+""",
 )
 
 
 linker.visualisations.match_weights_histogram(df_predict)
-linker.visualisations.comparison_viewer_dashboard(
-    df_predict, "secret_data/cleaned/comparison_viewer/cv.html"
-)
+linker.visualisations.comparison_viewer_dashboard(df_predict, "secret_data/cleaned/comparison_viewer/cv.html")
 
-clustered = linker.clustering.cluster_pairwise_predictions_at_threshold(
-    df_predict, threshold_match_weight=20.0
-)
+clustered = linker.clustering.cluster_pairwise_predictions_at_threshold(df_predict, threshold_match_weight=20.0)
 clustered.as_duckdbpyrelation().show(max_width=1000)
 cluster_ddb = clustered.as_duckdbpyrelation()
 
@@ -142,5 +134,5 @@ con_training.execute(
     COPY {clustered.physical_name}
     TO './secret_data/cleaned/clustered/'
     (FORMAT PARQUET, PER_THREAD_OUTPUT, ROW_GROUP_SIZE 100000);
-"""
+""",
 )

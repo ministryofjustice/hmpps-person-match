@@ -39,10 +39,7 @@ def delete_all_objects_at_path(bucket_name, prefix):
             total_objects += len(page["Contents"])
 
         if total_objects > 500:
-            raise ValueError(
-                f"Found more than 1000 objects at {bucket_name}/{prefix}. "
-                "Aborting deletion for safety."
-            )
+            raise ValueError(f"Found more than 1000 objects at {bucket_name}/{prefix}. Aborting deletion for safety.")
 
     if total_objects == 0:
         print("No objects found at the specified path")
@@ -71,17 +68,17 @@ def delete_all_objects_at_path(bucket_name, prefix):
 
     print(f"Deleted {total_deleted} objects from {bucket_name}/{prefix}")
 
+
 MAX_DIR_DEPTH = 3
 MAX_TOTAL_DIRS = 20
+
 
 def is_directory_structure_safe_to_delete(directory):
     abs_dir = os.path.abspath(directory)
     abs_main_dir = os.path.abspath(MAIN_DIR)
 
     if not abs_dir.startswith(abs_main_dir):
-        return False, (
-            f"The directory {abs_dir} is not within the MAIN_DIR {abs_main_dir}"
-        )
+        return False, (f"The directory {abs_dir} is not within the MAIN_DIR {abs_main_dir}")
 
     total_dirs = 0
     max_depth_reached = 0
@@ -91,16 +88,12 @@ def is_directory_structure_safe_to_delete(directory):
         max_depth_reached = max(max_depth_reached, depth)
 
         if max_depth_reached > MAX_DIR_DEPTH:
-            return False, (
-                f"Directory depth {max_depth_reached} exceeds the maximum "
-                f"allowed depth of {MAX_DIR_DEPTH}"
-            )
+            return False, (f"Directory depth {max_depth_reached} exceeds the maximum allowed depth of {MAX_DIR_DEPTH}")
 
         total_dirs += len(dirs)
         if total_dirs > MAX_TOTAL_DIRS:
             return False, (
-                f"Total number of subdirectories ({total_dirs}) exceeds the maximum "
-                f"allowed of {MAX_TOTAL_DIRS}"
+                f"Total number of subdirectories ({total_dirs}) exceeds the maximum allowed of {MAX_TOTAL_DIRS}"
             )
 
     return True, "Directory structure is safe to delete"
@@ -111,10 +104,7 @@ def clean_parquet_files(directory):
 
     is_safe, reason = is_directory_structure_safe_to_delete(abs_directory)
     if not is_safe:
-        raise ValueError(
-            f"Refusing to delete directory with unexpected structure: "
-            f"{abs_directory}. Reason: {reason}"
-        )
+        raise ValueError(f"Refusing to delete directory with unexpected structure: {abs_directory}. Reason: {reason}")
 
     if os.path.exists(abs_directory):
         shutil.rmtree(abs_directory)
@@ -122,9 +112,7 @@ def clean_parquet_files(directory):
 
 
 con = duckdb.connect()
-con.execute(
-    f"ATTACH '{postgres_connection_string}' AS postgres_db (TYPE POSTGRES, READ_ONLY)"
-)
+con.execute(f"ATTACH '{postgres_connection_string}' AS postgres_db (TYPE POSTGRES, READ_ONLY)")
 con.execute("SET pg_debug_show_queries=false")
 
 
@@ -191,7 +179,7 @@ for table in TABLES:
         con.execute(sql)
         print(
             f"Exported {table} - chunk {(offset // page_size) + 1} "
-            f"to {table_dir}/{table}_{offset // page_size + 1}.parquet"
+            f"to {table_dir}/{table}_{offset // page_size + 1}.parquet",
         )
 
 
@@ -211,17 +199,11 @@ def is_s3_path_safe_to_delete(bucket_name, prefix):
         max_depth_reached = max(max_depth_reached, depth)
 
         if max_depth_reached > 3:
-            return False, (
-                f"Directory depth {max_depth_reached} exceeds the maximum "
-                "allowed depth of 3"
-            )
+            return False, (f"Directory depth {max_depth_reached} exceeds the maximum allowed depth of 3")
         if relative_path.endswith("/"):
             total_dirs += 1
         if total_dirs > 20:
-            return False, (
-                f"Total number of subdirectories ({total_dirs}) exceeds the maximum "
-                "allowed of 20"
-            )
+            return False, (f"Total number of subdirectories ({total_dirs}) exceeds the maximum allowed of 20")
 
     return True, "S3 path structure is safe to delete"
 
@@ -230,8 +212,7 @@ def upload_to_s3(local_path, bucket_name, prefix):
     safe, reason = is_s3_path_safe_to_delete(bucket_name, prefix)
     if not safe:
         raise ValueError(
-            f"Refusing to delete S3 path with unexpected structure: "
-            f"{bucket_name}/{prefix}. Reason: {reason}"
+            f"Refusing to delete S3 path with unexpected structure: {bucket_name}/{prefix}. Reason: {reason}",
         )
 
     # Delete existing data

@@ -1,5 +1,3 @@
-
-
 def join_raw_tables_sql(
     person_in="person",
     pseudonym_in="pseudonym",

@@ -5,6 +5,7 @@ class Config:
     """
     Database configuration
     """
+
     # Database connection settings
     DB_DRIVER = "postgresql+asyncpg"
     DB_USER = os.environ.get("DATABASE_USERNAME")

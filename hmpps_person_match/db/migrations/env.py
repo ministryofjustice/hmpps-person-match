@@ -55,7 +55,6 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-
 def do_run_migrations(connection):
     context.configure(connection=connection, target_metadata=target_metadata)
 
