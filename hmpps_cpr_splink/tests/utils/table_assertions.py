@@ -131,14 +131,16 @@ def check_output_matches_expected(
         # if schema is a string instead of dict, then it should be a yaml file name
         # containing the schema
         if isinstance(schema, str):
-            schema = load_yaml_file(f"tables/{schema}")
-            schemas[table_name] = schema
+            schema_data = load_yaml_file(f"tables/{schema}")
+            schemas[table_name] = schema_data
+        else:
+            schema_data = schema
         try:
             rows = test_data[table_name]
         except KeyError as e:
             print(f"Didn't find any test data for specified table: '{table_name}'")  # noqa: T201
             raise e
-        load_frame(con, rows, schema, table_name)
+        load_frame(con, rows, schema_data, table_name)
 
     # run the actual SQL we are testing:
     con.sql(f"CREATE OR REPLACE VIEW actual_output_table AS {sql}")
@@ -170,7 +172,6 @@ def check_output_matches_expected(
         "schema_compare_actual",
         columns_table_schema.keys(),
     )
-    return
 
 
 def load_yaml_file(file_name: str):

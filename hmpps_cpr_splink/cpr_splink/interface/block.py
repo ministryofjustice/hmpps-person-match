@@ -26,16 +26,14 @@ _blocking_rules_concrete = list(
 for n, br in enumerate(_blocking_rules_concrete):
     br.add_preceding_rules(_blocking_rules_concrete[:n])
 
-_id_col = InputColumn("id", sqlglot_dialect_str="postgres")
-_sd_col = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
+unique_id_input_column = InputColumn("id", sqlglot_dialect_str="postgres")
+source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
 
 
 # modified version of br.create_blocked_pairs_sql
 def _create_blocked_pairs_sql(
     blocking_rule: BlockingRule,
     *,
-    source_dataset_input_column: InputColumn | None,
-    unique_id_input_column: InputColumn,
     input_tablename_l: str,
     input_tablename_r: str,
     where_condition: str,
@@ -69,8 +67,6 @@ def _block_using_rules_sqls(
     input_tablename_r: str,
     blocking_rules: list[BlockingRule],
     link_type: "LinkTypeLiteralType",
-    source_dataset_input_column: InputColumn | None,
-    unique_id_input_column: InputColumn,
 ) -> dict[str, str]:
     unique_id_input_columns = combine_unique_id_input_columns(source_dataset_input_column, unique_id_input_column)
 
@@ -81,8 +77,6 @@ def _block_using_rules_sqls(
     for br in blocking_rules:
         sql = _create_blocked_pairs_sql(
             br,
-            unique_id_input_column=unique_id_input_column,
-            source_dataset_input_column=source_dataset_input_column,
             input_tablename_l=input_tablename_l,
             input_tablename_r=input_tablename_r,
             where_condition=where_condition,
@@ -119,8 +113,6 @@ def candidate_search(primary_record_id: str) -> str:
         input_tablename_r=table_name_potential_candidates,
         blocking_rules=_blocking_rules_concrete,
         link_type="link_only",
-        source_dataset_input_column=_sd_col,
-        unique_id_input_column=_id_col,
     )
     pipeline.enqueue_sql(**sql_info)
 

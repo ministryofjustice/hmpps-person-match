@@ -23,11 +23,13 @@ finally:
 if not joined_data_exists:
     con_join = duckdb.connect()
     sql = join_raw_tables_sql(
-        person_in="read_parquet('secret_data/raw/person/*.parquet')",
-        pseudonym_in="read_parquet('secret_data/raw/pseudonym/*.parquet')",
-        address_in="read_parquet('secret_data/raw/address/*.parquet')",
-        reference_in="read_parquet('secret_data/raw/reference/*.parquet')",
-        sentence_info_in="read_parquet('secret_data/raw/sentence_info/*.parquet')",
+        dict(
+            person_in="read_parquet('secret_data/raw/person/*.parquet')",
+            pseudonym_in="read_parquet('secret_data/raw/pseudonym/*.parquet')",
+            address_in="read_parquet('secret_data/raw/address/*.parquet')",
+            reference_in="read_parquet('secret_data/raw/reference/*.parquet')",
+            sentence_info_in="read_parquet('secret_data/raw/sentence_info/*.parquet')",
+        ),
         # contact_in="read_parquet('secret_data/raw/contact/*.parquet')",
     )
 
