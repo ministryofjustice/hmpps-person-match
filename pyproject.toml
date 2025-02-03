@@ -106,6 +106,7 @@ ignore = [
     # flake8-no-pep420
     "INP",
     # flake8-self
+    # keep this as we need to access Splink internals - not a problem as we own it
     "SLF",
     # pylint
     "PL",
