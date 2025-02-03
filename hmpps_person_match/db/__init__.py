@@ -7,7 +7,7 @@ from hmpps_person_match.db.config import Config
 
 db_query_string_params = {}
 if Config.DB_SSL_ENABLED:
-    db_query_string_params["ssl"] =  "verify-full"
+    db_query_string_params["ssl"] = "verify-full"
 
 # Construct the database URL
 database_url = URL.create(

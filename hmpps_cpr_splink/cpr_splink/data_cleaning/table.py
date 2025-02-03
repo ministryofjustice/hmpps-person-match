@@ -31,19 +31,12 @@ class Table:
 
     @property
     def select_list_with_alias(self) -> str:
-        col_exprs = [
-            expr if isinstance(expr, str) else expr.select_expression
-            for expr in self.select_expressions
-        ]
+        col_exprs = [expr if isinstance(expr, str) else expr.select_expression for expr in self.select_expressions]
         return ",\n\n".join(col_exprs)
 
     @property
     def select_statement_without_lineage(self) -> str:
-        return (
-            f"SELECT {self.select_list_with_alias}\n"
-            f"FROM {self.from_condition}\n"
-            f"{self.post_from_clauses}"
-        )
+        return f"SELECT {self.select_list_with_alias}\nFROM {self.from_condition}\n{self.post_from_clauses}"
 
     @property
     def cte_select_statement(self) -> str:
@@ -64,10 +57,7 @@ class Table:
         if not lin:
             return self.select_statement_without_lineage
         sql = (
-            "WITH "
-            + ",\n".join(tab.cte_select_statement for tab in lin)
-            + "\n"
-            + self.select_statement_without_lineage
+            "WITH " + ",\n".join(tab.cte_select_statement for tab in lin) + "\n" + self.select_statement_without_lineage
         )
         return sql
 

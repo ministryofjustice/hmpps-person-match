@@ -13,30 +13,21 @@ blocking_rules_for_prediction_tight_for_candidate_search = [
     ),
     block_on("forename_std_arr[1]", "last_name_std_arr[1]", "postcode_arr[1]"),
     block_on("date_of_birth", "postcode_arr[-1]"),
-    CustomRule(
-        "l.date_of_birth = r.date_of_birth and l.postcode_arr[1] = r.postcode_arr[2]"
-    ),
+    CustomRule("l.date_of_birth = r.date_of_birth and l.postcode_arr[1] = r.postcode_arr[2]"),
     block_on("sentence_date_arr[1]", "date_of_birth"),
     block_on("forename_std_arr[-1]", "last_name_std_arr[-1]", "date_of_birth"),
     block_on("forename_std_arr[1]", "last_name_std_arr[-1]", "date_of_birth"),
     block_on("first_and_last_name_std", "name_2_std"),
-    block_on(
-        "substr(name_1_std, 1, 2)", "substr(last_name_std, 1, 2)", "date_of_birth"
-    ),
-    block_on(
-        "substr(name_1_std, 1, 2)", "substr(last_name_std, 1, 2)", "postcode_arr[1]"
-    ),
-    block_on(
-        "substr(name_1_std, 1, 2)", "substr(last_name_std, 1, 2)", "postcode_arr[-1]"
-    ),
+    block_on("substr(name_1_std, 1, 2)", "substr(last_name_std, 1, 2)", "date_of_birth"),
+    block_on("substr(name_1_std, 1, 2)", "substr(last_name_std, 1, 2)", "postcode_arr[1]"),
+    block_on("substr(name_1_std, 1, 2)", "substr(last_name_std, 1, 2)", "postcode_arr[-1]"),
     block_on(
         "substr(name_1_std, 1, 2)",
         "substr(last_name_std, 1, 2)",
         "sentence_date_arr[-1]",
     ),
     CustomRule(
-        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std "
-        "and l.date_of_birth = r.date_of_birth"
+        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std and l.date_of_birth = r.date_of_birth",
     ),
 ]
 
@@ -106,8 +97,7 @@ blocking_rules_for_prediction_loose_for_initial_uuid_creation = [
         ],
     ),
     CustomRule(
-        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std "
-        "and l.date_of_birth = r.date_of_birth"
+        "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std and l.date_of_birth = r.date_of_birth",
     ),
     block_on("first_and_last_name_std", "name_2_std"),
     block_on("name_1_std", "date_of_birth"),

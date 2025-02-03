@@ -23,7 +23,7 @@ def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
             pncs VARCHAR[],
             sentence_dates DATE[]
         )
-        """
+        """,
     )
 
     con.execute(
@@ -47,7 +47,7 @@ def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
             NULL,
             ['2000-12-17', '2001-12-17']
         )
-        """
+        """,
     )
 
 
@@ -66,7 +66,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
         sex VARCHAR,
         ethnicity VARCHAR
     )
-    """
+    """,
     )
 
     con.execute(
@@ -77,7 +77,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
             last_name VARCHAR,
             date_of_birth DATE
         )
-        """
+        """,
     )
 
     con.execute(
@@ -86,7 +86,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
             fk_person_id INT32,
             postcode VARCHAR
         )
-        """
+        """,
     )
 
     con.execute(
@@ -96,7 +96,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
             identifier_type VARCHAR,
             identifier_value VARCHAR
         )
-        """
+        """,
     )
 
     con.execute(
@@ -105,7 +105,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
             fk_person_id INT32,
             sentence_date DATE
         )
-        """
+        """,
     )
 
     # Insert sample data into the tables
@@ -123,7 +123,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
             NULL,
             'W'
         )
-        """
+        """,
     )
 
     con.execute(
@@ -131,7 +131,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
         INSERT INTO pseudonym VALUES
             (1200000, 'JONNY', 'SMYTH', '1955-03-28'),
             (1200000, 'JOHN', 'SMYTH', '1955-03-28')
-        """
+        """,
     )
 
     con.execute(
@@ -139,14 +139,14 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
         INSERT INTO address VALUES
             (1200000, 'AB1 2CD'),
             (1200000, 'XY1 9YZ')
-        """
+        """,
     )
 
     con.execute(
         """
         INSERT INTO reference VALUES
             (1200000, 'CRO', '123456/99X')
-        """
+        """,
     )
 
     con.execute(
@@ -154,5 +154,5 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
         INSERT INTO sentence_info VALUES
             (1200000, '2000-12-17'),
             (1200000, '2001-12-17')
-        """
+        """,
     )
