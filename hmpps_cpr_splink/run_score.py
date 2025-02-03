@@ -85,7 +85,5 @@ res.show(max_width=1000)
 
 waterfall_chart(
     res.to_arrow_table().to_pylist(),
-    SettingsCreator.from_path_or_dict("model_2024_12_06_1e08.json").get_settings(
-        "duckdb"
-    ),
+    SettingsCreator.from_path_or_dict("model_2024_12_06_1e08.json").get_settings("duckdb"),
 )

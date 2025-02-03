@@ -21,7 +21,6 @@ def postgres_db_connector() -> ConnectionPsycopg:
 
 
 def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_table_name: str, conn: AsyncConnection):
-
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]
     # assuming a single row to insert for now

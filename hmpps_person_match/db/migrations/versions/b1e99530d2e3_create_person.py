@@ -49,4 +49,4 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-     op.execute("DROP TABLE IF NOT EXISTS personmatch.person")
+    op.execute("DROP TABLE IF NOT EXISTS personmatch.person")

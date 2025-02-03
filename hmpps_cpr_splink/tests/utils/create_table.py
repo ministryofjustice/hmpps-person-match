@@ -57,24 +57,17 @@ def load_frame(
     # that we don't need are just None
     # let someone else handle converting to NULL
     values_to_insert = [
-        [
-            row[column_name] if column_data["required"] else None
-            for column_name, column_data in column_metadata.items()
-        ]
+        [row[column_name] if column_data["required"] else None for column_name, column_data in column_metadata.items()]
         for row in rows
     ]
     column_spec_str = ", ".join(
-        f"{column_name} {column_data['type']}"
-        for column_name, column_data in column_metadata.items()
+        f"{column_name} {column_data['type']}" for column_name, column_data in column_metadata.items()
     )
 
     values_str = (
         "("
         + "), (".join(
-            [
-                ", ".join(value_to_sql_literal(value) for value in row_values)
-                for row_values in values_to_insert
-            ]
+            [", ".join(value_to_sql_literal(value) for value in row_values) for row_values in values_to_insert]
         )
         + ")"
     )

@@ -72,9 +72,7 @@ def _block_using_rules_sqls(
     source_dataset_input_column: InputColumn | None,
     unique_id_input_column: InputColumn,
 ) -> dict[str, str]:
-    unique_id_input_columns = combine_unique_id_input_columns(
-        source_dataset_input_column, unique_id_input_column
-    )
+    unique_id_input_columns = combine_unique_id_input_columns(source_dataset_input_column, unique_id_input_column)
 
     where_condition = _sql_gen_where_condition(link_type, unique_id_input_columns)
 
@@ -108,10 +106,7 @@ def candidate_search(primary_record_id: str) -> str:
     cleaned_table_name = "person"
 
     table_name_primary = "primary_record"
-    sql = (
-        f"SELECT *, 'a_primary' AS source_dataset "
-        f"FROM {cleaned_table_name} WHERE id = '{primary_record_id}'"
-    )
+    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE id = '{primary_record_id}'"
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     # need source dataset to be later alphabetically to get the right condition
@@ -132,10 +127,7 @@ def candidate_search(primary_record_id: str) -> str:
     # TODO: materialise?
     # TODO: do I need less generic name if concurrent queries?
     # TODO: cleanup. Can I make this function return a context manager?
-    sql = (
-        f"CREATE OR REPLACE VIEW {pipeline.output_table_name} AS "
-        f"{pipeline.generate_cte_pipeline_sql()}"
-    )
+    sql = f"CREATE OR REPLACE VIEW {pipeline.output_table_name} AS {pipeline.generate_cte_pipeline_sql()}"
     # TODO: in a schema?
     with postgres_db_connector() as conn, conn.cursor() as cur:
         cur.execute(sql)

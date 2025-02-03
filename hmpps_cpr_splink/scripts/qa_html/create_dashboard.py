@@ -67,9 +67,7 @@ pipeline.enqueue_list_of_sqls(sqls)
 
 
 df_examples = linker._db_api.sql_pipeline_to_splink_dataframe(pipeline)
-df_examples.as_duckdbpyrelation().sort("count_rows_in_comparison_vector_group").show(
-    max_width=10000
-)
+df_examples.as_duckdbpyrelation().sort("count_rows_in_comparison_vector_group").show(max_width=10000)
 
 # Munge data into the right format for the labelling tool and render
 
@@ -103,17 +101,13 @@ for row in schema_info.itertuples():
         columns.append(f"strftime({col_name}, '%Y-%m-%d') as {col_name}")
     # Handle array of dates
     elif col_type == "DATE[]":
-        columns.append(
-            f"array_transform({col_name}, x -> strftime(x, '%Y-%m-%d')) as {col_name}"
-        )
+        columns.append(f"array_transform({col_name}, x -> strftime(x, '%Y-%m-%d')) as {col_name}")
     # Keep other columns as-is
     else:
         columns.append(col_name)
 
 # Build and execute SQL
-sql_format_dates = (
-    "select\n    " + ",\n    ".join(columns) + "\nfrom records_to_waterfall"
-)
+sql_format_dates = "select\n    " + ",\n    ".join(columns) + "\nfrom records_to_waterfall"
 records_to_waterfall_formatted = db_api._con.sql(sql_format_dates)
 
 
@@ -153,9 +147,7 @@ def extract_comparison_columns(record):
 records_to_waterfall_formatted.show(max_width=10000)
 
 
-data_as_dicts = json.loads(
-    records_to_waterfall_formatted.df().to_json(orient="records")
-)
+data_as_dicts = json.loads(records_to_waterfall_formatted.df().to_json(orient="records"))
 
 extract_comparison_columns(data_as_dicts[0])
 
@@ -177,9 +169,7 @@ for record in data_as_dicts:
     output_record["for_table"] = extract_comparison_columns(record)
 
     # Get waterfall data as before
-    as_waterfall = record_to_waterfall_data(
-        record, linker._settings_obj, hide_details=False
-    )
+    as_waterfall = record_to_waterfall_data(record, linker._settings_obj, hide_details=False)
 
     # Truncate values in as_waterfall if longer than 40 characters
     for item in as_waterfall:
@@ -197,9 +187,7 @@ for record in data_as_dicts:
     output_record["rec_comparison_id"] = record["rec_comparison_id"]
 
     output_record["gamma_concat"] = record["gam_concat"]
-    output_record["count_rows_in_comparison_vector_group"] = record[
-        "count_rows_in_comparison_vector_group"
-    ]
+    output_record["count_rows_in_comparison_vector_group"] = record["count_rows_in_comparison_vector_group"]
 
     final_data.append(output_record)
 
@@ -232,11 +220,7 @@ BATCH_SIZE = 50
 
 def get_git_commit_hash():
     try:
-        return (
-            subprocess.check_output(["git", "rev-parse", "--short", "HEAD"])
-            .decode("utf-8")
-            .strip()
-        )
+        return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("utf-8").strip()
     except subprocess.CalledProcessError:
         return "unknown"
 
@@ -253,9 +237,7 @@ def batch_and_output_html(final_data, spec, output_base_dir):
         batch = final_data[batch_start:batch_end]
 
         # Create filename for this batch
-        batch_filename = (
-            f"labelling_records_{GIT_COMMIT_HASH}_{batch_start}_{batch_end}.html"
-        )
+        batch_filename = f"labelling_records_{GIT_COMMIT_HASH}_{batch_start}_{batch_end}.html"
 
         # Add the filename to each record in the batch
         for record in batch:

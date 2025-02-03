@@ -51,8 +51,7 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
         alias_table_name = tf_colname
         tf_lookup_table_name = f"pg_db.public.{tf_colname}"
         join_clauses.append(
-            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name}"
-            f" ON f.{col} = {alias_table_name}.{col}"
+            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}"
         )
         select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
 
@@ -89,14 +88,8 @@ def score(
 
     source_name = "primary_record_view"
     candidates_name = "candidate_record_view"
-    con.sql(
-        f"CREATE VIEW {source_name} AS "
-        f"SELECT * FROM {full_table_name} WHERE id = '{primary_record_id}'"
-    )
-    con.sql(
-        f"CREATE VIEW {candidates_name} AS "
-        f"SELECT * FROM {full_table_name} WHERE id != '{primary_record_id}'"
-    )
+    con.sql(f"CREATE VIEW {source_name} AS SELECT * FROM {full_table_name} WHERE id = '{primary_record_id}'")
+    con.sql(f"CREATE VIEW {candidates_name} AS SELECT * FROM {full_table_name} WHERE id != '{primary_record_id}'")
 
     con.sql("SHOW ALL TABLES").show()
 
@@ -127,19 +120,14 @@ def _score(
     all_records = [primary_record, *candidates_to_score]
 
     # Create table for all records
-    table_name = create_table_from_records(
-        con, all_records, "all_records", DUCKDB_COLUMNS_WITH_TYPES
-    )
+    table_name = create_table_from_records(con, all_records, "all_records", DUCKDB_COLUMNS_WITH_TYPES)
 
     # Clean and explode postcodes
     pc_clean_sql = clean_and_explode_distinct_postcode_arr(table_name)
     pc_clean_table = con.sql(pc_clean_sql.select_statement_with_lineage)
 
     # Collect distinct postcodes for lookup
-    postcodes_to_lookup = [
-        {"value": row[0], "column_name": "postcode"}
-        for row in pc_clean_table.fetchall()
-    ]
+    postcodes_to_lookup = [{"value": row[0], "column_name": "postcode"} for row in pc_clean_table.fetchall()]
 
     postcode_lookup_results = _mock_lookup_many_tf(postcodes_to_lookup)
 
@@ -158,9 +146,7 @@ def _score(
 
     # Create final table
     final_table_name = "final_table"
-    con.execute(
-        f"CREATE TABLE {final_table_name} AS (SELECT * FROM {clean_table.name})"
-    )
+    con.execute(f"CREATE TABLE {final_table_name} AS (SELECT * FROM {clean_table.name})")
 
     # Collect distinct (value, column) pairs for other TF columns
     tf_columns = [
@@ -175,9 +161,7 @@ def _score(
 
     pairs = []
     for col in tf_columns:
-        rows = con.sql(
-            f"SELECT DISTINCT {col} FROM {final_table_name} WHERE {col} IS NOT NULL"
-        ).fetchall()
+        rows = con.sql(f"SELECT DISTINCT {col} FROM {final_table_name} WHERE {col} IS NOT NULL").fetchall()
         for row in rows:
             val = row[0]
             if isinstance(val, list):

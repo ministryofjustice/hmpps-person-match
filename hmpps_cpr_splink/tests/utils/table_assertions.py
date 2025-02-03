@@ -46,12 +46,8 @@ def assert_tables_equal(
 
     col_string = ", ".join(cols_to_check)
     sql_set_diff = "SELECT {cols} FROM {t1} EXCEPT ALL SELECT {cols} FROM {t2}"
-    sql_expected_except_actual = sql_set_diff.format(
-        cols=col_string, t1=expected_relation, t2=actual_relation
-    )
-    sql_actual_except_expected = sql_set_diff.format(
-        cols=col_string, t1=actual_relation, t2=expected_relation
-    )
+    sql_expected_except_actual = sql_set_diff.format(cols=col_string, t1=expected_relation, t2=actual_relation)
+    sql_actual_except_expected = sql_set_diff.format(cols=col_string, t1=actual_relation, t2=expected_relation)
     sql = f"""
     WITH expected_not_found AS ({sql_expected_except_actual}),
          found_not_expected AS ({sql_actual_except_expected})
@@ -85,8 +81,7 @@ def assert_tables_equal(
             "ELSE NULL END AS {column_name}"
         )
         col_check_sql = ",\n        ".join(
-            col_check_template.format(column_name=column_name)
-            for column_name in cols_to_check
+            col_check_template.format(column_name=column_name) for column_name in cols_to_check
         )
 
         sql = f"""
@@ -106,10 +101,7 @@ def assert_tables_equal(
         """
 
         mismatched_columns = con.sql(sql).fetchall()[0][0]
-        sql = (
-            f"SELECT {', '.join(mismatched_columns)}, "
-            f"_test_row_status from ({full_sql})"
-        )
+        sql = f"SELECT {', '.join(mismatched_columns)}, _test_row_status from ({full_sql})"
         con.sql(sql).show(max_width=1000)
 
         raise e
@@ -154,9 +146,7 @@ def check_output_matches_expected(
     # # TODO: we are already calculating this, so streamline
     cols_to_check = cols_from_rows(test_data[expected_output_table])
 
-    assert_tables_equal(
-        con, expected_output_table, "actual_output_table", cols_to_check
-    )
+    assert_tables_equal(con, expected_output_table, "actual_output_table", cols_to_check)
 
     # now check the types are correct
     expected_output_schema = schemas[expected_output_table]
@@ -164,8 +154,7 @@ def check_output_matches_expected(
     # create a table in suitable format with the types we expect
     columns_table_schema = {"column_name": "VARCHAR", "data_type": "VARCHAR"}
     colname_data = [
-        {"column_name": col_name, "data_type": col_type}
-        for col_name, col_type in expected_output_schema.items()
+        {"column_name": col_name, "data_type": col_type} for col_name, col_type in expected_output_schema.items()
     ]
     load_frame(con, colname_data, columns_table_schema, "schema_compare_expected")
     # compare this to the relevant subset of information_schema.columns
@@ -231,12 +220,8 @@ def check_data(
     # if we are using a shorthand format, convert it to long format
     if data.get("format", "long") == "short":
         # convert schema format
-        data["schema"]["input_table"] = {
-            "input_column": data["schema"]["input_column_type"]
-        }
-        data["schema"]["expected_output_table"] = {
-            "output_column": data["schema"]["output_column_type"]
-        }
+        data["schema"]["input_table"] = {"input_column": data["schema"]["input_column_type"]}
+        data["schema"]["expected_output_table"] = {"output_column": data["schema"]["output_column_type"]}
         del data["schema"]["input_column_type"]
         del data["schema"]["output_column_type"]
         # and then the test data itself

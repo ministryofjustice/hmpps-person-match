@@ -28,9 +28,7 @@ from ..data_cleaning.transformation import (
 )
 
 
-def get_column_from_array(
-    columns: list[TransformedColumn], column_name: str
-) -> TransformedColumn:
+def get_column_from_array(columns: list[TransformedColumn], column_name: str) -> TransformedColumn:
     return next([col for col in columns if col.column_name == column_name])
 
 
@@ -125,7 +123,10 @@ columns_basic = [
     #     "national_insurance_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"
     # ),
     TransformedColumn(
-        "pncs", [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT], "VARCHAR[]", alias="pnc_arr",
+        "pncs",
+        [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT],
+        "VARCHAR[]",
+        alias="pnc_arr",
     ),
     TransformedColumn(
         "sentence_dates",

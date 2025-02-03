@@ -61,14 +61,10 @@ def create_postcode_tf_from_cpr_joined(base_table_name: str) -> Table:
         Table: A table with columns (value, rel_freq) containing postcode frequencies
     """
     # First clean the postcode array
-    pc_basic_cleaned = Table(
-        "pc_cleaned_1", "id", POSTCODE_BASIC, from_table=base_table_name
-    )
+    pc_basic_cleaned = Table("pc_cleaned_1", "id", POSTCODE_BASIC, from_table=base_table_name)
 
     # Get distinct postcodes by unnesting
-    pc_distinct_unnested = Table(
-        "pc_unnested", "UNNEST(postcode_arr) AS value", from_table=pc_basic_cleaned
-    )
+    pc_distinct_unnested = Table("pc_unnested", "UNNEST(postcode_arr) AS value", from_table=pc_basic_cleaned)
 
     # Count frequencies
     pc_frequencies = Table(

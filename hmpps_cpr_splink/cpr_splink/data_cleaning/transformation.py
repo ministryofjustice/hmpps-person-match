@@ -89,31 +89,21 @@ def list_filter_remove_specific_str_values(*values: str):
 
 def list_filter_remove_specific_dates(*dates: str):
     dates_str = ", ".join(f"DATE '{date}'" for date in dates)
-    return ChainableTransformation(
-        f"LIST_FILTER(x -> CAST(x AS DATE) not in ({dates_str}))"
-    )
+    return ChainableTransformation(f"LIST_FILTER(x -> CAST(x AS DATE) not in ({dates_str}))")
 
 
 def list_filter_out_strings_of_length_lt(length: int):
     return ChainableTransformation(f"LIST_FILTER(x -> LENGTH(x) >= {length})")
 
 
-REGEXP_MATCHES_EMAIL = ChainableTransformation(
-    r"REGEXP_MATCHES('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')"
-)
-LIST_FILTER_REGEXP_MATCHES_EMAIL = ChainableTransformation(
-    f"LIST_FILTER(x -> x.{REGEXP_MATCHES_EMAIL})"
-)
+REGEXP_MATCHES_EMAIL = ChainableTransformation(r"REGEXP_MATCHES('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')")
+LIST_FILTER_REGEXP_MATCHES_EMAIL = ChainableTransformation(f"LIST_FILTER(x -> x.{REGEXP_MATCHES_EMAIL})")
 
-LIST_FILTER_REGEXP_MATCHES_POSTCODE = ChainableTransformation(
-    f"LIST_FILTER(x -> x.{REGEXP_MATCHES_POSTCODE})"
-)
+LIST_FILTER_REGEXP_MATCHES_POSTCODE = ChainableTransformation(f"LIST_FILTER(x -> x.{REGEXP_MATCHES_POSTCODE})")
 
 TRIM_AND_NULLIF_IF_EMPTY = ChainableTransformation("TRIM().NULLIF('')")
 
-LIST_TRANSFORM_TRIM_AND_NULLIF_IF_EMPTY = ChainableTransformation(
-    f"LIST_TRANSFORM(x -> x.{TRIM_AND_NULLIF_IF_EMPTY})"
-)
+LIST_TRANSFORM_TRIM_AND_NULLIF_IF_EMPTY = ChainableTransformation(f"LIST_TRANSFORM(x -> x.{TRIM_AND_NULLIF_IF_EMPTY})")
 
 LIST_FILTER_NULLS = ChainableTransformation("LIST_FILTER(x -> x IS NOT NULL)")
 
@@ -145,17 +135,13 @@ WHEN
 ELSE date_of_birth
 END
 """
-SCALAR_DOB_FROM_ARRAY_IF_DOB_NULL = NonChainableTransformation(
-    dob_from_array_if_dob_null
-)
+SCALAR_DOB_FROM_ARRAY_IF_DOB_NULL = NonChainableTransformation(dob_from_array_if_dob_null)
 
 LIST_APPEND_DOB_FROM_SCALAR_COLUMN = list_append_from_scalar_column("date_of_birth")
 
 
 LIST_FILTER_PROBLEM_CROS = list_filter_remove_specific_str_values("000000/00Z")
-LIST_FILTER_PROBLEM_POSTCODES = list_filter_remove_specific_str_values(
-    "NF11NF", "NF11FA"
-)
+LIST_FILTER_PROBLEM_POSTCODES = list_filter_remove_specific_str_values("NF11NF", "NF11FA")
 
 LIST_FILTER_EXCLUDE_1ST_JAN_DATES = ChainableTransformation(
     "LIST_FILTER(x -> CAST(x AS VARCHAR).SUBSTR(6, 5) != '01-01')"
@@ -167,9 +153,7 @@ NAME_CLEANING_REPLACEMENTS = [
     ("DUPLICATE_", ""),
 ]
 
-CLEAN_NAMES_BY_REPLACEMENT = ".".join(
-    f"REPLACE('{old}', '{new}')" for old, new in NAME_CLEANING_REPLACEMENTS
-)
+CLEAN_NAMES_BY_REPLACEMENT = ".".join(f"REPLACE('{old}', '{new}')" for old, new in NAME_CLEANING_REPLACEMENTS)
 
 REGEX_SPLIT_TO_ARRAY = ChainableTransformation("REGEXP_SPLIT_TO_ARRAY('\\s+')")
 
@@ -187,21 +171,13 @@ NAME_CLEANING = ChainableTransformation(f"""
 .{REGEX_REPLACE_NOT_ENTERED}
 """)
 
-LIST_TRANSFORM_NAME_CLEANING = ChainableTransformation(
-    f"LIST_TRANSFORM(x -> x.{NAME_CLEANING})"
-)
+LIST_TRANSFORM_NAME_CLEANING = ChainableTransformation(f"LIST_TRANSFORM(x -> x.{NAME_CLEANING})")
 
-LIST_TRANSFORM_TO_OUTCODE_ONLY = ChainableTransformation(
-    "LIST_TRANSFORM(x -> SUBSTR(x, 1, LENGTH(x) - 3))"
-)
+LIST_TRANSFORM_TO_OUTCODE_ONLY = ChainableTransformation("LIST_TRANSFORM(x -> SUBSTR(x, 1, LENGTH(x) - 3))")
 
-CONCAT_WS_FIRST_MIDDLE_LAST_NAME = NonChainableTransformation(
-    "CONCAT_WS(' ', first_name, middle_names, last_name)"
-)
+CONCAT_WS_FIRST_MIDDLE_LAST_NAME = NonChainableTransformation("CONCAT_WS(' ', first_name, middle_names, last_name)")
 
-CONCAT_WS_FIRST_LAST_NAME_STD = NonChainableTransformation(
-    "CONCAT_WS(' ', name_1_std, last_name_std)"
-)
+CONCAT_WS_FIRST_LAST_NAME_STD = NonChainableTransformation("CONCAT_WS(' ', name_1_std, last_name_std)")
 
 
 @dataclass
@@ -210,13 +186,7 @@ class case_when_array_length_greater_equal_or_null(NonChainableTransformation): 
     then_clause: str
 
     def full_expression(self, column: str):
-        return (
-            f"CASE\n"
-            f"    WHEN array_length({column}) >= {self.threshold} "
-            f"THEN {self.then_clause}\n"
-            f"    ELSE NULL\n"
-            f"END"
-        )
+        return f"CASE\n    WHEN array_length({column}) >= {self.threshold} THEN {self.then_clause}\n    ELSE NULL\nEND"
 
 
 # TODO: get rid of awkward expression at start

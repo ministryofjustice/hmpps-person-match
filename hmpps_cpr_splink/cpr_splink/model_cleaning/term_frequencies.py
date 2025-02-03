@@ -103,9 +103,7 @@ def lookup_term_frequencies(input_array_col_name: str, tf_table_name: str, from_
         f"{t_exploded}.value",
         TransformedColumn("COALESCE(tf.rel_freq, NULL)", alias="rel_freq"),
         from_table=t_exploded,
-        post_from_clauses=(
-            f"LEFT JOIN {tf_table_name} tf ON {t_exploded}.value = tf.value"
-        ),
+        post_from_clauses=(f"LEFT JOIN {tf_table_name} tf ON {t_exploded}.value = tf.value"),
     )
 
     t_aggregated = Table(

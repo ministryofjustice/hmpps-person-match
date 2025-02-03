@@ -22,10 +22,7 @@ def blocking_performance_chart(linker, predictions):
 
     # Set granularity of the chart
     precision = 0.25
-    threshold_values = [
-        round(x * precision, 2)
-        for x in range(int(0.0 / precision), int(10 / precision) + 1)
-    ]
+    threshold_values = [round(x * precision, 2) for x in range(int(0.0 / precision), int(10 / precision) + 1)]
 
     union_queries = []
 
@@ -49,9 +46,7 @@ def blocking_performance_chart(linker, predictions):
     # Merge the two dataframes
     chart_df = pd.merge(matches, counts, on="match_key")
     chart_df["match_key"] = chart_df["match_key"].astype(int)
-    chart_df = chart_df.rename(
-        columns={"row_count": "total_edges", "n_edges": "matches"}
-    )
+    chart_df = chart_df.rename(columns={"row_count": "total_edges", "n_edges": "matches"})
 
     cols = ["match_key", "mw_threshold", "total_edges", "matches", "blocking_rule"]
     chart_df = chart_df[cols]
@@ -252,9 +247,7 @@ def blocking_performance_chart(linker, predictions):
             {"name": "max_matches", "expr": "data('data_0')[0]['max_matches']"},
             {"name": "max_non_matches", "expr": "data('data_0')[0]['max_non_matches']"},
         ],
-        "resolve": {
-            "scale": {"color": "independent", "x": "independent", "y": "shared"}
-        },
+        "resolve": {"scale": {"color": "independent", "x": "independent", "y": "shared"}},
         "title": {
             "text": "Blocking rule performance",
             "anchor": "middle",
