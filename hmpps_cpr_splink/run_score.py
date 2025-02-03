@@ -1,3 +1,4 @@
+# noqa: INP001
 from datetime import datetime
 
 from splink import SettingsCreator

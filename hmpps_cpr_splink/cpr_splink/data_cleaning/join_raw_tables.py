@@ -1,11 +1,22 @@
-def join_raw_tables_sql(
+_default_tables = dict(
     person_in="person",
     pseudonym_in="pseudonym",
     address_in="address",
     reference_in="reference",
     sentence_info_in="sentence_info",
+)
+
+
+def join_raw_tables_sql(
+    table_names: dict[str, str] = None,
     limit: int | None = None,
 ):
+    person_in = table_names.get("person_in", _default_tables["person_in"])
+    pseudonym_in = table_names.get("pseudonym_in", _default_tables["pseudonym_in"])
+    address_in = table_names.get("address_in", _default_tables["address_in"])
+    reference_in = table_names.get("reference_in", _default_tables["reference_in"])
+    sentence_info_in = table_names.get("sentence_info_in", _default_tables["sentence_info_in"])
+
     limit_expr = f"LIMIT {limit}" if limit else ""
     sql = f"""
     WITH
