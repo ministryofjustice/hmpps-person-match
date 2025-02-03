@@ -89,7 +89,7 @@ jobs:
       - name: Install dependencies
         run: make install
       
-      - name: Run unit tests
+      - name: Run integration tests
         run: make test-integration-ci
         
       - name: Upload test results
