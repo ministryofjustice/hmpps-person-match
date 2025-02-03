@@ -1,7 +1,5 @@
 import datetime
 
-import pytest
-
 from hmpps_person_match.views.person_view import ROUTE
 from integration.client import Client
 
@@ -57,7 +55,6 @@ class TestPersonEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    @pytest.mark.skip("duplicate key value violates unique constraint, need to handle upsert to record TODO.")
     async def test_clean_and_update_message(self, post_to_endpoint, generate_uuid, db):
         """
         Test person cleaned and update existing person on person endpoint
