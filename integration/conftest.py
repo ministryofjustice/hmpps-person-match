@@ -1,3 +1,4 @@
+import time
 import uuid
 from enum import Enum
 
@@ -23,19 +24,27 @@ def get_service():
     """
     Start and check service is running
     """
-    def _check_service(service: Service):
+    def _wait_for_health(service: Service, timeout=60, interval=2):
         """
-        Check service is running
+        Polls a health endpoint until it returns HTTP 200 OK.
         """
+        start_time = time.time()
         url = f"http://{service.host}:{service.port}"
         health_url = url + service.health_route
-        response = requests.get(health_url, timeout=30)
-        if response.status_code == 200:
-            return url
-        else:
-            raise Exception(f"Service {service.name} is not running: {response.status_code}")
 
-    return _check_service
+        while time.time() - start_time < timeout:
+            try:
+                response = requests.get(health_url, timeout=10)
+                if response.status_code == 200:
+                    return url
+            except requests.exceptions.RequestException:
+                print(f"Waiting for {url}... for {interval} seconds")
+
+            time.sleep(interval)  # Wait before retrying
+
+        raise TimeoutError(f"Service did not become healthy within {timeout} seconds.")
+
+    return _wait_for_health
 
 @pytest.fixture(scope="session")
 def person_match_url(get_service):
