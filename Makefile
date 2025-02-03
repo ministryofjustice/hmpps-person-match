@@ -38,8 +38,8 @@ test: lint
 test-ci: lint
 	uv run pytest hmpps_person_match/ hmpps_cpr_splink/ --junitxml=test_results/pytest-unit-test-report.xml
 
-test-integration: lint
+test-integration: lint start-containers
 	uv run pytest integration/
 
-test-integration-ci: lint
+test-integration-ci: lint start-containers
 	uv run pytest integration/ --junitxml=test_results/pytest-integration-test-report.xml
