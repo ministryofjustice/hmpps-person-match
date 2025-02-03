@@ -1,3 +1,4 @@
+# noqa: INP001
 import os
 from datetime import datetime
 

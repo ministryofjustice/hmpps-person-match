@@ -6,6 +6,7 @@ _default_tables = dict(
     sentence_info_in="sentence_info",
 )
 
+
 def join_raw_tables_sql(
     table_names: dict[str, str] = None,
     limit: int | None = None,
