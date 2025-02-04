@@ -1,6 +1,6 @@
 import datetime
 
-from hmpps_person_match.views.person_view import ROUTE
+from hmpps_person_match.routes.person import ROUTE
 from integration.client import Client
 
 
