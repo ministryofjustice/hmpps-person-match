@@ -2,6 +2,7 @@
 __pycache__/
 /dist/
 test_results/
+.coverage
 
 ### Pycharm IDEA ###
 .idea
