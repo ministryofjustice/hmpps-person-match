@@ -18,8 +18,6 @@ DESCRIPTION = f"""
     **Authorization Required:**
     - Bearer Token must be provided.
     - Role: **'{Roles.ROLE_PERSON_MATCH}'**
-
-    Endpoint to create a person record.
 """
 
 router = APIRouter(
