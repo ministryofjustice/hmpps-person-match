@@ -11,7 +11,7 @@ class TestPersonDeletionEndpoint:
     @staticmethod
     def create_person_id_data(uuid: str):
         return {
-            "id": uuid,
+            "matchID": uuid,
         }
 
     async def test_person_deletion(self, call_endpoint, person_id, db, create_person):

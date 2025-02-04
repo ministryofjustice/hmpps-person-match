@@ -59,9 +59,9 @@ async def delete_person(
     """
     Person DELETE request handler
     """
-    logger.info("Deleting person record", extra={"custom_dimensions": {"id": person_identifier.id}})
-    query = text("DELETE FROM personmatch.person WHERE id = :id")
-    result = await connection.execute(query, {"id": person_identifier.id})
+    logger.info("Deleting person record", extra={"custom_dimensions": {"id": person_identifier.match_id}})
+    query = text("DELETE FROM personmatch.person WHERE match_id = :match_id")
+    result = await connection.execute(query, {"match_id": person_identifier.match_id})
     if result.rowcount == 0:
         return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)

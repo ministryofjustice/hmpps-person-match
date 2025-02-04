@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PersonIdentifier(BaseModel):
@@ -6,4 +6,4 @@ class PersonIdentifier(BaseModel):
     Pydantic Person Identifier Model
     """
 
-    id: str
+    match_id: str = Field(alias="matchID")
