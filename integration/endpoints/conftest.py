@@ -3,6 +3,7 @@ import base64
 import pytest
 import requests
 
+from hmpps_person_match.models.person.person import Person
 from integration.client import Client
 
 
@@ -56,3 +57,23 @@ def call_endpoint(person_match_url, access_token_factory):
         return requests.request(method, person_match_url + route, json=json, headers=headers, timeout=30)
 
     return _call_endpoint
+
+
+@pytest.fixture()
+def create_person(call_endpoint):
+    """
+    Create a new person
+    """
+
+    def _create_and_insert_person(person: Person):
+        """
+        Commit person into
+        """
+        response = call_endpoint("post", "/person",
+                                 json=person.model_dump(mode="json", by_alias=True),
+                                 client=Client.HMPPS_PERSON_MATCH)
+        if response.status_code == 200:
+            return person.id
+        raise Exception(f"Could not create person, {response.status_code}")
+
+    return _create_and_insert_person

@@ -10,7 +10,7 @@ class TestPersonCreationEndpoint:
     """
 
     @staticmethod
-    def create_person_data(uuid: str):
+    def create_person_data(uuid: str) -> dict:
         return {
             "id": uuid,
             "sourceSystem": "DELIUS",
@@ -28,16 +28,16 @@ class TestPersonCreationEndpoint:
             "sentenceDates": ["2001-03-01"],
         }
 
-    async def test_clean_and_store_message(self, call_endpoint, generate_uuid, db):
+    async def test_clean_and_store_message(self, call_endpoint, person_uuid, db):
         """
         Test person cleaned and stored on person endpoint
         """
-        person_id = generate_uuid
-        data = self.create_person_data(person_id)
+        data = self.create_person_data(person_uuid)
+
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE id = '{person_id}'")
-        assert row["id"] == person_id
+        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE id = '{person_uuid}'")
+        assert row["id"] == person_uuid
         assert row["name_1_std"] == "HENRY"
         assert row["name_2_std"] == "AHMED"
         assert row["name_3_std"] is None
@@ -55,17 +55,16 @@ class TestPersonCreationEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    async def test_clean_and_update_message(self, call_endpoint, generate_uuid, db):
+    async def test_clean_and_update_message(self, call_endpoint, person_uuid, db):
         """
         Test person cleaned and update existing person on person endpoint
         """
         # Create person
-        person_id = generate_uuid
-        data = self.create_person_data(person_id)
+        data = self.create_person_data(person_uuid)
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
 
-        data = self.create_person_data(person_id)
+        data = self.create_person_data(person_uuid)
         # Update person
         data["firstName"] = "andrew"
         data["firstNameAliases"] = ["andy"]
@@ -73,8 +72,8 @@ class TestPersonCreationEndpoint:
         data["postcodes"] = ["a34 8fr"]
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE id = '{person_id}'")
-        assert row["id"] == person_id
+        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE id = '{person_uuid}'")
+        assert row["id"] == person_uuid
         assert row["name_1_std"] == "ANDREW"
         assert row["name_2_std"] == "AHMED"
         assert row["name_3_std"] is None
@@ -92,10 +91,10 @@ class TestPersonCreationEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    def test_invalid_client_returns_forbidden(self, call_endpoint, generate_uuid):
+    def test_invalid_client_returns_forbidden(self, call_endpoint, person_uuid):
         """
         Test person endpoint return 403 forbidden when invalid roles
         """
-        data = self.create_person_data(generate_uuid)
+        data = self.create_person_data(person_uuid)
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_TIER)
         assert response.status_code == 403
