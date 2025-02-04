@@ -10,6 +10,7 @@ class TestPersonView:
     def test_complete_message(self, post_to_endpoint, mock_db_connection):
         json = {
             "id": "123",
+            "matchID": "M1",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
@@ -25,8 +26,8 @@ class TestPersonView:
             "sentenceDates": ["2001-03-01"],
         }
         response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
-        assert response.status_code == 200
         assert response.json() == {}
+        assert response.status_code == 200
 
     def test_bad_request_on_empty(self, post_to_endpoint):
         json = None
@@ -37,6 +38,7 @@ class TestPersonView:
     def test_bad_request_different_data_types(self, post_to_endpoint):
         json = {
             "id": "123",
+            "matchID": "M1",
             "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],  # Should be string
             "firstName": "Henry",
             "middleNames": "Ahmed",
@@ -77,6 +79,7 @@ class TestPersonView:
     def test_invalid_date_format(self, post_to_endpoint, mock_db_connection):
         json = {
             "id": "123",
+            "matchID": "M1",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",

@@ -13,6 +13,7 @@ class TestPersonEndpoint:
     def create_person_data(uuid: str):
         return {
             "id": uuid,
+            "matchID": "M1",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
