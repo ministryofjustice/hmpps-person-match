@@ -53,6 +53,7 @@ POSTCODE_BASIC = TransformedColumn(
 
 columns_basic = [
     TransformedColumn("id", column_type="INTEGER"),
+    TransformedColumn("match_id", column_type="VARCHAR"),
     TransformedColumn("source_system", [UPPER], "VARCHAR"),
     # TransformedColumn("title", [UPPER], "VARCHAR"),
     TransformedColumn("first_name", [UPPER, NAME_CLEANING], "VARCHAR"),
@@ -149,6 +150,7 @@ TIDY_NULLS_FROM_ARRAY = [
 ]
 columns_reshaping = [
     TransformedColumn("id"),
+    TransformedColumn("match_id"),
     TransformedColumn("source_system"),
     TransformedColumn("sentence_date_arr"),
     TransformedColumn("postcode_arr"),
@@ -243,6 +245,7 @@ columns_reshaping = [
 columns_simple_select = [
     # core info
     TransformedColumn("id"),
+    TransformedColumn("match_id"),
     TransformedColumn("source_system"),
     # names
     TransformedColumn("name_1_std"),

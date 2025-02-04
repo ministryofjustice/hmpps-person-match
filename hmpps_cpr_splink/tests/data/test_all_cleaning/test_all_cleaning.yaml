@@ -12,6 +12,7 @@ data:
 
     candidate_search_return_format:
       - id: 1200000
+        match_id: "Match12"
         source_system: "NOMIS"
         first_name: "john    james"
         middle_names: "JR"
@@ -28,6 +29,7 @@ data:
         sentence_dates: ["2000-11-11", "2001-12-17"]
     splink_model_format:
       - id: 1200000
+        match_id: "Match12"
         source_system: "NOMIS"
         name_1_std: "JOHN"
         name_2_std: "JAMES"
