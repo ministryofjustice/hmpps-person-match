@@ -41,7 +41,7 @@ async def post_person(
     """
     Person POST request handler
     """
-    logger.info("Cleaning and storing person record", extra={"custom_dimensions": {"id": person.id}})
+    logger.info("Cleaning and storing person record", extra={"custom_dimensions": {"id": person.match_id}})
     await clean.clean_and_insert(person, connection)
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)
 

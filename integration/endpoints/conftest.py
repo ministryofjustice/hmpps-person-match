@@ -73,7 +73,7 @@ def create_person(call_endpoint):
                                  json=person.model_dump(mode="json", by_alias=True),
                                  client=Client.HMPPS_PERSON_MATCH)
         if response.status_code == 200:
-            return person.id
+            return person.match_id
         raise Exception(f"Could not create person, {response.status_code}")
 
     return _create_and_insert_person

@@ -30,7 +30,7 @@ async def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_
     update_columns = ", ".join([f"{col} = EXCLUDED.{col}" for col in columns])
     query = text(
         f"INSERT INTO personmatch.person({', '.join(columns)}) VALUES ({placeholders}) "
-        f"ON CONFLICT (id) DO UPDATE SET {update_columns}",
+        f"ON CONFLICT (match_id) DO UPDATE SET {update_columns}",
     )
 
     await conn.execute(query, data)

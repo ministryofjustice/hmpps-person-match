@@ -94,14 +94,14 @@ def lookup_term_frequencies(input_array_col_name: str, tf_table_name: str, from_
 
     t_exploded = Table(
         exploded_name,
-        "id",
+        "match_id",
         TransformedColumn(f"UNNEST({input_array_col_name})", alias="value"),
         from_table=from_table,
     )
 
     t_joined = Table(
         joined_name,
-        f"{t_exploded}.id",
+        f"{t_exploded}.match_id",
         f"{t_exploded}.value",
         TransformedColumn("COALESCE(tf.rel_freq, NULL)", alias="rel_freq"),
         from_table=t_exploded,
@@ -110,13 +110,13 @@ def lookup_term_frequencies(input_array_col_name: str, tf_table_name: str, from_
 
     t_aggregated = Table(
         agg_table_name,
-        "id",
+        "match_id",
         TransformedColumn(
             "array_agg(struct_pack(value := value, rel_freq := rel_freq))",
             alias=f"{input_array_col_name}_with_freq",
         ),
         from_table=t_joined,
-        post_from_clauses="GROUP BY id",
+        post_from_clauses="GROUP BY match_id",
     )
 
     return t_aggregated
