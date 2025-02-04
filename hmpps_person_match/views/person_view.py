@@ -64,5 +64,4 @@ async def delete_person(
     result = await connection.execute(query, {"id": person_identifier.id})
     if result.rowcount == 0:
         return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)
-    await connection.commit()
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)
