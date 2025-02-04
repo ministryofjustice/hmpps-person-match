@@ -40,18 +40,19 @@ def access_token_factory():
 
 
 @pytest.fixture()
-def post_to_endpoint(person_match_url, access_token_factory):
+def call_endpoint(person_match_url, access_token_factory):
     """
     Factory func to call person-match endpoint with access token
     """
 
     def _call_endpoint(
+        method: str,
         route: str,
         json: dict,
         client: Client,
     ) -> requests.Response:
         token = access_token_factory(client)
         headers = {"Authorization": f"Bearer {token}"}
-        return requests.post(person_match_url + route, json=json, headers=headers, timeout=30)
+        return requests.request(method, person_match_url + route, json=json, headers=headers, timeout=30)
 
     return _call_endpoint
