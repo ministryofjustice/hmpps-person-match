@@ -71,7 +71,7 @@ async def db():
 
 
 @pytest.fixture()
-def person_uuid():
+def person_id():
     """
     Generate UUID
     """

@@ -9,6 +9,7 @@ class Person(BaseModel):
     """
 
     id: str
+    match_id: str = Field(alias="matchID")
     source_system: str = Field(alias="sourceSystem")
     first_name: str = Field(alias="firstName")
     middle_names: str = Field(alias="middleNames")

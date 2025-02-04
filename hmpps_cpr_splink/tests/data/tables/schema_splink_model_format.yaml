@@ -1,4 +1,5 @@
 id: "INTEGER"
+match_id: "VARCHAR"
 source_system: "VARCHAR"
 name_1_std: "VARCHAR"
 name_2_std: "VARCHAR"

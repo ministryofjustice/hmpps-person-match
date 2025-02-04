@@ -2,6 +2,7 @@ from datetime import date
 from typing import TypedDict
 
 
+# TODO: get information elsewhere to avoid doubling up
 class JoinedRecord(TypedDict):
     """
     Represents a 'raw' (uncleaned) record retrieved from the Core Person Record (CPR)
@@ -13,6 +14,7 @@ class JoinedRecord(TypedDict):
     """
 
     id: str
+    match_id: str
     source_system: str
     first_name: str | None
     middle_names: str | None
