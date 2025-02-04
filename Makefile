@@ -33,13 +33,13 @@ stop-containers:
 restart-containers: stop-containers start-containers
 
 test: lint
-	uv run pytest hmpps_person_match/ hmpps_cpr_splink/ -v
+	uv run pytest hmpps_person_match/ hmpps_cpr_splink/ -vvv
 
 test-ci: lint
 	uv run pytest hmpps_person_match/ hmpps_cpr_splink/ --junitxml=test_results/pytest-unit-test-report.xml
 
 test-integration: lint start-containers
-	uv run pytest integration/
+	uv run pytest integration/ -vvv
 
 test-integration-ci: lint start-containers
 	uv run pytest integration/ --junitxml=test_results/pytest-integration-test-report.xml

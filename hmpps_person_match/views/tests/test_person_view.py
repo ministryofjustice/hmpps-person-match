@@ -7,7 +7,7 @@ class TestPersonView:
     Test match view
     """
 
-    def test_complete_message(self, post_to_endpoint, mock_db_connection):
+    def test_complete_message(self, call_endpoint, mock_db_connection):
         json = {
             "id": "123",
             "matchID": "M1",
@@ -25,17 +25,17 @@ class TestPersonView:
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
         }
-        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
-        assert response.json() == {}
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
+        assert response.json() == {}
 
-    def test_bad_request_on_empty(self, post_to_endpoint):
+    def test_bad_request_on_empty(self, call_endpoint):
         json = None
-        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
 
-    def test_bad_request_different_data_types(self, post_to_endpoint):
+    def test_bad_request_different_data_types(self, call_endpoint):
         json = {
             "id": "123",
             "matchID": "M1",
@@ -53,7 +53,7 @@ class TestPersonView:
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
         }
-        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
         assert response.json()["errors"] == [
@@ -65,18 +65,18 @@ class TestPersonView:
             },
         ]
 
-    def test_bad_request_on_missing_fields(self, post_to_endpoint):
+    def test_bad_request_on_missing_fields(self, call_endpoint):
         json = {
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
         }
-        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
 
-    def test_invalid_date_format(self, post_to_endpoint, mock_db_connection):
+    def test_invalid_date_format(self, call_endpoint, mock_db_connection):
         json = {
             "id": "123",
             "matchID": "M1",
@@ -94,7 +94,7 @@ class TestPersonView:
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
         }
-        response = post_to_endpoint(ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
         assert response.json()["errors"] == [
@@ -109,8 +109,8 @@ class TestPersonView:
             },
         ]
 
-    def test_invalid_role_unauthorized(self, post_to_endpoint):
-        response = post_to_endpoint(ROUTE, roles=["Invalid Role"], json={})
+    def test_invalid_role_unauthorized(self, call_endpoint):
+        response = call_endpoint("post", ROUTE, roles=["Invalid Role"], json={})
         assert response.status_code == 403
         assert response.json()["detail"] == "You do not have permission to access this resource."
 
@@ -118,3 +118,53 @@ class TestPersonView:
         response = client.post(ROUTE, json={})
         assert response.status_code == 403
         assert response.json()["detail"] == "Not authenticated"
+
+    def test_delete_message_no_record(self, call_endpoint, mock_db_connection):
+        # Mock db response
+        mock_db_connection.execute.return_value.rowcount = 0
+        json = {
+            "matchID": "123",
+        }
+        response = call_endpoint("delete", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 404
+        assert response.json() == {}
+
+    def test_delete_message(self, call_endpoint, mock_db_connection):
+        # Mock db response
+        mock_db_connection.execute.return_value.rowcount = 1
+        json = {
+            "matchID": "123",
+        }
+        response = call_endpoint("delete", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 200
+        assert response.json() == {}
+
+    def test_delete_message_malformed_data(self, call_endpoint, mock_db_connection):
+        json = {
+            "identifier": "invalid",
+        }
+        response = call_endpoint("delete", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 400
+        assert response.json()["errors"] == [
+            {
+                "input": {
+                    "identifier": "invalid",
+                },
+                "loc": [
+                    "body",
+                    "matchID",
+                ],
+                "msg": "Field required",
+                "type": "missing",
+            },
+        ]
+
+    def test_delete_no_auth_returns_unauthorized(self, client):
+        response = client.delete(ROUTE)
+        assert response.status_code == 403
+        assert response.json()["detail"] == "Not authenticated"
+
+    def test_delete_invalid_role_unauthorized(self, call_endpoint):
+        response = call_endpoint("delete", ROUTE, roles=["Invalid Role"], json={})
+        assert response.status_code == 403
+        assert response.json()["detail"] == "You do not have permission to access this resource."

@@ -1,7 +1,7 @@
 import duckdb
 from sqlalchemy.ext.asyncio import AsyncConnection
 
-from hmpps_person_match.models.person import Person
+from hmpps_person_match.models.person.person import Person
 
 from ..model_cleaning import create_table_from_records, simple_clean_whole_joined_table
 from ..schemas import DUCKDB_COLUMNS_WITH_TYPES
