@@ -24,7 +24,7 @@ DESCRIPTION = f"""
 """
 
 router = APIRouter(
-    tags=[OpenAPITags.MATCH],
+    tags=[OpenAPITags.PERSON],
 )
 
 
