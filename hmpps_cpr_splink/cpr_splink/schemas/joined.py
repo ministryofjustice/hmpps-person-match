@@ -13,7 +13,6 @@ class JoinedRecord(TypedDict):
     as specified by a Pydantic model.
     """
 
-    id: str
     match_id: str
     source_system: str
     first_name: str | None

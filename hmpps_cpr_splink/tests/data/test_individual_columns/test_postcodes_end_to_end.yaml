@@ -1,19 +1,19 @@
 schema:
   input_table:
-    id: "INTEGER"
+    match_id: "VARCHAR"
     postcodes: "VARCHAR[]"
   tf_postcodes:
     value: "VARCHAR"
     rel_freq: "FLOAT"
   cleaned_2:
-    id: "INTEGER"
+    match_id: "VARCHAR"
     postcode_arr: "VARCHAR[]"
     postcode_outcode_arr: "VARCHAR[]"
     postcode_arr_with_freq: 'STRUCT("value" VARCHAR, rel_freq FLOAT)[]'
 
 data:
   - input_table:
-      - id: 1
+      - match_id: "M1"
         postcodes:
           ["SW1A 1AA", "n16 8ph", "invalid postcode", "SW1A1AA", "NF1 1FA "]
     tf_postcodes:
@@ -22,7 +22,7 @@ data:
       - value: "N168PH"
         rel_freq: 0.33
     cleaned_2:
-      - id: 1
+      - match_id: "M1"
         postcode_arr: ["N168PH", "SW1A1AA"]
         postcode_outcode_arr: ["N16", "SW1A"]
         postcode_arr_with_freq:
@@ -31,24 +31,24 @@ data:
           - value: "N168PH"
             rel_freq: 0.33
   - input_table:
-      - id: 1
+      - match_id: "M1"
         postcodes: [" ab1 4bc ", "1xy z22", "TEST", "NF11NF"]
     tf_postcodes:
       - value: "AB14BC"
         rel_freq: 0.5
     cleaned_2:
-      - id: 1
+      - match_id: "M1"
         postcode_arr: ["AB14BC"]
         postcode_outcode_arr: ["AB1"]
         postcode_arr_with_freq:
           - value: "AB14BC"
             rel_freq: 0.5
   - input_table:
-      - id: 1
+      - match_id: "M1"
         postcodes: ["invalid1", "not a postcode", "12345"]
     tf_postcodes: []
     cleaned_2:
-      - id: 1
+      - match_id: "M1"
         postcode_arr: NULL
         postcode_outcode_arr: NULL
         postcode_arr_with_freq: NULL

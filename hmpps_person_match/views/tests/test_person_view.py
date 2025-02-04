@@ -9,7 +9,6 @@ class TestPersonView:
 
     def test_complete_message(self, call_endpoint, mock_db_connection):
         json = {
-            "id": "123",
             "matchID": "M1",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
@@ -37,7 +36,6 @@ class TestPersonView:
 
     def test_bad_request_different_data_types(self, call_endpoint):
         json = {
-            "id": "123",
             "matchID": "M1",
             "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],  # Should be string
             "firstName": "Henry",
@@ -78,7 +76,6 @@ class TestPersonView:
 
     def test_invalid_date_format(self, call_endpoint, mock_db_connection):
         json = {
-            "id": "123",
             "matchID": "M1",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
