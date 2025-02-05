@@ -1,6 +1,6 @@
 from sqlalchemy.exc import SQLAlchemyError
 
-from hmpps_person_match.views.health_view import ROUTE
+from hmpps_person_match.routes.health import ROUTE
 
 
 class TestHealthView:

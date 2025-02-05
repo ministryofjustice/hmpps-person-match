@@ -1,4 +1,4 @@
-from hmpps_person_match.views.info_view import ROUTE
+from hmpps_person_match.routes.info import ROUTE
 
 
 class TestInfoView:
