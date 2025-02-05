@@ -14,6 +14,7 @@ def simple_clean_whole_joined_table(base_table_name: str) -> Table:
     return Table("df_cleaned", *columns_simple_select, from_table=t_name_enhanced)
 
 
+# TODO: do we need this as a whole unit any more?
 def clean_whole_joined_table(base_table_name: str, tf_postcode_tablename: str) -> Table:
     """Assumes the existence of a table named tf_postcode
     This must be create before this function is called
@@ -27,7 +28,7 @@ def clean_whole_joined_table(base_table_name: str, tf_postcode_tablename: str) -
         f"{t_cleaned}.*",
         "agg_table_postcode_arr.postcode_arr_with_freq",
         from_table=t_agg,
-        post_from_clauses=f"RIGHT JOIN {t_cleaned} ON {t_cleaned}.id = {t_agg}.id",
+        post_from_clauses=f"RIGHT JOIN {t_cleaned} ON {t_cleaned}.match_id = {t_agg}.match_id",
     )
     return t_cleaned_with_agg
 

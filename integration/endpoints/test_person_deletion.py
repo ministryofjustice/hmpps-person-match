@@ -20,7 +20,6 @@ class TestPersonDeletionEndpoint:
         """
         # Create a new person
         create_person(Person(
-            id=person_id,
             matchID=person_id,
             sourceSystem="DELIUS",
             firstName="Henry",
@@ -37,14 +36,14 @@ class TestPersonDeletionEndpoint:
             sentenceDates=["2001-03-01"],
         ))
 
-        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE id = '{person_id}'")
+        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
         assert len(result) == 1
 
         data = self.create_person_id_data(person_id)
         response = call_endpoint("delete", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
 
-        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE id = '{person_id}'")
+        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
         assert len(result) == 0
 
     async def test_person_deletion_no_record(self, call_endpoint, person_id):

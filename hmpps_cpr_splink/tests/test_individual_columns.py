@@ -83,7 +83,7 @@ def test_sentence_date_processing_end_to_end(): ...
 
 
 POSTCODE_COLUMNS = [
-    "id",
+    "match_id",
     "postcodes",
     "postcode_arr",
     "postcode_outcode_arr",
@@ -102,7 +102,9 @@ t_postcode_final = Table(
     f"{t_postcode_enhanced}.*",
     "agg_table_postcode_arr.postcode_arr_with_freq",
     from_table=t_postcode_with_freq,
-    post_from_clauses=(f"RIGHT JOIN {t_postcode_enhanced} ON {t_postcode_enhanced}.id = {t_postcode_with_freq}.id"),
+    post_from_clauses=(
+        f"RIGHT JOIN {t_postcode_enhanced} ON {t_postcode_enhanced}.match_id = {t_postcode_with_freq}.match_id"
+    ),
 )
 
 

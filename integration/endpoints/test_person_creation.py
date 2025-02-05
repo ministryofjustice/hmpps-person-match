@@ -12,7 +12,6 @@ class TestPersonCreationEndpoint:
     @staticmethod
     def create_person_data(uuid: str) -> dict:
         return {
-            "id": uuid,
             "matchID": uuid,
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
@@ -37,8 +36,7 @@ class TestPersonCreationEndpoint:
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE id = '{person_id}'")
-        assert row["id"] == person_id
+        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
         assert row["match_id"] == person_id
         assert row["name_1_std"] == "HENRY"
         assert row["name_2_std"] == "AHMED"
@@ -74,8 +72,7 @@ class TestPersonCreationEndpoint:
         data["postcodes"] = ["a34 8fr"]
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE id = '{person_id}'")
-        assert row["id"] == person_id
+        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
         assert row["match_id"] == person_id
         assert row["name_1_std"] == "ANDREW"
         assert row["name_2_std"] == "AHMED"
