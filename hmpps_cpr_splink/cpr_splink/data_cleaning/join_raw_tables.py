@@ -87,5 +87,6 @@ def join_raw_tables_sql(
         sentence_info_agg s ON p.id = s.fk_person_id
     ORDER BY p.id
     {limit_expr}
-    """
+    """  # noqa: S608
+    # not used in app, we control all inputs directly
     return sql

@@ -29,7 +29,7 @@ async def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_
     placeholders = ", ".join([f":{col}" for col in columns])
     update_columns = ", ".join([f"{col} = EXCLUDED.{col}" for col in columns])
     query = text(
-        f"INSERT INTO personmatch.person({', '.join(columns)}) VALUES ({placeholders}) "
+        f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders}) "  # noqa: S608
         f"ON CONFLICT (match_id) DO UPDATE SET {update_columns}",
     )
 
