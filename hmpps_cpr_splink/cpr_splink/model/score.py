@@ -57,7 +57,7 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
         SELECT {sql_select}
         FROM {records_table} f
         {sql_join}
-        """,
+        """,  # noqa: S608
     )
     return joined_views_name
 

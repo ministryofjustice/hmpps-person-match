@@ -23,14 +23,13 @@ def create_table_from_records(
 
     con.execute(create_sql)
 
-    placeholders = ",".join("?" for _ in schema)
-    insert_sql = f"INSERT INTO {table_name} VALUES ({placeholders})"
-
     def extract_record_values(record, schema):
         return [record[col] for col, _ in schema]
 
     values = [extract_record_values(record, schema) for record in records]
 
-    insert_sql = f"INSERT INTO {table_name} VALUES ({placeholders})"
+    placeholders = ",".join("?" for _ in schema)
+    # table name is fixed by us, and this is executed in duckdb
+    insert_sql = f"INSERT INTO {table_name} VALUES ({placeholders})"  # noqa: S608
     con.executemany(insert_sql, values)
     return table_name

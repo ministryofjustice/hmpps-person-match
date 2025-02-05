@@ -56,8 +56,8 @@ def _create_blocked_pairs_sql(
             "dummy",
             "dummy",
         )
-    }
-        """
+        }
+        """  # noqa: S608
     return sql
 
 
@@ -105,7 +105,7 @@ def candidate_search(primary_record_id: str) -> str:
 
     # need source dataset to be later alphabetically to get the right condition
     table_name_potential_candidates = "person_ws"
-    sql = f"SELECT *, 'z_candidates' AS source_dataset FROM {cleaned_table_name}"
+    sql = f"SELECT *, 'z_candidates' AS source_dataset FROM {cleaned_table_name}"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_potential_candidates)
 
     sql_info = _block_using_rules_sqls(
