@@ -6,33 +6,14 @@ from integration.client import Client
 
 class TestPersonCreationEndpoint:
     """
-    Test match view
+    Test person creation
     """
 
-    @staticmethod
-    def create_person_data(uuid: str) -> dict:
-        return {
-            "matchID": uuid,
-            "sourceSystem": "DELIUS",
-            "firstName": "Henry",
-            "middleNames": "Ahmed",
-            "lastName": "Junaed",
-            "crn": "1234",
-            "dateOfBirth": "1992-03-02",
-            "firstNameAliases": ["Henry"],
-            "lastNameAliases": ["Junaed"],
-            "dateOfBirthAliases": ["1992-01-01"],
-            "postcodes": ["B10 1EJ"],
-            "cros": ["4444566"],
-            "pncs": ["22224555"],
-            "sentenceDates": ["2001-03-01"],
-        }
-
-    async def test_clean_and_store_message(self, call_endpoint, person_id, db):
+    async def test_clean_and_store_message(self, call_endpoint, person_id, db, create_person_data):
         """
         Test person cleaned and stored on person endpoint
         """
-        data = self.create_person_data(person_id)
+        data = create_person_data(person_id)
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
@@ -55,16 +36,16 @@ class TestPersonCreationEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    async def test_clean_and_update_message(self, call_endpoint, person_id, db):
+    async def test_clean_and_update_message(self, call_endpoint, person_id, db, create_person_data):
         """
         Test person cleaned and update existing person on person endpoint
         """
         # Create person
-        data = self.create_person_data(person_id)
+        data = create_person_data(person_id)
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
 
-        data = self.create_person_data(person_id)
+        data = create_person_data(person_id)
         # Update person
         data["firstName"] = "andrew"
         data["firstNameAliases"] = ["andy"]
@@ -91,10 +72,10 @@ class TestPersonCreationEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    def test_invalid_client_returns_forbidden(self, call_endpoint, person_id):
+    def test_invalid_client_returns_forbidden(self, call_endpoint, person_id, create_person_data):
         """
         Test person endpoint return 403 forbidden when invalid roles
         """
-        data = self.create_person_data(person_id)
+        data = create_person_data(person_id)
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_TIER)
         assert response.status_code == 403
