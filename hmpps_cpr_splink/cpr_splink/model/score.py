@@ -79,10 +79,15 @@ def score(
 
     full_table_name = populate_with_tfs(con, full_candidates_tn)
 
-    source_name = "primary_record_view"
-    candidates_name = "candidate_record_view"
-    con.sql(f"CREATE VIEW {source_name} AS SELECT * FROM {full_table_name} WHERE id = '{primary_record_id}'")
-    con.sql(f"CREATE VIEW {candidates_name} AS SELECT * FROM {full_table_name} WHERE id != '{primary_record_id}'")
+    source_name = "primary_record"
+    candidates_name = "candidate_record"
+    # cannot create views with prepared statements: https://github.com/duckdb/duckdb/issues/13069
+    source_sql = f"CREATE TABLE {source_name} AS SELECT * FROM {full_table_name} WHERE match_id = '$primary_record_id'"  # noqa: S608
+    candidates_sql = (
+        f"CREATE TABLE {candidates_name} AS SELECT * FROM {full_table_name} WHERE match_id != '$primary_record_id'"  # noqa: S608
+    )
+    con.execute(source_sql, parameters={"primary_record_id": primary_record_id})
+    con.execute(candidates_sql, parameters={"primary_record_id": primary_record_id})
 
     con.sql("SHOW ALL TABLES").show()
 

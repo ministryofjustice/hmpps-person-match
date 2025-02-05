@@ -100,7 +100,7 @@ def candidate_search(primary_record_id: str) -> str:
     cleaned_table_name = "person"
 
     table_name_primary = "primary_record"
-    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE id = '{primary_record_id}'"
+    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE id = %s"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     # need source dataset to be later alphabetically to get the right condition
@@ -122,6 +122,6 @@ def candidate_search(primary_record_id: str) -> str:
     sql = f"CREATE OR REPLACE VIEW {pipeline.output_table_name} AS {pipeline.generate_cte_pipeline_sql()}"
     # TODO: in a schema?
     with postgres_db_connector() as conn, conn.cursor() as cur:
-        cur.execute(sql)
+        cur.execute(sql, (primary_record_id, ))
 
     return pipeline.output_table_name
