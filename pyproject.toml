@@ -100,17 +100,19 @@ ignore = [
 # ignores name convention as overriding package function
 "log_formatter.py" = ["N802"]
 "hmpps_cpr_splink/*" = [
-    # flake8-bandit
-    "S",
     # flake8-self
     # keep this as we need to access Splink internals - not a problem as we own it
     "SLF",
 ]
 "hmpps_cpr_splink/tests/*" = [
+    # flake8-bandit
+    "S",
     # flake8-no-pep420
     "INP",
 ]
 "hmpps_cpr_splink/scripts/*" = [
+    # flake8-bandit
+    "S",
     # flake8-no-pep420
     "INP",
 ]
