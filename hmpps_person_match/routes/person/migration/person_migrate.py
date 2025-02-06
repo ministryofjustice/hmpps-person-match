@@ -10,10 +10,9 @@ from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logging.log import get_logger
 from hmpps_person_match.domain.roles import Roles
-from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
 
-ROUTE = "/person"
+ROUTE = "/person/migrate"
 
 DESCRIPTION = f"""
     **Authorization Required:**
@@ -27,14 +26,21 @@ router = APIRouter(
 
 
 @router.post(ROUTE, description=DESCRIPTION)
-async def post_person(
-    person: Person,
+async def post_person_migration(
+    person_records: PersonBatch,
     connection: Annotated[AsyncConnection, Depends(get_db_connection)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Response:
     """
-    Person POST request handler
+    Person Migration POST request handler
     """
-    logger.info("Cleaning and storing person record", extra={"custom_dimensions": {"id": person.match_id}})
-    await clean.clean_and_insert(PersonBatch(records=[person]), connection)
+    logger.info(
+        "Batch: cleaning and storing person records",
+        extra={
+            "custom_dimensions": {
+                "batch_size": len(person_records.records),
+            },
+        },
+    )
+    await clean.clean_and_insert(person_records, connection)
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)

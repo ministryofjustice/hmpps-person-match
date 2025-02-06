@@ -23,8 +23,8 @@ def postgres_db_connector() -> ConnectionPsycopg:
 async def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_table_name: str, conn: AsyncConnection):
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]
-    # assuming a single row to insert for now
-    data = dict(zip(columns, values[0], strict=True))
+
+    data = [dict(zip(columns, row, strict=True)) for row in values]
 
     placeholders = ", ".join([f":{col}" for col in columns])
     update_columns = ", ".join([f"{col} = EXCLUDED.{col}" for col in columns])
@@ -32,6 +32,6 @@ async def insert_duckdb_table_into_postgres_table(ddb_tab: DuckDBPyRelation, pg_
         f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders}) "  # noqa: S608
         f"ON CONFLICT (match_id) DO UPDATE SET {update_columns}",
     )
-
     await conn.execute(query, data)
+
     await conn.commit()

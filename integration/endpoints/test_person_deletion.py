@@ -14,12 +14,12 @@ class TestPersonDeletionEndpoint:
             "matchID": uuid,
         }
 
-    async def test_person_deletion(self, call_endpoint, person_id, db, create_person):
+    async def test_person_deletion(self, call_endpoint, person_id, db, create_person_record):
         """
         Test person cleaned and stored on person endpoint
         """
         # Create a new person
-        create_person(Person(
+        create_person_record(Person(
             matchID=person_id,
             sourceSystem="DELIUS",
             firstName="Henry",
