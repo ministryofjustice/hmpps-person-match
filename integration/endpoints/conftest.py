@@ -85,9 +85,11 @@ def create_person_data():
     """
     Create a new person data
     """
-    def _create_person_json(uuid: uuid.UUID = uuid.uuid4()):  # noqa: B008
+    def _create_person_json(uuid_object: uuid.UUID = None):
+        if uuid_object is None:
+            uuid_object = uuid.uuid4()
         return {
-            "matchID": str(uuid),
+            "matchID": str(uuid_object),
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
