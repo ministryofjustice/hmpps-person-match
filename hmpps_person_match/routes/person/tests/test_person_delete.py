@@ -11,7 +11,7 @@ class TestPersonDeleteRoute:
         # Mock db response
         mock_db_connection.execute.return_value.rowcount = 0
         json = {
-            "matchID": "123",
+            "matchId": "123",
         }
         response = call_endpoint("delete", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 404
@@ -21,7 +21,7 @@ class TestPersonDeleteRoute:
         # Mock db response
         mock_db_connection.execute.return_value.rowcount = 1
         json = {
-            "matchID": "123",
+            "matchId": "123",
         }
         response = call_endpoint("delete", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
@@ -40,7 +40,7 @@ class TestPersonDeleteRoute:
                 },
                 "loc": [
                     "body",
-                    "matchID",
+                    "matchId",
                 ],
                 "msg": "Field required",
                 "type": "missing",
