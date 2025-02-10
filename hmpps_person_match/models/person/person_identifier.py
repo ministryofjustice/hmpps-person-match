@@ -6,4 +6,4 @@ class PersonIdentifier(BaseModel):
     Pydantic Person Identifier Model
     """
 
-    match_id: str = Field(alias="matchID")
+    match_id: str = Field(alias="matchId")

@@ -56,7 +56,7 @@ class TestPersonRoute:
     @staticmethod
     def _create_person_data():
         return {
-            "matchID": str(uuid.uuid4()),
+            "matchId": str(uuid.uuid4()),
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
