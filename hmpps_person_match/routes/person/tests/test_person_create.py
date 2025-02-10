@@ -9,7 +9,7 @@ class TestPersonRoute:
 
     def test_complete_message(self, call_endpoint, mock_db_connection):
         json = {
-            "matchID": "M1",
+            "matchId": "M1",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
@@ -36,7 +36,7 @@ class TestPersonRoute:
 
     def test_bad_request_different_data_types(self, call_endpoint):
         json = {
-            "matchID": "M1",
+            "matchId": "M1",
             "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],  # Should be string
             "firstName": "Henry",
             "middleNames": "Ahmed",
@@ -76,7 +76,7 @@ class TestPersonRoute:
 
     def test_invalid_date_format(self, call_endpoint, mock_db_connection):
         json = {
-            "matchID": "M1",
+            "matchId": "M1",
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",

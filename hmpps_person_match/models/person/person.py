@@ -8,7 +8,7 @@ class Person(BaseModel):
     Pydantic Person Model
     """
 
-    match_id: str = Field(alias="matchID")
+    match_id: str = Field(alias="matchId")
     source_system: str = Field(alias="sourceSystem")
     first_name: str = Field(alias="firstName")
     middle_names: str = Field(alias="middleNames")
