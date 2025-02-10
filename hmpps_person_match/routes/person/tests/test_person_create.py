@@ -115,3 +115,11 @@ class TestPersonRoute:
         response = client.post(ROUTE, json={})
         assert response.status_code == 403
         assert response.json()["detail"] == "Not authenticated"
+
+    def test_fields_are_optional(self, call_endpoint, mock_db_connection):
+        json = {
+            "matchId": "M1",
+            "sourceSystem": "DELIUS",
+        }
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 200
