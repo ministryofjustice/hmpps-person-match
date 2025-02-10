@@ -10,7 +10,7 @@ from hmpps_person_match.models.person.person_batch import PersonBatch
 
 
 @pytest.fixture()
-async def get_db_connection() -> AsyncGenerator[AsyncConnection]:
+async def sqlalchemy_db_connection() -> AsyncGenerator[AsyncConnection]:
     database_url = URL.create(
         drivername="postgresql+asyncpg",
         username="root",
@@ -29,7 +29,7 @@ async def get_db_connection() -> AsyncGenerator[AsyncConnection]:
     await engine.dispose()
 
 @pytest.fixture()
-async def create_person_record(get_db_connection):
+async def create_person_record(sqlalchemy_db_connection):
     async def _create_person(person: Person):
-        await clean.clean_and_insert(PersonBatch(records=[person]), get_db_connection)
+        await clean.clean_and_insert(PersonBatch(records=[person]), sqlalchemy_db_connection)
     return _create_person
