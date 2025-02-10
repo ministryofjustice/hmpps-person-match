@@ -87,7 +87,7 @@ def create_person_data():
         if uuid_object is None:
             uuid_object = uuid.uuid4()
         return {
-            "matchID": str(uuid_object),
+            "matchId": str(uuid_object),
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
             "middleNames": "Ahmed",
