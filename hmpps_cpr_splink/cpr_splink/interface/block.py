@@ -91,6 +91,8 @@ async def candidate_search(primary_record_id: str, con: duckdb.DuckDBPyConnectio
     """
     Given a primary record id, return a table of these records
     along with the primary, ready to be scored.
+
+    Requires a duckdb connexion with a postgres database attached as 'pg_db'
     """
     pipeline = CTEPipeline()
 
