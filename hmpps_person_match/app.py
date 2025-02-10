@@ -77,6 +77,7 @@ class PersonMatchApplication:
         """
         Custom exception handler for validation errors
         """
+        get_logger().exception(exc.errors)
         return JSONResponse(
             status_code=400,
             content=ErrorResponse(
