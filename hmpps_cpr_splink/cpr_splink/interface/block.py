@@ -55,7 +55,7 @@ def _create_blocked_pairs_sql(
             "dummy",
             "dummy",
         )
-        }
+    }
         """  # noqa: S608
     return sql
 
@@ -117,5 +117,5 @@ async def candidate_search(primary_record_id: str, con: duckdb.DuckDBPyConnectio
     pipeline.enqueue_sql(**sql_info)
 
     sql = f"CREATE OR REPLACE TABLE {pipeline.output_table_name} AS {pipeline.generate_cte_pipeline_sql()}"
-    con.execute(sql, (primary_record_id, ))
+    con.execute(sql, (primary_record_id,))
     return pipeline.output_table_name
