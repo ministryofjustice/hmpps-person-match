@@ -36,6 +36,17 @@ class TestPersonMigrationEndpoint:
         count = await db.fetchval("SELECT count(*) FROM personmatch.person")
         assert count == 1
 
+    async def test_batch_clean_errors(self, call_endpoint, db, create_person_data):
+        """
+        Test person cleaned and stored on person endpoint
+        """
+        data = {
+            "records": ["invalid_data"],
+        }
+
+        response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
+        assert response.status_code == 400
+
     async def test_batch_clean_and_store_thousand_records(self, call_endpoint, db, create_person_data):
         """
         Test person cleaned and stored on person endpoint
