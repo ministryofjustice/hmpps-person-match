@@ -1,5 +1,6 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
 
+import duckdb
 from splink.internals.blocking import (
     BlockingRule,
     _sql_gen_where_condition,
@@ -8,26 +9,24 @@ from splink.internals.blocking import (
 from splink.internals.input_column import InputColumn
 from splink.internals.pipeline import CTEPipeline
 from splink.internals.settings import LinkTypeLiteralType
-from splink.internals.unique_id_concat import _composite_unique_id_from_nodes_sql
 
 from ..model.blocking_rules import (
     blocking_rules_for_prediction_tight_for_candidate_search,
 )
-from .db import postgres_db_connector
 
 # TODO: this doesn't work directly, as our indexing doesnt work, but enough for now
 # Splink 4.0.7 should have requisite change
 _blocking_rules_concrete = list(
     map(
-        lambda brc: brc.get_blocking_rule("postgres"),
+        lambda brc: brc.get_blocking_rule("duckdb"),
         blocking_rules_for_prediction_tight_for_candidate_search,
     ),
 )
 for n, br in enumerate(_blocking_rules_concrete):
     br.add_preceding_rules(_blocking_rules_concrete[:n])
 
-unique_id_input_column = InputColumn("id", sqlglot_dialect_str="postgres")
-source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
+unique_id_input_column = InputColumn("id", sqlglot_dialect_str="duckdb")
+source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="duckdb")
 
 
 # modified version of br.create_blocked_pairs_sql
@@ -39,12 +38,12 @@ def _create_blocked_pairs_sql(
     where_condition: str,
 ) -> str:
     # TODO: I can probably ditch this kind of generality
-    uid_l_expr = _composite_unique_id_from_nodes_sql([unique_id_input_column], "l")
 
     sql = f"""
         select
         '{blocking_rule.match_key}' as match_key,
-        {uid_l_expr} AS primary_id,
+        l.id AS primary_id,
+        l.match_id AS primary_match_id,
         r.*
         from {input_tablename_l} as l
         inner join {input_tablename_r} as r
@@ -56,7 +55,7 @@ def _create_blocked_pairs_sql(
             "dummy",
             "dummy",
         )
-        }
+    }
         """  # noqa: S608
     return sql
 
@@ -88,19 +87,20 @@ def _block_using_rules_sqls(
     return {"sql": sql, "output_table_name": "__splink__blocked_id_pairs"}
 
 
-def candidate_search(primary_record_id: str) -> str:
+async def candidate_search(primary_record_id: str, con: duckdb.DuckDBPyConnection) -> str:
     """
     Given a primary record id, return a table of these records
     along with the primary, ready to be scored.
+
+    Requires a duckdb connexion with a postgres database attached as 'pg_db'
     """
-    # TODO: more careful about inserting id
     pipeline = CTEPipeline()
 
     # TODO: table name from?
-    cleaned_table_name = "person"
+    cleaned_table_name = "pg_db.personmatch.person"
 
     table_name_primary = "primary_record"
-    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE id = %s"  # noqa: S608
+    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE match_id = $1"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     # need source dataset to be later alphabetically to get the right condition
@@ -116,12 +116,6 @@ def candidate_search(primary_record_id: str) -> str:
     )
     pipeline.enqueue_sql(**sql_info)
 
-    # TODO: materialise?
-    # TODO: do I need less generic name if concurrent queries?
-    # TODO: cleanup. Can I make this function return a context manager?
-    sql = f"CREATE OR REPLACE VIEW {pipeline.output_table_name} AS {pipeline.generate_cte_pipeline_sql()}"
-    # TODO: in a schema?
-    with postgres_db_connector() as conn, conn.cursor() as cur:
-        cur.execute(sql, (primary_record_id, ))
-
+    sql = f"CREATE OR REPLACE TABLE {pipeline.output_table_name} AS {pipeline.generate_cte_pipeline_sql()}"
+    con.execute(sql, (primary_record_id,))
     return pipeline.output_table_name

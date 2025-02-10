@@ -1,5 +1,4 @@
 import base64
-import uuid
 
 import pytest
 import requests
@@ -78,29 +77,3 @@ def create_person_record(call_endpoint):
         raise Exception(f"Could not create person, {response.status_code}")
 
     return _create_and_insert_person
-
-
-@pytest.fixture()
-def create_person_data():
-    """
-    Create a new person data
-    """
-    def _create_person_json(uuid: uuid.UUID = uuid.uuid4()):  # noqa: B008
-        return {
-            "matchId": str(uuid),
-            "sourceSystem": "DELIUS",
-            "firstName": "Henry",
-            "middleNames": "Ahmed",
-            "lastName": "Junaed",
-            "crn": "1234",
-            "dateOfBirth": "1992-03-02",
-            "firstNameAliases": ["Henry"],
-            "lastNameAliases": ["Junaed"],
-            "dateOfBirthAliases": ["1992-01-01"],
-            "postcodes": ["B10 1EJ"],
-            "cros": ["4444566"],
-            "pncs": ["22224555"],
-            "sentenceDates": ["2001-03-01"],
-        }
-
-    return _create_person_json
