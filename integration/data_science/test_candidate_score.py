@@ -37,3 +37,17 @@ class TestPersonScore:
         # we have all candidates + original record
         assert len(res) == n_candidates
         assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20])
+
+    async def test_get_scored_candidates_none_in_db(
+        self, create_person_record, create_person_data, sqlalchemy_db_connection,
+    ):
+        """
+        Test scoring returns nothing if the given match_id is not in db
+        """
+        n_candidates = 10
+        for _ in range(n_candidates):
+            await create_person_record(Person(**create_person_data()))
+
+        res = await get_scored_candidates("bogus_match_id", sqlalchemy_db_connection)
+
+        assert len(res) == 0
