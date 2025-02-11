@@ -74,11 +74,6 @@ def score(
     start_time = time.perf_counter()
     # Compare records
     db_api = DuckDBAPI(con)
-    # db_api.debug_mode = True
-
-    # TODO:
-    # join tf tables to candidates
-    # split
 
     full_table_name = populate_with_tfs(con, full_candidates_tn, real_term_frequencies=False)
 
@@ -91,8 +86,6 @@ def score(
     )
     con.execute(source_sql, parameters={"primary_record_id": primary_record_id})
     con.execute(candidates_sql, parameters={"primary_record_id": primary_record_id})
-
-    con.sql("SHOW ALL TABLES").show()
 
     scores = compare_records(  # noqa: F841
         source_name,
