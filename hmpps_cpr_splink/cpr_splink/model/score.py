@@ -77,7 +77,8 @@ def score(
     # join tf tables to candidates
     # split
 
-    full_table_name = populate_with_tfs(con, full_candidates_tn)
+    # full_table_name = populate_with_tfs(con, full_candidates_tn)
+    full_table_name = full_candidates_tn
 
     source_name = "primary_record"
     candidates_name = "candidate_record"
