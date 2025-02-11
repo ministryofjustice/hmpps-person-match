@@ -8,8 +8,9 @@ from .db import duckdb_connected_to_postgres
 
 
 class ScoredCandidate(TypedDict):
-    match_id: str
-    match_score: float
+    candidate_match_id: str
+    candidate_match_probability: float
+    candidate_match_weight: float
 
 
 async def get_scored_candidates(primary_record_id: str, conn: AsyncConnection) -> list[ScoredCandidate]:
