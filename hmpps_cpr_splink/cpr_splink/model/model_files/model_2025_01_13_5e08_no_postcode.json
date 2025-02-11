@@ -3,7 +3,7 @@
     "probability_two_random_records_match": 1.3363778094076224e-06,
     "retain_matching_columns": true,
     "retain_intermediate_calculation_columns": true,
-    "additional_columns_to_retain": [],
+    "additional_columns_to_retain": ["match_id"],
     "sql_dialect": "duckdb",
     "linker_uid": "kxwbq3o8",
     "em_convergence": 0.0001,

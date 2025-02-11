@@ -8,7 +8,7 @@ from .db import duckdb_connected_to_postgres
 
 
 class ScoredCandidate(TypedDict):
-    id: str
+    match_id: str
     match_score: float
 
 
