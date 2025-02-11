@@ -26,7 +26,7 @@ def _mock_lookup_many_tf(value_col_pairs):
     return results
 
 
-def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
+def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_term_frequencies: bool = True) -> str:
     # TODO: postcodes
     tf_columns = [
         "name_1_std",
@@ -41,12 +41,15 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
     select_clauses = ["f.*"]
     for col in tf_columns:
         tf_colname = f"tf_{col}"
-        alias_table_name = tf_colname
-        tf_lookup_table_name = f"pg_db.public.{tf_colname}"
-        join_clauses.append(
-            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
-        )
-        select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
+        if real_term_frequencies:
+            alias_table_name = tf_colname
+            tf_lookup_table_name = f"pg_db.public.{tf_colname}"
+            join_clauses.append(
+                f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
+            )
+            select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
+        else:
+            select_clauses.append(f"NULL AS {tf_colname}")
 
     joined_views_name = "final_table_with_tf"
     sql_join = " ".join(join_clauses)
@@ -77,8 +80,7 @@ def score(
     # join tf tables to candidates
     # split
 
-    # full_table_name = populate_with_tfs(con, full_candidates_tn)
-    full_table_name = full_candidates_tn
+    full_table_name = populate_with_tfs(con, full_candidates_tn, real_term_frequencies=False)
 
     source_name = "primary_record"
     candidates_name = "candidate_record"
