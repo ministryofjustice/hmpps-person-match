@@ -106,6 +106,26 @@ class TestPersonRoute:
             },
         ]
 
+    def test_empty_string_as_date(self, call_endpoint, mock_db_connection):
+        json = {
+            "matchId": "M1",
+            "sourceSystem": "DELIUS",
+            "firstName": "Henry",
+            "middleNames": "Ahmed",
+            "lastName": "Junaed",
+            "crn": "1234",
+            "dateOfBirth": "",
+            "firstNameAliases": ["Henry"],
+            "lastNameAliases": ["Junaed"],
+            "dateOfBirthAliases": ["1992-01-01"],
+            "postcodes": ["B10 1EJ"],
+            "cros": ["4444566"],
+            "pncs": ["22224555"],
+            "sentenceDates": ["2001-03-01"],
+        }
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
+        assert response.status_code == 200
+
     def test_invalid_role_unauthorized(self, call_endpoint):
         response = call_endpoint("post", ROUTE, roles=["Invalid Role"], json={})
         assert response.status_code == 403
