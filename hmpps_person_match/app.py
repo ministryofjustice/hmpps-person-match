@@ -5,7 +5,7 @@ import sys
 
 from azure.monitor.opentelemetry import configure_azure_monitor
 
-from hmpps_person_match.dependencies.logging.log import LOGGER_NAME, get_logger
+from hmpps_person_match.dependencies.logger.log import LOGGER_NAME, get_logger
 
 if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     os.environ["OTEL_SERVICE_NAME"] = "hmpps-person-match"
