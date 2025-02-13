@@ -66,16 +66,16 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
 
 
 def score(
-    con: duckdb.DuckDBPyConnection,
+    connection_duckdb: duckdb.DuckDBPyConnection,
     primary_record_id: str,
     full_candidates_tn: str,
     return_scores_only: bool = True,
 ):
     start_time = time.perf_counter()
     # Compare records
-    db_api = DuckDBAPI(con)
+    db_api = DuckDBAPI(connection_duckdb)
 
-    full_table_name = populate_with_tfs(con, full_candidates_tn, real_term_frequencies=False)
+    full_table_name = populate_with_tfs(connection_duckdb, full_candidates_tn, real_term_frequencies=False)
 
     source_name = "primary_record"
     candidates_name = "candidate_record"
@@ -84,8 +84,8 @@ def score(
     candidates_sql = (
         f"CREATE TABLE {candidates_name} AS SELECT * FROM {full_table_name} WHERE match_id != $primary_record_id"  # noqa: S608
     )
-    con.execute(source_sql, parameters={"primary_record_id": primary_record_id})
-    con.execute(candidates_sql, parameters={"primary_record_id": primary_record_id})
+    connection_duckdb.execute(source_sql, parameters={"primary_record_id": primary_record_id})
+    connection_duckdb.execute(candidates_sql, parameters={"primary_record_id": primary_record_id})
 
     scores = compare_records(  # noqa: F841
         source_name,
@@ -99,6 +99,6 @@ def score(
     logger.info("Time taken: %.2f seconds", end_time - start_time)
 
     if return_scores_only:
-        return con.sql("SELECT match_id_l, match_id_r, match_probability, match_weight FROM scores")
+        return connection_duckdb.sql("SELECT match_id_l, match_id_r, match_probability, match_weight FROM scores")
     else:
-        return con.sql("SELECT * FROM scores")
+        return connection_duckdb.sql("SELECT * FROM scores")

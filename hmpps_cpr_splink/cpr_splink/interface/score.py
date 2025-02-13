@@ -13,16 +13,16 @@ class ScoredCandidate(TypedDict):
     candidate_match_weight: float
 
 
-async def get_scored_candidates(primary_record_id: str, conn: AsyncConnection) -> list[ScoredCandidate]:
+async def get_scored_candidates(primary_record_id: str, connection_pg: AsyncConnection) -> list[ScoredCandidate]:
     """
     Takes a primary record, generates candidates, scores
     """
     # TODO: allow a threshold cutoff? (depending on blocking rules)
-    con = duckdb_connected_to_postgres(conn)
+    connection_duckdb = duckdb_connected_to_postgres(connection_pg)
 
-    candidates_table_name = await candidate_search(primary_record_id, con)
+    candidates_table_name = await candidate_search(primary_record_id, connection_duckdb)
 
-    res = score(con, primary_record_id, candidates_table_name, return_scores_only=True)
+    res = score(connection_duckdb, primary_record_id, candidates_table_name, return_scores_only=True)
     return [
         {
             "candidate_match_id": row[1],
