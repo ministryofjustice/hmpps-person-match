@@ -1,4 +1,3 @@
-
 import uuid
 
 import pytest
@@ -20,7 +19,6 @@ class TestPersonMigrationEndpoint:
         Delete all records from the database
         """
         await db.execute("TRUNCATE TABLE personmatch.person")
-
 
     async def test_batch_clean_and_store_message(self, call_endpoint, db, create_person_data):
         """

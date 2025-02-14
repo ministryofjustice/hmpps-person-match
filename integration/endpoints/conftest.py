@@ -69,9 +69,9 @@ def create_person_record(call_endpoint):
         """
         Commit person into
         """
-        response = call_endpoint("post", "/person",
-                                 json=person.model_dump(mode="json", by_alias=True),
-                                 client=Client.HMPPS_PERSON_MATCH)
+        response = call_endpoint(
+            "post", "/person", json=person.model_dump(mode="json", by_alias=True), client=Client.HMPPS_PERSON_MATCH,
+        )
         if response.status_code == 200:
             return person.match_id
         raise Exception(f"Could not create person, {response.status_code}")
