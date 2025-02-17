@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
@@ -7,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
-from hmpps_person_match.dependencies.logger.log import AppInsightsLogger, get_logger
+from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 from hmpps_person_match.models.person.person import Person
@@ -30,11 +31,11 @@ router = APIRouter(
 async def post_person(
     person: Person,
     connection: Annotated[AsyncConnection, Depends(get_db_connection)],
-    logger: Annotated[AppInsightsLogger, Depends(get_logger)],
+    logger: Annotated[Logger, Depends(get_logger)],
 ) -> Response:
     """
     Person POST request handler
     """
-    logger.log_event(TelemetryEvents.PERSON_UPDATED_OR_CREATED, attributes=dict(matchId=person.match_id))
+    logger.info(TelemetryEvents.PERSON_UPDATED_OR_CREATED, extra=dict(matchId=person.match_id))
     await clean.clean_and_insert(PersonBatch(records=[person]), connection)
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)

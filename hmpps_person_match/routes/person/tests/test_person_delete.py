@@ -27,12 +27,12 @@ class TestPersonDeleteRoute:
         response = call_endpoint("delete", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
         assert response.json() == {}
-        mock_logger.log_event.assert_called_with(
+        mock_logger.info.assert_called_with(
             TelemetryEvents.PERSON_DELETED,
-            attributes={"matchId": "123"},
+            extra={"matchId": "123"},
         )
 
-    def test_delete_message_malformed_data(self, call_endpoint, mock_db_connection):
+    def test_delete_message_malformed_data(self, call_endpoint):
         json = {
             "identifier": "invalid",
         }
