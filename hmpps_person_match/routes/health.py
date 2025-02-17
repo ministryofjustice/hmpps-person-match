@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
@@ -7,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncConnection
 
 from hmpps_person_match.db import get_db_connection
-from hmpps_person_match.dependencies.logger.log import AppInsightsLogger, get_logger
+from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.models.health import Health, Status
 
 ROUTE = "/health"
@@ -18,7 +19,7 @@ router = APIRouter()
 @router.get(ROUTE)
 async def get_health(
     connection: Annotated[AsyncConnection, Depends(get_db_connection)],
-    logger: Annotated[AppInsightsLogger, Depends(get_logger)],
+    logger: Annotated[Logger, Depends(get_logger)],
 ) -> Health:
     """
     GET request handler
