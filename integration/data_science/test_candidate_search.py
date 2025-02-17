@@ -36,7 +36,10 @@ class TestCandidateSearch:
         assert len(row) == n_candidates + 1
 
     async def test_candidate_search_no_record_in_db(
-        self, create_person_record, create_person_data, duckdb_con_with_pg,
+        self,
+        create_person_record,
+        create_person_data,
+        duckdb_con_with_pg,
     ):
         """
         Test candidate search returns nothing if the given match_id is not in db

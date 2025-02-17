@@ -19,22 +19,24 @@ class TestPersonDeletionEndpoint:
         Test person cleaned and stored on person endpoint
         """
         # Create a new person
-        create_person_record(Person(
-            matchId=person_id,
-            sourceSystem="DELIUS",
-            firstName="Henry",
-            middleNames="Ahmed",
-            lastName="Junaed",
-            crn="1234",
-            dateOfBirth="1992-03-02",
-            firstNameAliases=["Henry"],
-            lastNameAliases=["Junaed"],
-            dateOfBirthAliases=["1992-01-01"],
-            postcodes=["B10 1EJ"],
-            cros=["4444566"],
-            pncs=["22224555"],
-            sentenceDates=["2001-03-01"],
-        ))
+        create_person_record(
+            Person(
+                matchId=person_id,
+                sourceSystem="DELIUS",
+                firstName="Henry",
+                middleNames="Ahmed",
+                lastName="Junaed",
+                crn="1234",
+                dateOfBirth="1992-03-02",
+                firstNameAliases=["Henry"],
+                lastNameAliases=["Junaed"],
+                dateOfBirthAliases=["1992-01-01"],
+                postcodes=["B10 1EJ"],
+                cros=["4444566"],
+                pncs=["22224555"],
+                sentenceDates=["2001-03-01"],
+            ),
+        )
 
         result = await db.fetch(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
         assert len(result) == 1

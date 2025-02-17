@@ -19,11 +19,13 @@ class Service(Enum):
 
     HMPPS_PERSON_MATCH = ("localhost", 5000, "/health")
 
+
 @pytest.fixture(scope="session")
 def get_service():
     """
     Start and check service is running
     """
+
     def _wait_for_health(service: Service, timeout=60, interval=2):
         """
         Polls a health endpoint until it returns HTTP 200 OK.
@@ -45,6 +47,7 @@ def get_service():
         raise TimeoutError(f"Service did not become healthy within {timeout} seconds.")
 
     return _wait_for_health
+
 
 @pytest.fixture(scope="session")
 def person_match_url(get_service):
@@ -83,6 +86,7 @@ def create_person_data():
     """
     Create a new person data
     """
+
     def _create_person_json(uuid_object: uuid.UUID = None):
         if uuid_object is None:
             uuid_object = uuid.uuid4()

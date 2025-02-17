@@ -29,4 +29,3 @@ async def insert_duckdb_table_into_postgres_table(
     await connection_pg.execute(query, data)
 
     await connection_pg.commit()
-

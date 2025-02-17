@@ -1,5 +1,5 @@
 import datetime
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import jwt
 import pytest
@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 
 from hmpps_person_match.app import PersonMatchApplication
 from hmpps_person_match.db import get_db_connection
+from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
 
@@ -29,11 +30,18 @@ def app():
     # clean up / reset resources here
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def mock_db_connection(app):
     mock_connection = AsyncMock()
     app.dependency_overrides[get_db_connection] = lambda: mock_connection
     yield mock_connection
+
+
+@pytest.fixture(autouse=True)
+def mock_logger(app):
+    mock_logger = Mock()
+    app.dependency_overrides[get_logger] = lambda: mock_logger
+    yield mock_logger
 
 
 @pytest.fixture()

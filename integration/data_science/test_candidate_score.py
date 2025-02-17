@@ -19,9 +19,8 @@ class TestPersonScore:
         await db.execute("TRUNCATE TABLE personmatch.person")
 
     async def test_get_scored_candidates(
-        self,
-        person_id,
-        create_person_record, create_person_data, sqlalchemy_db_connection):
+        self, person_id, create_person_record, create_person_data, sqlalchemy_db_connection,
+    ):
         """
         Test retrieving scored candidates gives correct number
         """
@@ -39,7 +38,10 @@ class TestPersonScore:
         assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20])
 
     async def test_get_scored_candidates_none_in_db(
-        self, create_person_record, create_person_data, sqlalchemy_db_connection,
+        self,
+        create_person_record,
+        create_person_data,
+        sqlalchemy_db_connection,
     ):
         """
         Test scoring returns nothing if the given match_id is not in db

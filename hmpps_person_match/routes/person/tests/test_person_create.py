@@ -1,4 +1,5 @@
 from hmpps_person_match.domain.roles import Roles
+from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 from hmpps_person_match.routes.person.person_create import ROUTE
 
 
@@ -7,7 +8,7 @@ class TestPersonRoute:
     Test Person Create Route
     """
 
-    def test_complete_message(self, call_endpoint, mock_db_connection):
+    def test_complete_message(self, call_endpoint, mock_logger):
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
@@ -27,6 +28,10 @@ class TestPersonRoute:
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
         assert response.json() == {}
+        mock_logger.log_event.assert_called_with(
+            TelemetryEvents.PERSON_UPDATED_OR_CREATED,
+            attributes={"matchId": "M1"},
+        )
 
     def test_bad_request_on_empty(self, call_endpoint):
         json = None
@@ -74,7 +79,7 @@ class TestPersonRoute:
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
 
-    def test_invalid_date_format(self, call_endpoint, mock_db_connection):
+    def test_invalid_date_format(self, call_endpoint):
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
@@ -106,7 +111,7 @@ class TestPersonRoute:
             },
         ]
 
-    def test_empty_string_as_date(self, call_endpoint, mock_db_connection):
+    def test_empty_string_as_date(self, call_endpoint):
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
