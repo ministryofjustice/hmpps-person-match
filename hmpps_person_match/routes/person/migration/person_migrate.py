@@ -10,6 +10,7 @@ from hmpps_person_match.db import get_db_connection
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
+from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 from hmpps_person_match.models.person.person_batch import PersonBatch
 
 ROUTE = "/person/migrate"
@@ -35,12 +36,8 @@ async def post_person_migration(
     Person Migration POST request handler
     """
     logger.info(
-        "Batch: cleaning and storing person records",
-        extra={
-            "custom_dimensions": {
-                "batch_size": len(person_records.records),
-            },
-        },
+        TelemetryEvents.PERSON_BATCH_UPDATED_OR_CREATED,
+        extra=dict(batch_size=len(person_records.records)),
     )
     await clean.clean_and_insert(person_records, connection)
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)
