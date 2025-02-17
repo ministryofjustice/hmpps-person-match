@@ -37,7 +37,6 @@ class TestCandidateSearch:
 
     async def test_candidate_search_no_record_in_db(
         self,
-        person_id,
         create_person_record,
         create_person_data,
         duckdb_con_with_pg,

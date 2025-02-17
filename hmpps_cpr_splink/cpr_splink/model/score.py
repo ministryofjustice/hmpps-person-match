@@ -26,7 +26,7 @@ def _mock_lookup_many_tf(value_col_pairs):
     return results
 
 
-def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
+def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_term_frequencies: bool = True) -> str:
     # TODO: postcodes
     tf_columns = [
         "name_1_std",
@@ -41,12 +41,15 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
     select_clauses = ["f.*"]
     for col in tf_columns:
         tf_colname = f"tf_{col}"
-        alias_table_name = tf_colname
-        tf_lookup_table_name = f"pg_db.public.{tf_colname}"
-        join_clauses.append(
-            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
-        )
-        select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
+        if real_term_frequencies:
+            alias_table_name = tf_colname
+            tf_lookup_table_name = f"pg_db.public.{tf_colname}"
+            join_clauses.append(
+                f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
+            )
+            select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
+        else:
+            select_clauses.append(f"NULL AS {tf_colname}")
 
     joined_views_name = "final_table_with_tf"
     sql_join = " ".join(join_clauses)
@@ -63,33 +66,26 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str):
 
 
 def score(
-    con: duckdb.DuckDBPyConnection,
+    connection_duckdb: duckdb.DuckDBPyConnection,
     primary_record_id: str,
     full_candidates_tn: str,
     return_scores_only: bool = True,
 ):
     start_time = time.perf_counter()
     # Compare records
-    db_api = DuckDBAPI(con)
-    # db_api.debug_mode = True
+    db_api = DuckDBAPI(connection_duckdb)
 
-    # TODO:
-    # join tf tables to candidates
-    # split
-
-    full_table_name = populate_with_tfs(con, full_candidates_tn)
+    full_table_name = populate_with_tfs(connection_duckdb, full_candidates_tn, real_term_frequencies=False)
 
     source_name = "primary_record"
     candidates_name = "candidate_record"
     # cannot create views with prepared statements: https://github.com/duckdb/duckdb/issues/13069
-    source_sql = f"CREATE TABLE {source_name} AS SELECT * FROM {full_table_name} WHERE match_id = '$primary_record_id'"  # noqa: S608
+    source_sql = f"CREATE TABLE {source_name} AS SELECT * FROM {full_table_name} WHERE match_id = $primary_record_id"  # noqa: S608
     candidates_sql = (
-        f"CREATE TABLE {candidates_name} AS SELECT * FROM {full_table_name} WHERE match_id != '$primary_record_id'"  # noqa: S608
+        f"CREATE TABLE {candidates_name} AS SELECT * FROM {full_table_name} WHERE match_id != $primary_record_id"  # noqa: S608
     )
-    con.execute(source_sql, parameters={"primary_record_id": primary_record_id})
-    con.execute(candidates_sql, parameters={"primary_record_id": primary_record_id})
-
-    con.sql("SHOW ALL TABLES").show()
+    connection_duckdb.execute(source_sql, parameters={"primary_record_id": primary_record_id})
+    connection_duckdb.execute(candidates_sql, parameters={"primary_record_id": primary_record_id})
 
     scores = compare_records(  # noqa: F841
         source_name,
@@ -103,6 +99,6 @@ def score(
     logger.info("Time taken: %.2f seconds", end_time - start_time)
 
     if return_scores_only:
-        return con.sql("SELECT id_l, id_r, match_probability FROM scores")
+        return connection_duckdb.sql("SELECT match_id_l, match_id_r, match_probability, match_weight FROM scores")
     else:
-        return con.sql("SELECT * FROM scores")
+        return connection_duckdb.sql("SELECT * FROM scores")

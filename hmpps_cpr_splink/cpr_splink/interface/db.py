@@ -3,17 +3,17 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection
 
 
-def duckdb_connected_to_postgres(conn: AsyncConnection) -> duckdb.DuckDBPyConnection:
-    pg_conn_string_sync = conn.engine.url.render_as_string(hide_password=False).replace("+asyncpg", "")
-    con = duckdb.connect(":memory:")
-    con.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES);")
-    return con
+def duckdb_connected_to_postgres(connection_pg: AsyncConnection) -> duckdb.DuckDBPyConnection:
+    pg_conn_string_sync = connection_pg.engine.url.render_as_string(hide_password=False).replace("+asyncpg", "")
+    connection_duckdb = duckdb.connect(":memory:")
+    connection_duckdb.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES);")
+    return connection_duckdb
 
 
 async def insert_duckdb_table_into_postgres_table(
     ddb_tab: duckdb.DuckDBPyRelation,
     pg_table_name: str,
-    conn: AsyncConnection,
+    connection_pg: AsyncConnection,
 ):
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]
@@ -26,6 +26,6 @@ async def insert_duckdb_table_into_postgres_table(
         f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders}) "  # noqa: S608
         f"ON CONFLICT (match_id) DO UPDATE SET {update_columns}",
     )
-    await conn.execute(query, data)
+    await connection_pg.execute(query, data)
 
-    await conn.commit()
+    await connection_pg.commit()

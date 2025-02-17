@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-import duckdb
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 from ..model.score import score
 from .block import candidate_search
@@ -8,20 +8,28 @@ from .db import duckdb_connected_to_postgres
 
 
 class ScoredCandidate(TypedDict):
-    id: str
-    match_score: float
+    candidate_match_id: str
+    candidate_match_probability: float
+    candidate_match_weight: float
 
 
-# probably returning list[ScoredCandidate] makes sense, but let's think
-def get_scored_candidates(primary_record_id: str) -> duckdb.DuckDBPyRelation:
+async def get_scored_candidates(primary_record_id: str, connection_pg: AsyncConnection) -> list[ScoredCandidate]:
     """
     Takes a primary record, generates candidates, scores
     """
     # TODO: allow a threshold cutoff? (depending on blocking rules)
-    con = duckdb_connected_to_postgres()
+    connection_duckdb = duckdb_connected_to_postgres(connection_pg)
 
-    df_candidates = candidate_search(primary_record_id, con)
-    full_candidates_tn = f"pg_db.{df_candidates}"
+    candidates_table_name = await candidate_search(primary_record_id, connection_duckdb)
 
-    res = score(con, primary_record_id, full_candidates_tn, return_scores_only=False)
-    return res
+    res = score(connection_duckdb, primary_record_id, candidates_table_name, return_scores_only=True)
+
+    data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
+    return [
+        {
+            "candidate_match_id": row["match_id_r"],  # match_id_l is primary record
+            "candidate_match_probability": row["match_probability"],
+            "candidate_match_weight": row["match_weight"],
+        }
+        for row in data
+    ]
