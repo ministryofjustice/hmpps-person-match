@@ -28,9 +28,9 @@ class TestPersonRoute:
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
         assert response.json() == {}
-        mock_logger.log_event.assert_called_with(
+        mock_logger.info.assert_called_with(
             TelemetryEvents.PERSON_UPDATED_OR_CREATED,
-            attributes={"matchId": "M1"},
+            extra={"matchId": "M1"},
         )
 
     def test_bad_request_on_empty(self, call_endpoint):
