@@ -16,17 +16,32 @@ down_revision: str | None = "e15ba08dba11"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
-def term_frequency_sql(column_name: str) -> str:
+def term_frequency_select_sql(column_name: str, from_table: str = "personmatch.person") -> str:
+    return f"""
+        SELECT
+            {column_name},
+            COUNT(*)::float8 / SUM(COUNT(*)) OVER () AS tf_{column_name}
+        FROM {from_table}
+        WHERE {column_name} IS NOT NULL
+        GROUP BY {column_name}
+    """  # noqa: S608
+
+def term_frequency_sql_simple(column_name: str) -> str:
     return f"""
         CREATE MATERIALIZED VIEW IF NOT EXISTS personmatch.term_frequencies_{column_name} AS (
-            SELECT
-                {column_name},
-                cast(count(*) as float8) /
-                    (select count({column_name}) as total from personmatch.person)
-                    AS tf_{column_name}
-            from personmatch.person
-            where {column_name} is not null
-            group by {column_name}
+            {term_frequency_select_sql(column_name)}
+        );
+        """  # noqa: S608
+
+
+def term_frequency_sql_array(column_name: str) -> str:
+    return f"""
+        CREATE MATERIALIZED VIEW IF NOT EXISTS personmatch.term_frequencies_{column_name} AS (
+            WITH exploded_table AS (
+                SELECT UNNEST({column_name}_arr) AS {column_name}
+                FROM personmatch.person
+            )
+            {term_frequency_select_sql(column_name, "exploded_table")}
         );
         """  # noqa: S608
 
@@ -42,13 +57,21 @@ simple_tf_columns = (
 
 def upgrade() -> None:
     for column_name in simple_tf_columns:
-        op.execute(term_frequency_sql(column_name))
+        op.execute(term_frequency_sql_simple(column_name))
         op.create_index(
             index_name=f"ik_{column_name}",
             table_name=f"term_frequencies_{column_name}",
             schema="personmatch",
             columns=[column_name],
         )
+    column_name = "postcode"
+    op.execute(term_frequency_sql_array(column_name))
+    op.create_index(
+        index_name=f"ik_{column_name}",
+        table_name=f"term_frequencies_{column_name}",
+        schema="personmatch",
+        columns=[column_name],
+    )
 
 
 def downgrade() -> None:
