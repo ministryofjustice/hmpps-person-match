@@ -14,14 +14,14 @@ class TestPersonDeletionEndpoint:
             "matchId": uuid,
         }
 
-    async def test_person_deletion(self, call_endpoint, person_id, db, create_person_record):
+    async def test_person_deletion(self, call_endpoint, match_id, db, create_person_record):
         """
         Test person cleaned and stored on person endpoint
         """
         # Create a new person
         create_person_record(
             Person(
-                matchId=person_id,
+                matchId=match_id,
                 sourceSystem="DELIUS",
                 firstName="Henry",
                 middleNames="Ahmed",
@@ -38,29 +38,29 @@ class TestPersonDeletionEndpoint:
             ),
         )
 
-        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
+        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'")
         assert len(result) == 1
 
-        data = self.create_person_id_data(person_id)
+        data = self.create_person_id_data(match_id)
         response = call_endpoint("delete", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
 
-        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
+        result = await db.fetch(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'")
         assert len(result) == 0
 
-    async def test_person_deletion_no_record(self, call_endpoint, person_id):
+    async def test_person_deletion_no_record(self, call_endpoint, match_id):
         """
         Test person cleaned and stored on person endpoint
         """
-        data = self.create_person_id_data(person_id)
+        data = self.create_person_id_data(match_id)
 
         response = call_endpoint("delete", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 404
 
-    def test_invalid_client_returns_forbidden(self, call_endpoint, person_id):
+    def test_invalid_client_returns_forbidden(self, call_endpoint, match_id):
         """
         Test person endpoint return 403 forbidden when invalid roles
         """
-        data = self.create_person_id_data(person_id)
+        data = self.create_person_id_data(match_id)
         response = call_endpoint("delete", ROUTE, json=data, client=Client.HMPPS_TIER)
         assert response.status_code == 403

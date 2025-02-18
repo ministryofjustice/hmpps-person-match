@@ -74,7 +74,7 @@ async def db():
 
 
 @pytest.fixture()
-def person_id():
+def match_id():
     """
     Generate UUID
     """
@@ -87,7 +87,7 @@ def create_person_data():
     Create a new person data
     """
 
-    def _create_person_json(uuid_object: uuid.UUID = None):
+    def _create_person_json(uuid_object: uuid.UUID = None) -> dict:
         if uuid_object is None:
             uuid_object = uuid.uuid4()
         return {

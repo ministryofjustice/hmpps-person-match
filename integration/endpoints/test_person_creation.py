@@ -9,16 +9,16 @@ class TestPersonCreationEndpoint:
     Test person creation
     """
 
-    async def test_clean_and_store_message(self, call_endpoint, person_id, db, create_person_data):
+    async def test_clean_and_store_message(self, call_endpoint, match_id, db, create_person_data):
         """
         Test person cleaned and stored on person endpoint
         """
-        data = create_person_data(person_id)
+        data = create_person_data(match_id)
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
-        assert row["match_id"] == person_id
+        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'")
+        assert row["match_id"] == match_id
         assert row["name_1_std"] == "HENRY"
         assert row["name_2_std"] == "AHMED"
         assert row["name_3_std"] is None
@@ -36,16 +36,16 @@ class TestPersonCreationEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    async def test_clean_and_update_message(self, call_endpoint, person_id, db, create_person_data):
+    async def test_clean_and_update_message(self, call_endpoint, match_id, db, create_person_data):
         """
         Test person cleaned and update existing person on person endpoint
         """
         # Create person
-        data = create_person_data(person_id)
+        data = create_person_data(match_id)
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
 
-        data = create_person_data(person_id)
+        data = create_person_data(match_id)
         # Update person
         data["firstName"] = "andrew"
         data["firstNameAliases"] = ["andy"]
@@ -53,8 +53,8 @@ class TestPersonCreationEndpoint:
         data["postcodes"] = ["a34 8fr"]
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{person_id}'")
-        assert row["match_id"] == person_id
+        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'")
+        assert row["match_id"] == match_id
         assert row["name_1_std"] == "ANDREW"
         assert row["name_2_std"] == "AHMED"
         assert row["name_3_std"] is None
@@ -72,10 +72,10 @@ class TestPersonCreationEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    def test_invalid_client_returns_forbidden(self, call_endpoint, person_id, create_person_data):
+    def test_invalid_client_returns_forbidden(self, call_endpoint, match_id, create_person_data):
         """
         Test person endpoint return 403 forbidden when invalid roles
         """
-        data = create_person_data(person_id)
+        data = create_person_data(match_id)
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_TIER)
         assert response.status_code == 403
