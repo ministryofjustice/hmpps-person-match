@@ -63,6 +63,7 @@ def upgrade() -> None:
             table_name=f"term_frequencies_{column_name}",
             schema="personmatch",
             columns=[column_name],
+            unique=True,
         )
     column_name = "postcode"
     op.execute(term_frequency_sql_array(column_name))
@@ -71,6 +72,7 @@ def upgrade() -> None:
         table_name=f"term_frequencies_{column_name}",
         schema="personmatch",
         columns=[column_name],
+        unique=True,
     )
 
 

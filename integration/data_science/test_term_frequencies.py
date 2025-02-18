@@ -49,7 +49,7 @@ class TestTFs:
         await create_person_record(Person(**self.create_person_data(first_name="Henry")))
 
         await sqlalchemy_db_connection.execute(
-            text("REFRESH MATERIALIZED VIEW personmatch.term_frequencies_name_1_std;"),
+            text("REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.term_frequencies_name_1_std;"),
         )
         await sqlalchemy_db_connection.commit()
 
@@ -74,7 +74,7 @@ class TestTFs:
         await create_person_record(Person(**self.create_person_data(postcodes=["AB1 1ZY", "EF3 3VU"])))
 
         await sqlalchemy_db_connection.execute(
-            text("REFRESH MATERIALIZED VIEW personmatch.term_frequencies_postcode;"),
+            text("REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.term_frequencies_postcode;"),
         )
         await sqlalchemy_db_connection.commit()
 
