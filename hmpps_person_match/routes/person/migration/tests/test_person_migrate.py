@@ -4,12 +4,12 @@ from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.routes.person.migration.person_migrate import ROUTE
 
 
-class TestPersonRoute:
+class TestPersonMigrateRoute:
     """
-    Test Person Create Route
+    Test Person Migrate Route
     """
 
-    def test_batch_message_one_record(self, call_endpoint, mock_db_connection):
+    def test_batch_message_one_record(self, call_endpoint):
         data = {
             "records": [self._create_person_data()],
         }
@@ -17,7 +17,7 @@ class TestPersonRoute:
         assert response.status_code == 200
         assert response.json() == {}
 
-    def test_batch_message_one_thosand_records(self, call_endpoint, mock_db_connection):
+    def test_batch_message_one_thosand_records(self, call_endpoint):
         data = {
             "records": [self._create_person_data() for _ in range(1000)],
         }
@@ -25,7 +25,7 @@ class TestPersonRoute:
         assert response.status_code == 200
         assert response.json() == {}
 
-    def test_batch_message_no_records(self, call_endpoint, mock_db_connection):
+    def test_batch_message_no_records(self, call_endpoint):
         data = {
             "records": [],
         }
@@ -34,7 +34,7 @@ class TestPersonRoute:
         assert response.json()["detail"] == "Invalid request."
         assert response.json()["errors"][0]["msg"] == "List should have at least 1 item after validation, not 0"
 
-    def test_batch_message_more_than_thousand_records(self, call_endpoint, mock_db_connection):
+    def test_batch_message_more_than_thousand_records(self, call_endpoint):
         data = {
             "records": [self._create_person_data() for _ in range(1005)],
         }
