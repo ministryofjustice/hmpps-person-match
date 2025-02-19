@@ -28,6 +28,15 @@ class TestPersonScoreEndpoint:
         assert response.status_code == 200
         assert response.json() == []
 
+    async def test_score_invalid_match_id(self, call_endpoint, match_id):
+        """
+        Test person score handles non uuid match_id
+        """
+        match_id = "invalid_!!id123"
+        response = call_endpoint("get", self._build_score_url(match_id), client=Client.HMPPS_PERSON_MATCH)
+        assert response.status_code == 200
+        assert response.json() == []
+
     async def test_score_does_not_return_self(self, call_endpoint, match_id, create_person_data):
         """
         Test person score doesn't return its own record as part of candidates
@@ -66,18 +75,17 @@ class TestPersonScoreEndpoint:
         # Call score for person
         response = call_endpoint("get", self._build_score_url(match_id), client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        assert response.json() == [
-            {
-                "candidate_match_id": matching_person_id_2,
-                "candidate_match_probability": 1.0,
-                "candidate_match_weight": 70.76272963361279,
-            },
-            {
-                "candidate_match_id": matching_person_id_1,
-                "candidate_match_probability": 1.0,
-                "candidate_match_weight": 70.76272963361279,
-            },
-        ]
+        assert len(response.json()) == 2
+        assert {
+            "candidate_match_id": matching_person_id_2,
+            "candidate_match_probability": 1.0,
+            "candidate_match_weight": 70.76272963361279,
+        } in response.json()
+        assert {
+            "candidate_match_id": matching_person_id_1,
+            "candidate_match_probability": 1.0,
+            "candidate_match_weight": 70.76272963361279,
+        } in response.json()
 
     @staticmethod
     def _build_score_url(match_id: str):
