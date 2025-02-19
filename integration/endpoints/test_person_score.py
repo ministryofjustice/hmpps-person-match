@@ -25,8 +25,8 @@ class TestPersonScoreEndpoint:
         Test person score handles no matching match id
         """
         response = call_endpoint("get", self._build_score_url(match_id), client=Client.HMPPS_PERSON_MATCH)
-        assert response.status_code == 200
-        assert response.json() == []
+        assert response.status_code == 404
+        assert response.json() == {}
 
     async def test_score_invalid_match_id(self, call_endpoint, match_id):
         """
@@ -34,8 +34,8 @@ class TestPersonScoreEndpoint:
         """
         match_id = "invalid_!!id123"
         response = call_endpoint("get", self._build_score_url(match_id), client=Client.HMPPS_PERSON_MATCH)
-        assert response.status_code == 200
-        assert response.json() == []
+        assert response.status_code == 404
+        assert response.json() == {}
 
     async def test_score_does_not_return_self(self, call_endpoint, match_id, create_person_data):
         """

@@ -35,6 +35,9 @@ async def get_person_score(
     Person score GET request handler
     Returns a list of scored candidates against the provided record match identifier
     """
-    scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(match_id, connection)
-    logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(matchId=match_id, candidate_size=len(scored_candidates)))
-    return JSONResponse(content=scored_candidates, status_code=status.HTTP_200_OK)
+    if await score.match_record_exists(match_id, connection):
+        scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(match_id, connection)
+        logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(matchId=match_id, candidate_size=len(scored_candidates)))
+        return JSONResponse(content=scored_candidates, status_code=status.HTTP_200_OK)
+    else:
+        return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)
