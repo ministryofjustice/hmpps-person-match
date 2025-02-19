@@ -49,8 +49,8 @@ def call_endpoint(person_match_url, access_token_factory):
     def _call_endpoint(
         method: str,
         route: str,
-        json: dict,
         client: Client,
+        json: dict = None,
     ) -> requests.Response:
         token = access_token_factory(client)
         headers = {"Authorization": f"Bearer {token}"}

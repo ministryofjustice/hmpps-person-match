@@ -1,5 +1,6 @@
 from typing import TypedDict
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection
 
 from ..model.score import score
@@ -33,3 +34,12 @@ async def get_scored_candidates(primary_record_id: str, connection_pg: AsyncConn
         }
         for row in data
     ]
+
+async def match_record_exists(match_id: str, connection_pg: AsyncConnection) -> bool:
+    """
+    Check if a record exists in the person table
+    """
+    result = await connection_pg.execute(
+        text("SELECT EXISTS (SELECT 1 FROM personmatch.person WHERE match_id = :match_id)"), {"match_id": match_id},
+    )
+    return result.scalar()

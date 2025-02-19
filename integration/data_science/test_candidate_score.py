@@ -19,19 +19,23 @@ class TestPersonScore:
         await db.execute("TRUNCATE TABLE personmatch.person")
 
     async def test_get_scored_candidates(
-        self, person_id, create_person_record, create_person_data, sqlalchemy_db_connection,
+        self,
+        match_id,
+        create_person_record,
+        create_person_data,
+        sqlalchemy_db_connection,
     ):
         """
         Test retrieving scored candidates gives correct number
         """
         # primary record
-        await create_person_record(Person(**create_person_data(person_id)))
+        await create_person_record(Person(**create_person_data(match_id)))
         # candidates - all should match with high match weight
         n_candidates = 10
         for _ in range(n_candidates):
             await create_person_record(Person(**create_person_data()))
 
-        res = await get_scored_candidates(person_id, sqlalchemy_db_connection)
+        res = await get_scored_candidates(match_id, sqlalchemy_db_connection)
 
         # we have all candidates + original record
         assert len(res) == n_candidates

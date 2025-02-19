@@ -18,18 +18,18 @@ class TestCandidateSearch:
         """
         await db.execute("TRUNCATE TABLE personmatch.person")
 
-    async def test_candidate_search(self, person_id, create_person_record, create_person_data, duckdb_con_with_pg):
+    async def test_candidate_search(self, match_id, create_person_record, create_person_data, duckdb_con_with_pg):
         """
         Test candidate search returns correct number of people
         """
         # primary record
-        await create_person_record(Person(**create_person_data(person_id)))
+        await create_person_record(Person(**create_person_data(match_id)))
         # candidates - all should match
         n_candidates = 10
         for _ in range(n_candidates):
             await create_person_record(Person(**create_person_data()))
 
-        table_name = await candidate_search(person_id, duckdb_con_with_pg)
+        table_name = await candidate_search(match_id, duckdb_con_with_pg)
 
         row = duckdb_con_with_pg.execute(f"SELECT * FROM {table_name}").fetchall()
         # we have all candidates + original record
