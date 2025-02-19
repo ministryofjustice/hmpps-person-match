@@ -3,6 +3,12 @@ generic-service:
 
   replicaCount: 2
 
+  resources:
+    limits:
+      memory: 1Gi
+    requests:
+      memory: 1Gi
+
   image:
     repository: ghcr.io/ministryofjustice/hmpps-person-match
     tag: latest # override at deployment time
