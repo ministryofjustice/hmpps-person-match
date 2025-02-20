@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy import text
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
 
@@ -12,12 +13,12 @@ class TestBlockingRules:
 
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db):
+    async def clean_db(db_connection):
         """
         Before Each
         Delete all records from the database
         """
-        await db.execute("TRUNCATE TABLE personmatch.person")
+        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
 
     @pytest.mark.parametrize("record_pair", blocked_pairs)
     async def test_candidate_search(self, record_pair, create_cleaned_person, duckdb_con_with_pg):

@@ -15,7 +15,7 @@ def duckdb_con_with_pg(db_connection) -> DuckDBPyConnection:
 
 
 @pytest.fixture()
-async def create_cleaned_person(sqlalchemy_db_connection):
+async def create_cleaned_person(db_connection):
     async def _create_cleaned_person(cleaned_person: CleanedPerson):
         person_dict = cleaned_person.as_dict()
         columns, data = zip(*person_dict.items(), strict=True)
@@ -23,6 +23,6 @@ async def create_cleaned_person(sqlalchemy_db_connection):
         query = text(
             f"INSERT INTO personmatch.person({', '.join(columns)}) VALUES ({placeholders}) ",  # noqa: S608
         )
-        await sqlalchemy_db_connection.execute(query, person_dict)
-        await sqlalchemy_db_connection.commit()
+        await db_connection.execute(query, person_dict)
+        await db_connection.commit()
     return _create_cleaned_person
