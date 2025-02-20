@@ -1,4 +1,6 @@
 import pytest
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
 from hmpps_person_match.models.person.person import Person
@@ -11,19 +13,20 @@ class TestPersonScore:
 
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db):
+    async def clean_db(db_connection: AsyncConnection):
         """
         Before Each
         Delete all records from the database
         """
-        await db.execute("TRUNCATE TABLE personmatch.person")
+        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
+        await db_connection.commit()
 
     async def test_get_scored_candidates(
         self,
         match_id,
         create_person_record,
         create_person_data,
-        sqlalchemy_db_connection,
+        db_connection,
     ):
         """
         Test retrieving scored candidates gives correct number
@@ -35,7 +38,7 @@ class TestPersonScore:
         for _ in range(n_candidates):
             await create_person_record(Person(**create_person_data()))
 
-        res = await get_scored_candidates(match_id, sqlalchemy_db_connection)
+        res = await get_scored_candidates(match_id, db_connection)
 
         # we have all candidates + original record
         assert len(res) == n_candidates
@@ -45,7 +48,7 @@ class TestPersonScore:
         self,
         create_person_record,
         create_person_data,
-        sqlalchemy_db_connection,
+        db_connection,
     ):
         """
         Test scoring returns nothing if the given match_id is not in db
@@ -54,6 +57,6 @@ class TestPersonScore:
         for _ in range(n_candidates):
             await create_person_record(Person(**create_person_data()))
 
-        res = await get_scored_candidates("bogus_match_id", sqlalchemy_db_connection)
+        res = await get_scored_candidates("bogus_match_id", db_connection)
 
         assert len(res) == 0
