@@ -1,10 +1,16 @@
 import time
 import uuid
+from collections.abc import AsyncGenerator
 from enum import Enum
 
-import asyncpg
 import pytest
 import requests
+from sqlalchemy import URL
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, create_async_engine
+
+from hmpps_cpr_splink.cpr_splink.interface import clean
+from hmpps_person_match.models.person.person import Person
+from hmpps_person_match.models.person.person_batch import PersonBatch
 
 
 class Service(Enum):
@@ -58,22 +64,6 @@ def person_match_url(get_service):
 
 
 @pytest.fixture()
-async def db():
-    """
-    Get database connection
-    """
-    connection = await asyncpg.connect(
-        host="localhost",
-        port=5432,
-        user="root",
-        password="dev",  # noqa: S106
-        database="postgres",
-    )
-    yield connection
-    await connection.close()
-
-
-@pytest.fixture()
 def match_id():
     """
     Generate UUID
@@ -108,3 +98,32 @@ def create_person_data():
         }
 
     return _create_person_json
+
+
+@pytest.fixture()
+async def db_connection() -> AsyncGenerator[AsyncConnection]:
+    database_url = URL.create(
+        drivername="postgresql+asyncpg",
+        username="root",
+        password="dev",  # noqa: S106
+        host="localhost",
+        port="5432",
+        database="postgres",
+    )
+
+    engine: AsyncEngine = create_async_engine(
+        database_url,
+        pool_pre_ping=True,
+    )
+    async with engine.connect() as conn:
+        yield conn
+
+    await engine.dispose()
+
+
+@pytest.fixture()
+async def create_person_record(db_connection):
+    async def _create_person(person: Person):
+        await clean.clean_and_insert(PersonBatch(records=[person]), db_connection)
+
+    return _create_person

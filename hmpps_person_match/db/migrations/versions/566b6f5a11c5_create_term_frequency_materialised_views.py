@@ -16,6 +16,7 @@ down_revision: str | None = "e15ba08dba11"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
+
 def term_frequency_select_sql(column_name: str, from_table: str = "personmatch.person") -> str:
     return f"""
         SELECT
@@ -25,6 +26,7 @@ def term_frequency_select_sql(column_name: str, from_table: str = "personmatch.p
         WHERE {column_name} IS NOT NULL
         GROUP BY {column_name}
     """  # noqa: S608
+
 
 def term_frequency_sql_simple(column_name: str) -> str:
     return f"""
@@ -45,6 +47,7 @@ def term_frequency_sql_array(column_name: str) -> str:
         );
         """  # noqa: S608
 
+
 simple_tf_columns = (
     "name_1_std",
     "name_2_std",
@@ -54,6 +57,7 @@ simple_tf_columns = (
     "cro_single",
     "pnc_single",
 )
+
 
 def upgrade() -> None:
     for column_name in simple_tf_columns:

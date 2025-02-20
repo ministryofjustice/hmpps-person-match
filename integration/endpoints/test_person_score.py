@@ -1,6 +1,8 @@
 import uuid
 
 import pytest
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 from hmpps_person_match.routes.person.score.person_score import ROUTE
 from integration.client import Client
@@ -13,12 +15,13 @@ class TestPersonScoreEndpoint:
 
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db):
+    async def clean_db(db_connection: AsyncConnection):
         """
         Before Each
         Delete all records from the database
         """
-        await db.execute("TRUNCATE TABLE personmatch.person")
+        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
+        await db_connection.commit()
 
     async def test_score_no_matching(self, call_endpoint, match_id):
         """

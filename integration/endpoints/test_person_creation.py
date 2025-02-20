@@ -1,5 +1,9 @@
 import datetime
 
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncConnection
+
+from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.person.person_create import ROUTE
 from integration.client import Client
 
@@ -9,15 +13,21 @@ class TestPersonCreationEndpoint:
     Test person creation
     """
 
-    async def test_clean_and_store_message(self, call_endpoint, match_id, db, create_person_data):
+    async def test_clean_and_store_message(
+        self,
+        call_endpoint,
+        match_id: str,
+        db_connection: AsyncConnection,
+        create_person_data: dict,
+    ):
         """
         Test person cleaned and stored on person endpoint
         """
         data = create_person_data(match_id)
-
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'")
+        result = await db_connection.execute(text(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'"))
+        row = result.mappings().fetchone()
         assert row["match_id"] == match_id
         assert row["name_1_std"] == "HENRY"
         assert row["name_2_std"] == "AHMED"
@@ -36,24 +46,31 @@ class TestPersonCreationEndpoint:
         assert row["pnc_single"] == "22224555"
         assert row["source_system"] == "DELIUS"
 
-    async def test_clean_and_update_message(self, call_endpoint, match_id, db, create_person_data):
+    async def test_clean_and_update_message(
+        self,
+        call_endpoint,
+        match_id: str,
+        db_connection: AsyncConnection,
+        create_person_data: dict,
+        create_person_record,
+    ):
         """
         Test person cleaned and update existing person on person endpoint
         """
         # Create person
-        data = create_person_data(match_id)
-        response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
-        assert response.status_code == 200
+        await create_person_record(Person(**create_person_data(match_id)))
 
-        data = create_person_data(match_id)
         # Update person
+        data = create_person_data(match_id)
         data["firstName"] = "andrew"
         data["firstNameAliases"] = ["andy"]
         data["dateOfBirthAliases"] = ["1980-01-01"]
         data["postcodes"] = ["a34 8fr"]
+
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
-        row = await db.fetchrow(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'")
+        result = await db_connection.execute(text(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'"))
+        row = result.mappings().fetchone()
         assert row["match_id"] == match_id
         assert row["name_1_std"] == "ANDREW"
         assert row["name_2_std"] == "AHMED"

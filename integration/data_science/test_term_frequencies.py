@@ -29,17 +29,16 @@ class TestTFs:
             "sentenceDates": ["2001-03-01"],
         }
 
-
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db):
+    async def clean_db(db_connection):
         """
         Before Each
         Delete all records from the database
         """
-        await db.execute("TRUNCATE TABLE personmatch.person")
+        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
 
-    async def test_term_frequencies_simple(self, create_person_record, sqlalchemy_db_connection):
+    async def test_term_frequencies_simple(self, create_person_record, db_connection):
         """
         Test term frequncies for a simple column
         """
@@ -48,22 +47,22 @@ class TestTFs:
         await create_person_record(Person(**self.create_person_data(first_name="Andy")))
         await create_person_record(Person(**self.create_person_data(first_name="Henry")))
 
-        await sqlalchemy_db_connection.execute(
+        await db_connection.execute(
             text("REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.term_frequencies_name_1_std;"),
         )
-        await sqlalchemy_db_connection.commit()
+        await db_connection.commit()
 
-        tf_name_andy = await sqlalchemy_db_connection.execute(
+        tf_name_andy = await db_connection.execute(
             text("SELECT tf_name_1_std FROM personmatch.term_frequencies_name_1_std WHERE name_1_std = 'ANDY'"),
         )
         assert tf_name_andy.fetchone()[0] == 0.75
 
-        tf_name_henry = await sqlalchemy_db_connection.execute(
+        tf_name_henry = await db_connection.execute(
             text("SELECT tf_name_1_std FROM personmatch.term_frequencies_name_1_std WHERE name_1_std = 'HENRY'"),
         )
         assert tf_name_henry.fetchone()[0] == 0.25
 
-    async def test_term_frequencies_postcode(self, create_person_record, sqlalchemy_db_connection):
+    async def test_term_frequencies_postcode(self, create_person_record, db_connection):
         """
         Test term frequencies for an array column
         """
@@ -73,22 +72,22 @@ class TestTFs:
         await create_person_record(Person(**self.create_person_data(postcodes=["AB1 1ZY", "CD2 2XW"])))
         await create_person_record(Person(**self.create_person_data(postcodes=["AB1 1ZY", "EF3 3VU"])))
 
-        await sqlalchemy_db_connection.execute(
+        await db_connection.execute(
             text("REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.term_frequencies_postcode;"),
         )
-        await sqlalchemy_db_connection.commit()
+        await db_connection.commit()
 
-        tf_postcode_ab = await sqlalchemy_db_connection.execute(
+        tf_postcode_ab = await db_connection.execute(
             text("SELECT tf_postcode FROM personmatch.term_frequencies_postcode WHERE postcode = 'AB11ZY'"),
         )
         assert tf_postcode_ab.fetchone()[0] == 0.5
 
-        tf_postcode_cd = await sqlalchemy_db_connection.execute(
+        tf_postcode_cd = await db_connection.execute(
             text("SELECT tf_postcode FROM personmatch.term_frequencies_postcode WHERE postcode = 'CD22XW'"),
         )
         assert tf_postcode_cd.fetchone()[0] == 0.375
 
-        tf_postcode_ef = await sqlalchemy_db_connection.execute(
+        tf_postcode_ef = await db_connection.execute(
             text("SELECT tf_postcode FROM personmatch.term_frequencies_postcode WHERE postcode = 'EF33VU'"),
         )
         assert tf_postcode_ef.fetchone()[0] == 0.125
