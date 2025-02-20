@@ -136,7 +136,6 @@ jobs:
     with:
       environment: 'dev'
       app_version: '${{ needs.build.outputs.app_version }}'
-      slack_notification: false
 
   deploy_preprod:
     name: Deploy to pre-production environment
@@ -148,7 +147,6 @@ jobs:
     with:
       environment: 'preprod'
       app_version: '${{ needs.build.outputs.app_version }}'
-      slack_notification: false
 
   deploy_prod:
     name: Deploy to production environment
@@ -160,3 +158,4 @@ jobs:
     with:
       environment: 'prod'
       app_version: '${{ needs.build.outputs.app_version }}'
+      slack_notification: true
