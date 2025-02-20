@@ -29,7 +29,6 @@ class TestTFs:
             "sentenceDates": ["2001-03-01"],
         }
 
-
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
     async def clean_db(db):

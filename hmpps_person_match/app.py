@@ -6,6 +6,7 @@ import sys
 from azure.monitor.opentelemetry import configure_azure_monitor
 
 from hmpps_person_match.dependencies.logger.log import LOGGER_NAME, get_logger
+from hmpps_person_match.lifespan import lifespan
 
 if os.environ.get("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     os.environ["OTEL_SERVICE_NAME"] = "hmpps-person-match"
@@ -34,6 +35,7 @@ class PersonMatchApplication:
         version=OpenAPIConfig.APPLICATION_VERSION,
         docs_url=OpenAPIConfig.DOCS_URL,
         responses=OpenAPIConfig.DEFAULT_RESPONSES,
+        lifespan=lifespan,
     )
 
     def __init__(self) -> None:
