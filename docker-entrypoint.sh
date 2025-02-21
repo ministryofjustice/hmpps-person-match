@@ -8,4 +8,4 @@ exec uvicorn \
     --port 5000 \
     --forwarded-allow-ips='*' \
     asgi:app \
-    --workers 4 \
+    --workers 1 \
