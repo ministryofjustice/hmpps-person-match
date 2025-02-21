@@ -21,6 +21,7 @@ from hmpps_person_match.domain.constants.openapi.config import OpenAPIConfig
 from hmpps_person_match.models.error_response import ErrorResponse
 from hmpps_person_match.routes.health import router as health_router
 from hmpps_person_match.routes.info import router as info_router
+from hmpps_person_match.routes.jobs import router as jobs_router
 from hmpps_person_match.routes.person import router as person_router
 
 
@@ -61,6 +62,7 @@ class PersonMatchApplication:
         """
         Set up request handlers
         """
+        self.app.include_router(jobs_router)
         self.app.include_router(person_router)
         self.app.include_router(health_router)
         self.app.include_router(info_router)
