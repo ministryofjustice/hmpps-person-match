@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.db import get_db_connection
+from hmpps_person_match.db import get_db_session
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.models.health import Health, Status
 
@@ -18,14 +18,14 @@ router = APIRouter()
 
 @router.get(ROUTE)
 async def get_health(
-    connection: Annotated[AsyncConnection, Depends(get_db_connection)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Health:
     """
     GET request handler
     """
     try:
-        await connection.execute(select(1))
+        await session.execute(select(1))
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content=Health(status=Status.UP).model_dump(),
