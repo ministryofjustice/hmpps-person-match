@@ -22,4 +22,4 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - curl --fail --retry 2 -X POST http://hmpps-person-match/jobs/generatetermfrequencies
+                - curl --fail --retry 2 -X POST http://hmpps-person-match/jobs/termfrequencies
