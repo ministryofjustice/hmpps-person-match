@@ -54,9 +54,45 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
 
     # postcodes - dummy only
     if real_term_frequencies:
-        # TODO: real postcodes
-        pass
+        with_clause = f"""
+        WITH exploded_postcode_arr AS (
+            SELECT
+                match_id,
+                UNNEST(postcode_arr) AS value
+            FROM
+                {records_table}
+        ),
+        joined_postcode_arr AS (
+            SELECT
+                exploded_postcode_arr.match_id,
+                exploded_postcode_arr.value,
+                COALESCE(pc_tf.tf_postcode, 1) AS rel_freq
+            FROM
+                exploded_postcode_arr
+            LEFT JOIN pg_db.personmatch.term_frequencies_postcode pc_tf
+            ON exploded_postcode_arr.value = pc_tf.postcode
+        ),
+        packed_postcodes AS (
+            SELECT
+                match_id,
+                array_agg(
+                    struct_pack(value := value, rel_freq := rel_freq)
+                ) AS postcode_arr_with_freq,
+            FROM
+                joined_postcode_arr
+            GROUP BY
+                match_id
+        )
+        """  # noqa: S608
+        select_clauses.append(
+            "list_transform(postcode_arr, x -> struct_pack(value := x, rel_freq := 1)) AS postcode_arr_with_freq",
+        )
+        alias_table_name = "tf_postcode"
+        join_clauses.append(
+            f"LEFT JOIN packed_postcodes AS {alias_table_name} ON f.match_id = {alias_table_name}.match_id",
+        )
     else:
+        with_clause = ""
         select_clauses.append(
             "list_transform(postcode_arr, x -> struct_pack(value := x, rel_freq := 1)) AS postcode_arr_with_freq",
         )
@@ -67,6 +103,7 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
     con.execute(
         f"""
         CREATE TABLE {joined_views_name} AS
+        {with_clause}
         SELECT {sql_select}
         FROM {records_table} f
         {sql_join}
