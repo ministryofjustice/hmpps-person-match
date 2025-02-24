@@ -19,6 +19,13 @@ generic-service:
     host: app-hostname.local # override per environment
     tlsSecretName: hmpps-person-record-cert
     path: /
+    annotations:
+      nginx.ingress.kubernetes.io/server-snippet: |
+        server_tokens off;
+        location /jobs/termfrequencies {
+          deny all;
+          return 401;
+        }
 
   imagePullSecrets:
     - name: dockerconfigjson-github-com

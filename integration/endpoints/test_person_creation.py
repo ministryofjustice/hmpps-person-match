@@ -1,7 +1,7 @@
 import datetime
 
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.person.person_create import ROUTE
@@ -17,7 +17,7 @@ class TestPersonCreationEndpoint:
         self,
         call_endpoint,
         match_id: str,
-        db_connection: AsyncConnection,
+        db_connection: AsyncSession,
         create_person_data: dict,
     ):
         """
@@ -50,7 +50,7 @@ class TestPersonCreationEndpoint:
         self,
         call_endpoint,
         match_id: str,
-        db_connection: AsyncConnection,
+        db_connection: AsyncSession,
         create_person_data: dict,
         create_person_record,
     ):

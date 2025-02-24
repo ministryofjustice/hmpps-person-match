@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
 from hmpps_person_match.models.person.person import Person
@@ -13,7 +13,7 @@ class TestCandidateSearch:
 
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncConnection):
+    async def clean_db(db_connection: AsyncSession):
         """
         Before Each
         Delete all records from the database

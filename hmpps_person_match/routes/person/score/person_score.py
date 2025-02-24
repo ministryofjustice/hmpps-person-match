@@ -1,7 +1,7 @@
 from logging import Logger
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -30,7 +30,7 @@ async def get_person_score(
     match_id: str,
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
-) -> Response:
+) -> list[score.ScoredCandidate]:
     """
     Person score GET request handler
     Returns a list of scored candidates against the provided record match identifier
@@ -38,6 +38,6 @@ async def get_person_score(
     if await score.match_record_exists(match_id, session):
         scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(match_id, session)
         logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(matchId=match_id, candidate_size=len(scored_candidates)))
-        return JSONResponse(content=scored_candidates, status_code=status.HTTP_200_OK)
+        return scored_candidates
     else:
         return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)
