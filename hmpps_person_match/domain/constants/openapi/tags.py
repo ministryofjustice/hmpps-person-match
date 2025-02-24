@@ -4,4 +4,4 @@ class OpenAPITags:
     """
 
     PERSON = "Person"
-    JOBS = "JOBS"
+    JOBS = "Jobs"
