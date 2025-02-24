@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.db import get_db_session
@@ -30,7 +30,7 @@ router = APIRouter(
 @router.post(ROUTE, description=DESCRIPTION)
 async def post_person(
     person: Person,
-    connection: Annotated[AsyncConnection, Depends(get_db_session)],
+    connection: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Response:
     """

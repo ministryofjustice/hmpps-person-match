@@ -3,7 +3,7 @@ import time
 import pytest
 import requests
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.jobs.term_frequencies import ROUTE, term_frequency_tables
@@ -16,7 +16,7 @@ class TestTermFrequencyGeneration:
 
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncConnection):
+    async def clean_db(db_connection: AsyncSession):
         """
         Before Each
         Delete all records from the database
@@ -30,7 +30,7 @@ class TestTermFrequencyGeneration:
         create_person_record,
         create_person_data,
         match_id,
-        db_connection: AsyncConnection,
+        db_connection: AsyncSession,
     ):
         """
         Test all term frequency tables are generated
@@ -49,7 +49,7 @@ class TestTermFrequencyGeneration:
         create_person_record,
         create_person_data,
         match_id,
-        db_connection: AsyncConnection,
+        db_connection: AsyncSession,
     ):
         """
         Test all term frequency tables are refreshed, with new value
@@ -73,7 +73,7 @@ class TestTermFrequencyGeneration:
         create_person_record,
         create_person_data,
         match_id,
-        db_connection: AsyncConnection,
+        db_connection: AsyncSession,
     ):
         """
         Test all term frequency tables are unique values.
