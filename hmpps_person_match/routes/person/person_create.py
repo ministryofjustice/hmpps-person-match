@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncConnection
 
 from hmpps_cpr_splink.cpr_splink.interface import clean
-from hmpps_person_match.db import get_db_connection
+from hmpps_person_match.db import get_db_session
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
@@ -30,7 +30,7 @@ router = APIRouter(
 @router.post(ROUTE, description=DESCRIPTION)
 async def post_person(
     person: Person,
-    connection: Annotated[AsyncConnection, Depends(get_db_connection)],
+    connection: Annotated[AsyncConnection, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Response:
     """

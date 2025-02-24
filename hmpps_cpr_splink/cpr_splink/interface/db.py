@@ -1,10 +1,10 @@
 import duckdb
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
-def duckdb_connected_to_postgres(connection_pg: AsyncConnection) -> duckdb.DuckDBPyConnection:
-    pg_conn_string_sync = connection_pg.engine.url.render_as_string(hide_password=False).replace("+asyncpg", "")
+def duckdb_connected_to_postgres(connection_pg: AsyncSession) -> duckdb.DuckDBPyConnection:
+    pg_conn_string_sync = connection_pg.bind.url.render_as_string(hide_password=False).replace("+asyncpg", "")
     connection_duckdb = duckdb.connect(":memory:")
     connection_duckdb.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES);")
     return connection_duckdb
@@ -13,7 +13,7 @@ def duckdb_connected_to_postgres(connection_pg: AsyncConnection) -> duckdb.DuckD
 async def insert_duckdb_table_into_postgres_table(
     ddb_tab: duckdb.DuckDBPyRelation,
     pg_table_name: str,
-    connection_pg: AsyncConnection,
+    connection_pg: AsyncSession,
 ):
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]

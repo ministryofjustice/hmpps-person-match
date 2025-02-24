@@ -3,10 +3,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface import clean
-from hmpps_person_match.db import get_db_connection
+from hmpps_person_match.db import get_db_session
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
@@ -29,7 +29,7 @@ router = APIRouter(
 @router.post(ROUTE, description=DESCRIPTION)
 async def post_person_migration(
     person_records: PersonBatch,
-    connection: Annotated[AsyncConnection, Depends(get_db_connection)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> Response:
     """
@@ -39,5 +39,5 @@ async def post_person_migration(
         TelemetryEvents.PERSON_BATCH_UPDATED_OR_CREATED,
         extra=dict(batch_size=len(person_records.records)),
     )
-    await clean.clean_and_insert(person_records, connection)
+    await clean.clean_and_insert(person_records, session)
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)

@@ -1,7 +1,7 @@
 from typing import TypedDict
 
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..model.score import score
 from .block import candidate_search
@@ -14,7 +14,7 @@ class ScoredCandidate(TypedDict):
     candidate_match_weight: float
 
 
-async def get_scored_candidates(primary_record_id: str, connection_pg: AsyncConnection) -> list[ScoredCandidate]:
+async def get_scored_candidates(primary_record_id: str, connection_pg: AsyncSession) -> list[ScoredCandidate]:
     """
     Takes a primary record, generates candidates, scores
     """
@@ -36,7 +36,7 @@ async def get_scored_candidates(primary_record_id: str, connection_pg: AsyncConn
     ]
 
 
-async def match_record_exists(match_id: str, connection_pg: AsyncConnection) -> bool:
+async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
     """
     Check if a record exists in the person table
     """

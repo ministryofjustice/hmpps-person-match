@@ -6,7 +6,7 @@ from enum import Enum
 import pytest
 import requests
 from sqlalchemy import URL
-from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.models.person.person import Person
@@ -101,7 +101,7 @@ def create_person_data():
 
 
 @pytest.fixture()
-async def db_connection() -> AsyncGenerator[AsyncConnection]:
+async def db_connection() -> AsyncGenerator[AsyncSession]:
     database_url = URL.create(
         drivername="postgresql+asyncpg",
         username="root",
@@ -115,8 +115,11 @@ async def db_connection() -> AsyncGenerator[AsyncConnection]:
         database_url,
         pool_pre_ping=True,
     )
-    async with engine.connect() as conn:
-        yield conn
+
+    AsyncSessionLocal = async_sessionmaker(engine)  # noqa: N806
+
+    async with AsyncSessionLocal() as session:
+        yield session
 
     await engine.dispose()
 
