@@ -3,10 +3,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface import score
-from hmpps_person_match.db import get_db_connection
+from hmpps_person_match.db import get_db_session
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
@@ -28,15 +28,15 @@ router = APIRouter(
 @router.get(ROUTE, description=DESCRIPTION)
 async def get_person_score(
     match_id: str,
-    connection: Annotated[AsyncConnection, Depends(get_db_connection)],
+    session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> list[score.ScoredCandidate]:
     """
     Person score GET request handler
     Returns a list of scored candidates against the provided record match identifier
     """
-    if await score.match_record_exists(match_id, connection):
-        scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(match_id, connection)
+    if await score.match_record_exists(match_id, session):
+        scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(match_id, session)
         logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(matchId=match_id, candidate_size=len(scored_candidates)))
         return scored_candidates
     else:
