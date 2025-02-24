@@ -65,3 +65,6 @@ generic-service:
 generic-prometheus-alerts:
   targetApplication: hmpps-person-match
   alertSeverity: hmpps-person-record-alerts-prod
+
+cron:
+  generateTermFrequencies: "0 12 * * *"

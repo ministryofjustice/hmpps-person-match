@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "generic-service.fullname" . | trunc 26 }}-generate-term-frequencies
+spec:
+  schedule:  "{{ .Values.cron.generateTermFrequencies }}"
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 1
+  startingDeadlineSeconds: 43200
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 345600 # 4 days
+      backoffLimit: 2
+      template:
+        spec:
+          activeDeadlineSeconds: 3600
+          restartPolicy: Never
+          containers:
+            - name: generate-term-frequencies-job
+              image: ghcr.io/ministryofjustice/hmpps-devops-tools
+              args:
+                - /bin/sh
+                - -c
+                - curl --fail --retry 2 -X POST http://hmpps-person-match/jobs/generatetermfrequencies

@@ -17,3 +17,6 @@ generic-prometheus-alerts:
   businessHoursOnly: true
   rdsAlertsDatabases:
     cloud-platform-630cc18efc9725ba: "hmpps-person-match-database"
+
+cron:
+  generateTermFrequencies: "0 12 * * 1-5"
