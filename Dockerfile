@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.12.7-slim-bullseye AS base
+FROM python:3.13.2-slim-bullseye AS base
 
 # load in build details
 ARG BUILD_NUMBER
