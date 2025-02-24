@@ -7,7 +7,7 @@ class TestTermFrequencyGenerationRoute:
     Test Person Create Route
     """
 
-    def test_term_frequency_refreshes(self, call_endpoint, mock_logger, mock_db_connection):
+    def test_term_frequency_refreshes(self, call_endpoint, mock_logger):
         response = call_endpoint("post", ROUTE, roles=[])
         assert response.status_code == 200
         assert response.json() == {}
