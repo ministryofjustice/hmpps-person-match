@@ -27,7 +27,7 @@ def _mock_lookup_many_tf(value_col_pairs):
 
 
 def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_term_frequencies: bool = True) -> str:
-    # TODO: postcodes
+
     tf_columns = [
         "name_1_std",
         "name_2_std",
@@ -50,6 +50,15 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
             select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
         else:
             select_clauses.append(f"NULL AS {tf_colname}")
+
+    # postcodes - dummy only
+    if real_term_frequencies:
+        # TODO: real postcodes
+        pass
+    else:
+        select_clauses.append(
+            "list_transform(postcode_arr, x -> struct_pack(value := x, rel_freq := 1)) AS postcode_arr_with_freq",
+        )
 
     joined_views_name = "final_table_with_tf"
     sql_join = " ".join(join_clauses)

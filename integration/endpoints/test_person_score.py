@@ -82,12 +82,12 @@ class TestPersonScoreEndpoint:
         assert {
             "candidate_match_id": matching_person_id_2,
             "candidate_match_probability": 1.0,
-            "candidate_match_weight": 70.76272963361279,
+            "candidate_match_weight": 55.4382142967686,
         } in response.json()
         assert {
             "candidate_match_id": matching_person_id_1,
             "candidate_match_probability": 1.0,
-            "candidate_match_weight": 70.76272963361279,
+            "candidate_match_weight": 55.4382142967686,
         } in response.json()
 
     @staticmethod
