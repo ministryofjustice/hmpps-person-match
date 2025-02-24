@@ -52,44 +52,45 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
         else:
             select_clauses.append(f"NULL AS {tf_colname}")
 
-    # postcodes - dummy only
+    # postcodes are in arrays so logic is more complex to join
     if real_term_frequencies:
         with_clause = f"""
-        WITH exploded_postcode_arr AS (
+        WITH exploded_postcodes AS (
             SELECT
                 match_id,
-                UNNEST(postcode_arr) AS value
+                UNNEST(postcode_arr) AS postcode
             FROM
                 {records_table}
         ),
-        joined_postcode_arr AS (
+        exploded_postcodes_with_term_frequencies AS (
             SELECT
-                exploded_postcode_arr.match_id,
-                exploded_postcode_arr.value,
+                exploded_postcodes.match_id AS match_id,
+                exploded_postcodes.postcode AS value,
                 COALESCE(pc_tf.tf_postcode, 1) AS rel_freq
             FROM
-                exploded_postcode_arr
-            LEFT JOIN pg_db.personmatch.term_frequencies_postcode pc_tf
-            ON exploded_postcode_arr.value = pc_tf.postcode
+                exploded_postcodes
+            LEFT JOIN pg_db.personmatch.term_frequencies_postcode AS pc_tf
+            ON exploded_postcodes.postcode = pc_tf.postcode
         ),
-        packed_postcodes AS (
+        postcodes_repacked_with_term_frequencies AS (
             SELECT
                 match_id,
                 array_agg(
                     struct_pack(value := value, rel_freq := rel_freq)
                 ) AS postcode_arr_with_freq,
             FROM
-                joined_postcode_arr
+                exploded_postcodes_with_term_frequencies
             GROUP BY
                 match_id
         )
         """  # noqa: S608
-        select_clauses.append(
-            "list_transform(postcode_arr, x -> struct_pack(value := x, rel_freq := 1)) AS postcode_arr_with_freq",
-        )
         alias_table_name = "tf_postcode"
+        select_clauses.append(
+            f"{alias_table_name}.postcode_arr_with_freq AS postcode_arr_with_freq",
+        )
         join_clauses.append(
-            f"LEFT JOIN packed_postcodes AS {alias_table_name} ON f.match_id = {alias_table_name}.match_id",
+            f"LEFT JOIN postcodes_repacked_with_term_frequencies AS {alias_table_name} "
+            f"ON f.match_id = {alias_table_name}.match_id",
         )
     else:
         with_clause = ""
@@ -105,7 +106,7 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
         CREATE TABLE {joined_views_name} AS
         {with_clause}
         SELECT {sql_select}
-        FROM {records_table} f
+        FROM {records_table} AS f
         {sql_join}
         """,  # noqa: S608
     )
