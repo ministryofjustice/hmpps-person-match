@@ -120,4 +120,4 @@ class TestTermFrequencyGeneration:
                     raise e
                 else:
                     print(f"Assertion failed, retrying... ({attempt}/{max_retries})")
-                    asyncio.sleep(delay)
+                    await asyncio.sleep(delay)

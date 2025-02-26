@@ -16,13 +16,14 @@ class TestPersonScoreEndpoint:
 
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncSession):
+    async def clean_db(db_connection: AsyncSession, call_endpoint):
         """
         Before Each
         Delete all records from the database
         """
         await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
         await db_connection.commit()
+        call_endpoint("post", "/jobs/termfrequencies", client=Client.HMPPS_PERSON_MATCH)
 
     async def test_score_no_matching(self, call_endpoint, match_id):
         """
