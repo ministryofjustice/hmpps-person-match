@@ -1,7 +1,7 @@
 from typing import TypedDict
 
 from sqlalchemy import URL, text
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..model.score import score
 from .block import candidate_search
@@ -36,7 +36,7 @@ async def get_scored_candidates(primary_record_id: str, pg_db_ur: URL) -> list[S
     ]
 
 
-async def match_record_exists(match_id: str, connection_pg: AsyncConnection) -> bool:
+async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
     """
     Check if a record exists in the person table
     """
