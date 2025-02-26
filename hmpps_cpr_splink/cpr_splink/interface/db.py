@@ -1,10 +1,10 @@
 import duckdb
-from sqlalchemy import text
+from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-def duckdb_connected_to_postgres(connection_pg: AsyncSession) -> duckdb.DuckDBPyConnection:
-    pg_conn_string_sync = connection_pg.bind.url.render_as_string(hide_password=False).replace("+asyncpg", "")
+def duckdb_connected_to_postgres(pg_db_url: URL) -> duckdb.DuckDBPyConnection:
+    pg_conn_string_sync = pg_db_url.render_as_string(hide_password=False)
     connection_duckdb = duckdb.connect(":memory:")
     connection_duckdb.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES);")
     return connection_duckdb

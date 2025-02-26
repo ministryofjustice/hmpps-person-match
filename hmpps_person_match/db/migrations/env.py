@@ -5,7 +5,7 @@ from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import AsyncEngine, async_engine_from_config
 
-from hmpps_person_match.db import database_url
+from hmpps_person_match.db.url import asyncpg_database_url
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -17,7 +17,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Set the SQLAlchemy URL dynamically
-config.set_main_option("sqlalchemy.url", database_url.render_as_string(hide_password=False))
+config.set_main_option("sqlalchemy.url", asyncpg_database_url.render_as_string(hide_password=False))
 
 # add your model's MetaData object here
 # for 'autogenerate' support

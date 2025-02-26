@@ -125,6 +125,18 @@ async def db_connection() -> AsyncGenerator[AsyncSession]:
 
 
 @pytest.fixture()
+def pg_db_url() -> URL:
+    return URL.create(
+        drivername="postgresql",
+        username="root",
+        password="dev",  # noqa: S106
+        host="localhost",
+        port="5432",
+        database="postgres",
+    )
+
+
+@pytest.fixture()
 async def create_person_record(db_connection):
     async def _create_person(person: Person):
         await clean.clean_and_insert(PersonBatch(records=[person]), db_connection)
