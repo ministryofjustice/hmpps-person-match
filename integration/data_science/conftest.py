@@ -5,5 +5,5 @@ from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgre
 
 
 @pytest.fixture()
-def duckdb_con_with_pg(db_connection) -> DuckDBPyConnection:
-    return duckdb_connected_to_postgres(db_connection)
+def duckdb_con_with_pg(pg_db_url) -> DuckDBPyConnection:
+    return duckdb_connected_to_postgres(pg_db_url)

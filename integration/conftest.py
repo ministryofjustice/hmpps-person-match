@@ -13,6 +13,15 @@ from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
 
 
+@pytest.fixture(autouse=True)
+def set_env_vars(monkeypatch):
+    monkeypatch.setenv("APP_BUILD_NUMBER", "number")
+    monkeypatch.setenv("APP_GIT_REF", "ref")
+    monkeypatch.setenv("APP_GIT_BRANCH", "branch")
+    monkeypatch.setenv("OAUTH_BASE_URL", "http://localhost:5000")
+    monkeypatch.setenv("OAUTH_ISSUER_URL_KEY", "http://localhost:5000")
+
+
 class Service(Enum):
     """
     Docker services
@@ -122,6 +131,18 @@ async def db_connection() -> AsyncGenerator[AsyncSession]:
         yield session
 
     await engine.dispose()
+
+
+@pytest.fixture()
+def pg_db_url() -> URL:
+    return URL.create(
+        drivername="postgresql",
+        username="root",
+        password="dev",  # noqa: S106
+        host="localhost",
+        port="5432",
+        database="postgres",
+    )
 
 
 @pytest.fixture()
