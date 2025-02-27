@@ -27,7 +27,6 @@ def _mock_lookup_many_tf(value_col_pairs):
 
 
 def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str) -> str:
-
     tf_columns = [
         "name_1_std",
         "name_2_std",

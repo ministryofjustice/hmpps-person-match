@@ -1,4 +1,4 @@
-import time
+import asyncio
 
 import pytest
 import requests
@@ -65,14 +65,13 @@ class TestTermFrequencyGeneration:
         response = requests.post(person_match_url + ROUTE)
         assert response.status_code == 200
 
-        self.until_asserted(lambda: self.assert_size_of_table(db_connection, cro_tf_table, size=2))
+        await self.until_asserted(lambda: self.assert_size_of_table(db_connection, cro_tf_table, size=2))
 
     async def test_term_frequency_unique(
         self,
         person_match_url,
         create_person_record,
         create_person_data,
-        match_id,
         db_connection: AsyncSession,
     ):
         """
@@ -95,7 +94,7 @@ class TestTermFrequencyGeneration:
         response = requests.post(person_match_url + ROUTE)
         assert response.status_code == 200
 
-        self.until_asserted(lambda: self.assert_size_of_table(db_connection, cro_tf_table))
+        await self.until_asserted(lambda: self.assert_size_of_table(db_connection, cro_tf_table))
 
     @staticmethod
     async def assert_size_of_table(db_connection, table, size=1):
@@ -103,7 +102,7 @@ class TestTermFrequencyGeneration:
         rows = result.fetchall()
         assert len(rows) == size
 
-    def until_asserted(self, assertion_func, max_retries=5, delay=0.3):
+    async def until_asserted(self, assertion_func, max_retries=5, delay=0.3):
         """
         Repeatedly tries to assert something until it passes or max_retries is reached.
 
@@ -114,11 +113,11 @@ class TestTermFrequencyGeneration:
         """
         for attempt in range(1, max_retries + 1):
             try:
-                assertion_func()
+                await assertion_func()
                 return
             except AssertionError as e:
                 if attempt == max_retries:
                     raise e
                 else:
                     print(f"Assertion failed, retrying... ({attempt}/{max_retries})")
-                    time.sleep(delay)
+                    await asyncio.sleep(delay)

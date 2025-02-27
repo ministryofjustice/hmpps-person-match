@@ -5,7 +5,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, Response, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
-from hmpps_person_match.db import get_db_session
+from hmpps_person_match.db import AsyncSessionLocal
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 
@@ -45,6 +45,6 @@ async def trigger_term_frequency_refresh():
     """
     Refresh the term frequency materialized views
     """
-    async with get_db_session() as session:
+    async with AsyncSessionLocal() as session, session.begin():
         for tf_table in term_frequency_tables:
             await session.execute(text(f"REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.{tf_table};"))
