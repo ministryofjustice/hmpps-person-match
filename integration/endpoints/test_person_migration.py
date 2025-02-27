@@ -6,22 +6,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.person.migration.person_migrate import ROUTE
 from integration.client import Client
+from integration.test_base import IntegrationTestBase
 
 
-class TestPersonMigrationEndpoint:
+class TestPersonMigrationEndpoint(IntegrationTestBase):
     """
     Test Person Migration Endpoint.
     """
 
-    @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncSession):
+    async def before_each(self, db_connection: AsyncSession):
         """
         Before Each
-        Delete all records from the database
         """
-        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
-        await db_connection.commit()
+        await self.truncate_person_data(db_connection)
 
     async def test_batch_clean_and_store_message(self, call_endpoint, db_connection, create_person_data):
         """
