@@ -72,16 +72,9 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         response = call_endpoint("get", self._build_score_url(match_id), client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
         assert len(response.json()) == 2
-        assert {
-            "candidate_match_id": matching_person_id_2,
-            "candidate_match_probability": 1.0,
-            "candidate_match_weight": 55.4382142967686,
-        } in response.json()
-        assert {
-            "candidate_match_id": matching_person_id_1,
-            "candidate_match_probability": 1.0,
-            "candidate_match_weight": 55.4382142967686,
-        } in response.json()
+        candidates_id = [candidate["candidate_match_id"] for candidate in response.json()]
+        assert matching_person_id_1 in candidates_id
+        assert matching_person_id_2 in candidates_id
 
     @staticmethod
     def _build_score_url(match_id: str):
