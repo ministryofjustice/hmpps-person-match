@@ -1,29 +1,26 @@
 import uuid
 
 import pytest
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.person.score.person_score import ROUTE
 from integration.client import Client
+from integration.test_base import IntegrationTestBase
 
 
-class TestPersonScoreEndpoint:
+class TestPersonScoreEndpoint(IntegrationTestBase):
     """
     Test person score
     """
 
-    @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncSession, call_endpoint):
+    async def before_each(self, db_connection: AsyncSession, person_match_url: str):
         """
         Before Each
-        Delete all records from the database
         """
-        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
-        await db_connection.commit()
-        call_endpoint("post", "/jobs/termfrequencies", client=Client.HMPPS_PERSON_MATCH)
+        await self.truncate_person_data(db_connection)
+        await self.refresh_term_frequencies_assert_empty(person_match_url, db_connection)
 
     async def test_score_no_matching(self, call_endpoint, match_id):
         """
