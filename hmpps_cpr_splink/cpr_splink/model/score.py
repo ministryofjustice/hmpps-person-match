@@ -26,8 +26,7 @@ def _mock_lookup_many_tf(value_col_pairs):
     return results
 
 
-def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_term_frequencies: bool = True) -> str:
-
+def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str) -> str:
     tf_columns = [
         "name_1_std",
         "name_2_std",
@@ -41,24 +40,53 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
     select_clauses = ["f.*"]
     for col in tf_columns:
         tf_colname = f"tf_{col}"
-        if real_term_frequencies:
-            alias_table_name = tf_colname
-            tf_lookup_table_name = f"pg_db.public.{tf_colname}"
-            join_clauses.append(
-                f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
-            )
-            select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
-        else:
-            select_clauses.append(f"NULL AS {tf_colname}")
-
-    # postcodes - dummy only
-    if real_term_frequencies:
-        # TODO: real postcodes
-        pass
-    else:
-        select_clauses.append(
-            "list_transform(postcode_arr, x -> struct_pack(value := x, rel_freq := 1)) AS postcode_arr_with_freq",
+        tf_table_name = f"term_frequencies_{col}"
+        alias_table_name = tf_colname
+        tf_lookup_table_name = f"pg_db.personmatch.{tf_table_name}"
+        join_clauses.append(
+            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
         )
+        select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
+
+    # postcodes are in arrays so logic is more complex to join
+    with_clause = f"""
+    WITH exploded_postcodes AS (
+        SELECT
+            match_id,
+            UNNEST(postcode_arr) AS postcode
+        FROM
+            {records_table}
+    ),
+    exploded_postcodes_with_term_frequencies AS (
+        SELECT
+            exploded_postcodes.match_id AS match_id,
+            exploded_postcodes.postcode AS value,
+            COALESCE(pc_tf.tf_postcode, 1) AS rel_freq
+        FROM
+            exploded_postcodes
+        LEFT JOIN pg_db.personmatch.term_frequencies_postcode AS pc_tf
+        ON exploded_postcodes.postcode = pc_tf.postcode
+    ),
+    postcodes_repacked_with_term_frequencies AS (
+        SELECT
+            match_id,
+            array_agg(
+                struct_pack(value := value, rel_freq := rel_freq)
+            ) AS postcode_arr_with_freq,
+        FROM
+            exploded_postcodes_with_term_frequencies
+        GROUP BY
+            match_id
+    )
+    """  # noqa: S608
+    alias_table_name = "tf_postcode"
+    select_clauses.append(
+        f"{alias_table_name}.postcode_arr_with_freq AS postcode_arr_with_freq",
+    )
+    join_clauses.append(
+        f"LEFT JOIN postcodes_repacked_with_term_frequencies AS {alias_table_name} "
+        f"ON f.match_id = {alias_table_name}.match_id",
+    )
 
     joined_views_name = "final_table_with_tf"
     sql_join = " ".join(join_clauses)
@@ -66,8 +94,9 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str, real_t
     con.execute(
         f"""
         CREATE TABLE {joined_views_name} AS
+        {with_clause}
         SELECT {sql_select}
-        FROM {records_table} f
+        FROM {records_table} AS f
         {sql_join}
         """,  # noqa: S608
     )
@@ -84,7 +113,7 @@ def score(
     # Compare records
     db_api = DuckDBAPI(connection_duckdb)
 
-    full_table_name = populate_with_tfs(connection_duckdb, full_candidates_tn, real_term_frequencies=False)
+    full_table_name = populate_with_tfs(connection_duckdb, full_candidates_tn)
 
     source_name = "primary_record"
     candidates_name = "candidate_record"
