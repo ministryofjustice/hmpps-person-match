@@ -1,6 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.person.person_create import ROUTE
 from integration import random_test_data
 from integration.client import Client
@@ -24,7 +23,10 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         """
         person_data = TestPerson(matchId=match_id)
         response = call_endpoint(
-            "post", ROUTE, json=person_data.model_dump(by_alias=True), client=Client.HMPPS_PERSON_MATCH,
+            "post",
+            ROUTE,
+            json=person_data.model_dump(by_alias=True),
+            client=Client.HMPPS_PERSON_MATCH,
         )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, match_id)
@@ -60,7 +62,6 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         call_endpoint,
         match_id: str,
         db_connection: AsyncSession,
-        create_person_data: dict,
         create_person_record,
     ):
         """
@@ -78,7 +79,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         person_data.first_name = updated_first_name
         person_data.date_of_birth = updated_dob
 
-        response = call_endpoint("post", ROUTE, json=person_data.model_dump(by_alias=True), client=Client.HMPPS_PERSON_MATCH)
+        response = call_endpoint(
+            "post", ROUTE, json=person_data.model_dump(by_alias=True), client=Client.HMPPS_PERSON_MATCH,
+        )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, match_id)
         assert row["match_id"] == match_id
@@ -89,5 +92,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         """
         Test person endpoint return 403 forbidden when invalid roles
         """
-        response = call_endpoint("post", ROUTE, json=TestPerson(matchId=match_id).model_dump(by_alias=True), client=Client.HMPPS_TIER)
+        response = call_endpoint(
+            "post", ROUTE, json=TestPerson(matchId=match_id).model_dump(by_alias=True), client=Client.HMPPS_TIER,
+        )
         assert response.status_code == 403
