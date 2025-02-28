@@ -34,7 +34,7 @@ ENV PYTHONUNBUFFERED=1 \
 # BUILD stage
 ##############
 FROM base AS build
-COPY --from=ghcr.io/astral-sh/uv:0.6.2 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.6.3 /uv /bin/uv
 
 RUN apt-get install --no-install-recommends -y \
         # deps for installing uv
