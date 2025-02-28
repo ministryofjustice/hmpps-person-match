@@ -23,7 +23,7 @@ class TestCandidateSearch:
         await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
         await db_connection.commit()
 
-    async def test_candidate_search(self, match_id, create_person_record, create_person_data, duckdb_con_with_pg):
+    async def test_candidate_search(self, match_id, create_person_record, duckdb_con_with_pg):
         """
         Test candidate search returns correct number of people
         """

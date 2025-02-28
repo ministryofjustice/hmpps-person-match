@@ -27,7 +27,6 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
         self,
         person_match_url,
         create_person_record,
-        create_person_data,
         match_id,
         db_connection: AsyncSession,
     ):
@@ -46,7 +45,6 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
         self,
         person_match_url,
         create_person_record,
-        create_person_data,
         match_id,
         db_connection: AsyncSession,
     ):
