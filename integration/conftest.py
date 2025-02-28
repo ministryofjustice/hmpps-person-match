@@ -11,8 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
-from integration import random_test_data
-from integration.person_data import PersonData
+from integration.test_person import TestPerson
 
 
 class Service(Enum):
@@ -79,23 +78,8 @@ def create_person_data():
     Create a new person data
     """
 
-    def _create_person_json(person_data: PersonData) -> dict:
-        return {
-            "matchId": person_data.match_id,
-            "sourceSystem": "DELIUS",
-            "firstName": person_data.first_name,
-            "middleNames": person_data.middle_names,
-            "lastName": person_data.last_name,
-            "crn": person_data.crn,
-            "dateOfBirth": person_data.date_of_birth,
-            "firstNameAliases": person_data.first_name_aliases,
-            "lastNameAliases": person_data.last_name_aliases,
-            "dateOfBirthAliases": person_data.date_of_birth_aliases,
-            "postcodes": person_data.postcodes,
-            "cros": person_data.cros,
-            "pncs": person_data.pncs,
-            "sentenceDates": person_data.sentence_dates,
-        }
+    def _create_person_json(person_data: TestPerson) -> dict:
+        return person_data.model_dump(by_alias=True)
 
     return _create_person_json
 
