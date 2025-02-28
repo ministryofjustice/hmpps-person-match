@@ -12,7 +12,7 @@ def random_crn() -> str:
 
 
 def random_date() -> str:
-    return datetime.date(random_year(), random.randint(1, 12), random.randint(0, 28)).strftime(  # noqa: S311
+    return datetime.date(random_year(), random.randint(1, 12), random.randint(1, 28)).strftime(  # noqa: S311
         "%Y-%m-%d",
     )
 

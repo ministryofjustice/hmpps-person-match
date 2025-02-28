@@ -1,8 +1,8 @@
 from sqlalchemy import text
 
-from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.person.person_delete import ROUTE
 from integration.client import Client
+from integration.mock_person import MockPerson
 
 
 class TestPersonDeletionEndpoint:
@@ -22,13 +22,12 @@ class TestPersonDeletionEndpoint:
         match_id,
         db_connection,
         create_person_record,
-        create_person_data,
     ):
         """
         Test person cleaned and stored on person endpoint
         """
         # Create person
-        await create_person_record(Person(**create_person_data(match_id)))
+        await create_person_record(MockPerson(matchId=match_id))
 
         result = await db_connection.execute(text(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'"))
         result = result.fetchall()

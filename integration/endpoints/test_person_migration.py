@@ -6,10 +6,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.person.migration.person_migrate import ROUTE
 from integration.client import Client
+from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
 
-class TestPersonMigrationEndpoint(IntegrationTestBase):
+class MockPersonMigrationEndpoint(IntegrationTestBase):
     """
     Test Person Migration Endpoint.
     """
@@ -21,12 +22,13 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
         """
         await self.truncate_person_data(db_connection)
 
-    async def test_batch_clean_and_store_message(self, call_endpoint, db_connection, create_person_data):
+    async def test_batch_clean_and_store_message(self, call_endpoint, db_connection, match_id):
         """
         Test person cleaned and stored on person endpoint
         """
+        # Create person
         data = {
-            "records": [create_person_data()],
+            "records": [MockPerson(matchId=match_id).model_dump(by_alias=True)],
         }
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
@@ -50,7 +52,7 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
         Test person cleaned and stored on person endpoint
         """
         data = {
-            "records": [create_person_data(uuid.uuid4()) for _ in range(1000)],
+            "records": [MockPerson(matchId=str(uuid.uuid4())).model_dump(by_alias=True) for _ in range(1000)],
         }
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)

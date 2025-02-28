@@ -4,7 +4,7 @@ from hmpps_person_match.models.person.person import Person
 from integration import random_test_data
 
 
-class TestPerson(Person):
+class MockPerson(Person):
     """
     Inherits main person model
     Sets random test data values

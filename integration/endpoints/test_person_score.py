@@ -3,13 +3,13 @@ import uuid
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.person.score.person_score import ROUTE
 from integration.client import Client
+from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
 
-class TestPersonScoreEndpoint(IntegrationTestBase):
+class MockPersonScoreEndpoint(IntegrationTestBase):
     """
     Test person score
     """
@@ -39,13 +39,19 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {}
 
-    async def test_score_does_not_return_self(self, call_endpoint, match_id, create_person_data):
+    async def test_score_does_not_return_self(self, call_endpoint, match_id, create_person_record):
         """
         Test person score doesn't return its own record as part of candidates
         """
         # Create person
-        data = create_person_data(match_id)
-        response = call_endpoint("post", "/person", json=data, client=Client.HMPPS_PERSON_MATCH)
+        person_data = MockPerson(matchId=match_id)
+        await create_person_record(person_data)
+        response = call_endpoint(
+            "post",
+            "/person",
+            json=person_data.model_dump(by_alias=True),
+            client=Client.HMPPS_PERSON_MATCH,
+        )
         assert response.status_code == 200
 
         # Call score for person
@@ -58,15 +64,18 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         Test person cleaned and stored on person endpoint
         """
         # Create person to match and score
-        await create_person_record(Person(**create_person_data(match_id)))
+        person_data = MockPerson(matchId=match_id)
+        await create_person_record(person_data)
 
         # Create different person
         matching_person_id_1 = str(uuid.uuid4())
-        await create_person_record(Person(**create_person_data(matching_person_id_1)))
+        person_data.match_id = matching_person_id_1
+        await create_person_record(person_data)
 
         # Create different person
         matching_person_id_2 = str(uuid.uuid4())
-        await create_person_record(Person(**create_person_data(matching_person_id_2)))
+        person_data.match_id = matching_person_id_2
+        await create_person_record(person_data)
 
         # Call score for person
         response = call_endpoint("get", self._build_score_url(match_id), client=Client.HMPPS_PERSON_MATCH)

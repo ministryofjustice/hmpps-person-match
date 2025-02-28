@@ -1,9 +1,11 @@
+import uuid
+
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
-from hmpps_person_match.models.person.person import Person
+from integration.mock_person import MockPerson
 
 
 class TestCandidateSearch:
@@ -26,11 +28,13 @@ class TestCandidateSearch:
         Test candidate search returns correct number of people
         """
         # primary record
-        await create_person_record(Person(**create_person_data(match_id)))
+        person_data = MockPerson(matchId=match_id)
+        await create_person_record(person_data)
         # candidates - all should match
         n_candidates = 10
         for _ in range(n_candidates):
-            await create_person_record(Person(**create_person_data()))
+            person_data.match_id = str(uuid.uuid4())
+            await create_person_record(person_data)
 
         table_name = await candidate_search(match_id, duckdb_con_with_pg)
 
@@ -41,7 +45,6 @@ class TestCandidateSearch:
     async def test_candidate_search_no_record_in_db(
         self,
         create_person_record,
-        create_person_data,
         duckdb_con_with_pg,
     ):
         """
@@ -49,7 +52,7 @@ class TestCandidateSearch:
         """
         n_candidates = 10
         for _ in range(n_candidates):
-            await create_person_record(Person(**create_person_data()))
+            await create_person_record(MockPerson(matchId=str(uuid.uuid4())))
 
         table_name = await candidate_search("unknown_match_id", duckdb_con_with_pg)
 

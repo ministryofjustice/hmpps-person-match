@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
-from integration.test_person import TestPerson
+from integration.mock_person import MockPerson
 
 
 class Service(Enum):
@@ -78,7 +78,7 @@ def create_person_data():
     Create a new person data
     """
 
-    def _create_person_json(person_data: TestPerson) -> dict:
+    def _create_person_json(person_data: MockPerson) -> dict:
         return person_data.model_dump(by_alias=True)
 
     return _create_person_json
