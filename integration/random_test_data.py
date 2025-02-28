@@ -26,3 +26,13 @@ def random_lower_case_string(length=7) -> str:
 
 def random_year() -> int:
     return random.randint(1950, datetime.datetime.now().year)  # noqa: S311
+
+def random_postcode() -> str:
+    return random_lower_case_string(1).upper() + random_digit(2) + " " + random_digit(1) + random_lower_case_string(2).upper()
+
+
+def random_cro() -> str:
+    return str(random_year())[2:] + "/" + random_digit(6) + random_lower_case_string(1).upper()
+
+def random_pnc() -> str:
+    return str(random_year())[2:] + "/" + random_digit(7) + random_lower_case_string(1).upper()

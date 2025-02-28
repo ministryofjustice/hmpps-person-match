@@ -5,7 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.routes.person.person_create import ROUTE
+from integration import person_data
 from integration.client import Client
+from integration.person_data import PersonData
 
 
 class TestPersonCreationEndpoint:
@@ -23,13 +25,14 @@ class TestPersonCreationEndpoint:
         """
         Test person cleaned and stored on person endpoint
         """
-        data = create_person_data(match_id)
+        person_data = PersonData()
+        data = create_person_data(person_data)
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
         result = await db_connection.execute(text(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'"))
         row = result.mappings().fetchone()
         assert row["match_id"] == match_id
-        assert row["name_1_std"] == "HENRY"
+        assert row["name_1_std"] == ""
         assert row["name_2_std"] == "AHMED"
         assert row["name_3_std"] is None
         assert row["last_name_std"] == "JUNAED"

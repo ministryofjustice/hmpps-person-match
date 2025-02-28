@@ -12,6 +12,7 @@ from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
 from integration import random_test_data
+from integration.person_data import PersonData
 
 
 class Service(Enum):
@@ -78,24 +79,22 @@ def create_person_data():
     Create a new person data
     """
 
-    def _create_person_json(uuid_object: uuid.UUID = None) -> dict:
-        if uuid_object is None:
-            uuid_object = uuid.uuid4()
+    def _create_person_json(person_data: PersonData) -> dict:
         return {
-            "matchId": str(uuid_object),
+            "matchId": person_data.match_id,
             "sourceSystem": "DELIUS",
-            "firstName": random_test_data.random_name(),
-            "middleNames": random_test_data.random_name(),
-            "lastName": random_test_data.random_name(),
-            "crn": random_test_data.random_crn(),
-            "dateOfBirth": random_test_data.random_date(),
-            "firstNameAliases": ["Henry"],
-            "lastNameAliases": ["Junaed"],
-            "dateOfBirthAliases": ["1992-01-01"],
-            "postcodes": ["B10 1EJ"],
-            "cros": ["4444566"],
-            "pncs": ["22224555"],
-            "sentenceDates": ["2001-03-01"],
+            "firstName": person_data.first_name,
+            "middleNames": person_data.middle_names,
+            "lastName": person_data.last_name,
+            "crn": person_data.crn,
+            "dateOfBirth": person_data.date_of_birth,
+            "firstNameAliases": person_data.first_name_aliases,
+            "lastNameAliases": person_data.last_name_aliases,
+            "dateOfBirthAliases": person_data.date_of_birth_aliases,
+            "postcodes": person_data.postcodes,
+            "cros": person_data.cros,
+            "pncs": person_data.pncs,
+            "sentenceDates": person_data.sentence_dates,
         }
 
     return _create_person_json
