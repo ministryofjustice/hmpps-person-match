@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
+from integration import random_test_data
 
 
 class Service(Enum):
@@ -83,11 +84,11 @@ def create_person_data():
         return {
             "matchId": str(uuid_object),
             "sourceSystem": "DELIUS",
-            "firstName": "Henry",
-            "middleNames": "Ahmed",
-            "lastName": "Junaed",
-            "crn": "1234",
-            "dateOfBirth": "1992-03-02",
+            "firstName": random_test_data.random_name(),
+            "middleNames": random_test_data.random_name(),
+            "lastName": random_test_data.random_name(),
+            "crn": random_test_data.random_crn(),
+            "dateOfBirth": random_test_data.random_date(),
             "firstNameAliases": ["Henry"],
             "lastNameAliases": ["Junaed"],
             "dateOfBirthAliases": ["1992-01-01"],
