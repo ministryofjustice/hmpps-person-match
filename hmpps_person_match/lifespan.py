@@ -9,4 +9,4 @@ async def lifespan(app: FastAPI):
     Disposes of DB engine to release resources
     """
     yield
-    engine.dispose()
+    await engine.dispose()

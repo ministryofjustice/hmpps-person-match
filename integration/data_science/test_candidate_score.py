@@ -1,9 +1,11 @@
+import uuid
+
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
-from hmpps_person_match.models.person.person import Person
+from integration.mock_person import MockPerson
 
 
 class TestPersonScore:
@@ -25,18 +27,19 @@ class TestPersonScore:
         self,
         match_id,
         create_person_record,
-        create_person_data,
         pg_db_url,
     ):
         """
         Test retrieving scored candidates gives correct number
         """
         # primary record
-        await create_person_record(Person(**create_person_data(match_id)))
+        person_data = MockPerson(matchId=match_id)
+        await create_person_record(person_data)
         # candidates - all should match with high match weight
         n_candidates = 10
         for _ in range(n_candidates):
-            await create_person_record(Person(**create_person_data()))
+            person_data.match_id = str(uuid.uuid4())
+            await create_person_record(person_data)
 
         res = await get_scored_candidates(match_id, pg_db_url)
 
@@ -47,7 +50,6 @@ class TestPersonScore:
     async def test_get_scored_candidates_none_in_db(
         self,
         create_person_record,
-        create_person_data,
         pg_db_url,
     ):
         """
@@ -55,7 +57,7 @@ class TestPersonScore:
         """
         n_candidates = 10
         for _ in range(n_candidates):
-            await create_person_record(Person(**create_person_data()))
+            await create_person_record(MockPerson(matchId=str(uuid.uuid4())))
 
         res = await get_scored_candidates("bogus_match_id", pg_db_url)
 
