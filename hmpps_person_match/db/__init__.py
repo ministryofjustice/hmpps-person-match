@@ -1,5 +1,6 @@
 from collections.abc import AsyncGenerator
 
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from hmpps_person_match.db import url
@@ -13,6 +14,10 @@ engine: AsyncEngine = create_async_engine(
     pool_timeout=Config.DB_CON_POOL_TIMEOUT,
     pool_recycle=Config.DB_CON_POOL_RECYCLE,
     pool_pre_ping=Config.DB_CON_POOL_PRE_PING,
+)
+
+SQLAlchemyInstrumentor().instrument(
+    engine=engine.sync_engine,
 )
 
 AsyncSessionLocal = async_sessionmaker(engine)
