@@ -42,7 +42,7 @@ def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str) -> str
         tf_colname = f"tf_{col}"
         tf_table_name = f"term_frequencies_{col}"
         alias_table_name = tf_colname
-        tf_lookup_table_name = f"pg_db.personmatch.{tf_table_name}"
+        tf_lookup_table_name = f"pg_db.{tf_table_name}"
         join_clauses.append(
             f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
         )

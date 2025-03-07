@@ -97,7 +97,7 @@ async def candidate_search(primary_record_id: str, con: duckdb.DuckDBPyConnectio
     pipeline = CTEPipeline()
 
     # TODO: table name from?
-    cleaned_table_name = "pg_db.personmatch.person"
+    cleaned_table_name = "pg_db.person"
 
     table_name_primary = "primary_record"
     sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE match_id = $1"  # noqa: S608

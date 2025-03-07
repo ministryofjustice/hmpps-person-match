@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 def duckdb_connected_to_postgres(pg_db_url: URL) -> duckdb.DuckDBPyConnection:
     pg_conn_string_sync = pg_db_url.render_as_string(hide_password=False)
     connection_duckdb = duckdb.connect(":memory:")
-    connection_duckdb.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES);")
+    connection_duckdb.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES,SCHEMA 'personmatch');")
     return connection_duckdb
 
 
