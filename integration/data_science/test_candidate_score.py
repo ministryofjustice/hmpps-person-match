@@ -28,7 +28,6 @@ class TestPersonScore:
         match_id,
         create_person_record,
         pg_db_url,
-        db_connection,
     ):
         """
         Test retrieving scored candidates gives correct number
@@ -42,7 +41,7 @@ class TestPersonScore:
             person_data.match_id = str(uuid.uuid4())
             await create_person_record(person_data)
 
-        res = await get_scored_candidates(match_id, pg_db_url, db_connection)
+        res = await get_scored_candidates(match_id, pg_db_url)
 
         # we have all candidates + original record
         assert len(res) == n_candidates
@@ -52,7 +51,6 @@ class TestPersonScore:
         self,
         create_person_record,
         pg_db_url,
-        db_connection,
     ):
         """
         Test scoring returns nothing if the given match_id is not in db
@@ -61,6 +59,6 @@ class TestPersonScore:
         for _ in range(n_candidates):
             await create_person_record(MockPerson(matchId=str(uuid.uuid4())))
 
-        res = await get_scored_candidates("bogus_match_id", pg_db_url, db_connection)
+        res = await get_scored_candidates("bogus_match_id", pg_db_url)
 
         assert len(res) == 0

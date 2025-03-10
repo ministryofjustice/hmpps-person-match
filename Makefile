@@ -16,7 +16,7 @@ run-local:
 	uv run fastapi dev asgi.py --port 5000
 
 build:
-	docker build . --tag hmpps-person-match \
+	docker build . --tag hmpps_person_match \
 		--build-arg BUILD_NUMBER="local" \
 		--build-arg GIT_REF=$(shell git rev-parse --short HEAD) \
 		--build-arg GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
