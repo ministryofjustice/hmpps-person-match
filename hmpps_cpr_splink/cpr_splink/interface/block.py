@@ -51,7 +51,6 @@ def _create_blocked_pairs_sql(
         inner join {input_tablename_r} as r
         on
         ({blocking_rule.blocking_rule_sql})
-        {where_condition}
         {
         blocking_rule.exclude_pairs_generated_by_all_preceding_rules_sql(
             "dummy",
