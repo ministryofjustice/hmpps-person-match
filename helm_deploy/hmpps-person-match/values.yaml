@@ -7,6 +7,7 @@ generic-service:
     limits:
       memory: 1Gi
     requests:
+      cpu: 2
       memory: 1Gi
 
   image:
