@@ -21,7 +21,8 @@ dependencies = [
   "alembic>=1.14.1",
   "asyncpg>=0.30.0",
   "greenlet>=3.1.1",
-  "opentelemetry-instrumentation-sqlalchemy>=0.51b0"
+  "opentelemetry-instrumentation-sqlalchemy>=0.51b0",
+  "psycopg2-binary>=2.9.10",
 ]
 
 [tool.uv]
