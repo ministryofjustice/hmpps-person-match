@@ -1,10 +1,11 @@
 from typing import TypedDict
 
-import pandas as pd
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..model.score import score
+from ..model_cleaning import CLEANED_TABLE_SCHEMA
+from ..utils import create_table_from_records
 from .block import candidate_search
 from .db import duckdb_connected_to_postgres
 
@@ -27,13 +28,12 @@ async def get_scored_candidates(
     connection_duckdb = duckdb_connected_to_postgres(pg_db_url)
 
     candidates_data = await candidate_search(primary_record_id, connection_pg)
+
     if not candidates_data:
         return []
     candidates_table_name = "candidates"
 
-    # duckdb only recognises data in certain formats. For now use pandas as go-between.
-    df = pd.DataFrame(candidates_data)
-    connection_duckdb.register(candidates_table_name, df)
+    create_table_from_records(connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA)
 
     res = score(connection_duckdb, primary_record_id, candidates_table_name, return_scores_only=True)
 

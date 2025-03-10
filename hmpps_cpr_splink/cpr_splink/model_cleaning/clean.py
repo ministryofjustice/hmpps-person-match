@@ -242,27 +242,27 @@ columns_reshaping = [
 
 columns_simple_select = [
     # core info
-    TransformedColumn("match_id"),
-    TransformedColumn("source_system"),
+    TransformedColumn("match_id", column_type="VARCHAR"),
+    TransformedColumn("source_system", column_type="VARCHAR"),
     # names
-    TransformedColumn("name_1_std"),
-    TransformedColumn("name_2_std"),
-    TransformedColumn("name_3_std"),
-    TransformedColumn("last_name_std"),
-    TransformedColumn("first_and_last_name_std"),
-    TransformedColumn("forename_std_arr"),
-    TransformedColumn("last_name_std_arr"),
+    TransformedColumn("name_1_std", column_type="VARCHAR"),
+    TransformedColumn("name_2_std", column_type="VARCHAR"),
+    TransformedColumn("name_3_std", column_type="VARCHAR"),
+    TransformedColumn("last_name_std", column_type="VARCHAR"),
+    TransformedColumn("first_and_last_name_std", column_type="VARCHAR"),
+    TransformedColumn("forename_std_arr", column_type="VARCHAR[]"),
+    TransformedColumn("last_name_std_arr", column_type="VARCHAR[]"),
     # dates
-    TransformedColumn("date_of_birth"),
-    TransformedColumn("date_of_birth_arr"),
-    TransformedColumn("sentence_date_single"),
-    TransformedColumn("sentence_date_arr"),
+    TransformedColumn("date_of_birth", column_type="DATE"),
+    TransformedColumn("date_of_birth_arr", column_type="DATE[]"),
+    TransformedColumn("sentence_date_single", column_type="DATE"),
+    TransformedColumn("sentence_date_arr", column_type="DATE[]"),
     # location
-    TransformedColumn("postcode_arr"),
-    TransformedColumn("postcode_outcode_arr"),
+    TransformedColumn("postcode_arr", column_type="VARCHAR[]"),
+    TransformedColumn("postcode_outcode_arr", column_type="VARCHAR[]"),
     # identifiers
-    TransformedColumn("cro_single"),
-    TransformedColumn("pnc_single"),
+    TransformedColumn("cro_single", column_type="VARCHAR"),
+    TransformedColumn("pnc_single", column_type="VARCHAR"),
     # origin
     # TransformedColumn("birth_place"),
     # TransformedColumn("birth_country"),
