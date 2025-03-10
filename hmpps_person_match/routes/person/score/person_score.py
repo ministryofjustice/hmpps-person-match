@@ -39,7 +39,6 @@ async def get_person_score(
         scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(
             match_id,
             url.pg_database_url,
-            session,
         )
         logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(matchId=match_id, candidate_size=len(scored_candidates)))
         return scored_candidates

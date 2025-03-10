@@ -23,7 +23,7 @@ class TestCandidateSearch:
         await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
         await db_connection.commit()
 
-    async def test_candidate_search(self, match_id, create_person_record, db_connection):
+    async def test_candidate_search(self, match_id, create_person_record, duckdb_con_with_pg):
         """
         Test candidate search returns correct number of people
         """
@@ -36,15 +36,16 @@ class TestCandidateSearch:
             person_data.match_id = str(uuid.uuid4())
             await create_person_record(person_data)
 
-        candidate_data = await candidate_search(match_id, db_connection)
+        table_name = await candidate_search(match_id, duckdb_con_with_pg)
 
+        row = duckdb_con_with_pg.execute(f"SELECT * FROM {table_name}").fetchall()
         # we have all candidates + original record
-        assert len(candidate_data) == n_candidates + 1
+        assert len(row) == n_candidates + 1
 
     async def test_candidate_search_no_record_in_db(
         self,
         create_person_record,
-        db_connection,
+        duckdb_con_with_pg,
     ):
         """
         Test candidate search returns nothing if the given match_id is not in db
@@ -53,7 +54,8 @@ class TestCandidateSearch:
         for _ in range(n_candidates):
             await create_person_record(MockPerson(matchId=str(uuid.uuid4())))
 
-        candidate_data = await candidate_search("unknown_match_id", db_connection)
+        table_name = await candidate_search("unknown_match_id", duckdb_con_with_pg)
 
+        row = duckdb_con_with_pg.execute(f"SELECT * FROM {table_name}").fetchall()
         # don't have an original record, so can't have any candidates
-        assert len(candidate_data) == 0
+        assert len(row) == 0
