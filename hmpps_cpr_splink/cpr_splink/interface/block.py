@@ -1,6 +1,6 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
+from collections.abc import Sequence
 
-import duckdb
 from splink.internals.blocking import (
     BlockingRule,
     _sql_gen_where_condition,
@@ -9,6 +9,8 @@ from splink.internals.blocking import (
 from splink.internals.input_column import InputColumn
 from splink.internals.pipeline import CTEPipeline
 from splink.internals.settings import LinkTypeLiteralType
+from sqlalchemy import RowMapping, text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..model.blocking_rules import (
     blocking_rules_for_prediction_tight_for_candidate_search,
@@ -18,15 +20,15 @@ from ..model.blocking_rules import (
 # Splink 4.0.7 should have requisite change
 _blocking_rules_concrete = list(
     map(
-        lambda brc: brc.get_blocking_rule("duckdb"),
+        lambda brc: brc.get_blocking_rule("postgres"),
         blocking_rules_for_prediction_tight_for_candidate_search,
     ),
 )
 for n, br in enumerate(_blocking_rules_concrete):
     br.add_preceding_rules(_blocking_rules_concrete[:n])
 
-unique_id_input_column = InputColumn("id", sqlglot_dialect_str="duckdb")
-source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="duckdb")
+unique_id_input_column = InputColumn("id", sqlglot_dialect_str="postgres")
+source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
 
 
 # modified version of br.create_blocked_pairs_sql
@@ -49,7 +51,6 @@ def _create_blocked_pairs_sql(
         inner join {input_tablename_r} as r
         on
         ({blocking_rule.blocking_rule_sql})
-        {where_condition}
         {
         blocking_rule.exclude_pairs_generated_by_all_preceding_rules_sql(
             "dummy",
@@ -84,10 +85,10 @@ def _block_using_rules_sqls(
 
     sql = " UNION ALL ".join(br_sqls)
 
-    return {"sql": sql, "output_table_name": "__splink__blocked_id_pairs"}
+    return {"sql": sql, "output_table_name": "personmatch.__splink__blocked_id_pairs"}
 
 
-async def candidate_search(primary_record_id: str, con: duckdb.DuckDBPyConnection) -> str:
+async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[RowMapping]:
     """
     Given a primary record id, return a table of these records
     along with the primary, ready to be scored.
@@ -97,10 +98,10 @@ async def candidate_search(primary_record_id: str, con: duckdb.DuckDBPyConnectio
     pipeline = CTEPipeline()
 
     # TODO: table name from?
-    cleaned_table_name = "pg_db.personmatch.person"
+    cleaned_table_name = "personmatch.person"
 
     table_name_primary = "primary_record"
-    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE match_id = $1"  # noqa: S608
+    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE match_id = :mid"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     # need source dataset to be later alphabetically to get the right condition
@@ -116,6 +117,7 @@ async def candidate_search(primary_record_id: str, con: duckdb.DuckDBPyConnectio
     )
     pipeline.enqueue_sql(**sql_info)
 
-    sql = f"CREATE OR REPLACE TABLE {pipeline.output_table_name} AS {pipeline.generate_cte_pipeline_sql()}"
-    con.execute(sql, (primary_record_id,))
-    return pipeline.output_table_name
+    sql = pipeline.generate_cte_pipeline_sql()
+    res = await connection_pg.execute(text(sql), {"mid": primary_record_id})
+
+    return res.mappings().fetchall()
