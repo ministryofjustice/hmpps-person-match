@@ -91,6 +91,16 @@ select = [
     "I",
     # pylint
     "PL",
+    # fastapi
+    "FAST",
+    # flake8-async
+    "ASYNC",
+    # flake8-datetimez
+    "DTZ",
+    # flake8-debugger
+    "T10",
+    # flake8-tidy-imports
+    "TID",
 ]
 ignore = [
     # magic-value-comparison
@@ -98,8 +108,8 @@ ignore = [
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
-# Also ignore `S: flake8-bandit` in all `test_*.py` files.
-"test_*.py" = ["S"]
+# Also ignore `S: flake8-bandit` and `ASYNC: flake8-async` in all `test_*.py` files.
+"test_*.py" = ["S", "ASYNC"]
 # ignores name convention as overriding package function
 "log_formatter.py" = ["N802"]
 "hmpps_cpr_splink/*" = [

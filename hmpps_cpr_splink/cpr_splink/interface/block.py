@@ -12,7 +12,7 @@ from splink.internals.settings import LinkTypeLiteralType
 from sqlalchemy import RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..model.blocking_rules import (
+from hmpps_cpr_splink.cpr_splink.model.blocking_rules import (
     blocking_rules_for_prediction_tight_for_candidate_search,
 )
 

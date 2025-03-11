@@ -3,11 +3,11 @@ from typing import TypedDict
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..model.score import score
-from ..model_cleaning import CLEANED_TABLE_SCHEMA
-from ..utils import create_table_from_records
-from .block import candidate_search
-from .db import duckdb_connected_to_postgres
+from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
+from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
+from hmpps_cpr_splink.cpr_splink.model.score import score
+from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
+from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
 
 
 class ScoredCandidate(TypedDict):

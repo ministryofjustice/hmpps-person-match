@@ -37,7 +37,7 @@ class IntegrationTestBase:
 
     @staticmethod
     def to_datetime_object(date: str) -> datetime:
-        return datetime.strptime(date, "%Y-%m-%d").date()
+        return datetime.strptime(date, "%Y-%m-%d").astimezone().date()
 
     @staticmethod
     async def assert_size_of_table(db_connection, table, size=1):
