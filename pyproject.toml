@@ -91,6 +91,16 @@ select = [
     "I",
     # pylint
     "PL",
+    # fastapi
+    "FAST",
+    # flake8-async
+    "ASYNC",
+    # flake8-datetimez
+    "DTZ",
+    # flake8-debugger
+    "T10",
+    # flake8-tidy-imports
+    "TID",
 ]
 ignore = [
     # magic-value-comparison

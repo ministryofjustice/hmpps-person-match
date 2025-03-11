@@ -25,7 +25,7 @@ class IntegrationTestBase:
         """
         Refresh term frequencies
         """
-        response = requests.post(person_match_url + "/jobs/termfrequencies")
+        response = requests.post(person_match_url + "/jobs/termfrequencies")  # noqa: ASYNC210
         assert response.status_code == 200
         for table in term_frequency_tables:
             await self.until_asserted(lambda: self.assert_size_of_table(db_connection, table, size=0))  # noqa: B023
@@ -37,7 +37,7 @@ class IntegrationTestBase:
 
     @staticmethod
     def to_datetime_object(date: str) -> datetime:
-        return datetime.strptime(date, "%Y-%m-%d").date()
+        return datetime.strptime(date, "%Y-%m-%d").astimezone().date()
 
     @staticmethod
     async def assert_size_of_table(db_connection, table, size=1):

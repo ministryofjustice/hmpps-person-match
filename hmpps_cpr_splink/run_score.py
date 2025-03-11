@@ -17,7 +17,7 @@ record_1 = JoinedRecord(
     last_name="BOND",
     crn=None,
     prison_number=None,
-    date_of_birth=datetime.strptime("2001-01-01", "%Y-%m-%d").date(),
+    date_of_birth=datetime.strptime("2001-01-01", "%Y-%m-%d").astimezone().date(),
     sex="m",
     ethnicity="W1",
     first_name_aliases=["andy", "drew"],
@@ -27,8 +27,8 @@ record_1 = JoinedRecord(
     cros=None,
     pncs=None,
     sentence_dates=[
-        datetime.strptime("2024-11-27", "%Y-%m-%d").date(),
-        datetime.strptime("2020-05-01", "%Y-%m-%d").date(),
+        datetime.strptime("2024-11-27", "%Y-%m-%d").astimezone().date(),
+        datetime.strptime("2020-05-01", "%Y-%m-%d").astimezone().date(),
     ],
 )
 
@@ -40,7 +40,7 @@ record_2 = JoinedRecord(
     last_name="boond",
     crn=None,
     prison_number=None,
-    date_of_birth=datetime.strptime("2001-11-06", "%Y-%m-%d").date(),
+    date_of_birth=datetime.strptime("2001-11-06", "%Y-%m-%d").astimezone().date(),
     sex="m",
     ethnicity="W1",
     first_name_aliases=["john"],
@@ -49,7 +49,7 @@ record_2 = JoinedRecord(
     postcodes=["SW2 5XF"],
     cros=None,
     pncs=None,
-    sentence_dates=[datetime.strptime("2024-11-24", "%Y-%m-%d").date()],
+    sentence_dates=[datetime.strptime("2024-11-24", "%Y-%m-%d").astimezone().date()],
 )
 
 record_3 = JoinedRecord(
@@ -60,7 +60,7 @@ record_3 = JoinedRecord(
     last_name="BOND",
     crn=None,
     prison_number=None,
-    date_of_birth=datetime.strptime("2001-01-01", "%Y-%m-%d").date(),
+    date_of_birth=datetime.strptime("2001-01-01", "%Y-%m-%d").astimezone().date(),
     sex="m",
     ethnicity="W1",
     first_name_aliases=["andy", "drew"],
@@ -70,8 +70,8 @@ record_3 = JoinedRecord(
     cros=None,
     pncs=None,
     sentence_dates=[
-        datetime.strptime("2024-11-27", "%Y-%m-%d").date(),
-        datetime.strptime("2020-05-01", "%Y-%m-%d").date(),
+        datetime.strptime("2024-11-27", "%Y-%m-%d").astimezone().date(),
+        datetime.strptime("2020-05-01", "%Y-%m-%d").astimezone().date(),
     ],
 )
 

@@ -26,7 +26,7 @@ def random_lower_case_string(length=7) -> str:
 
 
 def random_year() -> int:
-    return random.randint(1950, datetime.datetime.now().year)  # noqa: S311
+    return random.randint(1950, datetime.datetime.now().astimezone().year)  # noqa: S311
 
 
 def random_postcode() -> str:
