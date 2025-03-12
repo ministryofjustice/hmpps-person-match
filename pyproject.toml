@@ -21,6 +21,8 @@ dependencies = [
   "alembic>=1.14.1",
   "asyncpg>=0.30.0",
   "greenlet>=3.1.1",
+  "opentelemetry-instrumentation-sqlalchemy>=0.51b0",
+  "psycopg2-binary>=2.9.10",
 ]
 
 [tool.uv]
@@ -30,7 +32,7 @@ default-groups = ["dev"]
 [dependency-groups]
 dev = [
   "ipykernel >= 6.29.4",
-  "ruff ==0.9.7",
+  "ruff ==0.9.10",
   "pyyaml >= 6.0.2",
   "pytest >= 8.3.4",
   "pytest-cov>=6.0.0",
@@ -89,6 +91,16 @@ select = [
     "I",
     # pylint
     "PL",
+    # fastapi
+    "FAST",
+    # flake8-async
+    "ASYNC",
+    # flake8-datetimez
+    "DTZ",
+    # flake8-debugger
+    "T10",
+    # flake8-tidy-imports
+    "TID",
 ]
 ignore = [
     # magic-value-comparison

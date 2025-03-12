@@ -126,7 +126,7 @@ def jwt_token_factory(context, private_key):
         headers = {"kid": kid}
         payload = {
             "authorities": roles,
-            "exp": datetime.datetime.now() + expiry,
+            "exp": datetime.datetime.now().astimezone() + expiry,
             "iss": issuer,
         }
         token = jwt.encode(payload, private_key, algorithm="RS256", headers=headers)

@@ -1,4 +1,4 @@
-from ..data_cleaning.transformation import (
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformation import (
     CONCAT_WS_FIRST_LAST_NAME_STD,
     CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
     LIST_APPEND_DOB_FROM_SCALAR_COLUMN,
@@ -112,6 +112,8 @@ columns_basic = [
     #     "VARCHAR[]",
     # ),
     POSTCODE_BASIC,
+    TransformedColumn("crn", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
+    TransformedColumn("prison_number", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn(
         "cros",
         [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_FILTER_PROBLEM_CROS, LIST_SORT],
@@ -152,6 +154,8 @@ columns_reshaping = [
     TransformedColumn("source_system"),
     TransformedColumn("sentence_date_arr"),
     TransformedColumn("postcode_arr"),
+    TransformedColumn("crn"),
+    TransformedColumn("prison_number"),
     TransformedColumn(
         CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
         [
@@ -242,27 +246,29 @@ columns_reshaping = [
 
 columns_simple_select = [
     # core info
-    TransformedColumn("match_id"),
-    TransformedColumn("source_system"),
+    TransformedColumn("match_id", column_type="VARCHAR"),
+    TransformedColumn("source_system", column_type="VARCHAR"),
     # names
-    TransformedColumn("name_1_std"),
-    TransformedColumn("name_2_std"),
-    TransformedColumn("name_3_std"),
-    TransformedColumn("last_name_std"),
-    TransformedColumn("first_and_last_name_std"),
-    TransformedColumn("forename_std_arr"),
-    TransformedColumn("last_name_std_arr"),
+    TransformedColumn("name_1_std", column_type="VARCHAR"),
+    TransformedColumn("name_2_std", column_type="VARCHAR"),
+    TransformedColumn("name_3_std", column_type="VARCHAR"),
+    TransformedColumn("last_name_std", column_type="VARCHAR"),
+    TransformedColumn("first_and_last_name_std", column_type="VARCHAR"),
+    TransformedColumn("forename_std_arr", column_type="VARCHAR[]"),
+    TransformedColumn("last_name_std_arr", column_type="VARCHAR[]"),
     # dates
-    TransformedColumn("date_of_birth"),
-    TransformedColumn("date_of_birth_arr"),
-    TransformedColumn("sentence_date_single"),
-    TransformedColumn("sentence_date_arr"),
+    TransformedColumn("date_of_birth", column_type="DATE"),
+    TransformedColumn("date_of_birth_arr", column_type="DATE[]"),
+    TransformedColumn("sentence_date_single", column_type="DATE"),
+    TransformedColumn("sentence_date_arr", column_type="DATE[]"),
     # location
-    TransformedColumn("postcode_arr"),
-    TransformedColumn("postcode_outcode_arr"),
+    TransformedColumn("postcode_arr", column_type="VARCHAR[]"),
+    TransformedColumn("postcode_outcode_arr", column_type="VARCHAR[]"),
     # identifiers
-    TransformedColumn("cro_single"),
-    TransformedColumn("pnc_single"),
+    TransformedColumn("cro_single", column_type="VARCHAR"),
+    TransformedColumn("pnc_single", column_type="VARCHAR"),
+    TransformedColumn("crn", column_type="VARCHAR"),
+    TransformedColumn("prison_number", column_type="VARCHAR"),
     # origin
     # TransformedColumn("birth_place"),
     # TransformedColumn("birth_country"),

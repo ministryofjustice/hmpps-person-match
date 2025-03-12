@@ -1,11 +1,13 @@
 from typing import TypedDict
 
-from sqlalchemy import text
+from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..model.score import score
-from .block import candidate_search
-from .db import duckdb_connected_to_postgres
+from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
+from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
+from hmpps_cpr_splink.cpr_splink.model.score import score
+from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
+from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
 
 
 class ScoredCandidate(TypedDict):
@@ -14,14 +16,24 @@ class ScoredCandidate(TypedDict):
     candidate_match_weight: float
 
 
-async def get_scored_candidates(primary_record_id: str, connection_pg: AsyncSession) -> list[ScoredCandidate]:
+async def get_scored_candidates(
+        primary_record_id: str,
+        pg_db_url: URL,
+        connection_pg: AsyncSession,
+    ) -> list[ScoredCandidate]:
     """
     Takes a primary record, generates candidates, scores
     """
     # TODO: allow a threshold cutoff? (depending on blocking rules)
-    connection_duckdb = duckdb_connected_to_postgres(connection_pg)
+    connection_duckdb = duckdb_connected_to_postgres(pg_db_url)
 
-    candidates_table_name = await candidate_search(primary_record_id, connection_duckdb)
+    candidates_data = await candidate_search(primary_record_id, connection_pg)
+
+    if not candidates_data:
+        return []
+    candidates_table_name = "candidates"
+
+    create_table_from_records(connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA)
 
     res = score(connection_duckdb, primary_record_id, candidates_table_name, return_scores_only=True)
 

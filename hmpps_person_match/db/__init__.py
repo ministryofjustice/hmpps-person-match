@@ -1,27 +1,14 @@
 from collections.abc import AsyncGenerator
 
-from sqlalchemy import URL
+from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
+from hmpps_person_match.db import url
 from hmpps_person_match.db.config import Config
 
-db_query_string_params = {}
-if Config.DB_SSL_ENABLED:
-    db_query_string_params["ssl"] = "verify-full"
-
-# Construct the database URL
-database_url = URL.create(
-    drivername=Config.DB_DRIVER,
-    username=Config.DB_USER,
-    password=Config.DB_PASSWORD,
-    host=Config.DB_HOST,
-    port=Config.DB_PORT,
-    database=Config.DB_NAME,
-    query=db_query_string_params,
-)
-
 engine: AsyncEngine = create_async_engine(
-    database_url,
+    url.asyncpg_database_url,
     echo=Config.DB_LOGGING,
     pool_size=Config.DB_CON_POOL_SIZE,
     max_overflow=Config.DB_CON_POOL_MAX_OVERFLOW,
@@ -30,13 +17,17 @@ engine: AsyncEngine = create_async_engine(
     pool_pre_ping=Config.DB_CON_POOL_PRE_PING,
 )
 
+SQLAlchemyInstrumentor().instrument(
+    engine=engine.sync_engine,
+)
+Psycopg2Instrumentor().instrument()
+
 AsyncSessionLocal = async_sessionmaker(engine)
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession]:
     """
-    Get the database connection
+    Get the database async connection
     """
     async with AsyncSessionLocal() as session, session.begin():
         yield session
-

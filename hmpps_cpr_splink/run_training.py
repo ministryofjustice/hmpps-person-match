@@ -105,7 +105,7 @@ db_api = DuckDBAPI(con_training)
 
 
 train_u_size = 1e9
-date_str = datetime.now().strftime("%Y_%m_%d")
+date_str = datetime.now().astimezone().strftime("%Y_%m_%d")
 train_u_size_str = f"{train_u_size:.0e}".replace("+", "")
 model_name = f"model_{date_str}_{train_u_size_str}.json"
 

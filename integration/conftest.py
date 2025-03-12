@@ -72,35 +72,6 @@ def match_id():
 
 
 @pytest.fixture()
-def create_person_data():
-    """
-    Create a new person data
-    """
-
-    def _create_person_json(uuid_object: uuid.UUID = None) -> dict:
-        if uuid_object is None:
-            uuid_object = uuid.uuid4()
-        return {
-            "matchId": str(uuid_object),
-            "sourceSystem": "DELIUS",
-            "firstName": "Henry",
-            "middleNames": "Ahmed",
-            "lastName": "Junaed",
-            "crn": "1234",
-            "dateOfBirth": "1992-03-02",
-            "firstNameAliases": ["Henry"],
-            "lastNameAliases": ["Junaed"],
-            "dateOfBirthAliases": ["1992-01-01"],
-            "postcodes": ["B10 1EJ"],
-            "cros": ["4444566"],
-            "pncs": ["22224555"],
-            "sentenceDates": ["2001-03-01"],
-        }
-
-    return _create_person_json
-
-
-@pytest.fixture()
 async def db_connection() -> AsyncGenerator[AsyncSession]:
     database_url = URL.create(
         drivername="postgresql+asyncpg",
@@ -122,6 +93,18 @@ async def db_connection() -> AsyncGenerator[AsyncSession]:
         yield session
 
     await engine.dispose()
+
+
+@pytest.fixture()
+def pg_db_url() -> URL:
+    return URL.create(
+        drivername="postgresql",
+        username="root",
+        password="dev",  # noqa: S106
+        host="localhost",
+        port="5432",
+        database="postgres",
+    )
 
 
 @pytest.fixture()

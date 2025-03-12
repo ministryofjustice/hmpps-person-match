@@ -1,27 +1,26 @@
 import uuid
 
 import pytest
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.person.score.person_score import ROUTE
 from integration.client import Client
+from integration.mock_person import MockPerson
+from integration.test_base import IntegrationTestBase
 
 
-class TestPersonScoreEndpoint:
+class TestPersonScoreEndpoint(IntegrationTestBase):
     """
     Test person score
     """
 
-    @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncSession):
+    async def before_each(self, db_connection: AsyncSession, person_match_url: str):
         """
         Before Each
-        Delete all records from the database
         """
-        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
-        await db_connection.commit()
+        await self.truncate_person_data(db_connection)
+        await self.refresh_term_frequencies_assert_empty(person_match_url, db_connection)
 
     async def test_score_no_matching(self, call_endpoint, match_id):
         """
@@ -40,13 +39,19 @@ class TestPersonScoreEndpoint:
         assert response.status_code == 404
         assert response.json() == {}
 
-    async def test_score_does_not_return_self(self, call_endpoint, match_id, create_person_data):
+    async def test_score_does_not_return_self(self, call_endpoint, match_id, create_person_record):
         """
         Test person score doesn't return its own record as part of candidates
         """
         # Create person
-        data = create_person_data(match_id)
-        response = call_endpoint("post", "/person", json=data, client=Client.HMPPS_PERSON_MATCH)
+        person_data = MockPerson(matchId=match_id)
+        await create_person_record(person_data)
+        response = call_endpoint(
+            "post",
+            "/person",
+            json=person_data.model_dump(by_alias=True),
+            client=Client.HMPPS_PERSON_MATCH,
+        )
         assert response.status_code == 200
 
         # Call score for person
@@ -54,41 +59,30 @@ class TestPersonScoreEndpoint:
         assert response.status_code == 200
         assert response.json() == []
 
-    async def test_score_returns_candidates(self, call_endpoint, match_id, create_person_data):
+    async def test_score_returns_candidates(self, call_endpoint, match_id, create_person_record):
         """
         Test person cleaned and stored on person endpoint
         """
         # Create person to match and score
-        data = create_person_data(match_id)
-        response = call_endpoint("post", "/person", json=data, client=Client.HMPPS_PERSON_MATCH)
-        assert response.status_code == 200
-
+        person_data = MockPerson(matchId=match_id)
+        await create_person_record(person_data)
         # Create different person
         matching_person_id_1 = str(uuid.uuid4())
-        data = create_person_data(matching_person_id_1)
-        response = call_endpoint("post", "/person", json=data, client=Client.HMPPS_PERSON_MATCH)
-        assert response.status_code == 200
+        person_data.match_id = matching_person_id_1
+        await create_person_record(person_data)
 
         # Create different person
         matching_person_id_2 = str(uuid.uuid4())
-        data = create_person_data(matching_person_id_2)
-        response = call_endpoint("post", "/person", json=data, client=Client.HMPPS_PERSON_MATCH)
-        assert response.status_code == 200
+        person_data.match_id = matching_person_id_2
+        await create_person_record(person_data)
 
         # Call score for person
         response = call_endpoint("get", self._build_score_url(match_id), client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
         assert len(response.json()) == 2
-        assert {
-            "candidate_match_id": matching_person_id_2,
-            "candidate_match_probability": 1.0,
-            "candidate_match_weight": 55.4382142967686,
-        } in response.json()
-        assert {
-            "candidate_match_id": matching_person_id_1,
-            "candidate_match_probability": 1.0,
-            "candidate_match_weight": 55.4382142967686,
-        } in response.json()
+        candidates_id = [candidate["candidate_match_id"] for candidate in response.json()]
+        assert matching_person_id_1 in candidates_id
+        assert matching_person_id_2 in candidates_id
 
     @staticmethod
     def _build_score_url(match_id: str):

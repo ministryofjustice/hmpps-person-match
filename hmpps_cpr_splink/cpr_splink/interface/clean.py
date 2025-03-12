@@ -1,11 +1,11 @@
 import duckdb
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from hmpps_cpr_splink.cpr_splink.interface.db import insert_duckdb_table_into_postgres_table
+from hmpps_cpr_splink.cpr_splink.model_cleaning import simple_clean_whole_joined_table
+from hmpps_cpr_splink.cpr_splink.schemas import DUCKDB_COLUMNS_WITH_TYPES
+from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
 from hmpps_person_match.models.person.person_batch import PersonBatch
-
-from ..model_cleaning import create_table_from_records, simple_clean_whole_joined_table
-from ..schemas import DUCKDB_COLUMNS_WITH_TYPES
-from .db import insert_duckdb_table_into_postgres_table
 
 
 async def clean_and_insert(records: PersonBatch, connection_pg: AsyncSession) -> None:
