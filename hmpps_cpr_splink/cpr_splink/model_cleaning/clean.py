@@ -112,8 +112,8 @@ columns_basic = [
     #     "VARCHAR[]",
     # ),
     POSTCODE_BASIC,
-    TransformedColumn("crn", column_type="VARCHAR"),
-    TransformedColumn("prison_number", column_type="VARCHAR"),
+    TransformedColumn("crn", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
+    TransformedColumn("prison_number", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn(
         "cros",
         [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_FILTER_PROBLEM_CROS, LIST_SORT],
