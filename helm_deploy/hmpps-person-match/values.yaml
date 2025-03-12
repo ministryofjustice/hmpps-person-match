@@ -5,10 +5,10 @@ generic-service:
 
   resources:
     limits:
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 2
-      memory: 1Gi
+      memory: 2Gi
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-person-match
