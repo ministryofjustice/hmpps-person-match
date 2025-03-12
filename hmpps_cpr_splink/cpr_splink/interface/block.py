@@ -105,13 +105,10 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     # need source dataset to be later alphabetically to get the right condition
-    table_name_potential_candidates = "person_ws"
-    sql = f"SELECT *, 'z_candidates' AS source_dataset FROM {cleaned_table_name}"  # noqa: S608
-    pipeline.enqueue_sql(sql=sql, output_table_name=table_name_potential_candidates)
 
     sql_info = _block_using_rules_sqls(
         input_tablename_l=table_name_primary,
-        input_tablename_r=table_name_potential_candidates,
+        input_tablename_r=cleaned_table_name,
         blocking_rules=_blocking_rules_concrete,
         link_type="link_only",
     )
