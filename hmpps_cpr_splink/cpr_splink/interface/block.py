@@ -43,7 +43,6 @@ def _create_blocked_pairs_sql(
 
     sql = f"""
         select
-        '{blocking_rule.match_key}' as match_key,
         l.id AS primary_id,
         l.match_id AS primary_match_id,
         r.*
@@ -51,12 +50,6 @@ def _create_blocked_pairs_sql(
         inner join {input_tablename_r} as r
         on
         ({blocking_rule.blocking_rule_sql})
-        {
-        blocking_rule.exclude_pairs_generated_by_all_preceding_rules_sql(
-            "dummy",
-            "dummy",
-        )
-    }
         """  # noqa: S608
     return sql
 
@@ -83,7 +76,7 @@ def _block_using_rules_sqls(
         )
         br_sqls.append(sql)
 
-    sql = " UNION ALL ".join(br_sqls)
+    sql = " UNION ".join(br_sqls)
 
     return {"sql": sql, "output_table_name": "personmatch.__splink__blocked_id_pairs"}
 
@@ -105,13 +98,10 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     # need source dataset to be later alphabetically to get the right condition
-    table_name_potential_candidates = "person_ws"
-    sql = f"SELECT *, 'z_candidates' AS source_dataset FROM {cleaned_table_name}"  # noqa: S608
-    pipeline.enqueue_sql(sql=sql, output_table_name=table_name_potential_candidates)
 
     sql_info = _block_using_rules_sqls(
         input_tablename_l=table_name_primary,
-        input_tablename_r=table_name_potential_candidates,
+        input_tablename_r=cleaned_table_name,
         blocking_rules=_blocking_rules_concrete,
         link_type="link_only",
     )
