@@ -7,7 +7,7 @@ from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
 
-class MockPersonCreationEndpoint(IntegrationTestBase):
+class TestPersonCreationEndpoint(IntegrationTestBase):
     """
     Test person creation
     """
@@ -56,6 +56,8 @@ class MockPersonCreationEndpoint(IntegrationTestBase):
         assert row["cro_single"] == person_data.cros[0]
         assert row["pnc_single"] == person_data.pncs[0]
         assert row["source_system"] == person_data.source_system
+        assert row["crn"] == person_data.crn
+        assert row["prison_number"] == person_data.prison_number
 
     async def test_clean_and_update_message(
         self,

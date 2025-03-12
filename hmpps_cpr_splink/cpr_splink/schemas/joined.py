@@ -25,6 +25,8 @@ class JoinedRecord(TypedDict):
     postcodes: list[str] | None
     cros: list[str] | None
     pncs: list[str] | None
+    crn: str | None
+    prison_number: str | None
     sentence_dates: list[date] | None
 
 
