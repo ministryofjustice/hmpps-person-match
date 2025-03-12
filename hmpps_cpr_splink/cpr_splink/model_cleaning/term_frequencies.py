@@ -1,5 +1,5 @@
-from ..data_cleaning.table import Table
-from .clean import TransformedColumn
+from hmpps_cpr_splink.cpr_splink.data_cleaning.table import Table
+from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import TransformedColumn
 
 
 def calculate_array_element_frequencies_table(
