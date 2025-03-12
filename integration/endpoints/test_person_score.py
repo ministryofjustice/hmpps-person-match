@@ -9,7 +9,7 @@ from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
 
-class MockPersonScoreEndpoint(IntegrationTestBase):
+class TestPersonScoreEndpoint(IntegrationTestBase):
     """
     Test person score
     """
@@ -59,14 +59,13 @@ class MockPersonScoreEndpoint(IntegrationTestBase):
         assert response.status_code == 200
         assert response.json() == []
 
-    async def test_score_returns_candidates(self, call_endpoint, match_id, create_person_data, create_person_record):
+    async def test_score_returns_candidates(self, call_endpoint, match_id, create_person_record):
         """
         Test person cleaned and stored on person endpoint
         """
         # Create person to match and score
         person_data = MockPerson(matchId=match_id)
         await create_person_record(person_data)
-
         # Create different person
         matching_person_id_1 = str(uuid.uuid4())
         person_data.match_id = matching_person_id_1

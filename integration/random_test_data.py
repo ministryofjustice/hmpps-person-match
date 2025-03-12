@@ -50,3 +50,7 @@ def random_pnc() -> str:
 def random_source_system() -> str:
     systems = ["NOMIS", "DELIUS", "LIBRA", "COMMON_PLATFORM"]
     return random.choice(systems)  # noqa: S311
+
+
+def random_prison_number() -> str:
+    return random_lower_case_string(1).upper() + random_digit(4) + random_lower_case_string(2).upper()
