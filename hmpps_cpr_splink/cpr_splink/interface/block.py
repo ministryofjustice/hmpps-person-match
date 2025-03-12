@@ -43,7 +43,6 @@ def _create_blocked_pairs_sql(
 
     sql = f"""
         select
-        '{blocking_rule.match_key}' as match_key,
         l.id AS primary_id,
         l.match_id AS primary_match_id,
         r.*
@@ -51,12 +50,6 @@ def _create_blocked_pairs_sql(
         inner join {input_tablename_r} as r
         on
         ({blocking_rule.blocking_rule_sql})
-        {
-        blocking_rule.exclude_pairs_generated_by_all_preceding_rules_sql(
-            "dummy",
-            "dummy",
-        )
-    }
         """  # noqa: S608
     return sql
 
@@ -83,7 +76,7 @@ def _block_using_rules_sqls(
         )
         br_sqls.append(sql)
 
-    sql = " UNION ALL ".join(br_sqls)
+    sql = " UNION ".join(br_sqls)
 
     return {"sql": sql, "output_table_name": "personmatch.__splink__blocked_id_pairs"}
 
