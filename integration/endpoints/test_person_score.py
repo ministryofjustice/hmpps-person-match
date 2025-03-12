@@ -9,7 +9,7 @@ from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
 
-class MockPersonScoreEndpoint(IntegrationTestBase):
+class TestPersonScoreEndpoint(IntegrationTestBase):
     """
     Test person score
     """

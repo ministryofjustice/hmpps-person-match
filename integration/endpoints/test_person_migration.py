@@ -10,7 +10,7 @@ from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
 
-class MockPersonMigrationEndpoint(IntegrationTestBase):
+class TestPersonMigrationEndpoint(IntegrationTestBase):
     """
     Test Person Migration Endpoint.
     """
