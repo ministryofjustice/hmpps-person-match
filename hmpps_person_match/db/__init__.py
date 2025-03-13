@@ -1,6 +1,5 @@
 from collections.abc import AsyncGenerator
 
-from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
@@ -20,7 +19,6 @@ engine: AsyncEngine = create_async_engine(
 SQLAlchemyInstrumentor().instrument(
     engine=engine.sync_engine,
 )
-Psycopg2Instrumentor().instrument()
 
 AsyncSessionLocal = async_sessionmaker(engine)
 
