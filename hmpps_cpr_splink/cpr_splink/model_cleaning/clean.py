@@ -139,42 +139,6 @@ columns_basic = [
         ],  # TODO: Remove?  Problem dob vs. sentence dates?
         alias="sentence_date_arr",
     ),
-    # TransformedColumn(
-    #     "postcode_first", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "postcode_second", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "postcode_last", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "postcode_outcode_first", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "postcode_outcode_last", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "date_of_birth_last", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "forename_first", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "forename_last", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "last_name_first", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "last_name_last", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "sentence_date_first", [], "VARCHAR",
-    # ),
-    # TransformedColumn(
-    #     "sentence_date_last", [], "VARCHAR",
-    # ),
 ]
 
 
