@@ -139,6 +139,42 @@ columns_basic = [
         ],  # TODO: Remove?  Problem dob vs. sentence dates?
         alias="sentence_date_arr",
     ),
+    # TransformedColumn(
+    #     "postcode_first", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "postcode_second", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "postcode_last", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "postcode_outcode_first", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "postcode_outcode_last", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "date_of_birth_last", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "forename_first", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "forename_last", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "last_name_first", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "last_name_last", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "sentence_date_first", [], "VARCHAR",
+    # ),
+    # TransformedColumn(
+    #     "sentence_date_last", [], "VARCHAR",
+    # ),
 ]
 
 
@@ -242,6 +278,54 @@ columns_reshaping = [
         "pnc_arr[1]",
         alias="pnc_single",
     ),
+    TransformedColumn(
+        "postcode_arr[1]",
+        alias="postcode_first",
+    ),
+    TransformedColumn(
+        "postcode_arr[2]",
+        alias="postcode_second",
+    ),
+    TransformedColumn(
+        "postcode_arr[-1]",
+        alias="postcode_last",
+    ),
+    TransformedColumn(
+        "postcode_outcode_arr[1]",
+        alias="postcode_outcode_first",
+    ),
+    TransformedColumn(
+        "postcode_outcode_arr[-1]",
+        alias="postcode_outcode_last",
+    ),
+    TransformedColumn(
+        "date_of_birth_arr[-1]",
+        alias="date_of_birth_last",
+    ),
+    TransformedColumn(
+        "forename_std_arr[1]",
+        alias="forename_first",
+    ),
+    TransformedColumn(
+        "forename_std_arr[-1]",
+        alias="forename_last",
+    ),
+    TransformedColumn(
+        "last_name_std_arr[1]",
+        alias="last_name_first",
+    ),
+    TransformedColumn(
+        "last_name_std_arr[-1]",
+        alias="last_name_last",
+    ),
+    TransformedColumn(
+        "sentence_date_arr[-1]",
+        alias="sentence_date_first",
+    ),
+    TransformedColumn(
+        "sentence_date_arr[-1]",
+        alias="sentence_date_last",
+    ),
 ]
 
 columns_simple_select = [
@@ -255,15 +339,27 @@ columns_simple_select = [
     TransformedColumn("last_name_std", column_type="VARCHAR"),
     TransformedColumn("first_and_last_name_std", column_type="VARCHAR"),
     TransformedColumn("forename_std_arr", column_type="VARCHAR[]"),
+    TransformedColumn("forename_first", column_type="VARCHAR"),
+    TransformedColumn("forename_last", column_type="VARCHAR"),
     TransformedColumn("last_name_std_arr", column_type="VARCHAR[]"),
+    TransformedColumn("last_name_first", column_type="VARCHAR"),
+    TransformedColumn("last_name_last", column_type="VARCHAR"),
     # dates
     TransformedColumn("date_of_birth", column_type="DATE"),
     TransformedColumn("date_of_birth_arr", column_type="DATE[]"),
+    TransformedColumn("date_of_birth_last", column_type="DATE"),
     TransformedColumn("sentence_date_single", column_type="DATE"),
     TransformedColumn("sentence_date_arr", column_type="DATE[]"),
+    TransformedColumn("sentence_date_first", column_type="DATE"),
+    TransformedColumn("sentence_date_last", column_type="DATE"),
     # location
     TransformedColumn("postcode_arr", column_type="VARCHAR[]"),
+    TransformedColumn("postcode_first", column_type="VARCHAR"),
+    TransformedColumn("postcode_second", column_type="VARCHAR"),
+    TransformedColumn("postcode_last", column_type="VARCHAR"),
     TransformedColumn("postcode_outcode_arr", column_type="VARCHAR[]"),
+    TransformedColumn("postcode_outcode_first", column_type="VARCHAR"),
+    TransformedColumn("postcode_outcode_last", column_type="VARCHAR"),
     # identifiers
     TransformedColumn("cro_single", column_type="VARCHAR"),
     TransformedColumn("pnc_single", column_type="VARCHAR"),
