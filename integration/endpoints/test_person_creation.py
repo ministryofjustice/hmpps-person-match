@@ -65,20 +65,20 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert row["postcode_outcode_last"] == person_data.postcodes[0][:3]
         assert row["date_of_birth_last"] == self.to_datetime_object(person_data.date_of_birth_aliases[0])
         assert (
-            row["forename_first"] == person_data.first_name_aliases[0].upper() or \
-            row["forename_first"] == person_data.first_name.upper()
+            row["forename_first"] == person_data.first_name_aliases[0].upper()
+            or row["forename_first"] == person_data.first_name.upper()
         )
         assert (
-            row["forename_last"] == person_data.first_name_aliases[0].upper() or \
-            row["forename_last"] == person_data.first_name.upper()
+            row["forename_last"] == person_data.first_name_aliases[0].upper()
+            or row["forename_last"] == person_data.first_name.upper()
         )
         assert (
-            row["last_name_first"] == person_data.last_name_aliases[0].upper() or \
-            row["last_name_first"] == person_data.last_name.upper()
+            row["last_name_first"] == person_data.last_name_aliases[0].upper()
+            or row["last_name_first"] == person_data.last_name.upper()
         )
         assert (
-            row["last_name_last"] == person_data.last_name_aliases[0].upper() or \
-            row["last_name_last"] == person_data.last_name.upper()
+            row["last_name_last"] == person_data.last_name_aliases[0].upper()
+            or row["last_name_last"] == person_data.last_name.upper()
         )
         assert row["sentence_date_first"] == self.to_datetime_object(person_data.sentence_dates[0])
         assert row["sentence_date_last"] == self.to_datetime_object(person_data.sentence_dates[0])

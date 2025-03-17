@@ -19,11 +19,14 @@ depends_on: str | Sequence[str] | None = None
 ###########################
 ## UPGRADE
 ###########################
+
+
 def drop_expression(column_name: str, col_type: str = "varchar") -> None:
     """
     Remove 'GENERATED AS' functionality
     """
     op.execute(f"ALTER table personmatch.person ALTER COLUMN {column_name} DROP EXPRESSION IF EXISTS;")
+
 
 def upgrade() -> None:
     drop_expression("postcode_first")
@@ -39,9 +42,11 @@ def upgrade() -> None:
     drop_expression("sentence_date_first", "date")
     drop_expression("sentence_date_last", "date")
 
+
 ###########################
 ## DOWNGRADE
 ###########################
+
 
 def create_generated_column_sql(column_name: str, expression: str, col_type: str = "VARCHAR") -> str:
     sql = f"""
@@ -51,8 +56,10 @@ def create_generated_column_sql(column_name: str, expression: str, col_type: str
     """
     return sql
 
+
 def array_last_sql(array_name: str) -> str:
     return f"{array_name}[array_length({array_name}, 1)]"
+
 
 def downgrade() -> None:
     op.drop_column("person", column_name="postcode_first", schema="personmatch")

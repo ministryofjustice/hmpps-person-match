@@ -16,6 +16,7 @@ down_revision: str | None = "b6ec5be725f9"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
+
 def create_generated_column_sql(column_name: str, expression: str, col_type: str = "varchar") -> str:
     sql = f"""
     ALTER table personmatch.person
@@ -24,8 +25,10 @@ def create_generated_column_sql(column_name: str, expression: str, col_type: str
     """
     return sql
 
+
 def array_last_sql(array_name: str) -> str:
     return f"{array_name}[array_length({array_name}, 1)]"
+
 
 def upgrade() -> None:
     op.execute(create_generated_column_sql("postcode_first", "postcode_arr[1]"))
