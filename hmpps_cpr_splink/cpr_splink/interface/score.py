@@ -32,7 +32,17 @@ async def get_scored_candidates(
             return []
         candidates_table_name = "candidates"
 
-        create_table_from_records(connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA)
+        tf_columns = [
+            "name_1_std",
+            "name_2_std",
+            "last_name_std",
+            "first_and_last_name_std",
+            "date_of_birth",
+            "cro_single",
+            "pnc_single",
+        ]
+        tf_schema = [(f"tf_{tf_col}", "FLOAT") for tf_col in tf_columns]
+        create_table_from_records(connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA + tf_schema)
 
         res = score(connection_duckdb, primary_record_id, candidates_table_name, return_scores_only=True)
 

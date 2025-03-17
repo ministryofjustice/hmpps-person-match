@@ -78,7 +78,7 @@ def _block_using_rules_sqls(
 
     sql = " UNION ".join(br_sqls)
 
-    return {"sql": sql, "output_table_name": "personmatch.__splink__blocked_id_pairs"}
+    return {"sql": sql, "output_table_name": "__splink__blocked_id_pairs"}
 
 
 async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[RowMapping]:
@@ -106,6 +106,40 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
         link_type="link_only",
     )
     pipeline.enqueue_sql(**sql_info)
+
+    blocked_tn = pipeline.output_table_name
+
+    # join tf tables
+    tf_columns = [
+        "name_1_std",
+        "name_2_std",
+        "last_name_std",
+        "first_and_last_name_std",
+        "date_of_birth",
+        "cro_single",
+        "pnc_single",
+    ]
+    join_clauses = []
+    select_clauses = ["f.*"]
+    for col in tf_columns:
+        tf_colname = f"tf_{col}"
+        tf_table_name = f"term_frequencies_{col}"
+        alias_table_name = tf_colname
+        tf_lookup_table_name = f"personmatch.{tf_table_name}"
+        join_clauses.append(
+            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
+        )
+        select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
+
+    sql_join = " ".join(join_clauses)
+    sql_select = ", ".join(select_clauses)
+    sql = f"""
+        SELECT {sql_select}
+        FROM {blocked_tn} AS f
+        {sql_join}
+    """  # noqa: S608
+
+    pipeline.enqueue_sql(sql=sql, output_table_name="blocked_pairs_with_tfs")
 
     sql = pipeline.generate_cte_pipeline_sql()
     res = await connection_pg.execute(text(sql), {"mid": primary_record_id})
