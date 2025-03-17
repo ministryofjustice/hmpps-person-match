@@ -21,6 +21,7 @@ def upgrade() -> None:
     op.create_index(index_name="idx_pnc_single", table_name="person", schema="personmatch", columns=["pnc_single"])
     op.create_index(index_name="idx_cro_single", table_name="person", schema="personmatch", columns=["cro_single"])
 
+
 def downgrade() -> None:
     op.drop_index(index_name="idx_pnc_single", table_name="person", schema="personmatch")
     op.drop_index(index_name="idx_cro_single", table_name="person", schema="personmatch")

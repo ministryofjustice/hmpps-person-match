@@ -17,10 +17,10 @@ class ScoredCandidate(TypedDict):
 
 
 async def get_scored_candidates(
-        primary_record_id: str,
-        pg_db_url: URL,
-        connection_pg: AsyncSession,
-    ) -> list[ScoredCandidate]:
+    primary_record_id: str,
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
+) -> list[ScoredCandidate]:
     """
     Takes a primary record, generates candidates, scores
     """
