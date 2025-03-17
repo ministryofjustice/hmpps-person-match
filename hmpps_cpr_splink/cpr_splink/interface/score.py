@@ -41,8 +41,11 @@ async def get_scored_candidates(
             "cro_single",
             "pnc_single",
         ]
-        tf_schema = [(f"tf_{tf_col}", "FLOAT") for tf_col in tf_columns] + [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_arr", "FLOAT[]")]
-        create_table_from_records(connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA + tf_schema)
+        postcode_tf_schema = [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_arr", "FLOAT[]")]
+        tf_schema = [(f"tf_{tf_col}", "FLOAT") for tf_col in tf_columns] + postcode_tf_schema
+        create_table_from_records(
+            connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA + tf_schema,
+        )
         candidates_with_postcode_tf = "candidates_with_postcode_tfs"
         sql = f"""
             CREATE TABLE {candidates_with_postcode_tf} AS
