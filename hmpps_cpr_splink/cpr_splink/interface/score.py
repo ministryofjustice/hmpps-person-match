@@ -1,3 +1,5 @@
+import time
+from logging import Logger
 from typing import TypedDict
 
 from sqlalchemy import URL, text
@@ -20,14 +22,22 @@ async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
     connection_pg: AsyncSession,
+    logger: Logger,
 ) -> list[ScoredCandidate]:
     """
     Takes a primary record, generates candidates, scores
     """
     # TODO: allow a threshold cutoff? (depending on blocking rules)
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
+        pg_start_time = time.perf_counter()
         candidates_data = await candidate_search(primary_record_id, connection_pg)
+        pg_end_time = time.perf_counter()
+        logger.info("CandidateSearchPostgresQuery", extra=dict(
+            matchId=primary_record_id,
+            query_time=pg_end_time - pg_start_time,
+        ))
 
+        dk_db_start_time = time.perf_counter()
         if not candidates_data:
             return []
         candidates_table_name = "candidates"
@@ -35,6 +45,12 @@ async def get_scored_candidates(
         create_table_from_records(connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA)
 
         res = score(connection_duckdb, primary_record_id, candidates_table_name, return_scores_only=True)
+
+        dk_db_end_time = time.perf_counter()
+        logger.info("ScoreDuckDbQuery", extra=dict(
+            matchId=primary_record_id,
+            query_time=dk_db_end_time - dk_db_start_time,
+        ))
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
         return [

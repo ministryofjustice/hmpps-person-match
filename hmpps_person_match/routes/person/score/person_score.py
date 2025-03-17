@@ -1,3 +1,4 @@
+import time
 from logging import Logger
 from typing import Annotated
 
@@ -35,13 +36,21 @@ async def get_person_score(
     Person score GET request handler
     Returns a list of scored candidates against the provided record match identifier
     """
+    start_time = time.perf_counter()
     if await score.match_record_exists(match_id, session):
+        start_time = time.perf_counter()
         scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(
             match_id,
             url.pg_database_url,
             session,
+            logger,
         )
-        logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(matchId=match_id, candidate_size=len(scored_candidates)))
+        candidate_search_time = time.perf_counter() - start_time
+        logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(
+            matchId=match_id,
+            candidate_size=len(scored_candidates),
+            total_time=candidate_search_time,
+        ))
         return scored_candidates
     else:
         return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)
