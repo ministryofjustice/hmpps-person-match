@@ -108,6 +108,46 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     pipeline.enqueue_sql(**sql_info)
 
     blocked_tn = pipeline.output_table_name
+    pipeline.enqueue_sql(
+        sql = f"""
+        SELECT
+            match_id,
+            UNNEST(postcode_arr) AS postcode
+        FROM
+            {pipeline.output_table_name}
+        """,  # noqa: S608
+        output_table_name="exploded_postcodes",
+    )
+    pipeline.enqueue_sql(
+        sql = """
+        SELECT
+            exploded_postcodes.match_id AS match_id,
+            exploded_postcodes.postcode AS value,
+            COALESCE(pc_tf.tf_postcode, 1) AS rel_freq
+        FROM
+            exploded_postcodes
+        LEFT JOIN personmatch.term_frequencies_postcode AS pc_tf
+        ON exploded_postcodes.postcode = pc_tf.postcode
+        """,  # noqa: S608
+        output_table_name="exploded_postcodes_with_term_frequencies",
+    )
+    pipeline.enqueue_sql(
+        sql = """
+        SELECT
+            match_id,
+            array_agg(
+                value ORDER BY value
+            ) AS postcode_arr_repacked,
+            array_agg(
+                rel_freq ORDER BY value
+            ) AS postcode_freq_arr
+        FROM
+            exploded_postcodes_with_term_frequencies
+        GROUP BY
+            match_id
+        """,  # noqa: S608
+        output_table_name="postcodes_repacked_with_term_frequencies",
+    )
 
     # join tf tables
     tf_columns = [
@@ -130,6 +170,13 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
             f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
         )
         select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
+
+    # postcodes
+    join_clauses.append(
+        f"LEFT JOIN {pipeline.output_table_name} AS pc_name ON f.match_id = pc_name.match_id",
+    )
+    select_clauses.append("pc_name.postcode_arr_repacked")
+    select_clauses.append("pc_name.postcode_freq_arr")
 
     sql_join = " ".join(join_clauses)
     sql_select = ", ".join(select_clauses)

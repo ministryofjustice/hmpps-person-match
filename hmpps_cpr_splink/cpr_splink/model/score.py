@@ -95,7 +95,7 @@ def score(
     # Compare records
     db_api = DuckDBAPI(connection_duckdb)
 
-    full_table_name = populate_with_tfs(connection_duckdb, full_candidates_tn)
+    full_table_name = full_candidates_tn
 
     source_name = "primary_record"
     candidates_name = "candidate_record"
