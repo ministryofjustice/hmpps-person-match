@@ -49,7 +49,7 @@ async def get_scored_candidates(
         candidates_with_postcode_tf = "candidates_with_postcode_tfs"
         sql = f"""
             CREATE TABLE {candidates_with_postcode_tf} AS
-            SELECT *, 
+            SELECT *,
             list_transform(
                 list_zip(postcode_arr_repacked, postcode_freq_arr),
                 pc -> struct_pack(value := pc[1], rel_freq := pc[2])
