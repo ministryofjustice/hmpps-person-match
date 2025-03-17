@@ -68,7 +68,7 @@ con.execute(
     SELECT
         {col_string}
     FROM temp_data;
-"""  # NOQA: S608
+""",  # NOQA: S608
 )
 t3 = time.time()
 

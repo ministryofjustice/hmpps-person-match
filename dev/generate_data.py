@@ -8,8 +8,6 @@ fake = Faker(["en_GB"])
 
 Faker.seed(4321)
 
-datetime(1990, 1, 1)
-
 
 def make_person(id_val):
     cleaned_person = {
@@ -19,8 +17,8 @@ def make_person(id_val):
         "name_2_std": fake.first_name().upper(),
         "name_3_std": fake.first_name().upper(),
         "last_name_std": fake.last_name().upper(),
-        "sentence_date_single": fake.date_between(datetime(1990, 1, 1), datetime(2025, 3, 1)),
-        "date_of_birth": fake.date_between(datetime(1940, 1, 1), datetime(2007, 3, 1)),
+        "sentence_date_single": fake.date_between(datetime(1990, 1, 1), datetime(2025, 3, 1)),  # noqa: DTZ001
+        "date_of_birth": fake.date_between(datetime(1940, 1, 1), datetime(2007, 3, 1)),  # noqa: DTZ001
         "postcode_arr": [fake.postcode(), fake.postcode(), fake.postcode()],
         "cro_single": str(fake.random_int(min=1, max=1_000_000)),  # fake.passport_number(),
         "pnc_single": str(fake.random_int(min=1, max=650_000)),
