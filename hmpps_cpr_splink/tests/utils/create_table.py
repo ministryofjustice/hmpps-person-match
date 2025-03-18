@@ -34,16 +34,6 @@ def load_frame(
 
     # TODO: restore ??
     # get the names of the columns
-    # table_columns = rows[0].keys()
-    # column_metadata = OrderedDict(
-    #     {
-    #         column_name: {
-    #             "type": column_type,
-    #             "required": (column_name in table_columns),
-    #         }
-    #         for column_name, column_type in table_schema.items()
-    #     }
-    # )
     column_metadata = OrderedDict(
         {
             column_name: {

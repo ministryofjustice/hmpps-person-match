@@ -18,7 +18,6 @@ con = duckdb.connect()
 
 
 path = "secret_data/cleaned/predictions"
-# path = "secret_data/cleaned/fake_predictions"
 
 sql = f"""
 create or replace table df_predictions as

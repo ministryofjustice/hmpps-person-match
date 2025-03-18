@@ -87,7 +87,7 @@ counts = cumulative_comparisons_to_be_scored_from_blocking_rules_data(
 )
 total_comparisons = counts["row_count"].sum()
 print(f"Total comparisons: {total_comparisons:,}")
-# linker.misc.save_model_to_json(model_name, overwrite=True)
+
 df_predict = linker.inference.predict(threshold_match_weight=20.0)
 c = df_predict.as_duckdbpyrelation().count("*").fetchone()[0]
 print(f"Number of predictions: {c:,}")
