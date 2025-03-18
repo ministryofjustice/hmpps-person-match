@@ -36,7 +36,7 @@ ENV PYTHONUNBUFFERED=1 \
 FROM base AS build
 COPY --from=ghcr.io/astral-sh/uv:0.6.6 /uv /bin/uv
 
-RUN apt-get install --no-install-recommends -y \
+RUN apt-get update && apt-get install --no-install-recommends -y \
         # deps for installing uv
         curl \
         # deps for building python deps
