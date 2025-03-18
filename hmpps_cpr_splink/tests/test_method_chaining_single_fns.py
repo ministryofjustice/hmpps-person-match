@@ -1,9 +1,8 @@
-from hmpps_cpr_splink.cpr_splink.data_cleaning.transformation import (
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations import (
     LIST_FILTER_PROBLEM_CROS,
     LIST_TRANSFORM_REMOVE_ALL_SPACES,
-    list_append_from_scalar_column,
-    list_filter_out_strings_of_length_lt,
 )
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.filter.filter_string_length import FilterByStringLength
 from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 sql_list_transform_remove_spaces = f"""
@@ -34,9 +33,9 @@ FROM input_table
 def test_list_filter_problem_cros(): ...
 
 
-sql_list_append_from_scalar = f"""
+sql_list_append_from_scalar = """
 SELECT
-    input_column.{list_append_from_scalar_column("scalar_column")} AS output_column
+    input_column.LIST_APPEND("scalar_column") AS output_column
 FROM input_table
 """
 
@@ -51,7 +50,7 @@ def test_list_append_from_scalar(): ...
 
 sql_list_filter_out_strings_of_length_lt = f"""
 SELECT
-    input_column.{list_filter_out_strings_of_length_lt(2)} AS output_column
+    input_column.{FilterByStringLength(length=2)} AS output_column
 FROM input_table
 """
 
