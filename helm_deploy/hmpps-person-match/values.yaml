@@ -1,13 +1,11 @@
 generic-service:
   nameOverride: hmpps-person-match
 
-  replicaCount: 2
-
   autoscaling:
     enabled: true
-    minReplicas: 1
+    minReplicas: 2
     maxReplicas: 4
-    targetCPUUtilizationPercentage: 80
+    targetCPUUtilizationPercentage: 75
 
   resources:
     limits:
