@@ -59,6 +59,24 @@ def upgrade() -> None:
     create_index("idx_person__last_name_std", ["last_name_std"])
 
 def downgrade() -> None:
+    op.drop_index("idx_person__date_of_birth", schema="personmatch")
+    op.drop_index("idx_person__postcode_first", schema="personmatch")
+    op.drop_index("idx_person__postcode_outcode_first", schema="personmatch")
+    op.drop_index("idx_person__substring_name_1", schema="personmatch")
+    op.drop_index("idx_person__postcode_outcode_last", schema="personmatch")
+    op.drop_index("idx_person__last_name", schema="personmatch")
+    op.drop_index("idx_person__forename_first", schema="personmatch")
+    op.drop_index("idx_person__last_name_first", schema="personmatch")
+    op.drop_index("idx_person__postcode_last", schema="personmatch")
+    op.drop_index("idx_person__postcode_second", schema="personmatch")
+    op.drop_index("idx_person__sentence_date_first", schema="personmatch")
+    op.drop_index("idx_person__last_name_last", schema="personmatch")
+    op.drop_index("idx_person__first_and_last_name_std", schema="personmatch")
+    op.drop_index("idx_person__name_1_std", schema="personmatch")
+    op.drop_index("idx_person__name_2_std", schema="personmatch")
+    op.drop_index("idx_person__sentence_date_last", schema="personmatch")
+    op.drop_index("idx_person__last_name_std", schema="personmatch")
+
     create_index(
         index_name="idx_date_of_birth__postcode_first",
         columns=["date_of_birth", "postcode_first"],
