@@ -1,13 +1,18 @@
+from collections.abc import Generator
+from contextlib import contextmanager
+
 import duckdb
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-def duckdb_connected_to_postgres(pg_db_url: URL) -> duckdb.DuckDBPyConnection:
+@contextmanager
+def duckdb_connected_to_postgres(pg_db_url: URL) -> Generator[duckdb.DuckDBPyConnection]:
     pg_conn_string_sync = pg_db_url.render_as_string(hide_password=False)
-    connection_duckdb = duckdb.connect(":memory:")
-    connection_duckdb.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES);")
-    return connection_duckdb
+    with duckdb.connect(":memory:") as connection_duckdb:
+        connection_duckdb.sql(f"ATTACH '{pg_conn_string_sync}' AS pg_db (TYPE POSTGRES);")
+        yield connection_duckdb
+        connection_duckdb.close()
 
 
 async def insert_duckdb_table_into_postgres_table(

@@ -53,3 +53,15 @@ data:
             { "value": "AB12CD", "rel_freq": 0.0001 },
             { "value": "XY19YZ", "rel_freq": 0.00005 },
           ]
+        postcode_first: "AB12CD"
+        postcode_second: "XY19YZ"
+        postcode_last: "XY19YZ"
+        postcode_outcode_first: "AB1"
+        postcode_outcode_last: "XY1"
+        date_of_birth_last: "1955-03-28"
+        forename_first: "JOHN"
+        forename_last: "JONNY"
+        last_name_first: "OCONNOR"
+        last_name_last: "SMYTH"
+        sentence_date_first: "2001-12-17"
+        sentence_date_last: "2001-12-17"

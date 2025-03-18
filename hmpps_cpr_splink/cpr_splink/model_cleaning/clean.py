@@ -54,25 +54,14 @@ POSTCODE_BASIC = TransformedColumn(
 columns_basic = [
     TransformedColumn("match_id", column_type="VARCHAR"),
     TransformedColumn("source_system", [UPPER], "VARCHAR"),
-    # TransformedColumn("title", [UPPER], "VARCHAR"),
     TransformedColumn("first_name", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("middle_names", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("last_name", [UPPER, NAME_CLEANING], "VARCHAR"),
-    # TransformedColumn("defendant_id", [UPPER], "VARCHAR"),
-    # TransformedColumn("master_defendant_id", [UPPER], "VARCHAR"),
     TransformedColumn(
         "date_of_birth",
         [SCALAR_REMOVE_PROBLEM_DOBS],
         column_type="DATE",
     ),
-    # TransformedColumn("birth_place", [UPPER], "VARCHAR"),
-    # TransformedColumn("birth_country", [UPPER], "VARCHAR"),
-    # TransformedColumn("nationality", [UPPER], "VARCHAR"),
-    # TransformedColumn("sex", [UPPER], "VARCHAR"),
-    # TransformedColumn("religion", [UPPER], "VARCHAR"),
-    # TransformedColumn("sexual_orientation", [UPPER], "VARCHAR"),
-    # TransformedColumn("ethnicity", [UPPER], "VARCHAR"),
-    # TransformedColumn("version", column_type="INTEGER"),
     TransformedColumn(
         "first_name_aliases",
         [LIST_TRANSFORM_UPPER, LIST_TRANSFORM_NAME_CLEANING],
@@ -91,26 +80,6 @@ columns_basic = [
         column_type="DATE[]",
         alias="date_of_birth_arr",
     ),
-    # TransformedColumn(
-    #     "mobile_arr",
-    #     [
-    #         LIST_TRANSFORM_UPPER,
-    #         LIST_TRANSFORM_REMOVE_ALL_NEWLINES,
-    #         LIST_TRANSFORM_REMOVE_ALL_NON_DIGITS,
-    #         list_transform_substr_last_n_chars(10),
-    #     ],
-    #     "VARCHAR[]",
-    # ),
-    # TransformedColumn(
-    #     "email_arr",
-    #     [
-    #         LIST_TRANSFORM_UPPER,
-    #         LIST_TRANSFORM_TRIM_AND_NULLIF_IF_EMPTY,
-    #         LIST_FILTER_REGEXP_MATCHES_EMAIL,
-    #         ZERO_LENGTH_ARRAY_TO_NULL,
-    #     ],
-    #     "VARCHAR[]",
-    # ),
     POSTCODE_BASIC,
     TransformedColumn("crn", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn("prison_number", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
@@ -120,10 +89,6 @@ columns_basic = [
         "VARCHAR[]",
         alias="cro_arr",
     ),
-    # TransformedColumn("driver_license_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"), # noqa: E501
-    # TransformedColumn(
-    #     "national_insurance_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"
-    # ),
     TransformedColumn(
         "pncs",
         [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT],
@@ -242,6 +207,54 @@ columns_reshaping = [
         "pnc_arr[1]",
         alias="pnc_single",
     ),
+    TransformedColumn(
+        "postcode_arr[1]",
+        alias="postcode_first",
+    ),
+    TransformedColumn(
+        "postcode_arr[2]",
+        alias="postcode_second",
+    ),
+    TransformedColumn(
+        "postcode_arr[-1]",
+        alias="postcode_last",
+    ),
+    TransformedColumn(
+        "postcode_outcode_arr[1]",
+        alias="postcode_outcode_first",
+    ),
+    TransformedColumn(
+        "postcode_outcode_arr[-1]",
+        alias="postcode_outcode_last",
+    ),
+    TransformedColumn(
+        "date_of_birth_arr[-1]",
+        alias="date_of_birth_last",
+    ),
+    TransformedColumn(
+        "forename_std_arr[1]",
+        alias="forename_first",
+    ),
+    TransformedColumn(
+        "forename_std_arr[-1]",
+        alias="forename_last",
+    ),
+    TransformedColumn(
+        "last_name_std_arr[1]",
+        alias="last_name_first",
+    ),
+    TransformedColumn(
+        "last_name_std_arr[-1]",
+        alias="last_name_last",
+    ),
+    TransformedColumn(
+        "sentence_date_arr[-1]",
+        alias="sentence_date_first",
+    ),
+    TransformedColumn(
+        "sentence_date_arr[-1]",
+        alias="sentence_date_last",
+    ),
 ]
 
 columns_simple_select = [
@@ -255,22 +268,30 @@ columns_simple_select = [
     TransformedColumn("last_name_std", column_type="VARCHAR"),
     TransformedColumn("first_and_last_name_std", column_type="VARCHAR"),
     TransformedColumn("forename_std_arr", column_type="VARCHAR[]"),
+    TransformedColumn("forename_first", column_type="VARCHAR"),
+    TransformedColumn("forename_last", column_type="VARCHAR"),
     TransformedColumn("last_name_std_arr", column_type="VARCHAR[]"),
+    TransformedColumn("last_name_first", column_type="VARCHAR"),
+    TransformedColumn("last_name_last", column_type="VARCHAR"),
     # dates
     TransformedColumn("date_of_birth", column_type="DATE"),
     TransformedColumn("date_of_birth_arr", column_type="DATE[]"),
+    TransformedColumn("date_of_birth_last", column_type="DATE"),
     TransformedColumn("sentence_date_single", column_type="DATE"),
     TransformedColumn("sentence_date_arr", column_type="DATE[]"),
+    TransformedColumn("sentence_date_first", column_type="DATE"),
+    TransformedColumn("sentence_date_last", column_type="DATE"),
     # location
     TransformedColumn("postcode_arr", column_type="VARCHAR[]"),
+    TransformedColumn("postcode_first", column_type="VARCHAR"),
+    TransformedColumn("postcode_second", column_type="VARCHAR"),
+    TransformedColumn("postcode_last", column_type="VARCHAR"),
     TransformedColumn("postcode_outcode_arr", column_type="VARCHAR[]"),
+    TransformedColumn("postcode_outcode_first", column_type="VARCHAR"),
+    TransformedColumn("postcode_outcode_last", column_type="VARCHAR"),
     # identifiers
     TransformedColumn("cro_single", column_type="VARCHAR"),
     TransformedColumn("pnc_single", column_type="VARCHAR"),
     TransformedColumn("crn", column_type="VARCHAR"),
     TransformedColumn("prison_number", column_type="VARCHAR"),
-    # origin
-    # TransformedColumn("birth_place"),
-    # TransformedColumn("birth_country"),
-    # TransformedColumn("nationality"),
 ]
