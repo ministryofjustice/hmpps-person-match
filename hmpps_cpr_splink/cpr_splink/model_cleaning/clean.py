@@ -54,25 +54,14 @@ POSTCODE_BASIC = TransformedColumn(
 columns_basic = [
     TransformedColumn("match_id", column_type="VARCHAR"),
     TransformedColumn("source_system", [UPPER], "VARCHAR"),
-    # TransformedColumn("title", [UPPER], "VARCHAR"),
     TransformedColumn("first_name", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("middle_names", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("last_name", [UPPER, NAME_CLEANING], "VARCHAR"),
-    # TransformedColumn("defendant_id", [UPPER], "VARCHAR"),
-    # TransformedColumn("master_defendant_id", [UPPER], "VARCHAR"),
     TransformedColumn(
         "date_of_birth",
         [SCALAR_REMOVE_PROBLEM_DOBS],
         column_type="DATE",
     ),
-    # TransformedColumn("birth_place", [UPPER], "VARCHAR"),
-    # TransformedColumn("birth_country", [UPPER], "VARCHAR"),
-    # TransformedColumn("nationality", [UPPER], "VARCHAR"),
-    # TransformedColumn("sex", [UPPER], "VARCHAR"),
-    # TransformedColumn("religion", [UPPER], "VARCHAR"),
-    # TransformedColumn("sexual_orientation", [UPPER], "VARCHAR"),
-    # TransformedColumn("ethnicity", [UPPER], "VARCHAR"),
-    # TransformedColumn("version", column_type="INTEGER"),
     TransformedColumn(
         "first_name_aliases",
         [LIST_TRANSFORM_UPPER, LIST_TRANSFORM_NAME_CLEANING],
@@ -91,26 +80,6 @@ columns_basic = [
         column_type="DATE[]",
         alias="date_of_birth_arr",
     ),
-    # TransformedColumn(
-    #     "mobile_arr",
-    #     [
-    #         LIST_TRANSFORM_UPPER,
-    #         LIST_TRANSFORM_REMOVE_ALL_NEWLINES,
-    #         LIST_TRANSFORM_REMOVE_ALL_NON_DIGITS,
-    #         list_transform_substr_last_n_chars(10),
-    #     ],
-    #     "VARCHAR[]",
-    # ),
-    # TransformedColumn(
-    #     "email_arr",
-    #     [
-    #         LIST_TRANSFORM_UPPER,
-    #         LIST_TRANSFORM_TRIM_AND_NULLIF_IF_EMPTY,
-    #         LIST_FILTER_REGEXP_MATCHES_EMAIL,
-    #         ZERO_LENGTH_ARRAY_TO_NULL,
-    #     ],
-    #     "VARCHAR[]",
-    # ),
     POSTCODE_BASIC,
     TransformedColumn("crn", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn("prison_number", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
@@ -120,10 +89,6 @@ columns_basic = [
         "VARCHAR[]",
         alias="cro_arr",
     ),
-    # TransformedColumn("driver_license_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"), # noqa: E501
-    # TransformedColumn(
-    #     "national_insurance_number_arr", [LIST_TRANSFORM_UPPER], "VARCHAR[]"
-    # ),
     TransformedColumn(
         "pncs",
         [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_SORT],
@@ -329,8 +294,4 @@ columns_simple_select = [
     TransformedColumn("pnc_single", column_type="VARCHAR"),
     TransformedColumn("crn", column_type="VARCHAR"),
     TransformedColumn("prison_number", column_type="VARCHAR"),
-    # origin
-    # TransformedColumn("birth_place"),
-    # TransformedColumn("birth_country"),
-    # TransformedColumn("nationality"),
 ]

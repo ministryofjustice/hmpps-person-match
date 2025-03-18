@@ -37,7 +37,6 @@ class TransformedColumn:
     def expression(self):
         expr = f"{self.column_name}"
         for transformation in self.sql_transformations:
-            # print(transformation)
             expr = transformation.full_expression(expr)
         return expr
 
@@ -83,7 +82,6 @@ def list_filter_remove_specific_str_values(*values: str):
     values_str = ", ".join(f"'{value}'" for value in values)
     return ChainableTransformation(
         f"LIST_FILTER(x -> x not in ({values_str}))",
-        # f"Remove values from array: {values_str}",
     )
 
 
