@@ -31,7 +31,6 @@ if not joined_data_exists:
             reference_in="read_parquet('secret_data/raw/reference/*.parquet')",
             sentence_info_in="read_parquet('secret_data/raw/sentence_info/*.parquet')",
         ),
-        # contact_in="read_parquet('secret_data/raw/contact/*.parquet')",
     )
 
     df = con_join.sql(sql)
@@ -109,10 +108,8 @@ date_str = datetime.now().astimezone().strftime("%Y_%m_%d")
 train_u_size_str = f"{train_u_size:.0e}".replace("+", "")
 model_name = f"model_{date_str}_{train_u_size_str}.json"
 
-# linker = ModelTraining(train_u_size=train_u_size).train("df_training", db_api)
 linker = Linker("df_training", "model_2025_01_13_5e08.json", db_api)
 
-# linker.misc.save_model_to_json(model_name, overwrite=True)
 df_predict = linker.inference.predict(threshold_match_weight=20.0)
 
 con_training.execute(

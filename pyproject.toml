@@ -101,6 +101,8 @@ select = [
     "T10",
     # flake8-tidy-imports
     "TID",
+    # ERA
+    "ERA",
 ]
 ignore = [
     # magic-value-comparison
