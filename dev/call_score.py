@@ -50,7 +50,10 @@ n_calls = len(match_ids)
 t1 = time.time()
 for match_id in match_ids:
     r = requests.request(
-        "get", "http://localhost:5000" + ROUTE_SCORE.format(match_id=match_id), headers=headers, timeout=60,
+        "get",
+        "http://localhost:5000" + ROUTE_SCORE.format(match_id=match_id),
+        headers=headers,
+        timeout=60,
     )
     print(r.status_code)
     print(r.json())
