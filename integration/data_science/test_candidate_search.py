@@ -219,6 +219,129 @@ class TestCandidateSearch:
 
         assert self.extract_match_ids(candidate_data) == set([searching_person, expected_found_person])
 
+    async def test_candidate_search_match_on_date_of_birth_postcode_last(
+        self,
+        create_person_record,
+        db_connection,
+    ):
+        """
+        Test candidate search returns person on match on:
+        date_of_birth + postcode_last
+        """
+        searching_person = str(uuid.uuid4())
+        expected_found_person = str(uuid.uuid4())
+
+        date_of_birth = random_test_data.random_date()
+        postcode = random_test_data.random_postcode()
+
+        await create_person_record(
+            MockPerson(matchId=searching_person,
+                       dateOfBirth=date_of_birth,
+                       postcodes=[random_test_data.random_postcode(), postcode]))
+        await create_person_record(
+            MockPerson(matchId=expected_found_person,
+                       dateOfBirth=date_of_birth,
+                       postcodes=[random_test_data.random_postcode(), postcode]))
+
+        candidate_data = await candidate_search(searching_person, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set([searching_person, expected_found_person])
+
+    async def test_candidate_search_match_on_date_of_birth_postcode_match_second(
+        self,
+        create_person_record,
+        db_connection,
+    ):
+        """
+        Test candidate search returns person on match on:
+        date_of_birth + postcode_first = postcode_second
+        """
+        searching_person = str(uuid.uuid4())
+        expected_found_person = str(uuid.uuid4())
+
+        date_of_birth = random_test_data.random_date()
+        postcode = random_test_data.random_postcode()
+
+        await create_person_record(
+            MockPerson(matchId=searching_person,
+                       dateOfBirth=date_of_birth,
+                       postcodes=[postcode, random_test_data.random_postcode()]))
+        await create_person_record(
+            MockPerson(matchId=expected_found_person,
+                       dateOfBirth=date_of_birth,
+                       postcodes=[random_test_data.random_postcode(),postcode]))
+
+        candidate_data = await candidate_search(searching_person, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set([searching_person, expected_found_person])
+
+    async def test_candidate_search_match_on_sentence_dates_first_date_of_birth(
+        self,
+        create_person_record,
+        db_connection,
+    ):
+        """
+        Test candidate search returns person on match on:
+        sentence_date_first + date_of_birth
+        """
+        searching_person = str(uuid.uuid4())
+        expected_found_person = str(uuid.uuid4())
+
+        date_of_birth = random_test_data.random_date()
+        sentence_date = random_test_data.random_date()
+
+        await create_person_record(
+            MockPerson(matchId=searching_person,
+                       dateOfBirth=date_of_birth,
+                       sentenceDates=[sentence_date]))
+        await create_person_record(
+            MockPerson(matchId=expected_found_person,
+                       dateOfBirth=date_of_birth,
+                       sentenceDates=[sentence_date]))
+
+        candidate_data = await candidate_search(searching_person, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set([searching_person, expected_found_person])
+
+    async def test_candidate_search_match_on_forename_last_lastname_last_date_of_birth(
+        self,
+        create_person_record,
+        db_connection,
+    ):
+        """
+        Test candidate search returns person on match on:
+        forename_last + last_name_last + date_of_birth
+        """
+        searching_person = str(uuid.uuid4())
+        expected_found_person = str(uuid.uuid4())
+
+        forename = random_test_data.random_name()
+        last_name = random_test_data.random_name()
+        date_of_birth = random_test_data.random_date()
+
+        # Need to resolve sorting of list as candidates are missed.
+        # e.g. first name: Brian, alias first name: Alfred
+        # gets cleaned in list of Alfred, Brian. Causing first / last fields to be wrong.
+        # Search / clean needs to irrespective of order.
+        await create_person_record(
+            MockPerson(matchId=searching_person,
+                       dateOfBirth=date_of_birth,
+                       firstName=random_test_data.random_name(),
+                       firstNameAliases=[forename],
+                       lastNameAliases=[],
+                       lastName=last_name))
+        await create_person_record(
+            MockPerson(matchId=expected_found_person,
+                       dateOfBirth=date_of_birth,
+                       firstName=random_test_data.random_name(),
+                       firstNameAliases=[forename],
+                       lastNameAliases=[],
+                       lastName=last_name))
+
+        candidate_data = await candidate_search(searching_person, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set([searching_person, expected_found_person])
+
     @staticmethod
     def extract_match_ids(candidate_data: list[dict]) -> set[str]:
         """
