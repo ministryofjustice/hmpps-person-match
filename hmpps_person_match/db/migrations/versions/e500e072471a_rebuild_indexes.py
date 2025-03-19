@@ -63,6 +63,7 @@ def downgrade() -> None:
     op.drop_index("idx_person__postcode_first", schema="personmatch")
     op.drop_index("idx_person__postcode_outcode_first", schema="personmatch")
     op.drop_index("idx_person__substring_name_1", schema="personmatch")
+    op.drop_index("idx_person__date_of_birth_last", schema="personmatch")
     op.drop_index("idx_person__postcode_outcode_last", schema="personmatch")
     op.drop_index("idx_person__last_name", schema="personmatch")
     op.drop_index("idx_person__forename_first", schema="personmatch")
