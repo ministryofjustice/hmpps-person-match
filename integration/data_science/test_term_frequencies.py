@@ -2,6 +2,7 @@ import uuid
 
 import pytest
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.models.person.person import Person
 
@@ -32,12 +33,13 @@ class TestTFs:
 
     @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection):
+    async def clean_db(db_connection: AsyncSession):
         """
         Before Each
         Delete all records from the database
         """
         await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
+        await db_connection.commit()
 
     async def test_term_frequencies_simple(self, create_person_record, db_connection):
         """
