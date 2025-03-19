@@ -32,9 +32,33 @@ async def get_scored_candidates(
             return []
         candidates_table_name = "candidates"
 
-        create_table_from_records(connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA)
+        tf_columns = [
+            "name_1_std",
+            "name_2_std",
+            "last_name_std",
+            "first_and_last_name_std",
+            "date_of_birth",
+            "cro_single",
+            "pnc_single",
+        ]
+        postcode_tf_schema = [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_arr", "FLOAT[]")]
+        tf_schema = [(f"tf_{tf_col}", "FLOAT") for tf_col in tf_columns] + postcode_tf_schema
+        create_table_from_records(
+            connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA + tf_schema,
+        )
+        candidates_with_postcode_tf = "candidates_with_postcode_tfs"
+        sql = f"""
+            CREATE TABLE {candidates_with_postcode_tf} AS
+            SELECT *,
+            list_transform(
+                list_zip(postcode_arr_repacked, postcode_freq_arr),
+                pc -> struct_pack(value := pc[1], rel_freq := pc[2])
+            ) AS postcode_arr_with_freq
+            FROM {candidates_table_name}
+        """  # noqa: S608
+        connection_duckdb.execute(sql)
+        res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=True)
 
-        res = score(connection_duckdb, primary_record_id, candidates_table_name, return_scores_only=True)
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
         return [
