@@ -250,7 +250,7 @@ columns_reshaping = [
         alias="last_name_last",
     ),
     TransformedColumn(
-        "sentence_date_arr[-1]",
+        "sentence_date_arr[1]",
         alias="sentence_date_first",
     ),
     TransformedColumn(
