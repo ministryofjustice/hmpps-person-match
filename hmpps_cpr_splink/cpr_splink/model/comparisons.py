@@ -130,10 +130,8 @@ ids_comparison = cl.CustomComparison(
     comparison_levels=[
         {
             "sql_condition": """
-            (cro_single_l is null or cro_single_r is null)
-            AND (pnc_single_l is null or pnc_single_r is null)
-            AND (pnc_single_l is null or cro_single_r is null)
-            AND (cro_single_l is null or pnc_single_r is null)
+            (cro_single_l is null and pnc_single_l is null)
+            OR (cro_single_r is null AND pnc_single_r is null)
             """,
             "is_null_level": True,
         },
