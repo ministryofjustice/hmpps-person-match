@@ -40,7 +40,6 @@ data:
         last_name_std_arr: ["OCONNOR", "SMYTH"]
         date_of_birth: "1955-05-05"
         date_of_birth_arr: ["1955-03-28", "1955-05-05"]
-        sentence_date_single: "2001-12-17"
         sentence_date_arr: ["2000-11-11", "2001-12-17"]
         postcode_arr: ["AB12CD", "XY19YZ"]
         postcode_outcode_arr: ["AB1", "XY1"]

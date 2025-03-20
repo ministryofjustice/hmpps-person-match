@@ -42,7 +42,6 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert set(row["last_name_std_arr"]) == set(
             [person_data.last_name.upper(), person_data.last_name_aliases[0].upper()],
         )
-        assert row["sentence_date_single"] == self.to_datetime_object(person_data.sentence_dates[0])
         assert row["sentence_date_arr"] == [self.to_datetime_object(person_data.sentence_dates[0])]
         assert row["date_of_birth"] == self.to_datetime_object(person_data.date_of_birth)
         assert set(row["date_of_birth_arr"]) == set(

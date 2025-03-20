@@ -202,10 +202,6 @@ columns_reshaping = [
         alias="postcode_outcode_arr",
     ),
     TransformedColumn(
-        "sentence_date_arr[-1]",
-        alias="sentence_date_single",
-    ),
-    TransformedColumn(
         "cro_arr[1]",
         alias="cro_single",
     ),
@@ -283,7 +279,6 @@ columns_simple_select = [
     TransformedColumn("date_of_birth", column_type="DATE"),
     TransformedColumn("date_of_birth_arr", column_type="DATE[]"),
     TransformedColumn("date_of_birth_last", column_type="DATE"),
-    TransformedColumn("sentence_date_single", column_type="DATE"),
     TransformedColumn("sentence_date_arr", column_type="DATE[]"),
     TransformedColumn("sentence_date_first", column_type="DATE"),
     TransformedColumn("sentence_date_last", column_type="DATE"),
