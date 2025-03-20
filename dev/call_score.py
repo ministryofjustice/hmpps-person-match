@@ -30,16 +30,17 @@ else:
     raise Exception(f"Failed to generate access token: {response.status_code}")
 
 match_ids = [
-    "656925f3-b874-45a3-a015-c7165a5e0261",
-    "b17f8bd8-e99a-4de9-b0d5-ec89f9280cf7",
-    "fc5d90f6-7ec7-44fd-9fe4-49bac65fa181",
-    "03d0781f-b126-407c-add2-875722d46eb2",
-    "ec75ed51-49f2-4220-b90b-f84aef3e9b18",
-    "e3d6d76e-3a42-4268-afcd-0f361590d892",
-    "599d0f1a-a794-4cc8-9981-cb6dc95ea26a",
-    "3f314456-0081-4185-a552-24bfedcf4681",
-    "183419f8-4675-448a-a2d7-2604973dfc2d",
-    "5fd9f78d-2da5-4e93-a27e-301ddb10ef69",
+    "15728f46-ef22-4f18-81f0-9fad76502087",
+    "00d48107-5e16-4596-9931-d272c4c9ce67",
+    "26b2106f-b152-4251-aeee-19f1766807bf",
+    "1fe55afa-67da-4772-9748-c4ec0d183f2b",
+    "93529fbc-0a8c-43c9-bb83-05d01e350035",
+    "9f4293af-22c6-41bd-9d2c-e46a5e656796",
+    "259ae982-78e6-47c8-a3a7-c397b1e22a91",
+    "20182803-ae68-4d66-ac7d-49853dffe597",
+    "9a7e79fc-23e8-4ed4-8320-74b2f5617d52",
+    "c6afbb1c-7c4e-465d-93f0-49992c7ee1f4",
+    "5ffda560-6e22-425f-a8b0-873438c03c53",
 ]
 headers = {"Authorization": f"Bearer {token}"}
 r = requests.request("get", "http://localhost:5000/health", headers=headers, timeout=30)
