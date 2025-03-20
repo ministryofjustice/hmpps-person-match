@@ -1,4 +1,4 @@
-from hmpps_cpr_splink.cpr_splink.data_cleaning.transformation import (
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations import (
     CONCAT_WS_FIRST_LAST_NAME_STD,
     CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
     LIST_APPEND_DOB_FROM_SCALAR_COLUMN,
@@ -21,15 +21,21 @@ from hmpps_cpr_splink.cpr_splink.data_cleaning.transformation import (
     TRIM_AND_NULLIF_IF_EMPTY,
     UPPER,
     ZERO_LENGTH_ARRAY_TO_NULL,
-    TransformedColumn,
-    array_concat_distinct,
-    case_when_array_length_greater_equal_or_null,
-    list_filter_out_strings_of_length_lt,
 )
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.cases.array_length_equal_or_null import (
+    ArrayLengthGreaterEqualOrNull,
+)
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.filter.filter_string_length import FilterByStringLength
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformed_column import TransformedColumn
 
 
 def get_column_from_array(columns: list[TransformedColumn], column_name: str) -> TransformedColumn:
     return next([col for col in columns if col.column_name == column_name])
+
+
+def array_concat_distinct(*args):
+    array_str = ", ".join(args)
+    return f"array_distinct(array_concat({array_str}))"
 
 
 # first pass at cleaning
@@ -125,23 +131,23 @@ columns_reshaping = [
         CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
         [
             REGEX_SPLIT_TO_ARRAY,
-            list_filter_out_strings_of_length_lt(2),
+            FilterByStringLength(length=2),
         ],
         alias="names_split",
     ),
     TransformedColumn(
         "names_split",
-        [case_when_array_length_greater_equal_or_null("", 2, "names_split[1]")],
+        [ArrayLengthGreaterEqualOrNull(threshold=2, then_clause="names_split[1]")],
         alias="name_1_std",
     ),
     TransformedColumn(
         "names_split",
-        [case_when_array_length_greater_equal_or_null("", 3, "names_split[2]")],
+        [ArrayLengthGreaterEqualOrNull(threshold=3, then_clause="names_split[2]")],
         alias="name_2_std",
     ),
     TransformedColumn(
         "names_split",
-        [case_when_array_length_greater_equal_or_null("", 4, "names_split[3]")],
+        [ArrayLengthGreaterEqualOrNull(threshold=4, then_clause="names_split[3]")],
         alias="name_3_std",
     ),
     TransformedColumn(
@@ -196,10 +202,6 @@ columns_reshaping = [
         alias="postcode_outcode_arr",
     ),
     TransformedColumn(
-        "sentence_date_arr[-1]",
-        alias="sentence_date_single",
-    ),
-    TransformedColumn(
         "cro_arr[1]",
         alias="cro_single",
     ),
@@ -248,7 +250,7 @@ columns_reshaping = [
         alias="last_name_last",
     ),
     TransformedColumn(
-        "sentence_date_arr[-1]",
+        "sentence_date_arr[1]",
         alias="sentence_date_first",
     ),
     TransformedColumn(
@@ -277,7 +279,6 @@ columns_simple_select = [
     TransformedColumn("date_of_birth", column_type="DATE"),
     TransformedColumn("date_of_birth_arr", column_type="DATE[]"),
     TransformedColumn("date_of_birth_last", column_type="DATE"),
-    TransformedColumn("sentence_date_single", column_type="DATE"),
     TransformedColumn("sentence_date_arr", column_type="DATE[]"),
     TransformedColumn("sentence_date_first", column_type="DATE"),
     TransformedColumn("sentence_date_last", column_type="DATE"),

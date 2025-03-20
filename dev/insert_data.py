@@ -47,7 +47,6 @@ columns = {
     "first_and_last_name_std",
     "forename_std_arr",
     "last_name_std_arr",
-    "sentence_date_single",
     "sentence_date_arr",
     "date_of_birth",
     "date_of_birth_arr",
@@ -58,6 +57,19 @@ columns = {
     "crn",
     "prison_number",
     "source_system",
+    # derived columns
+    "sentence_date_first",
+    "sentence_date_last",
+    "postcode_first",
+    "postcode_second",
+    "postcode_last",
+    "postcode_outcode_first",
+    "postcode_outcode_last",
+    "date_of_birth_last",
+    "forename_first",
+    "forename_last",
+    "last_name_first",
+    "last_name_last",
 }
 col_string = ", ".join(columns)
 

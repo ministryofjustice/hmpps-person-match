@@ -27,26 +27,8 @@ def _mock_lookup_many_tf(value_col_pairs):
 
 
 def populate_with_tfs(con: duckdb.DuckDBPyConnection, records_table: str) -> str:
-    tf_columns = [
-        "name_1_std",
-        "name_2_std",
-        "last_name_std",
-        "first_and_last_name_std",
-        "date_of_birth",
-        "cro_single",
-        "pnc_single",
-    ]
     join_clauses = []
     select_clauses = ["f.*"]
-    for col in tf_columns:
-        tf_colname = f"tf_{col}"
-        tf_table_name = f"term_frequencies_{col}"
-        alias_table_name = tf_colname
-        tf_lookup_table_name = f"pg_db.personmatch.{tf_table_name}"
-        join_clauses.append(
-            f"LEFT JOIN {tf_lookup_table_name} AS {alias_table_name} ON f.{col} = {alias_table_name}.{col}",
-        )
-        select_clauses.append(f"{alias_table_name}.{tf_colname} AS {tf_colname}")
 
     # postcodes are in arrays so logic is more complex to join
     with_clause = f"""
@@ -113,7 +95,7 @@ def score(
     # Compare records
     db_api = DuckDBAPI(connection_duckdb)
 
-    full_table_name = populate_with_tfs(connection_duckdb, full_candidates_tn)
+    full_table_name = full_candidates_tn
 
     source_name = "primary_record"
     candidates_name = "candidate_record"

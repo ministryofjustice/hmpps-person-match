@@ -5,31 +5,37 @@ schema:
     sentence_dates: "DATE[]"
   cleaned_2:
     sentence_date_arr: "DATE[]"
-    sentence_date_single: "DATE"
+    sentence_date_first: "DATE"
+    sentence_date_last: "DATE"
 
 data:
   - input_table:
       - sentence_dates: ["2020-01-15", "2022-05-10", "2021-03-20"]
     cleaned_2:
       - sentence_date_arr: ["2020-01-15", "2021-03-20", "2022-05-10"]
-        sentence_date_single: "2022-05-10"
+        sentence_date_first: "2020-01-15"
+        sentence_date_last: "2022-05-10"
   - input_table:
       - sentence_dates: ["2019-12-25"]
     cleaned_2:
       - sentence_date_arr: ["2019-12-25"]
-        sentence_date_single: "2019-12-25"
+        sentence_date_first: "2019-12-25"
+        sentence_date_last: "2019-12-25"
   - input_table:
       - sentence_dates: ["2018-06-30", "2018-06-30", "2019-01-15"]
     cleaned_2:
       - sentence_date_arr: ["2018-06-30", "2019-01-15"]
-        sentence_date_single: "2019-01-15"
+        sentence_date_first: "2018-06-30"
+        sentence_date_last: "2019-01-15"
   - input_table:
       - sentence_dates: ["1900-01-01", "1970-01-01", "1960-11-12"]
     cleaned_2:
       - sentence_date_arr: ["1960-11-12"]
-        sentence_date_single: "1960-11-12"
+        sentence_date_first: "1960-11-12"
+        sentence_date_last: "1960-11-12"
   - input_table:
       - sentence_dates: NULL
     cleaned_2:
       - sentence_date_arr: NULL
-        sentence_date_single: NULL
+        sentence_date_first: NULL
+        sentence_date_last: NULL

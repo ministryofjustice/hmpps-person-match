@@ -20,13 +20,13 @@ uv run python dev/insert_data.py
 
 This will take a while - subsequent insertions can be made faster by generating a db dump with [`pg_dump`](https://www.postgresql.org/docs/current/app-pgdump.html).
 
-In-container `postgres-hpm` run:
+Dump database in-container `postgres-hpm`:
 
-```
-pg_dump -f db_dump.sql
+```sh
+docker exec -t postgres-hpm pg_dump -d postgres -U root -f /db_dump.sql
 ```
 
-Then from outside container, copy the dump to a local file, and load into database:
+Then copy the dump from container to a local file, and load into database:
 
 ```sh
 docker cp postgres-hpm:/db_dump.sql ./dev/data/dump.sql
