@@ -137,7 +137,6 @@ jobs:
     with:
       environment: 'dev'
       app_version: '${{ needs.build.outputs.app_version }}'
-      helm_timeout: "60m"
 
   deploy_preprod:
     name: Deploy to pre-production environment
@@ -149,7 +148,6 @@ jobs:
     with:
       environment: 'preprod'
       app_version: '${{ needs.build.outputs.app_version }}'
-      helm_timeout: "60m"
 
   deploy_prod:
     name: Deploy to production environment
@@ -162,4 +160,3 @@ jobs:
       environment: 'prod'
       app_version: '${{ needs.build.outputs.app_version }}'
       slack_notification: true
-      helm_timeout: "60m"
