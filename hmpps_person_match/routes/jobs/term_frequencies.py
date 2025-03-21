@@ -28,7 +28,7 @@ term_frequency_tables = [
 ]
 
 
-@router.post(ROUTE, description=DESCRIPTION)
+@router.post(ROUTE, description=DESCRIPTION, include_in_schema=False)
 async def post_term_frequency(
     background_tasks: BackgroundTasks,
     logger: Annotated[Logger, Depends(get_logger)],

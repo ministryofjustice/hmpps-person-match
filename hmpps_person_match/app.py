@@ -33,6 +33,7 @@ class PersonMatchApplication:
     app: FastAPI = FastAPI(
         title=OpenAPIConfig.APPLICATION_TITLE,
         summary=OpenAPIConfig.APPLICATION_SUMMARY,
+        description=OpenAPIConfig.APPLICATION_DESCRIPTION,
         version=OpenAPIConfig.APPLICATION_VERSION,
         docs_url=OpenAPIConfig.DOCS_URL,
         responses=OpenAPIConfig.DEFAULT_RESPONSES,
