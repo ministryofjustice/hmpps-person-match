@@ -46,7 +46,7 @@ class TestPersonScore:
 
         # we have all candidates + original record
         assert len(res) == n_candidates
-        assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20])
+        assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20]) == n_candidates
 
     @pytest.mark.parametrize(
         "person_data",
@@ -89,7 +89,7 @@ class TestPersonScore:
 
         # we have all candidates + original record
         assert len(res) == n_candidates
-        assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20])
+        assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20]) == n_candidates
 
     async def test_get_scored_candidates_none_in_db(
         self,
