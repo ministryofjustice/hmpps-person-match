@@ -1,11 +1,17 @@
+from dataclasses import dataclass
 from typing import TypedDict
 
 import duckdb
+from splink import DuckDBAPI
+from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
+from splink.internals.pipeline import CTEPipeline
+from splink.internals.realtime import compare_records
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
+from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search, enqueue_join_term_frequency_tables
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
+from hmpps_cpr_splink.cpr_splink.model.model import MATCH_WEIGHT_THRESHOLD, MODEL_PATH
 from hmpps_cpr_splink.cpr_splink.model.score import score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
@@ -86,3 +92,66 @@ async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> boo
         {"match_id": match_id},
     )
     return result.scalar()
+
+
+@dataclass
+class Clusters:
+    clusters_groupings: list[list[str]]
+
+    @property
+    def is_single_cluster(self):
+        return len(self.clusters_groupings) == 1
+
+async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession) -> Clusters:
+    with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
+        records_l_tablename = "records_l"
+        records_r_tablename = "records_r"
+
+        tf_enhanced_table_names = []
+        for tablename in (records_l_tablename, records_r_tablename):
+            pipeline = CTEPipeline()
+            pipeline.enqueue_sql(
+                sql="SELECT * FROM personmatch.person WHERE match_id = ANY(:match_ids)",
+                output_table_name="people_to_check_cluster_status",
+            )
+            enqueue_join_term_frequency_tables(
+                pipeline,
+                table_to_join_to=pipeline.output_table_name,
+                output_table_name=tablename,
+            )
+
+            sql = pipeline.generate_cte_pipeline_sql()
+            res = await connection_pg.execute(text(sql), {"match_ids": match_ids})
+
+            tf_enhanced_table_name = insert_data_into_duckdb(connection_duckdb, res.mappings().fetchall(), tablename)
+            tf_enhanced_table_names.append(tf_enhanced_table_name)
+
+        db_api = DuckDBAPI(connection_duckdb)
+        # TODO: this gives all-vs-all - what's the best thing to do?
+        # set up a linker and just use predict, or make tweaks to Splink?
+        scores = compare_records(  # noqa: F841
+            *tf_enhanced_table_names,
+            settings=MODEL_PATH,
+            db_api=db_api,
+            use_sql_from_cache=True,
+        )
+
+        df_clusters = cluster_pairwise_predictions_at_threshold(
+            nodes=records_l_tablename,
+            edges=scores.physical_name,
+            db_api=db_api,
+            node_id_column_name="match_id",
+            threshold_match_weight=MATCH_WEIGHT_THRESHOLD,
+        )
+        clusters = connection_duckdb.execute(
+            f"SELECT match_id, cluster_id FROM {df_clusters.physical_name} "  # noqa: S608
+            "GROUP BY match_id, cluster_id",
+        ).fetchall()
+        cluster_assignments = {}
+        for match_id, cluster_id in clusters:
+            if cluster_id not in cluster_assignments:
+                cluster_assignments[cluster_id] = []
+            else:
+                cluster_assignments[cluster_id].append(match_id)
+
+    return Clusters(list(cluster_assignments.values()))
