@@ -1,5 +1,6 @@
 from typing import TypedDict
 
+import duckdb
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,6 +15,35 @@ class ScoredCandidate(TypedDict):
     candidate_match_id: str
     candidate_match_probability: float
     candidate_match_weight: float
+
+def insert_data_into_duckdb(connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str):
+
+    tf_columns = [
+        "name_1_std",
+        "name_2_std",
+        "last_name_std",
+        "first_and_last_name_std",
+        "date_of_birth",
+        "cro_single",
+        "pnc_single",
+    ]
+    postcode_tf_schema = [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_arr", "FLOAT[]")]
+    tf_schema = [(f"tf_{tf_col}", "FLOAT") for tf_col in tf_columns] + postcode_tf_schema
+    create_table_from_records(
+        connection_duckdb, data_to_insert, base_table_name, CLEANED_TABLE_SCHEMA + tf_schema,
+    )
+    table_with_postcode_tf_tablename = f"{base_table_name}_with_postcode_tfs"
+    sql = f"""
+        CREATE TABLE {table_with_postcode_tf_tablename} AS
+        SELECT *,
+        list_transform(
+            list_zip(postcode_arr_repacked, postcode_freq_arr),
+            pc -> struct_pack(value := pc[1], rel_freq := pc[2])
+        ) AS postcode_arr_with_freq
+        FROM {base_table_name}
+    """  # noqa: S608
+    connection_duckdb.execute(sql)
+    return table_with_postcode_tf_tablename
 
 
 async def get_scored_candidates(
@@ -30,33 +60,9 @@ async def get_scored_candidates(
 
         if not candidates_data:
             return []
-        candidates_table_name = "candidates"
 
-        tf_columns = [
-            "name_1_std",
-            "name_2_std",
-            "last_name_std",
-            "first_and_last_name_std",
-            "date_of_birth",
-            "cro_single",
-            "pnc_single",
-        ]
-        postcode_tf_schema = [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_arr", "FLOAT[]")]
-        tf_schema = [(f"tf_{tf_col}", "FLOAT") for tf_col in tf_columns] + postcode_tf_schema
-        create_table_from_records(
-            connection_duckdb, candidates_data, candidates_table_name, CLEANED_TABLE_SCHEMA + tf_schema,
-        )
-        candidates_with_postcode_tf = "candidates_with_postcode_tfs"
-        sql = f"""
-            CREATE TABLE {candidates_with_postcode_tf} AS
-            SELECT *,
-            list_transform(
-                list_zip(postcode_arr_repacked, postcode_freq_arr),
-                pc -> struct_pack(value := pc[1], rel_freq := pc[2])
-            ) AS postcode_arr_with_freq
-            FROM {candidates_table_name}
-        """  # noqa: S608
-        connection_duckdb.execute(sql)
+        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
+
         res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=True)
 
 
