@@ -19,6 +19,7 @@ from fastapi.responses import JSONResponse
 from hmpps_person_match.domain.constants.error_messages import ErrorMessages
 from hmpps_person_match.domain.constants.openapi.config import OpenAPIConfig
 from hmpps_person_match.models.error_response import ErrorResponse
+from hmpps_person_match.routes.cluster import router as cluster_router
 from hmpps_person_match.routes.health import router as health_router
 from hmpps_person_match.routes.info import router as info_router
 from hmpps_person_match.routes.jobs import router as jobs_router
@@ -67,6 +68,7 @@ class PersonMatchApplication:
         self.app.include_router(person_router)
         self.app.include_router(health_router)
         self.app.include_router(info_router)
+        self.app.include_router(cluster_router)
 
     def initialise_logger(self):
         """
