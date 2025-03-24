@@ -94,6 +94,23 @@ async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> boo
     return result.scalar()
 
 
+async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSession) -> list[str]:
+    """
+    Given a list of match_ids, return a list of any that do not have records in the person table
+    """
+    result = await connection_pg.execute(
+        text(
+            "SELECT match_id_list.id AS missing_match_id FROM "
+            "unnest(CAST(:match_ids AS VARCHAR[])) AS match_id_list(id) "
+            "LEFT JOIN personmatch.person p "
+            "ON match_id_list.id = p.match_id "
+            "WHERE p.match_id IS NULL;",
+        ),
+        {"match_ids": tuple(match_ids)},
+    )
+    return [r[0] for r in result.fetchall()]
+
+
 @dataclass
 class Clusters:
     clusters_groupings: list[list[str]]
