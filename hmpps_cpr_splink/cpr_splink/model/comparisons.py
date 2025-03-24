@@ -33,9 +33,9 @@ name_2_comparison = cl.JaroWinklerAtThresholds("name_2_std", score_threshold_or_
 intersection_sql = 'array_length(list_intersect("sentence_date_arr_l", "sentence_date_arr_r")) >= 1'
 few_elements_sql = 'len("sentence_date_arr_l") * len("sentence_date_arr_r") <= 9'
 date_diff_sql = """
-    abs(datediff('day', sentence_date_arr_l[1], sentence_date_arr_r[1])) <= 14
+    abs(datediff('day', sentence_date_first_l, sentence_date_first_r)) <= 14
     or
-    abs(datediff('day', sentence_date_arr_l[-1], sentence_date_arr_r[-1])) <= 14
+    abs(datediff('day', sentence_date_last_l, sentence_date_last_r])) <= 14
 """
 
 sentence_date_comparison = cl.CustomComparison(

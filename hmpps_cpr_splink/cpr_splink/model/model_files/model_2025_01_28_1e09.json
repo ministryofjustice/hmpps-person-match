@@ -262,7 +262,7 @@
                     "u_probability": 0.0009453261897310465
                 },
                 {
-                    "sql_condition": "\n    abs(datediff('day', sentence_date_arr_l[1], sentence_date_arr_r[1])) <= 14\n    or\n    abs(datediff('day', sentence_date_arr_l[-1], sentence_date_arr_r[-1])) <= 14\n",
+                    "sql_condition": "\n    abs(datediff('day', sentence_date_first_l, sentence_date_first_r)) <= 14\n    or\n    abs(datediff('day', sentence_date_last_l, sentence_date_last_r)) <= 14\n",
                     "label_for_charts": "First or last elements within 2 weeks",
                     "m_probability": 0.021501087653409467,
                     "u_probability": 0.005844206681354541
