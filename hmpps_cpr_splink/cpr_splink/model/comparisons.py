@@ -130,12 +130,11 @@ ids_comparison = cl.CustomComparison(
     comparison_levels=[
         {
             "sql_condition": """
-            (cro_single_l is null or cro_single_r is null)
-            AND (pnc_single_l is null or pnc_single_r is null)
-            AND (pnc_single_l is null or cro_single_r is null)
-            AND (cro_single_l is null or pnc_single_r is null)
+            (cro_single_l is null and pnc_single_l is null)
+            OR (cro_single_r is null AND pnc_single_r is null)
             """,
             "is_null_level": True,
+            "label_for_charts": "one record lacks cro and pnc",
         },
         cll.ExactMatchLevel("pnc_single").configure(tf_adjustment_column="pnc_single"),
         cll.ExactMatchLevel("cro_single").configure(tf_adjustment_column="cro_single"),

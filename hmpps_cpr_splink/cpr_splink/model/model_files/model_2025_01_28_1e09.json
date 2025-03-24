@@ -201,8 +201,8 @@
             "output_column_name": "id_comparison",
             "comparison_levels": [
                 {
-                    "sql_condition": "\n            (cro_single_l is null or cro_single_r is null)\n            AND (pnc_single_l is null or pnc_single_r is null)\n            AND (pnc_single_l is null or cro_single_r is null)\n            AND (cro_single_l is null or pnc_single_r is null)\n            ",
-                    "label_for_charts": "\n            (cro_single_l is null or cro_single_r is null)\n            AND (pnc_single_l is null or pnc_single_r is null)\n            AND (pnc_single_l is null or cro_single_r is null)\n            AND (cro_single_l is null or pnc_single_r is null)\n            ",
+                    "sql_condition": "\n            (cro_single_l is null and pnc_single_l is null)\n            OR (cro_single_r is null AND pnc_single_r is null)\n            ",
+                    "label_for_charts": "one record lacks cro and pnc",
                     "is_null_level": true
                 },
                 {

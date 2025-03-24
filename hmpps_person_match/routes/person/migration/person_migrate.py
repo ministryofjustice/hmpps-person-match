@@ -26,7 +26,7 @@ router = APIRouter(
 )
 
 
-@router.post(ROUTE, description=DESCRIPTION)
+@router.post(ROUTE, description=DESCRIPTION, include_in_schema=False)
 async def post_person_migration(
     person_records: PersonBatch,
     session: Annotated[AsyncSession, Depends(get_db_session)],
