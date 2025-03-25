@@ -168,7 +168,6 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
         for match_id, cluster_id in clusters:
             if cluster_id not in cluster_assignments:
                 cluster_assignments[cluster_id] = []
-            else:
-                cluster_assignments[cluster_id].append(match_id)
+            cluster_assignments[cluster_id].append(match_id)
 
     return Clusters(list(cluster_assignments.values()))
