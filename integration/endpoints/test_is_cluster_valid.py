@@ -71,7 +71,10 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         assert "isClusterValid" in response_data
         assert "clusters" in response_data
         assert response_data["isClusterValid"]
+        # we should only have one cluster
         assert len(response_data["clusters"]) == 1
+        # that cluster should be of size 3
+        assert len(response_data["clusters"][0]) == 3
 
     @staticmethod
     def _build_is_cluster_valid_url(match_ids: list[str]):
