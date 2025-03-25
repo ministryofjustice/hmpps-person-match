@@ -76,6 +76,74 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # that cluster should be of size 3
         assert len(response_data["clusters"][0]) == 3
 
+    async def test_is_cluster_valid_identifies_multiple_clusters(self, call_endpoint, match_id, create_person_record):
+        """
+        Test is cluster valid correctly identifies when we have multiple clusters
+        """
+        # Create initial person
+        person_data = MockPerson(
+            matchId=match_id,
+            firstName="First",
+            middleNames="",
+            lastName="Last",
+            firstNameAliases=[],
+            lastNameAliases=[],
+            dateOfBirth="1980-01-01",
+            dateOfBirthAliases=[],
+            postcodes=["AA1 1AA"],
+            cros=["00/123456A"],
+            pncs=["00/1234567A"],
+            sentenceDates=["2005-04-04"],
+        )
+        await create_person_record(person_data)
+        # Create a duplicate person
+        matching_person_id_1 = str(uuid.uuid4())
+        person_data.match_id = matching_person_id_1
+        await create_person_record(person_data)
+
+        # Create an entirely different person
+        person_data = MockPerson(
+            matchId=match_id,
+            firstName="Different",
+            middleNames="",
+            lastName="Name",
+            firstNameAliases=[],
+            lastNameAliases=[],
+            dateOfBirth="1990-07-23",
+            dateOfBirthAliases=[],
+            postcodes=["BB2 2BB"],
+            cros=["11/654321Z"],
+            pncs=["11/7654321Z"],
+            sentenceDates=["2000-03-02"],
+        )
+        matching_person_id_2 = str(uuid.uuid4())
+        person_data = MockPerson(
+            matchId=matching_person_id_2,
+        )
+        await create_person_record(person_data)
+
+        # Call is-cluster-valid endpoint - should all be in same cluster
+        response = call_endpoint(
+            "get",
+            self._build_is_cluster_valid_url(
+                [match_id, matching_person_id_1, matching_person_id_2],
+            ),
+            client=Client.HMPPS_PERSON_MATCH,
+        )
+        assert response.status_code == 200
+        response_data = response.json()
+        assert len(response_data) == 2
+        assert "isClusterValid" in response_data
+        assert "clusters" in response_data
+        # in this case the cluster is NOT valid
+        assert not response_data["isClusterValid"]
+        # we should have two clusters
+        assert len(response_data["clusters"]) == 2
+        # these should be of size 1 & 2
+        cluster_len_1 = len(response_data["clusters"][0])
+        cluster_len_2 = len(response_data["clusters"][1])
+        assert {cluster_len_1, cluster_len_2} == {1, 2}
+
     @staticmethod
     def _build_is_cluster_valid_url(match_ids: list[str]):
         query_string = "&".join(map(lambda m_id: f"match_ids={m_id}", match_ids))
