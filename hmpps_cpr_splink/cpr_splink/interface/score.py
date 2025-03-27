@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import TypedDict
 
 import duckdb
@@ -10,6 +9,7 @@ from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search, enqueue_join_term_frequency_tables
+from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_cpr_splink.cpr_splink.model.model import MATCH_WEIGHT_THRESHOLD, MODEL_PATH
 from hmpps_cpr_splink.cpr_splink.model.score import score
@@ -110,14 +110,6 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
     )
     return [r[0] for r in result.fetchall()]
 
-
-@dataclass
-class Clusters:
-    clusters_groupings: list[list[str]]
-
-    @property
-    def is_single_cluster(self):
-        return len(self.clusters_groupings) == 1
 
 async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
