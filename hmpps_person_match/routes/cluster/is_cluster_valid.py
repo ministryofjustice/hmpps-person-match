@@ -18,6 +18,12 @@ DESCRIPTION = f"""
     **Authorization Required:**
     - Bearer Token must be provided.
     - Role: **'{Roles.ROLE_PERSON_MATCH}'**
+
+    Given a list of matchIds, this will return whether they logically belong to the same cluster
+    according purely to their model scores.
+    It will not identify any further matchIds that may also belong to the same cluster.
+
+    Additionally, the groupings of the matchIds into clusters is returned.
 """
 
 router = APIRouter(
