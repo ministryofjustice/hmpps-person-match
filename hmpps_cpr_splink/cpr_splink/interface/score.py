@@ -136,8 +136,6 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             tf_enhanced_table_names.append(tf_enhanced_table_name)
 
         db_api = DuckDBAPI(connection_duckdb)
-        # TODO: this gives all-vs-all - what's the best thing to do?
-        # set up a linker and just use predict, or make tweaks to Splink?
         scores = compare_records(  # noqa: F841
             *tf_enhanced_table_names,
             settings=MODEL_PATH,

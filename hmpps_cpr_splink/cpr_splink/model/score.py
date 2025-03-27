@@ -99,7 +99,6 @@ def score(
 
     # Splink has a limitation around caching SQL - this choice of names is a workaround until we update
     # need this so that we can keep cached SQL
-    # TODO: return to primary_record and candidate_record
     source_name = "records_l_with_postcode_tfs"
     candidates_name = "records_r_with_postcode_tfs"
     # cannot create views with prepared statements: https://github.com/duckdb/duckdb/issues/13069

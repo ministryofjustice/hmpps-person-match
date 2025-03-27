@@ -182,7 +182,6 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     """
     pipeline = CTEPipeline()
 
-    # TODO: table name from?
     cleaned_table_name = "personmatch.person"
 
     table_name_primary = "primary_record"
