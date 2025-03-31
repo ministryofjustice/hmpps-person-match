@@ -1,27 +1,25 @@
 import uuid
 
 import pytest
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
 from integration.mock_person import MockPerson
+from integration.test_base import IntegrationTestBase
 
 
-class TestCandidateSearch:
+class TestCandidateSearch(IntegrationTestBase):
     """
     Test functioning of candidate search
     """
 
-    @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncSession):
+    async def clean_db(self, db_connection: AsyncSession):
         """
         Before Each
         Delete all records from the database
         """
-        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
-        await db_connection.commit()
+        await self.truncate_person_data(db_connection)
 
     async def test_candidate_search(self, match_id, create_person_record, db_connection):
         """
