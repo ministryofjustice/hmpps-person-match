@@ -46,9 +46,11 @@ class TestIsClusterValidRoute:
         match_id_2 = str(uuid.uuid4())
         mock_ids_check.return_value = [match_id_1]
 
+        data = [match_id_1, match_id_2]
         response = call_endpoint(
-            "get",
-            self._generate_cluster_valid_url([match_id_1, match_id_2]),
+            "post",
+            ROUTE,
+            json=data,
             roles=[Roles.ROLE_PERSON_MATCH],
         )
         assert response.status_code == 404
@@ -63,9 +65,11 @@ class TestIsClusterValidRoute:
         mock_ids_check.return_value = []
         mock_cluster_results.return_value = Clusters([[match_id_1, match_id_2]])
 
+        data = [match_id_1, match_id_2]
         response = call_endpoint(
-            "get",
-            self._generate_cluster_valid_url([match_id_1, match_id_2]),
+            "post",
+            ROUTE,
+            json=data,
             roles=[Roles.ROLE_PERSON_MATCH],
         )
         assert response.status_code == 200
@@ -90,9 +94,11 @@ class TestIsClusterValidRoute:
         mock_ids_check.return_value = []
         mock_cluster_results.return_value = Clusters([[match_id_1, match_id_2], [match_id_3]])
 
+        data = [match_id_1, match_id_2, match_id_3]
         response = call_endpoint(
-            "get",
-            self._generate_cluster_valid_url([match_id_1, match_id_2, match_id_3]),
+            "post",
+            ROUTE,
+            json=data,
             roles=[Roles.ROLE_PERSON_MATCH],
         )
         assert response.status_code == 200
@@ -110,11 +116,12 @@ class TestIsClusterValidRoute:
     def test_invalid_role_unauthorized(self, call_endpoint):
         match_id_1 = str(uuid.uuid4())
         match_id_2 = str(uuid.uuid4())
+        data = [match_id_1, match_id_2]
         response = call_endpoint(
-            "get",
-            self._generate_cluster_valid_url([match_id_1, match_id_2]),
+            "post",
+            ROUTE,
             roles=["Invalid Role"],
-            json={},
+            json=data,
         )
         assert response.status_code == 403
         assert response.json()["detail"] == "You do not have permission to access this resource."
@@ -122,11 +129,7 @@ class TestIsClusterValidRoute:
     def test_no_auth_returns_unauthorized(self, client):
         match_id_1 = str(uuid.uuid4())
         match_id_2 = str(uuid.uuid4())
-        response = client.get(self._generate_cluster_valid_url([match_id_1, match_id_2]))
+        data = [match_id_1, match_id_2]
+        response = client.post(ROUTE, json=data)
         assert response.status_code == 403
         assert response.json()["detail"] == "Not authenticated"
-
-    @staticmethod
-    def _generate_cluster_valid_url(match_ids: list[str]):
-        query_string = "&".join(map(lambda m_id: f"match_ids={m_id}", match_ids))
-        return f"{ROUTE}?{query_string}"

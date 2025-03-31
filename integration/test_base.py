@@ -5,7 +5,7 @@ import requests
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.routes.jobs.term_frequencies import term_frequency_tables
+from hmpps_person_match.routes.jobs.term_frequencies import TERM_FREQUENCY_TABLES
 
 
 class IntegrationTestBase:
@@ -27,7 +27,7 @@ class IntegrationTestBase:
         """
         response = requests.post(person_match_url + "/jobs/termfrequencies")  # noqa: ASYNC210
         assert response.status_code == 200
-        for table in term_frequency_tables:
+        for table in TERM_FREQUENCY_TABLES:
             await self.until_asserted(lambda: self.assert_size_of_table(db_connection, table, size=0))  # noqa: B023
 
     @staticmethod

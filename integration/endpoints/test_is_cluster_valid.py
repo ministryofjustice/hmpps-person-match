@@ -26,8 +26,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         """
         Test is cluster valid handles an unknown match id
         """
-        response = call_endpoint("get", self._build_is_cluster_valid_url([match_id]), client=Client.HMPPS_PERSON_MATCH)
-        print(self._build_is_cluster_valid_url([match_id]))
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=[match_id])
         assert response.status_code == 404
         assert response.json() == {"unknown_ids": [match_id]}
 
@@ -36,7 +35,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         Test is cluster valid handles non uuid match_id
         """
         match_id = "invalid_!!id123"
-        response = call_endpoint("get", self._build_is_cluster_valid_url([match_id]), client=Client.HMPPS_PERSON_MATCH)
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=[match_id])
         assert response.status_code == 404
         assert response.json() == {"unknown_ids": [match_id]}
 
@@ -58,13 +57,8 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         await create_person_record(person_data)
 
         # Call is-cluster-valid endpoint - should all be in same cluster
-        response = call_endpoint(
-            "get",
-            self._build_is_cluster_valid_url(
-                [match_id, matching_person_id_1, matching_person_id_2],
-            ),
-            client=Client.HMPPS_PERSON_MATCH,
-        )
+        data = [match_id, matching_person_id_1, matching_person_id_2]
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
         response_data = response.json()
         assert len(response_data) == 2
@@ -123,13 +117,8 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         await create_person_record(person_data)
 
         # Call is-cluster-valid endpoint - should all be in same cluster
-        response = call_endpoint(
-            "get",
-            self._build_is_cluster_valid_url(
-                [match_id, matching_person_id_1, matching_person_id_2],
-            ),
-            client=Client.HMPPS_PERSON_MATCH,
-        )
+        data = [match_id, matching_person_id_1, matching_person_id_2]
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
         response_data = response.json()
         assert len(response_data) == 2
@@ -143,8 +132,3 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         cluster_len_1 = len(response_data["clusters"][0])
         cluster_len_2 = len(response_data["clusters"][1])
         assert {cluster_len_1, cluster_len_2} == {1, 2}
-
-    @staticmethod
-    def _build_is_cluster_valid_url(match_ids: list[str]):
-        query_string = "&".join(map(lambda m_id: f"match_ids={m_id}", match_ids))
-        return f"{ROUTE}?{query_string}"

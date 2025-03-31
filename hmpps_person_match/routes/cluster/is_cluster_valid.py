@@ -1,7 +1,7 @@
 from logging import Logger
 from typing import Annotated, TypedDict
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -35,9 +35,9 @@ class ClusterReturn(TypedDict):
     clusters: list[list[str]]
 
 
-@router.get(ROUTE, description=DESCRIPTION)
+@router.post(ROUTE, description=DESCRIPTION)
 async def get_cluster_validity(
-    match_ids: Annotated[list[str], Query()],
+    match_ids: list[str],
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> ClusterReturn:
