@@ -16,7 +16,7 @@ DESCRIPTION = "Triggers a refresh of the term frequencies"
 router = APIRouter()
 
 
-term_frequency_tables = [
+TERM_FREQUENCY_TABLES = [
     "term_frequencies_cro_single",
     "term_frequencies_date_of_birth",
     "term_frequencies_first_and_last_name_std",
@@ -46,5 +46,5 @@ async def trigger_term_frequency_refresh():
     Refresh the term frequency materialized views
     """
     async with AsyncSessionLocal() as session, session.begin():
-        for tf_table in term_frequency_tables:
+        for tf_table in TERM_FREQUENCY_TABLES:
             await session.execute(text(f"REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.{tf_table};"))
