@@ -7,4 +7,4 @@ class IsClusterValid(BaseModel):
 
 
 class MissingRecordIds(BaseModel):
-    unknown_ids: list[str]
+    unknown_ids: list[str] = Field(alias="unknownIds")
