@@ -54,7 +54,7 @@ class TestIsClusterValidRoute:
             roles=[Roles.ROLE_PERSON_MATCH],
         )
         assert response.status_code == 404
-        assert response.json() == {"unknown_ids": [match_id_1]}
+        assert response.json() == {"unknownIds": [match_id_1]}
 
     def test_is_cluster_valid_results(self, call_endpoint, mock_ids_check, mock_cluster_results, mock_logger):
         """
