@@ -28,7 +28,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         """
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=[match_id])
         assert response.status_code == 404
-        assert response.json() == {"unknown_ids": [match_id]}
+        assert response.json() == {"unknownIds": [match_id]}
 
     async def test_score_invalid_match_id(self, call_endpoint, match_id):
         """
@@ -37,7 +37,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         match_id = "invalid_!!id123"
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=[match_id])
         assert response.status_code == 404
-        assert response.json() == {"unknown_ids": [match_id]}
+        assert response.json() == {"unknownIds": [match_id]}
 
     async def test_is_cluster_valid_validates_cluster(self, call_endpoint, match_id, create_person_record):
         """
