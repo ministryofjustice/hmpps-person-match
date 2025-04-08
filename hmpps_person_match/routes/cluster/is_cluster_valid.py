@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Annotated, TypedDict
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
@@ -11,6 +11,7 @@ from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
+from hmpps_person_match.models.cluster.is_cluster_valid import IsClusterValid, MissingRecordIds
 
 ROUTE = "/is-cluster-valid"
 
@@ -30,17 +31,13 @@ router = APIRouter(
     dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))],
 )
 
-class ClusterReturn(TypedDict):
-    isClusterValid: bool
-    clusters: list[list[str]]
-
 
 @router.post(ROUTE, description=DESCRIPTION)
 async def get_cluster_validity(
     match_ids: list[str],
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
-) -> ClusterReturn:
+) -> IsClusterValid:
     """
     Is cluster valid GET request handler
     Returns an indication of whether all supplied match_ids belong to the same cluster,
@@ -50,9 +47,10 @@ async def get_cluster_validity(
     if not missing_ids:
         clusters = await score.get_clusters(match_ids, url.pg_database_url, session)
         logger.info(TelemetryEvents.IS_CLUSTER_VALID, extra=dict(clusters=clusters.clusters_groupings))
-        return ClusterReturn(
+        return IsClusterValid(
             isClusterValid=clusters.is_single_cluster,
             clusters=clusters.clusters_groupings,
         )
     else:
-        return JSONResponse(content={"unknown_ids": missing_ids}, status_code=status.HTTP_404_NOT_FOUND)
+        return JSONResponse(content=MissingRecordIds(unknown_ids=missing_ids).model_dump(),
+                            status_code=status.HTTP_404_NOT_FOUND)
