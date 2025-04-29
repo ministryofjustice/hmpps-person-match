@@ -1,11 +1,11 @@
 {
     "link_type": "link_and_dedupe",
-    "probability_two_random_records_match": 1.775855843245189e-06,
+    "probability_two_random_records_match": 2.649234163203061e-07,
     "retain_matching_columns": true,
     "retain_intermediate_calculation_columns": true,
     "additional_columns_to_retain": ["match_id"],
     "sql_dialect": "duckdb",
-    "linker_uid": "836a1jpq",
+    "linker_uid": "fctuu1fn",
     "em_convergence": 0.0001,
     "max_iterations": 25,
     "bayes_factor_column_prefix": "bf_",
@@ -26,58 +26,64 @@
                 {
                     "sql_condition": "\"first_and_last_name_std_l\" = \"first_and_last_name_std_r\"",
                     "label_for_charts": "Exact match on first_and_last_name_std",
-                    "m_probability": 0.8787963278164166,
-                    "u_probability": 7.2135433177901606e-06,
+                    "m_probability": 0.8805713283069031,
+                    "u_probability": 6.4416737775260826e-06,
                     "tf_adjustment_column": "first_and_last_name_std",
                     "tf_adjustment_weight": 1.0
                 },
                 {
                     "sql_condition": "jaro_winkler_similarity(\"first_and_last_name_std_l\", \"first_and_last_name_std_r\") >= 0.9",
                     "label_for_charts": "Jaro-Winkler distance of first_and_last_name_std >= 0.9",
-                    "m_probability": 0.07355519002561481,
-                    "u_probability": 0.0004188206021358899,
+                    "m_probability": 0.07323973960881489,
+                    "u_probability": 0.00046468219642236785,
                     "tf_adjustment_column": "first_and_last_name_std",
                     "tf_adjustment_weight": 0.7
                 },
                 {
                     "sql_condition": "\"name_1_std_l\" = \"last_name_std_r\" AND \"name_1_std_r\" = \"last_name_std_l\"",
                     "label_for_charts": "Match on reversed cols: name_1_std and last_name_std (both directions)",
-                    "m_probability": 0.0020093254595673414,
-                    "u_probability": 1.9314729853158546e-07
+                    "m_probability": 0.001957189808750337,
+                    "u_probability": 1.1870780153891191e-07
+                },
+                {
+                    "sql_condition": "\n    (array_length(list_intersect(forename_std_arr_l, forename_std_arr_r)) >= 1\n    AND\n    array_length(list_intersect(last_name_std_arr_l, last_name_std_arr_r)) >= 1)\n\n and \n(len(forename_std_arr_l) * len(forename_std_arr_r)\n+\nlen(last_name_std_arr_l) * len(forename_std_arr_r)\n<= 10)\n",
+                    "label_for_charts": "Array intersection size >= 1, few elements",
+                    "m_probability": 0.01638930823738129,
+                    "u_probability": 5.720295598943465e-06
                 },
                 {
                     "sql_condition": "(array_length(list_intersect(\"forename_std_arr_l\", \"forename_std_arr_r\")) >= 1) AND (array_length(list_intersect(\"last_name_std_arr_l\", \"last_name_std_arr_r\")) >= 1)",
                     "label_for_charts": "(Array intersection size >= 1) AND (Array intersection size >= 1)",
-                    "m_probability": 0.022406418628892023,
-                    "u_probability": 1.0120918443055078e-05
+                    "m_probability": 0.004173300248636595,
+                    "u_probability": 7.351766922657741e-06
                 },
                 {
                     "sql_condition": "(jaro_winkler_similarity(\"name_1_std_l\", \"name_1_std_r\") >= 0.7) AND (jaro_winkler_similarity(\"last_name_std_l\", \"last_name_std_r\") >= 0.7)",
                     "label_for_charts": "(Jaro-Winkler distance of name_1_std >= 0.7) AND (Jaro-Winkler distance of last_name_std >= 0.7)",
-                    "m_probability": 0.0049894943899656706,
-                    "u_probability": 0.00046154580113580575
+                    "m_probability": 0.004954401712078166,
+                    "u_probability": 0.0004886023257307557
                 },
                 {
                     "sql_condition": "\"name_1_std_l\" = \"name_1_std_r\"",
                     "label_for_charts": "Exact match on name_1_std",
-                    "m_probability": 0.003999813575914677,
-                    "u_probability": 0.0035909813589577585,
+                    "m_probability": 0.004210367993889316,
+                    "u_probability": 0.004258998503613082,
                     "tf_adjustment_column": "name_1_std",
                     "tf_adjustment_weight": 1.0
                 },
                 {
                     "sql_condition": "\"last_name_std_l\" = \"last_name_std_r\"",
                     "label_for_charts": "Exact match on last_name_std",
-                    "m_probability": 0.005556540474896499,
-                    "u_probability": 0.0007660384510119338,
+                    "m_probability": 0.00533261227541768,
+                    "u_probability": 0.0007850765819690798,
                     "tf_adjustment_column": "last_name_std",
                     "tf_adjustment_weight": 1.0
                 },
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.0040385598046860805,
-                    "u_probability": 0.9947450861776992
+                    "m_probability": 0.004143399354623031,
+                    "u_probability": 0.9939830079481641
                 }
             ],
             "comparison_description": "CustomComparison"
@@ -93,34 +99,40 @@
                 {
                     "sql_condition": "\"date_of_birth_l\" = \"date_of_birth_r\"",
                     "label_for_charts": "Exact match on date_of_birth",
-                    "m_probability": 0.9464343303141814,
-                    "u_probability": 6.324075751757724e-05,
+                    "m_probability": 0.9480015447228074,
+                    "u_probability": 6.32817809183543e-05,
                     "tf_adjustment_column": "date_of_birth",
                     "tf_adjustment_weight": 1.0
                 },
                 {
-                    "sql_condition": "\narray_length(\n    list_intersect(\"date_of_birth_arr_l\", \"date_of_birth_arr_r\")\n)\n >= 1",
-                    "label_for_charts": "Array intersection size >= 1",
-                    "m_probability": 0.016471211402646384,
-                    "u_probability": 1.7723128863141345e-05
+                    "sql_condition": "\n            \narray_length(\n    list_intersect(\"date_of_birth_arr_l\", \"date_of_birth_arr_r\")\n)\n >= 1\n            and len(date_of_birth_arr_l) * len(date_of_birth_arr_r) <= 6\n            ",
+                    "label_for_charts": "Array intersection size >= 1, few dob aliases",
+                    "m_probability": 0.015054619774721108,
+                    "u_probability": 1.839371152047235e-05
                 },
                 {
-                    "sql_condition": "damerau_levenshtein(CAST(date_of_birth_l AS TEXT), CAST(date_of_birth_r AS TEXT)) <= 1",
-                    "label_for_charts": "Damerau-Levenshtein distance of cast(date_of_birth as varchar) <= 1",
-                    "m_probability": 0.01809148799594185,
-                    "u_probability": 0.0018144602187555058
+                    "sql_condition": "\narray_length(\n    list_intersect(\"date_of_birth_arr_l\", \"date_of_birth_arr_r\")\n)\n >=1 ",
+                    "label_for_charts": "Array intersection size >= 1, lots of dob aliases",
+                    "m_probability": 0.0019527239665209192,
+                    "u_probability": 4.259585633069581e-06
+                },
+                {
+                    "sql_condition": "levenshtein(CAST(date_of_birth_l AS TEXT), CAST(date_of_birth_r AS TEXT)) <= 1",
+                    "label_for_charts": "Levenshtein distance of cast(date_of_birth as varchar) <= 1",
+                    "m_probability": 0.017251329692897888,
+                    "u_probability": 0.001769188292516566
                 },
                 {
                     "sql_condition": "ABS(EPOCH(\"date_of_birth_l\") - EPOCH(\"date_of_birth_r\")) <= 157788000.0",
                     "label_for_charts": "Abs difference of 'date_of_birth <= 5 year'",
-                    "m_probability": 0.00963867941781235,
-                    "u_probability": 0.21805919357485196
+                    "m_probability": 0.010200657427295447,
+                    "u_probability": 0.21782305372325345
                 },
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.00218323152870664,
-                    "u_probability": 0.7800453823200119
+                    "m_probability": 0.0020388218873687394,
+                    "u_probability": 0.7803218229061581
                 }
             ],
             "comparison_description": "CustomComparison"
@@ -136,32 +148,32 @@
                 {
                     "sql_condition": "\n    list_reduce(\n        list_prepend(\n            1.0,\n            list_transform(\n                postcode_arr_with_freq_l,\n                x -> CASE\n                        WHEN array_contains(\n                            list_transform(postcode_arr_with_freq_r, y -> y.value),\n                            x.value\n                        )\n                        THEN x.rel_freq\n                        ELSE 1.0\n                    END\n            )\n        ),\n        (p, q) -> p * q\n    ) < 0.00001",
                     "label_for_charts": "tf arr mul < 0.00001",
-                    "m_probability": 0.6670891795591943,
-                    "u_probability": 1.294096500015498e-05
+                    "m_probability": 0.6530514212604018,
+                    "u_probability": 1.916780772186791e-05
                 },
                 {
                     "sql_condition": "\n    list_reduce(\n        list_prepend(\n            1.0,\n            list_transform(\n                postcode_arr_with_freq_l,\n                x -> CASE\n                        WHEN array_contains(\n                            list_transform(postcode_arr_with_freq_r, y -> y.value),\n                            x.value\n                        )\n                        THEN x.rel_freq\n                        ELSE 1.0\n                    END\n            )\n        ),\n        (p, q) -> p * q\n    ) < 0.0001",
                     "label_for_charts": "tf arr mul < 0.0001",
-                    "m_probability": 0.04612205687507028,
-                    "u_probability": 7.409099972943288e-06
+                    "m_probability": 0.04047911150252939,
+                    "u_probability": 9.70967030841373e-06
                 },
                 {
                     "sql_condition": "\n    list_reduce(\n        list_prepend(\n            1.0,\n            list_transform(\n                postcode_arr_with_freq_l,\n                x -> CASE\n                        WHEN array_contains(\n                            list_transform(postcode_arr_with_freq_r, y -> y.value),\n                            x.value\n                        )\n                        THEN x.rel_freq\n                        ELSE 1.0\n                    END\n            )\n        ),\n        (p, q) -> p * q\n    ) < 0.001",
                     "label_for_charts": "tf arr mul < 0.001",
-                    "m_probability": 0.009904417202376418,
-                    "u_probability": 5.692718054406684e-05
+                    "m_probability": 0.01468158219941504,
+                    "u_probability": 0.00010470776311967955
                 },
                 {
                     "sql_condition": "array_length(list_intersect(\"postcode_outcode_arr_l\", \"postcode_outcode_arr_r\")) >= 1",
                     "label_for_charts": "Array intersection size >= 1",
-                    "m_probability": 0.09150135763671098,
-                    "u_probability": 0.001943676490389979
+                    "m_probability": 0.09228399254208307,
+                    "u_probability": 0.002418387421033641
                 },
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.18281139283200534,
-                    "u_probability": 0.9979790462640928
+                    "m_probability": 0.1993084330118613,
+                    "u_probability": 0.9974480273378163
                 }
             ],
             "comparison_description": "CustomComparison"
@@ -177,22 +189,22 @@
                 {
                     "sql_condition": "\"name_2_std_l\" = \"name_2_std_r\"",
                     "label_for_charts": "Exact match on name_2_std",
-                    "m_probability": 0.9243762913442157,
-                    "u_probability": 0.010917836116825702,
+                    "m_probability": 0.9311828314925126,
+                    "u_probability": 0.012319973710486735,
                     "tf_adjustment_column": "name_2_std",
                     "tf_adjustment_weight": 1.0
                 },
                 {
                     "sql_condition": "jaro_winkler_similarity(\"name_2_std_l\", \"name_2_std_r\") >= 0.85",
                     "label_for_charts": "Jaro-Winkler distance of name_2_std >= 0.85",
-                    "m_probability": 0.03043418520733826,
-                    "u_probability": 0.0022673779080445954
+                    "m_probability": 0.030955920552027012,
+                    "u_probability": 0.002507835722714576
                 },
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.04518952344844608,
-                    "u_probability": 0.9868147859751297
+                    "m_probability": 0.041068944007088604,
+                    "u_probability": 0.9851721905667987
                 }
             ],
             "comparison_description": "JaroWinklerAtThresholds"
@@ -201,31 +213,31 @@
             "output_column_name": "id_comparison",
             "comparison_levels": [
                 {
-                    "sql_condition": "\n            (cro_single_l is null and pnc_single_l is null)\n            OR (cro_single_r is null AND pnc_single_r is null)\n            ",
-                    "label_for_charts": "one record lacks cro and pnc",
+                    "sql_condition": "\n            (cro_single_l is null or cro_single_r is null)\n            AND (pnc_single_l is null or pnc_single_r is null)\n            AND (pnc_single_l is null or cro_single_r is null)\n            AND (cro_single_l is null or pnc_single_r is null)\n            ",
+                    "label_for_charts": "\n            (cro_single_l is null or cro_single_r is null)\n            AND (pnc_single_l is null or pnc_single_r is null)\n            AND (pnc_single_l is null or cro_single_r is null)\n            AND (cro_single_l is null or pnc_single_r is null)\n            ",
                     "is_null_level": true
                 },
                 {
                     "sql_condition": "\"pnc_single_l\" = \"pnc_single_r\"",
                     "label_for_charts": "Exact match on pnc_single",
-                    "m_probability": 0.3926077415462267,
-                    "u_probability": 1.283466477956899e-07,
+                    "m_probability": 0.4107364720646719,
+                    "u_probability": 1.3083008349386952e-07,
                     "tf_adjustment_column": "pnc_single",
                     "tf_adjustment_weight": 1.0
                 },
                 {
                     "sql_condition": "\"cro_single_l\" = \"cro_single_r\"",
                     "label_for_charts": "Exact match on cro_single",
-                    "m_probability": 0.5031590770251514,
-                    "u_probability": 1.4028587084645174e-07,
+                    "m_probability": 0.48754671593636345,
+                    "u_probability": 1.3406045592581692e-07,
                     "tf_adjustment_column": "cro_single",
                     "tf_adjustment_weight": 1.0
                 },
                 {
                     "sql_condition": "\n            (\n                substring(pnc_single_l, 7, 6) = substring(cro_single_r, 1, 6)\n                or\n                substring(pnc_single_r, 7, 6) = substring(cro_single_l, 1, 6)\n            )\n            or\n            (\n                substring(pnc_single_l, 1, 5) = substring(pnc_single_r, 1, 5)\n                AND\n                substring(pnc_single_l, 8, 6) = substring(pnc_single_r, 8, 6)\n            )\n            ",
                     "label_for_charts": "PNC and CRO core numbers match",
-                    "m_probability": 0.04789270283602978,
-                    "u_probability": 2.1072728684594666e-06
+                    "m_probability": 0.04588131922270574,
+                    "u_probability": 1.933377900520516e-06
                 },
                 {
                     "sql_condition": "\n            (cro_single_l is null or cro_single_r is null)\n            AND (pnc_single_l is null or pnc_single_r is null)\n            ",
@@ -235,8 +247,8 @@
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.0563404785925921,
-                    "u_probability": 0.9999976240946129
+                    "m_probability": 0.05583549277625895,
+                    "u_probability": 0.99999780173156
                 }
             ],
             "comparison_description": "CustomComparison"
@@ -250,28 +262,40 @@
                     "is_null_level": true
                 },
                 {
+                    "sql_condition": "array_length(list_intersect(\"sentence_date_arr_l\", \"sentence_date_arr_r\")) >= 1 and len(\"sentence_date_arr_l\") * len(\"sentence_date_arr_r\") = 1",
+                    "label_for_charts": "Array intersection size >= 1, one element",
+                    "m_probability": 0.079242629203343,
+                    "u_probability": 4.1568494682281885e-05
+                },
+                {
                     "sql_condition": "array_length(list_intersect(\"sentence_date_arr_l\", \"sentence_date_arr_r\")) >= 1 and len(\"sentence_date_arr_l\") * len(\"sentence_date_arr_r\") <= 9",
                     "label_for_charts": "Array intersection size >= 1, few elements",
-                    "m_probability": 0.4949430500483698,
-                    "u_probability": 0.0004002408608569241
+                    "m_probability": 0.14687596629322805,
+                    "u_probability": 0.0002201649974203961
+                },
+                {
+                    "sql_condition": "array_length(list_intersect(\"sentence_date_arr_l\", \"sentence_date_arr_r\")) >= 1 and len(\"sentence_date_arr_l\") * len(\"sentence_date_arr_r\") <= 50",
+                    "label_for_charts": "Array intersection size >= 1, medium elements",
+                    "m_probability": 0.09497227696435485,
+                    "u_probability": 0.00031045886493038003
                 },
                 {
                     "sql_condition": "array_length(list_intersect(\"sentence_date_arr_l\", \"sentence_date_arr_r\")) >= 1",
                     "label_for_charts": "Array intersection size >= 1, many elements",
-                    "m_probability": 0.2792515293964825,
-                    "u_probability": 0.0009453261897310465
+                    "m_probability": 0.04663600004321906,
+                    "u_probability": 0.00028904399310893716
                 },
                 {
                     "sql_condition": "\n    abs(datediff('day', sentence_date_arr_l[1], sentence_date_arr_r[1])) <= 14\n    or\n    abs(datediff('day', sentence_date_arr_l[-1], sentence_date_arr_r[-1])) <= 14\n",
                     "label_for_charts": "First or last elements within 2 weeks",
-                    "m_probability": 0.021501087653409467,
-                    "u_probability": 0.005844206681354541
+                    "m_probability": 0.007667928792689431,
+                    "u_probability": 0.00379946180053296
                 },
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.13939109937753488,
-                    "u_probability": 0.9928102262680575
+                    "m_probability": 0.5911625257645615,
+                    "u_probability": 0.9953393018493251
                 }
             ],
             "comparison_description": "CustomComparison"
