@@ -74,7 +74,7 @@ assert (  # noqa: S101
 db_api = DuckDBAPI(con)
 
 
-train_u_size = 1e8
+train_u_size = 1e9
 date_str = datetime.now().strftime("%Y_%m_%d")  # noqa: DTZ005
 train_u_size_str = f"{train_u_size:.0e}".replace("+", "")
 model_name = f"model_{date_str}_{train_u_size_str}.json"
