@@ -12,7 +12,7 @@ dependencies = [
   "pytz>=2024.2",
   "azure-monitor-opentelemetry>=1.6.4",
   "fastapi>=0.115.7",
-  "uvicorn>=0.34.0",
+  "uvicorn==0.34.2",
   "authlib>=1.4.0",
   "cachetools>=5.5.1",
   "pyjwt>=2.10.1",
@@ -22,6 +22,8 @@ dependencies = [
   "asyncpg>=0.30.0",
   "greenlet>=3.1.1",
   "opentelemetry-instrumentation-sqlalchemy>=0.51b0",
+  # h11 is required by uvicorn and httpx to fix CVE-2025-43859
+  "h11==0.16.0",
 ]
 
 [tool.uv]
@@ -31,13 +33,13 @@ default-groups = ["dev"]
 [dependency-groups]
 dev = [
   "ipykernel >= 6.29.4",
-  "ruff ==0.11.7",
+  "ruff ==0.11.8",
   "pyyaml >= 6.0.2",
   "pytest >= 8.3.4",
   "pytest-cov>=6.0.0",
-  "httpx>=0.28.1",
   "pytest-asyncio>=0.25.2",
   "faker>=37.0.0",
+  "httpx>=0.28.1",
 ]
 
 [build-system]
