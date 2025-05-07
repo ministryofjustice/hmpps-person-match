@@ -65,7 +65,7 @@ t_name_simple_select = Table("cleaned_3", *name_columns_simple_select, from_tabl
 def test_name_processing_end_to_end(): ...
 
 
-SENTENCE_DATE_COLUMNS = ["sentence_dates", "sentence_date_arr", "sentence_date_single"]
+SENTENCE_DATE_COLUMNS = ["sentence_dates", "sentence_date_arr", "sentence_date_first", "sentence_date_last"]
 
 sentence_date_columns_basic = filter_columns(columns_basic, SENTENCE_DATE_COLUMNS)
 sentence_date_columns_reshaping = filter_columns(columns_reshaping, SENTENCE_DATE_COLUMNS)

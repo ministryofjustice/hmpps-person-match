@@ -80,41 +80,25 @@ def _block_using_rules_sqls(
 
     return {"sql": sql, "output_table_name": "__splink__blocked_id_pairs"}
 
-
-async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[RowMapping]:
+def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: str, output_table_name: str) -> None:
     """
-    Given a primary record id, return a table of these records
-    along with the primary, ready to be scored.
+    Given a CTEPipeline, enqueue SQL to join term frequency tables.
 
-    Requires a duckdb connexion with a postgres database attached as 'pg_db'
+    Resulting table will have the original table's columns, plus a tf_{column}
+    for each column we have simple term frequencies for.
+
+    For postcodes we will have two array columns, in matching order:
+    * postcode_arr_repacked containing the postcode values
+    * postcode_freq_arr containing the corresponding term frequencies
     """
-    pipeline = CTEPipeline()
 
-    # TODO: table name from?
-    cleaned_table_name = "personmatch.person"
-
-    table_name_primary = "primary_record"
-    sql = f"SELECT *, 'a_primary' AS source_dataset FROM {cleaned_table_name} WHERE match_id = :mid"  # noqa: S608
-    pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
-
-    # need source dataset to be later alphabetically to get the right condition
-
-    sql_info = _block_using_rules_sqls(
-        input_tablename_l=table_name_primary,
-        input_tablename_r=cleaned_table_name,
-        blocking_rules=_blocking_rules_concrete,
-        link_type="link_only",
-    )
-    pipeline.enqueue_sql(**sql_info)
-
-    blocked_tn = pipeline.output_table_name
     pipeline.enqueue_sql(
         sql = f"""
         SELECT
             match_id,
             UNNEST(postcode_arr) AS postcode
         FROM
-            {pipeline.output_table_name}
+            {table_to_join_to}
         """,  # noqa: S608
         output_table_name="exploded_postcodes",
     )
@@ -182,11 +166,41 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     sql_select = ", ".join(select_clauses)
     sql = f"""
         SELECT {sql_select}
-        FROM {blocked_tn} AS f
+        FROM {table_to_join_to} AS f
         {sql_join}
     """  # noqa: S608
 
-    pipeline.enqueue_sql(sql=sql, output_table_name="blocked_pairs_with_tfs")
+    pipeline.enqueue_sql(sql=sql, output_table_name=output_table_name)
+
+
+async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[RowMapping]:
+    """
+    Given a primary record id, return a table of these records
+    along with the primary, ready to be scored.
+
+    Requires a duckdb connexion with a postgres database attached as 'pg_db'
+    """
+    pipeline = CTEPipeline()
+
+    cleaned_table_name = "personmatch.person"
+
+    table_name_primary = "primary_record"
+    sql = f"SELECT * FROM {cleaned_table_name} WHERE match_id = :mid"  # noqa: S608
+    pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
+
+    sql_info = _block_using_rules_sqls(
+        input_tablename_l=table_name_primary,
+        input_tablename_r=cleaned_table_name,
+        blocking_rules=_blocking_rules_concrete,
+        link_type="link_only",
+    )
+    pipeline.enqueue_sql(**sql_info)
+
+    enqueue_join_term_frequency_tables(
+        pipeline,
+        table_to_join_to=pipeline.output_table_name,
+        output_table_name="blocked_pairs_with_tfs",
+    )
 
     sql = pipeline.generate_cte_pipeline_sql()
     res = await connection_pg.execute(text(sql), {"mid": primary_record_id})

@@ -97,8 +97,10 @@ def score(
 
     full_table_name = full_candidates_tn
 
-    source_name = "primary_record"
-    candidates_name = "candidate_record"
+    # Splink has a limitation around caching SQL - this choice of names is a workaround until we update
+    # need this so that we can keep cached SQL
+    source_name = "records_l_with_postcode_tfs"
+    candidates_name = "records_r_with_postcode_tfs"
     # cannot create views with prepared statements: https://github.com/duckdb/duckdb/issues/13069
     source_sql = f"CREATE TABLE {source_name} AS SELECT * FROM {full_table_name} WHERE match_id = $primary_record_id"  # noqa: S608
     candidates_sql = (
