@@ -32,6 +32,7 @@ class TestCandidateSearch(IntegrationTestBase):
         # candidates - all should match
         n_candidates = 10
         for _ in range(n_candidates):
+            person_data.source_system_id = random_test_data.random_crn()
             person_data.match_id = str(uuid.uuid4())
             await create_person_record(person_data)
 
@@ -186,7 +187,7 @@ class TestCandidateSearch(IntegrationTestBase):
 
         assert self.extract_match_ids(candidate_data) == set([searching_person, expected_found_person])
 
-    async def test_candidate_search_match_on_forename_frst_last_name_frst_postcode_frst(
+    async def test_candidate_search_match_on_forename_first_last_name_first_postcode_first(
         self,
         create_person_record,
         db_connection,

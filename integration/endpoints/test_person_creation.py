@@ -1,3 +1,6 @@
+import uuid
+
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.person.person_create import ROUTE
@@ -147,3 +150,28 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, match_id)
         assert row["source_system_id"] is None
+
+    async def test_fails_on_duplicate_source_system_id(
+        self,
+        call_endpoint,
+        match_id: str,
+        db_connection: AsyncSession,
+    ):
+        """
+        Test only unique source system id allowed. Even if match_id is different
+        """
+        source_system_id = random_test_data.random_crn()
+
+        for _ in range(5):
+            person_data = MockPerson(matchId=str(uuid.uuid4()), sourceSystemId=source_system_id)
+            call_endpoint(
+                "post",
+                ROUTE,
+                json=person_data.model_dump(by_alias=True),
+                client=Client.HMPPS_PERSON_MATCH,
+            )
+
+        result = await db_connection.execute(
+            text(f"SELECT * FROM personmatch.person WHERE source_system_id = '{source_system_id}'"))
+        result = result.mappings().fetchall()
+        assert len(result) == 1

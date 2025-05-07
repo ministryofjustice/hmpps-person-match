@@ -27,16 +27,10 @@ def upgrade() -> None:
     op.drop_column(table_name="person", column_name="crn", schema="personmatch")
     op.drop_column(table_name="person", column_name="prison_number", schema="personmatch")
     op.create_unique_constraint(
-        constraint_name="uq_source_source_system_id",
+        constraint_name="uq_source_system_id",
         table_name="person",
         schema="personmatch",
-        columns=["match_id"],
-    )
-    op.create_index(
-        index_name="idx_source_system_id",
-        table_name="person",
-        schema="personmatch",
-        columns=["match_id"],
+        columns=["source_system_id"],
     )
 
 
