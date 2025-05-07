@@ -55,8 +55,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert row["cro_single"] == person_data.cros[0]
         assert row["pnc_single"] == person_data.pncs[0]
         assert row["source_system"] == person_data.source_system
-        assert row["crn"] == person_data.crn
-        assert row["prison_number"] == person_data.prison_number
+        assert row["source_system_id"] == person_data.source_system_id
         assert row["postcode_first"] == person_data.postcodes[0].replace(" ", "")
         assert row["postcode_second"] is None
         assert row["postcode_last"] == person_data.postcodes[0].replace(" ", "")
@@ -128,18 +127,17 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         )
         assert response.status_code == 403
 
-    async def test_empty_crn_prison_number(
+    async def test_empty_source_system_id(
         self,
         call_endpoint,
         match_id: str,
         db_connection: AsyncSession,
     ):
         """
-        Test empty crn and prison number stored as nulls
+        Test empty sourceSystemId stored as nulls
         """
         person_data = MockPerson(matchId=match_id)
-        person_data.crn = ""
-        person_data.prison_number = ""
+        person_data.source_system_id = ""
         response = call_endpoint(
             "post",
             ROUTE,
@@ -148,5 +146,4 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, match_id)
-        assert row["crn"] is None
-        assert row["prison_number"] is None
+        assert row["source_system_id"] is None

@@ -32,8 +32,7 @@ def make_person(id_val):
         "postcode_arr": [fake.postcode(), fake.postcode(), fake.postcode()],
         "cro_single": str(fake.random_int(min=1, max=1_000_000)),  # fake.passport_number(),
         "pnc_single": str(fake.random_int(min=1, max=650_000)),
-        "crn": None,
-        "prison_number": None,
+        "source_system_id": None,
         "source_system": None,
     }
     # NB: not completely consistent with real data - no duplicates, arrays not sorted

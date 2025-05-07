@@ -14,8 +14,6 @@ class MockPerson(Person):
     first_name: str = Field(alias="firstName", default_factory=lambda: random_test_data.random_name())
     middle_names: str = Field(alias="middleNames", default_factory=lambda: random_test_data.random_name())
     last_name: str = Field(alias="lastName", default_factory=lambda: random_test_data.random_name())
-    crn: str = random_test_data.random_crn()
-    prison_number: str = Field(alias="prisonNumber", default_factory=lambda: random_test_data.random_prison_number())
     first_name_aliases: list[str] = Field(
         alias="firstNameAliases",
         default_factory=lambda: [random_test_data.random_name()],
@@ -38,6 +36,10 @@ class MockPerson(Person):
     sentence_dates: list[str] = Field(
         alias="sentenceDates",
         default_factory=lambda: [random_test_data.random_date()],
+    )
+    source_system_id: str = Field(
+        alias="sourceSystemId",
+        default_factory=lambda: random_test_data.random_crn(),
     )
     source_system: str = Field(
         alias="sourceSystem",
