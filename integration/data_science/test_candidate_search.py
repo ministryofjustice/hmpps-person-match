@@ -71,10 +71,8 @@ class TestCandidateSearch(IntegrationTestBase):
 
         pnc = random_test_data.random_pnc()
 
-        await create_person_record(
-            MockPerson(matchId=searching_person, pncs=[pnc]))
-        await create_person_record(
-            MockPerson(matchId=expected_found_person, pncs=[pnc]))
+        await create_person_record(MockPerson(matchId=searching_person, pncs=[pnc]))
+        await create_person_record(MockPerson(matchId=expected_found_person, pncs=[pnc]))
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -93,10 +91,8 @@ class TestCandidateSearch(IntegrationTestBase):
 
         cro = random_test_data.random_cro()
 
-        await create_person_record(
-            MockPerson(matchId=searching_person, cros=[cro]))
-        await create_person_record(
-            MockPerson(matchId=expected_found_person, cros=[cro]))
+        await create_person_record(MockPerson(matchId=searching_person, cros=[cro]))
+        await create_person_record(MockPerson(matchId=expected_found_person, cros=[cro]))
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -118,9 +114,11 @@ class TestCandidateSearch(IntegrationTestBase):
         postcode = random_test_data.random_postcode()
 
         await create_person_record(
-            MockPerson(matchId=searching_person, dateOfBirth=date_of_birth, postcodes=[postcode]))
+            MockPerson(matchId=searching_person, dateOfBirth=date_of_birth, postcodes=[postcode]),
+        )
         await create_person_record(
-            MockPerson(matchId=expected_found_person, dateOfBirth=date_of_birth, postcodes=[postcode]))
+            MockPerson(matchId=expected_found_person, dateOfBirth=date_of_birth, postcodes=[postcode]),
+        )
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -141,15 +139,13 @@ class TestCandidateSearch(IntegrationTestBase):
         date_of_birth = random_test_data.random_date()
 
         await create_person_record(
-            MockPerson(matchId=searching_person,
-                       dateOfBirth=date_of_birth,
-                       postcodes=["AB1 2BC"],
-                       firstName="Brian"))
+            MockPerson(matchId=searching_person, dateOfBirth=date_of_birth, postcodes=["AB1 2BC"], firstName="Brian"),
+        )
         await create_person_record(
-            MockPerson(matchId=expected_found_person,
-                       dateOfBirth=date_of_birth,
-                       postcodes=["AB1 3DE"],
-                       firstName="Bruck"))
+            MockPerson(
+                matchId=expected_found_person, dateOfBirth=date_of_birth, postcodes=["AB1 3DE"], firstName="Bruck",
+            ),
+        )
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -171,17 +167,23 @@ class TestCandidateSearch(IntegrationTestBase):
         alias_date_of_birth = "1990-01-01"
 
         await create_person_record(
-            MockPerson(matchId=searching_person,
-                       dateOfBirth=date_of_birth,
-                       dateOfBirthAliases=[alias_date_of_birth],
-                       postcodes=["AB1 2BC"],
-                       lastName="Smith"))
+            MockPerson(
+                matchId=searching_person,
+                dateOfBirth=date_of_birth,
+                dateOfBirthAliases=[alias_date_of_birth],
+                postcodes=["AB1 2BC"],
+                lastName="Smith",
+            ),
+        )
         await create_person_record(
-            MockPerson(matchId=expected_found_person,
-                       dateOfBirth=date_of_birth,
-                       dateOfBirthAliases=[alias_date_of_birth],
-                       postcodes=["AB1 3DE"],
-                       lastName="Smythe"))
+            MockPerson(
+                matchId=expected_found_person,
+                dateOfBirth=date_of_birth,
+                dateOfBirthAliases=[alias_date_of_birth],
+                postcodes=["AB1 3DE"],
+                lastName="Smythe",
+            ),
+        )
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -204,15 +206,11 @@ class TestCandidateSearch(IntegrationTestBase):
         postcode = random_test_data.random_postcode()
 
         await create_person_record(
-            MockPerson(matchId=searching_person,
-                       firstName=first_name,
-                       lastName=last_name,
-                       postcodes=[postcode]))
+            MockPerson(matchId=searching_person, firstName=first_name, lastName=last_name, postcodes=[postcode]),
+        )
         await create_person_record(
-            MockPerson(matchId=expected_found_person,
-                       firstName=first_name,
-                       lastName=last_name,
-                       postcodes=[postcode]))
+            MockPerson(matchId=expected_found_person, firstName=first_name, lastName=last_name, postcodes=[postcode]),
+        )
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -234,13 +232,19 @@ class TestCandidateSearch(IntegrationTestBase):
         postcode = random_test_data.random_postcode()
 
         await create_person_record(
-            MockPerson(matchId=searching_person,
-                       dateOfBirth=date_of_birth,
-                       postcodes=[random_test_data.random_postcode(), postcode]))
+            MockPerson(
+                matchId=searching_person,
+                dateOfBirth=date_of_birth,
+                postcodes=[random_test_data.random_postcode(), postcode],
+            ),
+        )
         await create_person_record(
-            MockPerson(matchId=expected_found_person,
-                       dateOfBirth=date_of_birth,
-                       postcodes=[random_test_data.random_postcode(), postcode]))
+            MockPerson(
+                matchId=expected_found_person,
+                dateOfBirth=date_of_birth,
+                postcodes=[random_test_data.random_postcode(), postcode],
+            ),
+        )
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -262,13 +266,11 @@ class TestCandidateSearch(IntegrationTestBase):
         sentence_date = random_test_data.random_date()
 
         await create_person_record(
-            MockPerson(matchId=searching_person,
-                       dateOfBirth=date_of_birth,
-                       sentenceDates=[sentence_date]))
+            MockPerson(matchId=searching_person, dateOfBirth=date_of_birth, sentenceDates=[sentence_date]),
+        )
         await create_person_record(
-            MockPerson(matchId=expected_found_person,
-                       dateOfBirth=date_of_birth,
-                       sentenceDates=[sentence_date]))
+            MockPerson(matchId=expected_found_person, dateOfBirth=date_of_birth, sentenceDates=[sentence_date]),
+        )
 
         candidate_data = await candidate_search(searching_person, db_connection)
 
@@ -279,4 +281,4 @@ class TestCandidateSearch(IntegrationTestBase):
         """
         Extract a list of match_ids from
         """
-        return set(map(lambda candidate : candidate["match_id"], candidate_data))
+        return set(map(lambda candidate: candidate["match_id"], candidate_data))

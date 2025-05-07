@@ -151,10 +151,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         row = await self.find_by_match_id(db_connection, match_id)
         assert row["source_system_id"] is None
 
-    async def test_fails_on_duplicate_source_system_id(
+    async def test_does_not_create_duplicates_on_source_system_id(
         self,
         call_endpoint,
-        match_id: str,
         db_connection: AsyncSession,
     ):
         """
@@ -172,6 +171,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
             )
 
         result = await db_connection.execute(
-            text(f"SELECT * FROM personmatch.person WHERE source_system_id = '{source_system_id}'"))
+            text(f"SELECT * FROM personmatch.person WHERE source_system_id = '{source_system_id}'"),
+        )
         result = result.mappings().fetchall()
         assert len(result) == 1
