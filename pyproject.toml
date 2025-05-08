@@ -11,7 +11,7 @@ dependencies = [
   "psycopg[binary]==3.2.4",
   "pytz==2024.2",
   "azure-monitor-opentelemetry==1.6.4",
-  "fastapi==0.115.7",
+  "fastapi==0.115.12",
   "uvicorn==0.34.2",
   "authlib==1.4.0",
   "cachetools==5.5.1",
