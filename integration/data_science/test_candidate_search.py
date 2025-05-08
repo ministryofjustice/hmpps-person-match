@@ -33,6 +33,7 @@ class TestCandidateSearch(IntegrationTestBase):
         n_candidates = 10
         for _ in range(n_candidates):
             person_data.match_id = str(uuid.uuid4())
+            person_data.source_system_id = random_test_data.random_source_system_id()
             await create_person_record(person_data)
 
         candidate_data = await candidate_search(match_id, db_connection)

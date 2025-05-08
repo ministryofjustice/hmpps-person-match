@@ -5,6 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.models.person.person import Person
+from integration import random_test_data
 from integration.test_base import IntegrationTestBase
 
 
@@ -17,7 +18,7 @@ class TestTFs(IntegrationTestBase):
         return {
             "matchId": str(uuid.uuid4()),
             "sourceSystem": "DELIUS",
-            "sourceSystemId": "A12345BC",
+            "sourceSystemId": random_test_data.random_source_system_id(),
             "firstName": first_name,
             "middleNames": "Ahmed",
             "lastName": "Junaed",
