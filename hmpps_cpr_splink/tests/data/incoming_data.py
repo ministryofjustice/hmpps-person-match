@@ -7,6 +7,7 @@ def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
         CREATE TABLE  candidate_search_return_format (
             id INT32,
             source_system VARCHAR,
+            source_system_id VARCHAR,
             first_name VARCHAR,
             middle_names VARCHAR,
             last_name VARCHAR,
@@ -57,6 +58,7 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
     CREATE TABLE person (
         id INT32,
         source_system VARCHAR,
+        source_system_id VARCHAR,
         first_name VARCHAR,
         middle_names VARCHAR,
         last_name VARCHAR,

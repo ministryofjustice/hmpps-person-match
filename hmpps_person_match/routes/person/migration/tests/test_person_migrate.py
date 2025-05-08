@@ -58,6 +58,7 @@ class TestPersonMigrateRoute:
         return {
             "matchId": str(uuid.uuid4()),
             "sourceSystem": "DELIUS",
+            "sourceSystemId": "A12345BC",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",

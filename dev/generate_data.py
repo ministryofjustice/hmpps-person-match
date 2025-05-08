@@ -35,6 +35,7 @@ def make_person(id_val):
         "crn": None,
         "prison_number": None,
         "source_system": None,
+        "source_system_id": None,
     }
     # NB: not completely consistent with real data - no duplicates, arrays not sorted
     cleaned_person["first_and_last_name_std"] = cleaned_person["name_1_std"] + " " + cleaned_person["last_name_std"]
