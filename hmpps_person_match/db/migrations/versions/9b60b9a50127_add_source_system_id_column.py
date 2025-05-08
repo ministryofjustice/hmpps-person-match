@@ -35,6 +35,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    op.drop_constraint(constraint_name="uq_source_system_id", table_name="person", schema="personmatch")
     op.drop_column(table_name="person", column_name="source_system_id", schema="personmatch")
     op.add_column(
         table_name="person",
@@ -46,5 +47,3 @@ def downgrade() -> None:
         column=sqlalchemy.Column("prison_number", sqlalchemy.Text),
         schema="personmatch",
     )
-    op.drop_constraint(constraint_name="uq_source_source_system_id", table_name="person", schema="personmatch")
-    op.drop_index(index_name="idx_source_system_id", table_name="person", schema="personmatch")
