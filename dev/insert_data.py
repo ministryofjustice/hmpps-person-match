@@ -54,8 +54,7 @@ columns = {
     "postcode_outcode_arr",
     "cro_single",
     "pnc_single",
-    "crn",
-    "prison_number",
+    "source_system_id",
     "source_system",
     # derived columns
     "sentence_date_first",
