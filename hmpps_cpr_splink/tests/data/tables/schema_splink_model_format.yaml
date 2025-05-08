@@ -1,5 +1,6 @@
 match_id: "VARCHAR"
 source_system: "VARCHAR"
+source_system_id: "VARCHAR"
 name_1_std: "VARCHAR"
 name_2_std: "VARCHAR"
 name_3_std: "VARCHAR"
