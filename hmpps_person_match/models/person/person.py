@@ -10,6 +10,7 @@ class Person(BaseModel):
 
     match_id: str = Field(alias="matchId")
     source_system: str = Field(alias="sourceSystem")
+    source_system_id: str = Field(alias="sourceSystemId")
     first_name: str = Field(alias="firstName")
     middle_names: str = Field(alias="middleNames")
     last_name: str = Field(alias="lastName")
@@ -21,7 +22,7 @@ class Person(BaseModel):
     cros: list[str]
     pncs: list[str]
     crn: str
-    prison_number: str = Field(alias="prisonNumber", format="date")
+    prison_number: str = Field(alias="prisonNumber")
     sentence_dates: list[datetime.date] = Field(alias="sentenceDates", format="date")  # Ensures YYYY-MM-DD
 
     @field_validator("date_of_birth", mode="before")

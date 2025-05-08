@@ -65,6 +65,7 @@ class TestPersonScore(IntegrationTestBase):
             {"pncs": []},
             {"sentenceDates": []},
             {"sourceSystem": ""},
+            {"sourceSystemId": ""},
         ],
     )
     async def test_get_scored_candidates_blank_data(
