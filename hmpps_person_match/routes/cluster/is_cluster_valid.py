@@ -52,7 +52,5 @@ async def get_cluster_validity(
             clusters=clusters.clusters_groupings,
         )
     else:
-        return JSONResponse(
-            content=MissingRecordIds(unknownIds=missing_ids).model_dump(by_alias=True),
-            status_code=status.HTTP_404_NOT_FOUND,
-        )
+        return JSONResponse(content=MissingRecordIds(unknownIds=missing_ids).model_dump(by_alias=True),
+                            status_code=status.HTTP_404_NOT_FOUND)

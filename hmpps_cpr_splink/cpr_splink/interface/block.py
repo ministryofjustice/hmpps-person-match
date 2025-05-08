@@ -80,7 +80,6 @@ def _block_using_rules_sqls(
 
     return {"sql": sql, "output_table_name": "__splink__blocked_id_pairs"}
 
-
 def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: str, output_table_name: str) -> None:
     """
     Given a CTEPipeline, enqueue SQL to join term frequency tables.
@@ -94,7 +93,7 @@ def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: 
     """
 
     pipeline.enqueue_sql(
-        sql=f"""
+        sql = f"""
         SELECT
             match_id,
             UNNEST(postcode_arr) AS postcode
@@ -104,7 +103,7 @@ def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: 
         output_table_name="exploded_postcodes",
     )
     pipeline.enqueue_sql(
-        sql="""
+        sql = """
         SELECT
             exploded_postcodes.match_id AS match_id,
             exploded_postcodes.postcode AS value,
@@ -117,7 +116,7 @@ def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: 
         output_table_name="exploded_postcodes_with_term_frequencies",
     )
     pipeline.enqueue_sql(
-        sql="""
+        sql = """
         SELECT
             match_id,
             array_agg(

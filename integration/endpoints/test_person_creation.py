@@ -1,6 +1,3 @@
-import uuid
-
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.person.person_create import ROUTE
@@ -58,7 +55,8 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert row["cro_single"] == person_data.cros[0]
         assert row["pnc_single"] == person_data.pncs[0]
         assert row["source_system"] == person_data.source_system
-        assert row["source_system_id"] == person_data.source_system_id
+        assert row["crn"] == person_data.crn
+        assert row["prison_number"] == person_data.prison_number
         assert row["postcode_first"] == person_data.postcodes[0].replace(" ", "")
         assert row["postcode_second"] is None
         assert row["postcode_last"] == person_data.postcodes[0].replace(" ", "")
@@ -130,17 +128,18 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         )
         assert response.status_code == 403
 
-    async def test_empty_source_system_id(
+    async def test_empty_crn_prison_number(
         self,
         call_endpoint,
         match_id: str,
         db_connection: AsyncSession,
     ):
         """
-        Test empty sourceSystemId stored as nulls
+        Test empty crn and prison number stored as nulls
         """
         person_data = MockPerson(matchId=match_id)
-        person_data.source_system_id = ""
+        person_data.crn = ""
+        person_data.prison_number = ""
         response = call_endpoint(
             "post",
             ROUTE,
@@ -149,29 +148,5 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, match_id)
-        assert row["source_system_id"] is None
-
-    async def test_does_not_create_duplicates_on_source_system_id(
-        self,
-        call_endpoint,
-        db_connection: AsyncSession,
-    ):
-        """
-        Test only unique source system id allowed. Even if match_id is different
-        """
-        source_system_id = random_test_data.random_crn()
-
-        for _ in range(5):
-            person_data = MockPerson(matchId=str(uuid.uuid4()), sourceSystemId=source_system_id)
-            call_endpoint(
-                "post",
-                ROUTE,
-                json=person_data.model_dump(by_alias=True),
-                client=Client.HMPPS_PERSON_MATCH,
-            )
-
-        result = await db_connection.execute(
-            text(f"SELECT * FROM personmatch.person WHERE source_system_id = '{source_system_id}'"),
-        )
-        result = result.mappings().fetchall()
-        assert len(result) == 1
+        assert row["crn"] is None
+        assert row["prison_number"] is None
