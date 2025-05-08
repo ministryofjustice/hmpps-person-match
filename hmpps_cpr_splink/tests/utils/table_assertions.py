@@ -37,13 +37,6 @@ def assert_tables_equal(
     # TODO: restore in some form?
     # want consistent ordering of array columns so we can compare directly
     # TODO: sometimes order matters. So handle
-    # cols_to_check = [
-    #     column_name
-    #     # if not is_list_type(OUTPUT_SCHEMA.get(column_name, ""))
-    #     # else order_array_column(column_name)
-    #     for column_name in cols_to_check
-    # ]
-
     col_string = ", ".join(cols_to_check)
     sql_set_diff = "SELECT {cols} FROM {t1} EXCEPT ALL SELECT {cols} FROM {t2}"
     sql_expected_except_actual = sql_set_diff.format(cols=col_string, t1=expected_relation, t2=actual_relation)

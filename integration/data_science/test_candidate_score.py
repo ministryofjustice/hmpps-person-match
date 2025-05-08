@@ -1,27 +1,26 @@
 import uuid
 
 import pytest
-from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
+from hmpps_cpr_splink.cpr_splink.model.model import MATCH_WEIGHT_THRESHOLD
 from integration.mock_person import MockPerson
+from integration.test_base import IntegrationTestBase
 
 
-class TestPersonScore:
+class TestPersonScore(IntegrationTestBase):
     """
     Test functioning of candidate search
     """
 
-    @staticmethod
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(db_connection: AsyncSession):
+    async def clean_db(self, db_connection: AsyncSession):
         """
         Before Each
         Delete all records from the database
         """
-        await db_connection.execute(text("TRUNCATE TABLE personmatch.person"))
-        await db_connection.commit()
+        await self.truncate_person_data(db_connection)
 
     async def test_get_scored_candidates(
         self,
@@ -46,7 +45,10 @@ class TestPersonScore:
 
         # we have all candidates + original record
         assert len(res) == n_candidates
-        assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20])
+        assert (
+            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > MATCH_WEIGHT_THRESHOLD])
+            == n_candidates
+        )
 
     @pytest.mark.parametrize(
         "person_data",
@@ -89,7 +91,10 @@ class TestPersonScore:
 
         # we have all candidates + original record
         assert len(res) == n_candidates
-        assert len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > 20])
+        assert (
+            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > MATCH_WEIGHT_THRESHOLD])
+            == n_candidates
+        )
 
     async def test_get_scored_candidates_none_in_db(
         self,

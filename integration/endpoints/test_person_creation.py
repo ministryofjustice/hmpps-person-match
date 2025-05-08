@@ -42,7 +42,6 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert set(row["last_name_std_arr"]) == set(
             [person_data.last_name.upper(), person_data.last_name_aliases[0].upper()],
         )
-        assert row["sentence_date_single"] == self.to_datetime_object(person_data.sentence_dates[0])
         assert row["sentence_date_arr"] == [self.to_datetime_object(person_data.sentence_dates[0])]
         assert row["date_of_birth"] == self.to_datetime_object(person_data.date_of_birth)
         assert set(row["date_of_birth_arr"]) == set(
@@ -58,6 +57,30 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert row["source_system"] == person_data.source_system
         assert row["crn"] == person_data.crn
         assert row["prison_number"] == person_data.prison_number
+        assert row["postcode_first"] == person_data.postcodes[0].replace(" ", "")
+        assert row["postcode_second"] is None
+        assert row["postcode_last"] == person_data.postcodes[0].replace(" ", "")
+        assert row["postcode_outcode_first"] == person_data.postcodes[0][:3]
+        assert row["postcode_outcode_last"] == person_data.postcodes[0][:3]
+        assert row["date_of_birth_last"] == self.to_datetime_object(person_data.date_of_birth_aliases[0])
+        assert (
+            row["forename_first"] == person_data.first_name_aliases[0].upper()
+            or row["forename_first"] == person_data.first_name.upper()
+        )
+        assert (
+            row["forename_last"] == person_data.first_name_aliases[0].upper()
+            or row["forename_last"] == person_data.first_name.upper()
+        )
+        assert (
+            row["last_name_first"] == person_data.last_name_aliases[0].upper()
+            or row["last_name_first"] == person_data.last_name.upper()
+        )
+        assert (
+            row["last_name_last"] == person_data.last_name_aliases[0].upper()
+            or row["last_name_last"] == person_data.last_name.upper()
+        )
+        assert row["sentence_date_first"] == self.to_datetime_object(person_data.sentence_dates[0])
+        assert row["sentence_date_last"] == self.to_datetime_object(person_data.sentence_dates[0])
 
     async def test_clean_and_update_message(
         self,

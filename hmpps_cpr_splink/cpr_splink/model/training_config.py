@@ -5,14 +5,33 @@ from hmpps_cpr_splink.cpr_splink.model.settings import settings
 
 class ModelTraining:
     deterministic_rules = [
-        block_on("name_1_std", "last_name_std", "date_of_birth"),
-        block_on("name_1_std", "last_name_std", "postcode_arr[1]"),
-        block_on("name_1_std", "last_name_std", "cro_single"),
-        block_on("name_1_std", "last_name_std", "pnc_single"),
-        block_on("date_of_birth", "postcode_arr[1]", "name_1_std"),
-        block_on("date_of_birth", "postcode_arr[1]", "last_name_std"),
-        block_on("sentence_date_arr[1]", "name_1_std", "last_name_std"),
-        block_on("sentence_date_arr[-1]", "name_1_std", "last_name_std"),
+        block_on("name_1_std", "last_name_std", "date_of_birth", "postcode_arr[1]"),
+        block_on("name_1_std", "last_name_std", "date_of_birth", "postcode_arr[-1]"),
+        block_on(
+            "name_1_std",
+            "last_name_std",
+            "sentence_date_arr[1]",
+            "postcode_arr[1]",
+        ),
+        block_on(
+            "name_1_std",
+            "last_name_std",
+            "date_of_birth",
+            "sentence_date_arr[-1]",
+        ),
+        block_on("name_1_std", "pnc_single"),
+        block_on("name_1_std", "cro_single"),
+        # sometimes we see like 1900/0054321R vs 054321/12U
+        """
+        l.name_1_std = r.name_1_std
+        and l.last_name_std = r.last_name_std
+        and substring(l.pnc_single, 7, 6) = substring(r.cro_single, 1, 6)
+        """,
+        """
+        l.name_1_std = r.name_1_std
+        and l.last_name_std = r.last_name_std
+        and substring(l.cro_single, 1, 6) = substring(r.pnc_single, 7, 6)
+        """,
     ]
     recall = 0.8
 

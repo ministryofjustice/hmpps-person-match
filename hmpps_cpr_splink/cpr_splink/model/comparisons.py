@@ -1,6 +1,20 @@
 import splink.comparison_level_library as cll
 import splink.comparison_library as cl
 
+first_and_last_intersection_sql = """
+    (array_length(list_intersect(forename_std_arr_l, forename_std_arr_r)) >= 1
+    AND
+    array_length(list_intersect(last_name_std_arr_l, last_name_std_arr_r)) >= 1)
+
+"""
+
+num_name_elements_sql = """
+(len(forename_std_arr_l) * len(forename_std_arr_r)
++
+len(last_name_std_arr_l) * len(forename_std_arr_r)
+<= 10)
+"""
+
 name_comparison = cl.CustomComparison(
     output_column_name="name_comparison",
     comparison_levels=[
@@ -11,6 +25,10 @@ name_comparison = cl.CustomComparison(
             tf_adjustment_weight=0.7,
         ),
         cll.ColumnsReversedLevel("name_1_std", "last_name_std", symmetrical=True),
+        {
+            "sql_condition": f"{first_and_last_intersection_sql} and {num_name_elements_sql}",
+            "label_for_charts": "Array intersection size >= 1, few elements",
+        },
         cll.And(
             cll.ArrayIntersectLevel("forename_std_arr", 1),
             cll.ArrayIntersectLevel("last_name_std_arr", 1),
@@ -31,7 +49,9 @@ name_2_comparison = cl.JaroWinklerAtThresholds("name_2_std", score_threshold_or_
 
 # Setence date doesn't have much skew so TF adjustments not necesasry
 intersection_sql = 'array_length(list_intersect("sentence_date_arr_l", "sentence_date_arr_r")) >= 1'
+one_element_sql = 'len("sentence_date_arr_l") * len("sentence_date_arr_r") = 1'
 few_elements_sql = 'len("sentence_date_arr_l") * len("sentence_date_arr_r") <= 9'
+medium_elements_sql = 'len("sentence_date_arr_l") * len("sentence_date_arr_r") <= 50'
 date_diff_sql = """
     abs(datediff('day', sentence_date_arr_l[1], sentence_date_arr_r[1])) <= 14
     or
@@ -43,8 +63,16 @@ sentence_date_comparison = cl.CustomComparison(
     comparison_levels=[
         cll.NullLevel("sentence_date_arr"),
         {
+            "sql_condition": f"{intersection_sql} and {one_element_sql}",
+            "label_for_charts": "Array intersection size >= 1, one element",
+        },
+        {
             "sql_condition": f"{intersection_sql} and {few_elements_sql}",
             "label_for_charts": "Array intersection size >= 1, few elements",
+        },
+        {
+            "sql_condition": f"{intersection_sql} and {medium_elements_sql}",
+            "label_for_charts": "Array intersection size >= 1, medium elements",
         },
         {
             "sql_condition": intersection_sql,
@@ -75,10 +103,17 @@ date_of_birth_comparison = cl.CustomComparison(
             tf_adjustment_column="date_of_birth",
         ),
         {
-            "sql_condition": f"{dob_intersection_sql} >= 1",
-            "label_for_charts": "Array intersection size >= 1",
+            "sql_condition": f"""
+            {dob_intersection_sql} >= 1
+            and len(date_of_birth_arr_l) * len(date_of_birth_arr_r) <= 6
+            """,
+            "label_for_charts": "Array intersection size >= 1, few dob aliases",
         },
-        cll.DamerauLevenshteinLevel("cast(date_of_birth as varchar)", distance_threshold=1),
+        {
+            "sql_condition": f"{dob_intersection_sql} >=1 ",
+            "label_for_charts": "Array intersection size >= 1, lots of dob aliases",
+        },
+        cll.LevenshteinLevel("cast(date_of_birth as varchar)", distance_threshold=1),
         cll.AbsoluteDateDifferenceLevel("date_of_birth", threshold=5, metric="year", input_is_string=False),
         cll.ElseLevel(),
     ],
@@ -130,10 +165,8 @@ ids_comparison = cl.CustomComparison(
     comparison_levels=[
         {
             "sql_condition": """
-            (cro_single_l is null or cro_single_r is null)
-            AND (pnc_single_l is null or pnc_single_r is null)
-            AND (pnc_single_l is null or cro_single_r is null)
-            AND (cro_single_l is null or pnc_single_r is null)
+            (cro_single_l is null and pnc_single_l is null)
+            OR (cro_single_r is null AND pnc_single_r is null)
             """,
             "is_null_level": True,
         },

@@ -4,7 +4,7 @@ import pytest
 import requests
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.routes.jobs.term_frequencies import ROUTE, term_frequency_tables
+from hmpps_person_match.routes.jobs.term_frequencies import ROUTE, TERM_FREQUENCY_TABLES
 from integration import random_test_data
 from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
@@ -35,10 +35,10 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
         """
         await create_person_record(MockPerson(matchId=match_id))
 
-        response = requests.post(person_match_url + ROUTE) # noqa: ASYNC210
+        response = requests.post(person_match_url + ROUTE)  # noqa: ASYNC210
         assert response.status_code == 200
 
-        for table in term_frequency_tables:
+        for table in TERM_FREQUENCY_TABLES:
             await self.until_asserted(lambda: self.assert_size_of_table(db_connection, table, size=1))  # noqa: B023
 
     async def test_term_frequency_refreshed(
@@ -57,7 +57,7 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
 
         await create_person_record(MockPerson(matchId=str(uuid.uuid4()), cros=[random_test_data.random_cro()]))
 
-        response = requests.post(person_match_url + ROUTE) # noqa: ASYNC210
+        response = requests.post(person_match_url + ROUTE)  # noqa: ASYNC210
         assert response.status_code == 200
 
         await self.until_asserted(lambda: self.assert_size_of_table(db_connection, cro_tf_table, size=2))
@@ -82,7 +82,7 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
         await create_person_record(person_data_1)
         await create_person_record(person_data_2)
 
-        response = requests.post(person_match_url + ROUTE) # noqa: ASYNC210
+        response = requests.post(person_match_url + ROUTE)  # noqa: ASYNC210
         assert response.status_code == 200
 
         await self.until_asserted(lambda: self.assert_size_of_table(db_connection, cro_tf_table, size=1))

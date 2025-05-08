@@ -9,7 +9,6 @@ forename_std_arr: "VARCHAR[]"
 last_name_std_arr: "VARCHAR[]"
 date_of_birth: "DATE"
 date_of_birth_arr: "DATE[]"
-sentence_date_single: "DATE"
 sentence_date_arr: "DATE[]"
 postcode_arr: "VARCHAR[]"
 postcode_outcode_arr: "VARCHAR[]"
@@ -18,3 +17,15 @@ pnc_single: "VARCHAR"
 crn: "VARCHAR"
 prison_number: "VARCHAR"
 postcode_arr_with_freq: 'STRUCT("value" VARCHAR, rel_freq FLOAT)[]'
+postcode_first: VARCHAR
+postcode_second: VARCHAR
+postcode_last: VARCHAR
+postcode_outcode_first: VARCHAR
+postcode_outcode_last: VARCHAR
+date_of_birth_last: DATE
+forename_first: VARCHAR
+forename_last: VARCHAR
+last_name_first: VARCHAR
+last_name_last: VARCHAR
+sentence_date_first: DATE
+sentence_date_last: DATE
