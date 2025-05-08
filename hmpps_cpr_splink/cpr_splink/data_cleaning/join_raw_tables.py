@@ -60,6 +60,7 @@ def join_raw_tables_sql(
     SELECT
     p.id,
     p.source_system,
+    p.source_system_id,
     p.first_name,
     p.middle_names,
     p.last_name,
