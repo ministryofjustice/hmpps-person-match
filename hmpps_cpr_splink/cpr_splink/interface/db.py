@@ -29,7 +29,8 @@ async def insert_duckdb_table_into_postgres_table(
     update_columns = ", ".join([f"{col} = EXCLUDED.{col}" for col in columns])
     query = text(
         f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders}) "  # noqa: S608
-        f"ON CONFLICT (source_system_id) DO UPDATE SET {update_columns}",
+        f"ON CONFLICT (match_id) DO UPDATE SET {update_columns}",
     )
     await connection_pg.execute(query, data)
+
     await connection_pg.commit()

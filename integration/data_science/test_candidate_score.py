@@ -4,7 +4,6 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
-from integration import random_test_data
 from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
@@ -38,7 +37,6 @@ class TestPersonScore(IntegrationTestBase):
         # candidates - all should match with high match weight
         n_candidates = 10
         for _ in range(n_candidates):
-            person_data.source_system_id = random_test_data.random_crn()
             person_data.match_id = str(uuid.uuid4())
             await create_person_record(person_data)
 
@@ -54,7 +52,7 @@ class TestPersonScore(IntegrationTestBase):
             {"firstName": ""},
             {"middleNames": ""},
             {"lastName": ""},
-            {"sourceSystemId": ""},
+            {"crn": ""},
             {"firstNameAliases": []},
             {"lastNameAliases": []},
             {"dateOfBirthAliases": []},
@@ -74,7 +72,7 @@ class TestPersonScore(IntegrationTestBase):
         person_data,
     ):
         """
-        Test that we can score candidates even if fields are 'empty'
+        Test that we can scor candidates even if fields are 'empty'
         """
         # primary record
         person_data = MockPerson(matchId=match_id, **person_data)
@@ -82,7 +80,6 @@ class TestPersonScore(IntegrationTestBase):
         # candidates - all should match with high match weight
         n_candidates = 10
         for _ in range(n_candidates):
-            person_data.source_system_id = random_test_data.random_crn()
             person_data.match_id = str(uuid.uuid4())
             await create_person_record(person_data)
 
