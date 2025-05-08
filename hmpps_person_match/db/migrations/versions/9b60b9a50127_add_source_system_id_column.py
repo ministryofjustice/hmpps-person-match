@@ -17,19 +17,7 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    op.add_column(
-        table_name="person",
-        column=sqlalchemy.Column("source_system_id", sqlalchemy.Text),
-        schema="personmatch",
-    )
-    op.drop_column(table_name="person", column_name="crn", schema="personmatch")
-    op.drop_column(table_name="person", column_name="prison_number", schema="personmatch")
-    op.create_unique_constraint(
-        constraint_name="uq_source_system_id",
-        table_name="person",
-        schema="personmatch",
-        columns=["source_system_id"],
-    )
+   pass
 
 
 def downgrade() -> None:
