@@ -64,6 +64,7 @@ def random_source_system() -> str:
     systems = ["NOMIS", "DELIUS", "LIBRA", "COMMON_PLATFORM"]
     return random.choice(systems)  # noqa: S311
 
+
 def random_source_system_id() -> str:
     ids = [random_crn, random_prison_number, random_defendant_id, random_c_id]
     return random.choice(ids)()  # noqa: S311
