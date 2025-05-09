@@ -22,9 +22,20 @@ def upgrade() -> None:
         constraint_name="uq_source_system_id",
         table_name="person",
         schema="personmatch",
-        columns=["source_system_id"],
+        columns=["source_system_id", "source_system"],
+    )
+    op.drop_constraint(
+        constraint_name="uq_match_id",
+        table_name="person",
+        schema="personmatch",
     )
 
 
 def downgrade() -> None:
     op.drop_constraint(constraint_name="uq_source_system_id", table_name="person", schema="personmatch")
+    op.create_unique_constraint(
+        constraint_name="uq_match_id",
+        table_name="person",
+        schema="personmatch",
+        columns=["match_id"],
+    )

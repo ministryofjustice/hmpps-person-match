@@ -163,10 +163,13 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         """
         Test only unique source system id allowed. Even if match_id is different
         """
-        source_system_id = random_test_data.random_crn()
+        source_system_id = random_test_data.random_source_system_id()
+        source_system = random_test_data.random_source_system()
 
         for _ in range(5):
-            person_data = MockPerson(matchId=str(uuid.uuid4()), sourceSystemId=source_system_id)
+            person_data = MockPerson(
+                matchId=str(uuid.uuid4()), sourceSystemId=source_system_id, sourceSystem=source_system,
+            )
             call_endpoint(
                 "post",
                 ROUTE,
@@ -180,7 +183,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         result = result.mappings().fetchall()
         assert len(result) == 1
 
-    async def test_same_match_id_but_different_source_id(
+    async def test_match_id_is_upserted_on_same_source_system_id(
         self,
         call_endpoint,
         db_connection: AsyncSession,
@@ -188,20 +191,71 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         create_person_record,
     ):
         """
-        Test only unique match id, should update
+        Test match id is upserted on conflict with source system id
         """
-        person_data = MockPerson(matchId=match_id)
+        source_system_id = random_test_data.random_source_system_id()
+        source_system = random_test_data.random_source_system()
+
+        person_data = MockPerson(matchId=match_id, sourceSystemId=source_system_id, sourceSystem=source_system)
         await create_person_record(person_data)
 
-
         updated_last_name = random_test_data.random_name()
-        person_data = MockPerson(matchId=match_id, lastName=updated_last_name)
+        updated_match_id = str(uuid.uuid4())
+        updated_person_data = MockPerson(
+            matchId=updated_match_id,
+            lastName=updated_last_name,
+            sourceSystemId=source_system_id,
+            sourceSystem=source_system,
+        )
         call_endpoint(
             "post",
             ROUTE,
-            json=person_data.model_dump(by_alias=True),
+            json=updated_person_data.model_dump(by_alias=True),
             client=Client.HMPPS_PERSON_MATCH,
         )
 
-        result = await self.find_by_match_id(db_connection, match_id)
+        result = await self.find_by_match_id(db_connection, updated_match_id)
         assert result["last_name_std"] == updated_last_name.upper()
+
+        assert await self.find_by_match_id(db_connection, match_id) is None
+
+    async def test_source_system_id_can_be_same_if_different_source_system(
+        self,
+        call_endpoint,
+        db_connection: AsyncSession,
+        match_id,
+        create_person_record,
+    ):
+        """
+        Test unique constraint applies to source system
+        """
+        source_system_id = random_test_data.random_source_system_id()
+
+        record_1_person_data = MockPerson(
+            matchId=match_id,
+            sourceSystemId=source_system_id,
+            sourceSystem="NOMIS",
+        )
+        await create_person_record(record_1_person_data)
+
+        record_2_match_id = str(uuid.uuid4())
+        record_2_person_data = MockPerson(
+            matchId=record_2_match_id,
+            sourceSystemId=source_system_id,
+            sourceSystem="DELIUS",
+        )
+
+        call_endpoint(
+            "post",
+            ROUTE,
+            json=record_2_person_data.model_dump(by_alias=True),
+            client=Client.HMPPS_PERSON_MATCH,
+        )
+
+        record_1 = await self.find_by_match_id(db_connection, match_id)
+        assert record_1["source_system_id"] == source_system_id
+        assert record_1["source_system"] == "NOMIS"
+
+        record_2 = await self.find_by_match_id(db_connection, record_2_match_id)
+        assert record_2["source_system_id"] == source_system_id
+        assert record_2["source_system"] == "DELIUS"
