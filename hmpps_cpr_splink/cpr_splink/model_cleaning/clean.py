@@ -88,8 +88,6 @@ columns_basic = [
         alias="date_of_birth_arr",
     ),
     POSTCODE_BASIC,
-    TransformedColumn("crn", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
-    TransformedColumn("prison_number", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn(
         "cros",
         [LIST_TRANSFORM_UPPER, LIST_DISTINCT, LIST_FILTER_PROBLEM_CROS, LIST_SORT],
@@ -127,8 +125,6 @@ columns_reshaping = [
     TransformedColumn("source_system_id"),
     TransformedColumn("sentence_date_arr"),
     TransformedColumn("postcode_arr"),
-    TransformedColumn("crn"),
-    TransformedColumn("prison_number"),
     TransformedColumn(
         CONCAT_WS_FIRST_MIDDLE_LAST_NAME,
         [
@@ -296,6 +292,4 @@ columns_simple_select = [
     # identifiers
     TransformedColumn("cro_single", column_type="VARCHAR"),
     TransformedColumn("pnc_single", column_type="VARCHAR"),
-    TransformedColumn("crn", column_type="VARCHAR"),
-    TransformedColumn("prison_number", column_type="VARCHAR"),
 ]

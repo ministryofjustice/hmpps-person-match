@@ -58,7 +58,6 @@ class TestPersonScore(IntegrationTestBase):
             {"firstName": ""},
             {"middleNames": ""},
             {"lastName": ""},
-            {"crn": ""},
             {"firstNameAliases": []},
             {"lastNameAliases": []},
             {"dateOfBirthAliases": []},

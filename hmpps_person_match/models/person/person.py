@@ -21,8 +21,6 @@ class Person(BaseModel):
     postcodes: list[str] = Field(alias="postcodes")
     cros: list[str]
     pncs: list[str]
-    crn: str
-    prison_number: str = Field(alias="prisonNumber")
     sentence_dates: list[datetime.date] = Field(alias="sentenceDates", format="date")  # Ensures YYYY-MM-DD
 
     @field_validator("date_of_birth", mode="before")
