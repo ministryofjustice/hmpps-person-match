@@ -148,7 +148,7 @@ wheels = [
 
 [[package]]
 name = "azure-monitor-opentelemetry"
-version = "1.6.4"
+version = "1.6.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-core" },
@@ -164,9 +164,9 @@ dependencies = [
     { name = "opentelemetry-resource-detector-azure" },
     { name = "opentelemetry-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/5e/8c65c97a4210ef6df7593676c3c2c95766f1114363016e5c78ba5cd47996/azure_monitor_opentelemetry-1.6.4.tar.gz", hash = "sha256:9f5ce4c666caf1f9b536f8ab4ee207dff94777d568517c74f26e3327f75c3fc3", size = 45114, upload-time = "2024-11-07T02:33:54.174Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/dc/ca94c8edd56f09f36979ca9583934b91e3b5ffd8c8ebeb9d80e4fd265044/azure_monitor_opentelemetry-1.6.8.tar.gz", hash = "sha256:d6098ca82a0b067bf342fd1d0b23ffacb45410276e0b7e12beafcd4a6c3b77a3", size = 47060, upload-time = "2025-04-17T17:41:04.689Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4f/0f/c9a0f044e3ff0b4c2c1bc3e29d315cce27b6d6af6c781b6a522fe23f7c62/azure_monitor_opentelemetry-1.6.4-py3-none-any.whl", hash = "sha256:014142ffa420bc2b287ff3bd30de6c31d64b2846423d011a8280334d7afcb01a", size = 23002, upload-time = "2024-11-07T02:33:55.856Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/92/f7f08eb539d7b27a0cc71067c748e121ab055ad103228a259ab719b7507b/azure_monitor_opentelemetry-1.6.8-py3-none-any.whl", hash = "sha256:227b3caaaf1a86bbd71d5f4443ef3d64e42dddfcaeb7aade1d3d4a9a8059309d", size = 23644, upload-time = "2025-04-17T17:41:06.695Z" },
 ]
 
 [[package]]
@@ -188,11 +188,11 @@ wheels = [
 
 [[package]]
 name = "cachetools"
-version = "5.5.1"
+version = "5.5.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d9/74/57df1ab0ce6bc5f6fa868e08de20df8ac58f9c44330c7671ad922d2bbeae/cachetools-5.5.1.tar.gz", hash = "sha256:70f238fbba50383ef62e55c6aff6d9673175fe59f7c6782c7a0b9e38f4a9df95", size = 28044, upload-time = "2025-01-21T21:27:56.736Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6c/81/3747dad6b14fa2cf53fcf10548cf5aea6913e96fab41a3c198676f8948a5/cachetools-5.5.2.tar.gz", hash = "sha256:1a661caa9175d26759571b2e19580f9d6393969e5dfca11fdb1f947a23e640d4", size = 28380, upload-time = "2025-02-20T21:01:19.524Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/4e/de4ff18bcf55857ba18d3a4bd48c8a9fde6bb0980c9d20b263f05387fd88/cachetools-5.5.1-py3-none-any.whl", hash = "sha256:b76651fdc3b24ead3c648bbdeeb940c1b04d365b38b4af66788f9ec4a81d42bb", size = 9530, upload-time = "2025-01-21T21:27:54.511Z" },
+    { url = "https://files.pythonhosted.org/packages/72/76/20fa66124dbe6be5cafeb312ece67de6b61dd91a0247d1ea13db4ebb33c2/cachetools-5.5.2-py3-none-any.whl", hash = "sha256:d26a22bcc62eb95c3beabd9f1ee5e820d3d2704fe2967cbe350e20c8ffcd3f0a", size = 10080, upload-time = "2025-02-20T21:01:16.647Z" },
 ]
 
 [[package]]
@@ -395,14 +395,14 @@ wheels = [
 
 [[package]]
 name = "faker"
-version = "37.0.0"
+version = "37.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "tzdata" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/82/c6/6820408cdd87c11f1fbbd2349b05bbda28174d746e6d708ad0f0a934f9d7/faker-37.0.0.tar.gz", hash = "sha256:d2e4e2a30d459a8ec0ae52a552aa51c48973cb32cf51107dee90f58a8322a880", size = 1875487, upload-time = "2025-03-07T15:38:41.666Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ba/a6/b77f42021308ec8b134502343da882c0905d725a4d661c7adeaf7acaf515/faker-37.1.0.tar.gz", hash = "sha256:ad9dc66a3b84888b837ca729e85299a96b58fdaef0323ed0baace93c9614af06", size = 1875707, upload-time = "2025-03-24T16:14:02.958Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/03/0ffcbc5ab352c266a648d029f79de54ca205c04661203d46a42e3f03492b/faker-37.0.0-py3-none-any.whl", hash = "sha256:2598f78b76710a4ed05e197dda5235be409b4c291ba5c9c7514989cfbc7a5144", size = 1918764, upload-time = "2025-03-07T15:38:39.328Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/a1/8936bc8e79af80ca38288dd93ed44ed1f9d63beb25447a4c59e746e01f8d/faker-37.1.0-py3-none-any.whl", hash = "sha256:dc2f730be71cb770e9c715b13374d80dbcee879675121ab51f9683d262ae9a1c", size = 1918783, upload-time = "2025-03-24T16:14:00.051Z" },
 ]
 
 [[package]]
@@ -495,8 +495,8 @@ requires-dist = [
     { name = "alembic", specifier = "==1.14.1" },
     { name = "asyncpg", specifier = "==0.30.0" },
     { name = "authlib", specifier = "==1.4.0" },
-    { name = "azure-monitor-opentelemetry", specifier = "==1.6.4" },
-    { name = "cachetools", specifier = "==5.5.1" },
+    { name = "azure-monitor-opentelemetry", specifier = "==1.6.8" },
+    { name = "cachetools", specifier = "==5.5.2" },
     { name = "cryptography", specifier = "==44.0.1" },
     { name = "duckdb", specifier = "==1.2.2" },
     { name = "fastapi", specifier = "==0.115.12" },
@@ -512,7 +512,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "faker", specifier = "==37.0.0" },
+    { name = "faker", specifier = "==37.1.0" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "ipykernel", specifier = "==6.29.5" },
     { name = "pytest", specifier = "==8.3.4" },
