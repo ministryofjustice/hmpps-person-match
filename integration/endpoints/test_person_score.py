@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.person.score.person_score import ROUTE
+from integration import random_test_data
 from integration.client import Client
 from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
@@ -69,11 +70,13 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         # Create different person
         matching_person_id_1 = str(uuid.uuid4())
         person_data.match_id = matching_person_id_1
+        person_data.source_system_id = random_test_data.random_source_system_id()
         await create_person_record(person_data)
 
         # Create different person
         matching_person_id_2 = str(uuid.uuid4())
         person_data.match_id = matching_person_id_2
+        person_data.source_system_id = random_test_data.random_source_system_id()
         await create_person_record(person_data)
 
         # Call score for person
