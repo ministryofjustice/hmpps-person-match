@@ -11,8 +11,6 @@ def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
             first_name VARCHAR,
             middle_names VARCHAR,
             last_name VARCHAR,
-            crn VARCHAR,
-            prison_number VARCHAR,
             date_of_birth DATE,
             sex VARCHAR,
             ethnicity VARCHAR,
@@ -62,8 +60,6 @@ def populate_raw_tables(con: duckdb.DuckDBPyConnection):
         first_name VARCHAR,
         middle_names VARCHAR,
         last_name VARCHAR,
-        crn VARCHAR,
-        prison_number VARCHAR,
         date_of_birth DATE,
         sex VARCHAR,
         ethnicity VARCHAR

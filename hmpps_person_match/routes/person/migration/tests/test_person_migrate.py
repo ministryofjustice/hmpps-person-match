@@ -62,8 +62,6 @@ class TestPersonMigrateRoute:
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
-            "crn": "1234",
-            "prisonNumber": "A1234BC",
             "dateOfBirth": "1992-03-02",
             "firstNameAliases": ["Henry"],
             "lastNameAliases": ["Junaed"],
