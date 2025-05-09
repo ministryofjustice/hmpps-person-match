@@ -22,8 +22,8 @@ class ScoredCandidate(TypedDict):
     candidate_match_probability: float
     candidate_match_weight: float
 
-def insert_data_into_duckdb(connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str):
 
+def insert_data_into_duckdb(connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str):
     tf_columns = [
         "name_1_std",
         "name_2_std",
@@ -36,7 +36,10 @@ def insert_data_into_duckdb(connection_duckdb: duckdb.DuckDBPyConnection, data_t
     postcode_tf_schema = [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_arr", "FLOAT[]")]
     tf_schema = [(f"tf_{tf_col}", "FLOAT") for tf_col in tf_columns] + postcode_tf_schema
     create_table_from_records(
-        connection_duckdb, data_to_insert, base_table_name, CLEANED_TABLE_SCHEMA + tf_schema,
+        connection_duckdb,
+        data_to_insert,
+        base_table_name,
+        CLEANED_TABLE_SCHEMA + tf_schema,
     )
     table_with_postcode_tf_tablename = f"{base_table_name}_with_postcode_tfs"
     sql = f"""
@@ -70,7 +73,6 @@ async def get_scored_candidates(
         candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
 
         res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=True)
-
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
         return [
