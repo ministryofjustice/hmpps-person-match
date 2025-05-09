@@ -13,6 +13,7 @@ data:
     candidate_search_return_format:
       - match_id: "Match12"
         source_system: "NOMIS"
+        source_system_id: "A12345BC"
         first_name: "john    james"
         middle_names: "JR"
         last_name: "o'connor"
@@ -24,13 +25,12 @@ data:
         date_of_birth_aliases: ["1955-03-28", "1955-03-28"]
         postcodes: ["AB1 2CD", "XY1 9YZ", "1AB 2YX", "NF1 1NF"]
         cros: ["123456/99X"]
-        crn: "A12345"
-        prison_number: "A12345BC"
         pncs: NULL
         sentence_dates: ["2000-11-11", "2001-12-17"]
     splink_model_format:
       - match_id: "Match12"
         source_system: "NOMIS"
+        source_system_id: "A12345BC"
         name_1_std: "JOHN"
         name_2_std: "JAMES"
         name_3_std: "JR"
@@ -45,8 +45,6 @@ data:
         postcode_outcode_arr: ["AB1", "XY1"]
         cro_single: "123456/99X"
         pnc_single: NULL
-        crn: "A12345"
-        prison_number: "A12345BC"
         postcode_arr_with_freq:
           [
             { "value": "AB12CD", "rel_freq": 0.0001 },
