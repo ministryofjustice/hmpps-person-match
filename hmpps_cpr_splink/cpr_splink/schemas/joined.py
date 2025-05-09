@@ -15,6 +15,7 @@ class JoinedRecord(TypedDict):
 
     match_id: str
     source_system: str
+    source_system_id: str | None
     first_name: str | None
     middle_names: str | None
     last_name: str | None
@@ -25,8 +26,6 @@ class JoinedRecord(TypedDict):
     postcodes: list[str] | None
     cros: list[str] | None
     pncs: list[str] | None
-    crn: str | None
-    prison_number: str | None
     sentence_dates: list[date] | None
 
 

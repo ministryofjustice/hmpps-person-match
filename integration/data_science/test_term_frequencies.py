@@ -5,6 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.models.person.person import Person
+from integration import random_test_data
 from integration.test_base import IntegrationTestBase
 
 
@@ -16,12 +17,11 @@ class TestTFs(IntegrationTestBase):
     def create_person_data(self, first_name: str = "Henry", postcodes: list[str] = None):
         return {
             "matchId": str(uuid.uuid4()),
-            "sourceSystem": "DELIUS",
+            "sourceSystem": random_test_data.random_source_system(),
+            "sourceSystemId": random_test_data.random_source_system_id(),
             "firstName": first_name,
             "middleNames": "Ahmed",
             "lastName": "Junaed",
-            "crn": "1234",
-            "prisonNumber": "A1234BC",
             "dateOfBirth": "1992-03-02",
             "firstNameAliases": ["Henry"],
             "lastNameAliases": ["Junaed"],
