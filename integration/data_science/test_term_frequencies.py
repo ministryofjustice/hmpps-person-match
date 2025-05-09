@@ -17,7 +17,7 @@ class TestTFs(IntegrationTestBase):
     def create_person_data(self, first_name: str = "Henry", postcodes: list[str] = None):
         return {
             "matchId": str(uuid.uuid4()),
-            "sourceSystem": "DELIUS",
+            "sourceSystem": random_test_data.random_source_system(),
             "sourceSystemId": random_test_data.random_source_system_id(),
             "firstName": first_name,
             "middleNames": "Ahmed",
