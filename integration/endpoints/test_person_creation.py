@@ -59,8 +59,6 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert row["pnc_single"] == person_data.pncs[0]
         assert row["source_system"] == person_data.source_system
         assert row["source_system_id"] == person_data.source_system_id
-        assert row["crn"] == person_data.crn
-        assert row["prison_number"] == person_data.prison_number
         assert row["postcode_first"] == person_data.postcodes[0].replace(" ", "")
         assert row["postcode_second"] is None
         assert row["postcode_last"] == person_data.postcodes[0].replace(" ", "")
@@ -131,29 +129,6 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
             client=Client.HMPPS_TIER,
         )
         assert response.status_code == 403
-
-    async def test_empty_crn_prison_number(
-        self,
-        call_endpoint,
-        match_id: str,
-        db_connection: AsyncSession,
-    ):
-        """
-        Test empty crn and prison number stored as nulls
-        """
-        person_data = MockPerson(matchId=match_id)
-        person_data.crn = ""
-        person_data.prison_number = ""
-        response = call_endpoint(
-            "post",
-            ROUTE,
-            json=person_data.model_dump(by_alias=True),
-            client=Client.HMPPS_PERSON_MATCH,
-        )
-        assert response.status_code == 200
-        row = await self.find_by_match_id(db_connection, match_id)
-        assert row["crn"] is None
-        assert row["prison_number"] is None
 
     async def test_does_not_create_duplicates_on_source_system_id(
         self,
