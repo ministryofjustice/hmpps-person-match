@@ -13,6 +13,7 @@ data:
     candidate_search_return_format:
       - match_id: "Match12"
         source_system: "NOMIS"
+        source_system_id: "A12345BC"
         first_name: "john    james"
         middle_names: "JR"
         last_name: "o'connor"
@@ -31,6 +32,7 @@ data:
     splink_model_format:
       - match_id: "Match12"
         source_system: "NOMIS"
+        source_system_id: "A12345BC"
         name_1_std: "JOHN"
         name_2_std: "JAMES"
         name_3_std: "JR"

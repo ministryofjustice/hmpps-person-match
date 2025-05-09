@@ -12,6 +12,7 @@ class TestPersonRoute:
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
+            "sourceSystemId": "A12345BC",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
@@ -44,6 +45,7 @@ class TestPersonRoute:
         json = {
             "matchId": "M1",
             "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],  # Should be string
+            "sourceSystemId": "A12345BC",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
@@ -85,6 +87,7 @@ class TestPersonRoute:
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
+            "sourceSystemId": "A12345BC",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
@@ -118,6 +121,7 @@ class TestPersonRoute:
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
+            "sourceSystemId": "A12345BC",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",

@@ -12,6 +12,7 @@ from hmpps_cpr_splink.cpr_splink.schemas.joined import JoinedRecord
 record_1 = JoinedRecord(
     id=1,
     source_system="delius",
+    source_system_id=None,
     first_name="andrew",
     middle_names="long John",
     last_name="BOND",
@@ -35,6 +36,7 @@ record_1 = JoinedRecord(
 record_2 = JoinedRecord(
     id=2,
     source_system="nomis",
+    source_system_id=None,
     first_name="andy",
     middle_names="John",
     last_name="boond",

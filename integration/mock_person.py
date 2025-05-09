@@ -43,3 +43,7 @@ class MockPerson(Person):
         alias="sourceSystem",
         default_factory=lambda: random_test_data.random_source_system(),
     )
+    source_system_id: str = Field(
+        alias="sourceSystemId",
+        default_factory=lambda: random_test_data.random_source_system_id(),
+    )

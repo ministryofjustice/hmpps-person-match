@@ -57,6 +57,7 @@ columns = {
     "crn",
     "prison_number",
     "source_system",
+    "source_system_id",
     # derived columns
     "sentence_date_first",
     "sentence_date_last",
