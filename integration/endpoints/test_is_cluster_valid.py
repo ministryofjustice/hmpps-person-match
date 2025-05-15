@@ -100,8 +100,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         await create_person_record(person_data)
 
         # Create an entirely different person
+        matching_person_id_2 = str(uuid.uuid4())
         person_data = MockPerson(
-            matchId=match_id,
+            matchId=matching_person_id_2,
             firstName="Different",
             middleNames="",
             lastName="Name",
@@ -113,11 +114,6 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
             cros=["11/654321Z"],
             pncs=["11/7654321Z"],
             sentenceDates=["2000-03-02"],
-        )
-        matching_person_id_2 = str(uuid.uuid4())
-        person_data = MockPerson(
-            matchId=matching_person_id_2,
-            sourceSystemId=random_test_data.random_source_system_id(),
         )
         await create_person_record(person_data)
 
