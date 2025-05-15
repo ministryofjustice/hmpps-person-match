@@ -34,7 +34,7 @@ def access_token_factory():
         if response.status_code == 200:
             return response.json()["access_token"]
         else:
-            raise Exception(f"Failed to generate access token: {response.status_code}")
+            raise Exception(f"Failed to generate access token: {response.status_code}, {response.text}")
 
     return generate_access_token
 
