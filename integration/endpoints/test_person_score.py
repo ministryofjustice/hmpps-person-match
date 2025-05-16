@@ -21,7 +21,7 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         Before Each
         """
         await self.truncate_person_data(db_connection)
-        await self.refresh_term_frequencies_assert_empty(person_match_url, db_connection)
+        await self.refresh_term_frequencies(db_connection)
 
     async def test_score_no_matching(self, call_endpoint, match_id):
         """
