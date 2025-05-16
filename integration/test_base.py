@@ -1,7 +1,6 @@
 import asyncio
 from datetime import datetime
 
-import requests
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -21,14 +20,12 @@ class IntegrationTestBase:
         await db_connection.commit()
         await self.until_asserted(lambda: self.assert_size_of_table(db_connection, "person", size=0))
 
-    async def refresh_term_frequencies(self, person_match_url: str):
+    async def refresh_term_frequencies(self, db_connection: AsyncSession):
         """
         Refresh term frequencies
         """
-        response = requests.post(person_match_url + "/jobs/termfrequencies")  # noqa: ASYNC210
-        assert response.status_code == 200
-
-    async def assert_term_frequencies_empty(self, db_connection: AsyncSession):
+        for tf_table in TERM_FREQUENCY_TABLES:
+            await db_connection.execute(text(f"REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.{tf_table};"))
         for table in TERM_FREQUENCY_TABLES:
             await self.until_asserted(lambda: self.assert_size_of_table(db_connection, table, size=0))  # noqa: B023
 
