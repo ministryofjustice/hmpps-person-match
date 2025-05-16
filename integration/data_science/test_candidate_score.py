@@ -4,7 +4,6 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
-from hmpps_cpr_splink.cpr_splink.model.model import MATCH_WEIGHT_THRESHOLD
 from integration import random_test_data
 from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
@@ -14,6 +13,7 @@ class TestPersonScore(IntegrationTestBase):
     """
     Test functioning of candidate search
     """
+    HIGH_MATCH_WEIGHT = 20
 
     @pytest.fixture(autouse=True, scope="function")
     async def clean_db(self, db_connection: AsyncSession):
@@ -48,7 +48,7 @@ class TestPersonScore(IntegrationTestBase):
         # we have all candidates + original record
         assert len(res) == n_candidates
         assert (
-            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > MATCH_WEIGHT_THRESHOLD])
+            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > self.HIGH_MATCH_WEIGHT])
             == n_candidates
         )
 
@@ -95,7 +95,7 @@ class TestPersonScore(IntegrationTestBase):
         # we have all candidates + original record
         assert len(res) == n_candidates
         assert (
-            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > MATCH_WEIGHT_THRESHOLD])
+            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > self.HIGH_MATCH_WEIGHT])
             == n_candidates
         )
 

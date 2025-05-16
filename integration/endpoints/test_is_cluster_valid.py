@@ -21,7 +21,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         Before Each
         """
         await self.truncate_person_data(db_connection)
-        await self.refresh_term_frequencies_assert_empty(person_match_url, db_connection)
+        await self.refresh_term_frequencies(db_connection)
 
     async def test_is_cluster_valid_unknown_id(self, call_endpoint, match_id):
         """
