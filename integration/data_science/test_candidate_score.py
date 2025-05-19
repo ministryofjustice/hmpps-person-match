@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
-from hmpps_cpr_splink.cpr_splink.model.model import MATCH_WEIGHT_THRESHOLD
+from integration import random_test_data
 from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
@@ -13,6 +13,7 @@ class TestPersonScore(IntegrationTestBase):
     """
     Test functioning of candidate search
     """
+    HIGH_MATCH_WEIGHT = 20
 
     @pytest.fixture(autouse=True, scope="function")
     async def clean_db(self, db_connection: AsyncSession):
@@ -39,6 +40,7 @@ class TestPersonScore(IntegrationTestBase):
         n_candidates = 10
         for _ in range(n_candidates):
             person_data.match_id = str(uuid.uuid4())
+            person_data.source_system_id = random_test_data.random_source_system_id()
             await create_person_record(person_data)
 
         res = await get_scored_candidates(match_id, pg_db_url, db_connection)
@@ -46,7 +48,7 @@ class TestPersonScore(IntegrationTestBase):
         # we have all candidates + original record
         assert len(res) == n_candidates
         assert (
-            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > MATCH_WEIGHT_THRESHOLD])
+            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > self.HIGH_MATCH_WEIGHT])
             == n_candidates
         )
 
@@ -56,7 +58,6 @@ class TestPersonScore(IntegrationTestBase):
             {"firstName": ""},
             {"middleNames": ""},
             {"lastName": ""},
-            {"crn": ""},
             {"firstNameAliases": []},
             {"lastNameAliases": []},
             {"dateOfBirthAliases": []},
@@ -65,6 +66,7 @@ class TestPersonScore(IntegrationTestBase):
             {"pncs": []},
             {"sentenceDates": []},
             {"sourceSystem": ""},
+            {"sourceSystemId": ""},
         ],
     )
     async def test_get_scored_candidates_blank_data(
@@ -85,6 +87,7 @@ class TestPersonScore(IntegrationTestBase):
         n_candidates = 10
         for _ in range(n_candidates):
             person_data.match_id = str(uuid.uuid4())
+            person_data.source_system_id = random_test_data.random_source_system_id()
             await create_person_record(person_data)
 
         res = await get_scored_candidates(match_id, pg_db_url, db_connection)
@@ -92,7 +95,7 @@ class TestPersonScore(IntegrationTestBase):
         # we have all candidates + original record
         assert len(res) == n_candidates
         assert (
-            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > MATCH_WEIGHT_THRESHOLD])
+            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > self.HIGH_MATCH_WEIGHT])
             == n_candidates
         )
 

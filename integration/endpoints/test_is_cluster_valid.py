@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.cluster.is_cluster_valid import ROUTE
+from integration import random_test_data
 from integration.client import Client
 from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
@@ -20,7 +21,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         Before Each
         """
         await self.truncate_person_data(db_connection)
-        await self.refresh_term_frequencies_assert_empty(person_match_url, db_connection)
+        await self.refresh_term_frequencies(db_connection)
 
     async def test_is_cluster_valid_unknown_id(self, call_endpoint, match_id):
         """
@@ -49,11 +50,13 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # Create different person
         matching_person_id_1 = str(uuid.uuid4())
         person_data.match_id = matching_person_id_1
+        person_data.source_system_id = random_test_data.random_source_system_id()
         await create_person_record(person_data)
 
         # Create different person
         matching_person_id_2 = str(uuid.uuid4())
         person_data.match_id = matching_person_id_2
+        person_data.source_system_id = random_test_data.random_source_system_id()
         await create_person_record(person_data)
 
         # Call is-cluster-valid endpoint - should all be in same cluster
@@ -93,6 +96,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # Create a duplicate person
         matching_person_id_1 = str(uuid.uuid4())
         person_data.match_id = matching_person_id_1
+        person_data.source_system_id = random_test_data.random_source_system_id()
         await create_person_record(person_data)
 
         # Create an entirely different person
@@ -113,6 +117,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         matching_person_id_2 = str(uuid.uuid4())
         person_data = MockPerson(
             matchId=matching_person_id_2,
+            sourceSystemId=random_test_data.random_source_system_id(),
         )
         await create_person_record(person_data)
 

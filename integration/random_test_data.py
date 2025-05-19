@@ -1,6 +1,7 @@
 import datetime
 import random
 import string
+import uuid
 
 
 def random_name() -> str:
@@ -9,6 +10,18 @@ def random_name() -> str:
 
 def random_crn() -> str:
     return random_lower_case_string(length=1).upper() + random_digit(length=6)
+
+
+def random_prison_number() -> str:
+    return random_lower_case_string(1).upper() + random_digit(4) + random_lower_case_string(2).upper()
+
+
+def random_defendant_id() -> str:
+    return str(uuid.uuid4())
+
+
+def random_c_id() -> str:
+    return random_digit(9)
 
 
 def random_date() -> str:
@@ -52,5 +65,6 @@ def random_source_system() -> str:
     return random.choice(systems)  # noqa: S311
 
 
-def random_prison_number() -> str:
-    return random_lower_case_string(1).upper() + random_digit(4) + random_lower_case_string(2).upper()
+def random_source_system_id() -> str:
+    ids = [random_crn, random_prison_number, random_defendant_id, random_c_id]
+    return random.choice(ids)()  # noqa: S311
