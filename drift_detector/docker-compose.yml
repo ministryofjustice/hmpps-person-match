@@ -1,0 +1,44 @@
+services:
+
+  postgres-person-match:
+    container_name: postgres-person-match
+    image: postgres:16.3-alpine
+    ports:
+      - 5439:5432
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root-match
+      POSTGRES_PASSWORD: dev-match
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      test: pg_isready -U root -d postgres
+      start_period: 5s
+      start_interval: 0.2s
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  postgres-person-record:
+    container_name: postgres-person-record
+    image: postgres:16.3-alpine
+    ports:
+      - 5449:5432
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root-record
+      POSTGRES_PASSWORD: dev-record
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      test: pg_isready -U root -d postgres
+      start_period: 5s
+      start_interval: 0.2s
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+networks:
+  hmpps:

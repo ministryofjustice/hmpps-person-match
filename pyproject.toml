@@ -29,6 +29,9 @@ dependencies = [
 package = true
 default-groups = ["dev"]
 
+[tool.uv.workspace]
+members = ["drift_detector"]
+
 [dependency-groups]
 dev = [
   "ipykernel==6.29.5",
