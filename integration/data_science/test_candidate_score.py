@@ -13,6 +13,7 @@ class TestPersonScore(IntegrationTestBase):
     """
     Test functioning of candidate search
     """
+
     HIGH_MATCH_WEIGHT = 20
 
     @pytest.fixture(autouse=True, scope="function")
