@@ -11,8 +11,6 @@ from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 
 ROUTE = "/jobs/termfrequencies"
 
-DESCRIPTION = "Triggers a refresh of the term frequencies"
-
 router = APIRouter()
 
 
@@ -28,7 +26,7 @@ TERM_FREQUENCY_TABLES = [
 ]
 
 
-@router.post(ROUTE, description=DESCRIPTION, include_in_schema=False)
+@router.post(ROUTE, include_in_schema=False)
 async def post_term_frequency(
     background_tasks: BackgroundTasks,
     logger: Annotated[Logger, Depends(get_logger)],

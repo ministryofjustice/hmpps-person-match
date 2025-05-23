@@ -22,6 +22,7 @@ def upgrade() -> None:
     op.drop_column(table_name="person", column_name="crn", schema="personmatch")
     op.drop_column(table_name="person", column_name="prison_number", schema="personmatch")
 
+
 def downgrade() -> None:
     op.add_column(
         table_name="person",

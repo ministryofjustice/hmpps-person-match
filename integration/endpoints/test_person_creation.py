@@ -143,7 +143,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
 
         for _ in range(5):
             person_data = MockPerson(
-                matchId=str(uuid.uuid4()), sourceSystemId=source_system_id, sourceSystem=source_system,
+                matchId=str(uuid.uuid4()),
+                sourceSystemId=source_system_id,
+                sourceSystem=source_system,
             )
             call_endpoint(
                 "post",
