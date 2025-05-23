@@ -15,13 +15,13 @@ ROUTE = "/jobs/recordcountreport"
 router = APIRouter()
 
 
-@router.get(ROUTE, include_in_schema=False)
-async def get_record_count_report(
+@router.post(ROUTE, include_in_schema=False)
+async def post_record_count_report(
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> JSONResponse:
     """
-    Record count report GET request handler
+    Record count report POST request handler
     Returns the count of person record
     """
     result = await session.execute(
