@@ -27,7 +27,7 @@ class TestRecordCountReportEndPoint:
         assert response.status_code == 200
 
         mock_logger.info.assert_called_with(
-            TelemetryEvents.JOBS_MATCH_RECORD_COUNT_REPORT,
+            TelemetryEvents.PERSON_MATCH_RECORD_COUNT_REPORT,
             extra={},
         )
 
@@ -66,6 +66,6 @@ class TestRecordCountReportEndPoint:
         assert response.status_code == 200
 
         mock_logger.info.assert_called_with(
-            TelemetryEvents.JOBS_MATCH_RECORD_COUNT_REPORT,
+            TelemetryEvents.PERSON_MATCH_RECORD_COUNT_REPORT,
             extra={"LIBRA": 2, "COMMON_PLATFORM": 200, "NOMIS": 100, "DELIUS": 5},
         )

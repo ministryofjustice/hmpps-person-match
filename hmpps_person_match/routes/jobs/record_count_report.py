@@ -1,5 +1,5 @@
 from logging import Logger
-from typing import Annotated, TypedDict
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
@@ -15,11 +15,6 @@ ROUTE = "/jobs/recordcountreport"
 router = APIRouter()
 
 
-class RecordCountReport(TypedDict):
-    source_system: str
-    count: int
-
-
 @router.get(ROUTE, include_in_schema=False)
 async def get_record_count_report(
     session: Annotated[AsyncSession, Depends(get_db_session)],
@@ -30,9 +25,9 @@ async def get_record_count_report(
     Returns the count of person record
     """
     result = await session.execute(
-        text("select p.source_system, count(*) from personmatch.person p group by p.source_system"),
+        text("select p.source_system, count(p.source_system) from personmatch.person p group by p.source_system"),
     )
     result_mapping_dict = {row["source_system"]: row["count"] for row in result.mappings().fetchall()}
-    logger.info(TelemetryEvents.JOBS_MATCH_RECORD_COUNT_REPORT, extra=result_mapping_dict)
+    logger.info(TelemetryEvents.PERSON_MATCH_RECORD_COUNT_REPORT, extra=result_mapping_dict)
 
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)
