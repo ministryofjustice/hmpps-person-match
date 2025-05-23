@@ -31,6 +31,10 @@ generic-service:
           deny all;
           return 401;
         }
+        location /jobs/recordcountreport {
+          deny all;
+          return 401;
+        }
 
   imagePullSecrets:
     - name: dockerconfigjson-github-com
