@@ -23,7 +23,7 @@ class TestRecordCountReportEndPoint:
         mock_db_connection.execute.return_value = mock_db_result
 
         # Call record count report endpoint
-        response = call_endpoint("get", ROUTE)
+        response = call_endpoint("post", ROUTE)
         assert response.status_code == 200
 
         mock_logger.info.assert_called_with(
@@ -62,7 +62,7 @@ class TestRecordCountReportEndPoint:
         mock_db_connection.execute.return_value = mock_db_result
 
         # Call record count report endpoint
-        response = call_endpoint("get", ROUTE)
+        response = call_endpoint("post", ROUTE)
         assert response.status_code == 200
 
         mock_logger.info.assert_called_with(
