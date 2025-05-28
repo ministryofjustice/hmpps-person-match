@@ -472,7 +472,6 @@ dependencies = [
     { name = "pyjwt" },
     { name = "pytz" },
     { name = "splink" },
-    { name = "tornado" },
     { name = "uvicorn" },
 ]
 
@@ -506,7 +505,6 @@ requires-dist = [
     { name = "pyjwt", specifier = "==2.10.1" },
     { name = "pytz", specifier = "==2025.2" },
     { name = "splink", specifier = "==4.0.7" },
-    { name = "tornado", specifier = "==6.5" },
     { name = "uvicorn", specifier = "==0.34.2" },
 ]
 
