@@ -118,7 +118,7 @@ If any errors are auto fixable run the following command:
 make lint-fix
 ```
 
-### Formating
+### Formatting
 
 To run the automatic python file formatter, run the following command:
 
