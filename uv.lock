@@ -148,7 +148,7 @@ wheels = [
 
 [[package]]
 name = "azure-monitor-opentelemetry"
-version = "1.6.9"
+version = "1.6.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-core" },
@@ -164,9 +164,9 @@ dependencies = [
     { name = "opentelemetry-resource-detector-azure" },
     { name = "opentelemetry-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/62/7d/e21c48705cccb31e627a3ca59f8410b8f2cd37ff13ab6fffe92c8957d59a/azure_monitor_opentelemetry-1.6.9.tar.gz", hash = "sha256:2689cb019982d01688584de832e118316e974c3ba02d81f71d8e8e7ca5d1e799", size = 47131, upload-time = "2025-05-13T18:32:27.564Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5b/d0/6c315ddec1490989404cbf21909c232e9e5285b1117972ed488d7d2d7f46/azure_monitor_opentelemetry-1.6.10.tar.gz", hash = "sha256:1f8145f665abb1626ac1caf14f75fc9b4fc43b818694798f7a43ea369e265683", size = 48990, upload-time = "2025-05-30T18:28:22.148Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/cb/0b9ae1ba27f2b7c3f9195c93c2a2d3b16fc763b8bf321feba4c03702cf6f/azure_monitor_opentelemetry-1.6.9-py3-none-any.whl", hash = "sha256:3e3ae4b4f8f048df7b7056510f75dbcf41055cdd433cc9425a5b7f7d1a0163c3", size = 23673, upload-time = "2025-05-13T18:32:28.703Z" },
+    { url = "https://files.pythonhosted.org/packages/8c/f9/762e29bcb2c05ec24bee39f28f20e95d0efab57ea3edcc591422308570d6/azure_monitor_opentelemetry-1.6.10-py3-none-any.whl", hash = "sha256:8b5953454f72da42f7959a8017e5f9712427b931d1d08be008d32722c4605a0d", size = 25274, upload-time = "2025-05-30T18:28:23.167Z" },
 ]
 
 [[package]]
@@ -494,7 +494,7 @@ requires-dist = [
     { name = "alembic", specifier = "==1.16.1" },
     { name = "asyncpg", specifier = "==0.30.0" },
     { name = "authlib", specifier = "==1.6.0" },
-    { name = "azure-monitor-opentelemetry", specifier = "==1.6.9" },
+    { name = "azure-monitor-opentelemetry", specifier = "==1.6.10" },
     { name = "cachetools", specifier = "==6.0.0" },
     { name = "cryptography", specifier = "==45.0.3" },
     { name = "duckdb", specifier = "==1.3.0" },
