@@ -12,7 +12,7 @@ dependencies = [
   "pytz==2025.2",
   "azure-monitor-opentelemetry==1.6.10",
   "fastapi==0.115.12",
-  "uvicorn==0.34.2",
+  "uvicorn==0.34.3",
   "authlib==1.6.0",
   "cachetools==6.0.0",
   "pyjwt==2.10.1",
