@@ -5,7 +5,6 @@ from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import (
     columns_reshaping,
     columns_simple_select,
 )
-from hmpps_cpr_splink.cpr_splink.model_cleaning.term_frequencies import lookup_term_frequencies
 
 CLEANED_TABLE_SCHEMA = [("id", "INTEGER")] + [(col.as_column, col.column_type) for col in columns_simple_select]
 
@@ -14,25 +13,6 @@ def simple_clean_whole_joined_table(base_table_name: str) -> Table:
     t_basic_cleaned = Table("cleaned_1", *columns_basic, from_table=base_table_name)
     t_name_enhanced = Table("cleaned_2", *columns_reshaping, from_table=t_basic_cleaned)
     return Table("df_cleaned", *columns_simple_select, from_table=t_name_enhanced)
-
-
-# TODO: do we need this as a whole unit any more?
-def clean_whole_joined_table(base_table_name: str, tf_postcode_tablename: str) -> Table:
-    """Assumes the existence of a table named tf_postcode
-    This must be create before this function is called
-    """
-    t_cleaned = simple_clean_whole_joined_table(base_table_name)
-
-    t_agg = lookup_term_frequencies("postcode_arr", tf_postcode_tablename, t_cleaned)
-
-    t_cleaned_with_agg = Table(
-        "df_cleaned_with_arr_freq",
-        f"{t_cleaned}.*",
-        "agg_table_postcode_arr.postcode_arr_with_freq",
-        from_table=t_agg,
-        post_from_clauses=f"RIGHT JOIN {t_cleaned} ON {t_cleaned}.match_id = {t_agg}.match_id",
-    )
-    return t_cleaned_with_agg
 
 
 def clean_and_explode_distinct_postcode_arr(base_table_name: str = "df_raw") -> Table:

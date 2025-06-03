@@ -1,16 +1,9 @@
 schema:
   candidate_search_return_format: "schema_candidate_search_return_format.yaml"
   splink_model_format: "schema_splink_model_format.yaml"
-  postcode_lookup_temp: "schema_postcode_lookup.yaml"
 
 data:
-  - postcode_lookup_temp:
-      - value: "AB12CD"
-        rel_freq: 0.0001
-      - value: "XY19YZ"
-        rel_freq: 0.00005
-
-    candidate_search_return_format:
+  - candidate_search_return_format:
       - match_id: "Match12"
         source_system: "NOMIS"
         source_system_id: "A12345BC"
@@ -45,11 +38,6 @@ data:
         postcode_outcode_arr: ["AB1", "XY1"]
         cro_single: "123456/99X"
         pnc_single: NULL
-        postcode_arr_with_freq:
-          [
-            { "value": "AB12CD", "rel_freq": 0.0001 },
-            { "value": "XY19YZ", "rel_freq": 0.00005 },
-          ]
         postcode_first: "AB12CD"
         postcode_second: "XY19YZ"
         postcode_last: "XY19YZ"
