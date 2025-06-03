@@ -29,10 +29,6 @@ from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.filter.filter_str
 from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformed_column import TransformedColumn
 
 
-def get_column_from_array(columns: list[TransformedColumn], column_name: str) -> TransformedColumn:
-    return next([col for col in columns if col.column_name == column_name])
-
-
 def array_concat_distinct(*args):
     array_str = ", ".join(args)
     return f"array_distinct(array_concat({array_str}))"
