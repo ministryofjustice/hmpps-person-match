@@ -8,6 +8,7 @@ PING_ROUTE = "/health/ping"
 
 router = APIRouter()
 
+
 @router.get(ROUTE)
 @router.get(PING_ROUTE)
 async def get_health() -> Health:

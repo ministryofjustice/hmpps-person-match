@@ -5,3 +5,4 @@ class OpenAPITags:
 
     PERSON = "Person"
     JOBS = "Jobs"
+    CLUSTER = "Cluster"
