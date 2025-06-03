@@ -2,58 +2,6 @@ from hmpps_cpr_splink.cpr_splink.data_cleaning.table import Table
 from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import TransformedColumn
 
 
-def calculate_array_element_frequencies_table(
-    input_array_col_name: str,
-    output_col_name: str,
-    source_table: str | Table,
-) -> Table:
-    """Calculate frequency distribution of elements in an array column.
-
-    Args:
-        input_array_col_name: Name of array column to analyze
-        output_col_name: Name for the output column containing individual values
-        source_table: Table containing the array column
-
-    Returns:
-        Table with value frequencies, ordered by descending frequency
-
-    Example:
-        Given source table:
-        | id | names_arr           |
-        |----|---------------------|
-        | 1  | [John, John, Mary]  |
-        | 2  | [Bob, Mary]         |
-
-        freqs = calculate_array_element_frequencies_table("names_arr", "name", source)
-
-        Result:
-        | name | tf_name |
-        |------|---------|
-        | John | 0.400   |
-        | Mary | 0.400   |
-        | Bob  | 0.200   |
-    """
-    exploded_tn = f"exploded_{output_col_name}"
-    tf_tn = f"tf_{output_col_name}"
-
-    t_exploded = Table(
-        exploded_tn,
-        "id",
-        TransformedColumn(f"unnest({input_array_col_name})", alias=output_col_name),
-        from_table=source_table,
-    )
-
-    t_term_freqs = Table(
-        tf_tn,
-        TransformedColumn(output_col_name, alias="value"),
-        TransformedColumn("COUNT(*) / SUM(COUNT(*)) OVER ()", alias="rel_freq"),
-        from_table=t_exploded,
-        post_from_clauses=("GROUP BY value\nORDER BY rel_freq DESC"),
-    )
-
-    return t_term_freqs
-
-
 def lookup_term_frequencies(input_array_col_name: str, tf_table_name: str, from_table):
     """Look up frequency values for elements in an array column from a term frequency
     table.
