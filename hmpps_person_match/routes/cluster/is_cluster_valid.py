@@ -45,11 +45,14 @@ async def get_cluster_validity(
     """
     missing_ids = await score.get_missing_record_ids(match_ids, session)
     if not missing_ids:
-        clusters = await score.get_clusters(match_ids, url.pg_database_url, session)
-        logger.info(TelemetryEvents.IS_CLUSTER_VALID, extra=dict(clusters=clusters.clusters_groupings))
+        clusters_info = await score.get_clusters(match_ids, url.pg_database_url, session)
+        logger.info(
+            TelemetryEvents.IS_CLUSTER_VALID,
+            extra=dict(isClusterValid=clusters_info.is_single_cluster, clusters=str(clusters_info.clusters_groupings)),
+        )
         return IsClusterValid(
-            isClusterValid=clusters.is_single_cluster,
-            clusters=clusters.clusters_groupings,
+            isClusterValid=clusters_info.is_single_cluster,
+            clusters=clusters_info.clusters_groupings,
         )
     else:
         return JSONResponse(
