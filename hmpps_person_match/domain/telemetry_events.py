@@ -9,3 +9,4 @@ class TelemetryEvents:
     PERSON_SCORE = "PersonMatchScoresCollected"
     IS_CLUSTER_VALID = "IsClusterValidCheck"
     JOBS_TERM_FREQUENCY_REFRESH = "JobsTermFrequencyRefreshTriggered"
+    PERSON_MATCH_RECORD_COUNT_REPORT = "PersonMatchRecordCountReport"

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.12.7-slim-bullseye AS base
+FROM python:3.12.10-slim-bullseye AS base
 
 # load in build details
 ARG BUILD_NUMBER
@@ -34,7 +34,7 @@ ENV PYTHONUNBUFFERED=1 \
 # BUILD stage
 ##############
 FROM base AS build
-COPY --from=ghcr.io/astral-sh/uv:0.7.3 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.7.9 /uv /bin/uv
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
         # deps for installing uv

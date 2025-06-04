@@ -80,7 +80,8 @@ class TestIsClusterValidRoute:
         mock_logger.info.assert_called_with(
             TelemetryEvents.IS_CLUSTER_VALID,
             extra={
-                "clusters": [[match_id_1, match_id_2]],
+                "isClusterValid": True,
+                "clusters": str([[match_id_1, match_id_2]]),
             },
         )
 
@@ -109,7 +110,8 @@ class TestIsClusterValidRoute:
         mock_logger.info.assert_called_with(
             TelemetryEvents.IS_CLUSTER_VALID,
             extra={
-                "clusters": [[match_id_1, match_id_2], [match_id_3]],
+                "isClusterValid": False,
+                "clusters": str([[match_id_1, match_id_2], [match_id_3]]),
             },
         )
 

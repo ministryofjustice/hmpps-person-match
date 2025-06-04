@@ -6,6 +6,7 @@ generic-service:
     minReplicas: 2
     maxReplicas: 4
     targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 75
 
   resources:
     limits:
@@ -28,6 +29,10 @@ generic-service:
       nginx.ingress.kubernetes.io/server-snippet: |
         server_tokens off;
         location /jobs/termfrequencies {
+          deny all;
+          return 401;
+        }
+        location /jobs/recordcountreport {
           deny all;
           return 401;
         }
