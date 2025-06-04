@@ -142,7 +142,7 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             *tf_enhanced_table_names,
             settings=MODEL_PATH,
             db_api=db_api,
-            use_sql_from_cache=True,
+            sql_cache_key="get_clusters_compare_sql",
         )
 
         df_clusters = cluster_pairwise_predictions_at_threshold(

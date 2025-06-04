@@ -39,7 +39,7 @@ def score(
         candidates_name,
         settings=MODEL_PATH,
         db_api=db_api,
-        use_sql_from_cache=True,
+        sql_cache_key="score_records_sql",
     ).as_duckdbpyrelation()
 
     end_time = time.perf_counter()
