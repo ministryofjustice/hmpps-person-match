@@ -143,6 +143,7 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             settings=MODEL_PATH,
             db_api=db_api,
             sql_cache_key="get_clusters_compare_sql",
+            join_condition="l.id < r.id",
         )
 
         df_clusters = cluster_pairwise_predictions_at_threshold(
