@@ -4,7 +4,6 @@ from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import (
     columns_reshaping,
     columns_simple_select,
 )
-from hmpps_cpr_splink.cpr_splink.model_cleaning.term_frequencies import lookup_term_frequencies
 from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 
@@ -87,7 +86,6 @@ POSTCODE_COLUMNS = [
     "postcodes",
     "postcode_arr",
     "postcode_outcode_arr",
-    "postcode_arr_with_freq",
 ]
 
 postcode_columns_basic = filter_columns(columns_basic, POSTCODE_COLUMNS)
@@ -96,21 +94,10 @@ postcode_columns_reshaping = filter_columns(columns_reshaping, POSTCODE_COLUMNS)
 t_postcode_basic = Table("cleaned_1", *postcode_columns_basic, from_table="input_table")
 t_postcode_enhanced = Table("cleaned_2", *postcode_columns_reshaping, from_table=t_postcode_basic)
 
-t_postcode_with_freq = lookup_term_frequencies("postcode_arr", "tf_postcodes", t_postcode_enhanced)
-t_postcode_final = Table(
-    "cleaned_2",
-    f"{t_postcode_enhanced}.*",
-    "agg_table_postcode_arr.postcode_arr_with_freq",
-    from_table=t_postcode_with_freq,
-    post_from_clauses=(
-        f"RIGHT JOIN {t_postcode_enhanced} ON {t_postcode_enhanced}.match_id = {t_postcode_with_freq}.match_id"
-    ),
-)
-
 
 @check_data(
     "test_individual_columns/test_postcodes_end_to_end.yaml",
-    t_postcode_final.select_statement_with_lineage,
+    t_postcode_enhanced.select_statement_with_lineage,
     expected_output_table="cleaned_2",
 )
 def test_postcode_processing_end_to_end(): ...
