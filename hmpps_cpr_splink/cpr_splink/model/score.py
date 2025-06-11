@@ -20,14 +20,16 @@ def score(
     # Compare records
     db_api = DuckDBAPI(connection_duckdb)
 
+    full_table_name = full_candidates_tn
+
     # Splink has a limitation around caching SQL - this choice of names is a workaround until we update
     # need this so that we can keep cached SQL
     source_name = "records_l_with_postcode_tfs"
     candidates_name = "records_r_with_postcode_tfs"
     # cannot create views with prepared statements: https://github.com/duckdb/duckdb/issues/13069
-    source_sql = f"CREATE TABLE {source_name} AS SELECT * FROM {full_candidates_tn} WHERE match_id = $primary_record_id"  # noqa: S608
+    source_sql = f"CREATE TABLE {source_name} AS SELECT * FROM {full_table_name} WHERE match_id = $primary_record_id"  # noqa: S608
     candidates_sql = (
-        f"CREATE TABLE {candidates_name} AS SELECT * FROM {full_candidates_tn} WHERE match_id != $primary_record_id"  # noqa: S608
+        f"CREATE TABLE {candidates_name} AS SELECT * FROM {full_table_name} WHERE match_id != $primary_record_id"  # noqa: S608
     )
     connection_duckdb.execute(source_sql, parameters={"primary_record_id": primary_record_id})
     connection_duckdb.execute(candidates_sql, parameters={"primary_record_id": primary_record_id})
@@ -37,7 +39,7 @@ def score(
         candidates_name,
         settings=MODEL_PATH,
         db_api=db_api,
-        sql_cache_key="score_records_sql",
+        use_sql_from_cache=True,
     ).as_duckdbpyrelation()
 
     end_time = time.perf_counter()
