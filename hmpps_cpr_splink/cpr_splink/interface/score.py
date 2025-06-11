@@ -115,36 +115,38 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
 
 async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
-        tablename = "records_to_check"
+        records_l_tablename = "records_l"
+        records_r_tablename = "records_r"
 
-        pipeline = CTEPipeline()
-        pipeline.enqueue_sql(
-            sql="SELECT * FROM personmatch.person WHERE match_id = ANY(:match_ids)",
-            output_table_name="people_to_check_cluster_status",
-        )
-        enqueue_join_term_frequency_tables(
-            pipeline,
-            table_to_join_to=pipeline.output_table_name,
-            output_table_name=tablename,
-        )
+        tf_enhanced_table_names = []
+        for tablename in (records_l_tablename, records_r_tablename):
+            pipeline = CTEPipeline()
+            pipeline.enqueue_sql(
+                sql="SELECT * FROM personmatch.person WHERE match_id = ANY(:match_ids)",
+                output_table_name="people_to_check_cluster_status",
+            )
+            enqueue_join_term_frequency_tables(
+                pipeline,
+                table_to_join_to=pipeline.output_table_name,
+                output_table_name=tablename,
+            )
 
-        sql = pipeline.generate_cte_pipeline_sql()
-        res = await connection_pg.execute(text(sql), {"match_ids": match_ids})
+            sql = pipeline.generate_cte_pipeline_sql()
+            res = await connection_pg.execute(text(sql), {"match_ids": match_ids})
 
-        tf_enhanced_table_name = insert_data_into_duckdb(connection_duckdb, res.mappings().fetchall(), tablename)
+            tf_enhanced_table_name = insert_data_into_duckdb(connection_duckdb, res.mappings().fetchall(), tablename)
+            tf_enhanced_table_names.append(tf_enhanced_table_name)
 
         db_api = DuckDBAPI(connection_duckdb)
         scores = compare_records(  # noqa: F841
-            tf_enhanced_table_name,
-            tf_enhanced_table_name,
+            *tf_enhanced_table_names,
             settings=MODEL_PATH,
             db_api=db_api,
-            sql_cache_key="get_clusters_compare_sql",
-            join_condition="l.id < r.id",
+            use_sql_from_cache=True,
         )
 
         df_clusters = cluster_pairwise_predictions_at_threshold(
-            nodes=tablename,
+            nodes=records_l_tablename,
             edges=scores.physical_name,
             db_api=db_api,
             node_id_column_name="match_id",
