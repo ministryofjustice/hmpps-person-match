@@ -37,7 +37,7 @@ dev = [
   "pytest==8.4.0",
   "pytest-cov==6.1.1",
   "pytest-asyncio==1.0.0",
-  "faker==37.3.0",
+  "faker==37.4.0",
   "httpx==0.28.1",
   "requests-mock==1.12.1",
 ]
