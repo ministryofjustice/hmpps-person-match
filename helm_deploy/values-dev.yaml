@@ -9,8 +9,7 @@ generic-service:
     enabled: true
 
   ingress:
-    host: hmpps-person-match-dev.hmpps.service.justice.gov.uk
-    tlsSecretName: hmpps-person-record-dev-cert-secret
+    enabled: false
 
   env:
     OAUTH_BASE_URL: https://sign-in-dev.hmpps.service.justice.gov.uk
