@@ -6,6 +6,7 @@ generic-service:
     minReplicas: 2
     maxReplicas: 4
     targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 75
 
   resources:
     limits:

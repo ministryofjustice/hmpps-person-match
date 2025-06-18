@@ -14,6 +14,14 @@ class TestMonitoring:
         assert response.status_code == 200
         assert response.json() == {"status": "UP"}
 
+    def test_health_ping(self, person_match_url):
+        """
+        Test health ping endpont
+        """
+        response = requests.get(f"{person_match_url}/health/ping")
+        assert response.status_code == 200
+        assert response.json() == {"status": "UP"}
+
     def test_info(self, person_match_url):
         """
         Test info endpoint
