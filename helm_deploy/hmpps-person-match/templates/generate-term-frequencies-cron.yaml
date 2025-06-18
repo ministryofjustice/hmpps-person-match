@@ -19,6 +19,14 @@ spec:
           containers:
             - name: generate-term-frequencies-job
               image: ghcr.io/ministryofjustice/hmpps-devops-tools
+              securityContext:
+                capabilities:
+                  drop:
+                  - ALL
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                seccompProfile:
+                  type: RuntimeDefault
               args:
                 - /bin/sh
                 - -c
