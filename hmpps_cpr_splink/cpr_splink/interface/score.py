@@ -13,7 +13,6 @@ from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_cpr_splink.cpr_splink.model.model import (
     FRACTURE_MATCH_WEIGHT_THRESHOLD,
-    IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
     JOINING_MATCH_WEIGHT_THRESHOLD,
     MODEL_PATH,
 )
@@ -159,7 +158,7 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             edges=scores.physical_name,
             db_api=db_api,
             node_id_column_name="match_id",
-            threshold_match_weight=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
+            threshold_match_weight=JOINING_MATCH_WEIGHT_THRESHOLD,
         )
         clusters = connection_duckdb.execute(
             f"SELECT match_id, cluster_id FROM {df_clusters.physical_name} "  # noqa: S608
