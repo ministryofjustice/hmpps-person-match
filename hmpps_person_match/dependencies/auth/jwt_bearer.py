@@ -54,7 +54,7 @@ class JWTBearer(HTTPBearer):
 
             # Check if the required role is in the JWT's roles claim
             user_roles = payload.get("authorities", [])
-            if not set(self.required_roles).issubset(user_roles):
+            if not set(self.required_roles).intersection(user_roles):
                 raise HTTPException(status_code=403, detail=ErrorMessages.FORBIDDEN)
 
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, ValueError) as error:

@@ -84,7 +84,7 @@ async def get_scored_candidates(
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
         return [
             ScoredCandidate(
-                candidate_match_id=row["match_id_r"],  # match_id_l is primary record
+                candidate_match_id=row["match_id_r"], # match_id_l is primary record
                 candidate_match_probability=row["match_probability"],
                 candidate_match_weight=row["match_weight"],
                 candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
