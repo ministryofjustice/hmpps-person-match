@@ -55,12 +55,16 @@ class TestPersonScoreRoute:
             ScoredCandidate(
                 candidate_match_id=match_id_1,
                 candidate_match_probability=0.9999,
-                candidate_match_weight=0.12345,
+                candidate_match_weight=24,
+                candidate_should_fracture=False,
+                candidate_should_join=True,
             ),
             ScoredCandidate(
                 candidate_match_id=match_id_2,
                 candidate_match_probability=0.9999,
-                candidate_match_weight=0.12345,
+                candidate_match_weight=24,
+                candidate_should_fracture=False,
+                candidate_should_join=True,
             ),
         ]
         response = call_endpoint(
@@ -73,12 +77,16 @@ class TestPersonScoreRoute:
             {
                 "candidate_match_id": match_id_1,
                 "candidate_match_probability": 0.9999,
-                "candidate_match_weight": 0.12345,
+                "candidate_match_weight": 24,
+                "candidate_should_fracture": False,
+                "candidate_should_join": True,
             },
             {
                 "candidate_match_id": match_id_2,
                 "candidate_match_probability": 0.9999,
-                "candidate_match_weight": 0.12345,
+                "candidate_match_weight": 24,
+                "candidate_should_fracture": False,
+                "candidate_should_join": True,
             },
         ]
         mock_logger.info.assert_called_with(
