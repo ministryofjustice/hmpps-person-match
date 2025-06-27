@@ -1,5 +1,3 @@
-from typing import TypedDict
-
 import duckdb
 from splink import DuckDBAPI
 from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
@@ -20,14 +18,7 @@ from hmpps_cpr_splink.cpr_splink.model.model import (
 from hmpps_cpr_splink.cpr_splink.model.score import score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
-
-
-class ScoredCandidate(TypedDict):
-    candidate_match_id: str
-    candidate_match_probability: float
-    candidate_match_weight: float
-    candidate_should_join: bool
-    candidate_should_fracture: bool
+from hmpps_person_match.models.person.person_score import PersonScore
 
 
 def insert_data_into_duckdb(connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str):
@@ -66,7 +57,7 @@ async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
     connection_pg: AsyncSession,
-) -> list[ScoredCandidate]:
+) -> list[PersonScore]:
     """
     Takes a primary record, generates candidates, scores
     """
@@ -83,8 +74,8 @@ async def get_scored_candidates(
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
         return [
-            ScoredCandidate(
-                candidate_match_id=row["match_id_r"], # match_id_l is primary record
+            PersonScore(
+                candidate_match_id=row["match_id_r"],  # match_id_l is primary record
                 candidate_match_probability=row["match_probability"],
                 candidate_match_weight=row["match_weight"],
                 candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,

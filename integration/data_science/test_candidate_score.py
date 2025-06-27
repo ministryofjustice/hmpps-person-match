@@ -49,7 +49,7 @@ class TestPersonScore(IntegrationTestBase):
         # we have all candidates + original record
         assert len(res) == n_candidates
         assert (
-            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > self.HIGH_MATCH_WEIGHT])
+            len([match_weight for r in res if (match_weight := r.candidate_match_weight) > self.HIGH_MATCH_WEIGHT])
             == n_candidates
         )
 
@@ -96,7 +96,7 @@ class TestPersonScore(IntegrationTestBase):
         # we have all candidates + original record
         assert len(res) == n_candidates
         assert (
-            len([match_weight for r in res if (match_weight := r["candidate_match_weight"]) > self.HIGH_MATCH_WEIGHT])
+            len([match_weight for r in res if (match_weight := r.candidate_match_weight) > self.HIGH_MATCH_WEIGHT])
             == n_candidates
         )
 
