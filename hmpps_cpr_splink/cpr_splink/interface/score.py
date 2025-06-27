@@ -1,5 +1,3 @@
-from typing import TypedDict
-
 import duckdb
 from splink import DuckDBAPI
 from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
