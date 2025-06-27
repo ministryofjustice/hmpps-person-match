@@ -1,7 +1,6 @@
 from collections.abc import AsyncGenerator
 
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
-
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from hmpps_person_match.db import url
