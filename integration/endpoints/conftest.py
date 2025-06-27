@@ -26,7 +26,7 @@ def access_token_factory():
             "grant_type": "client_credentials",
         }
         response = requests.post(
-            "http://localhost:8080/auth/oauth/token",
+            "http://localhost:8081/auth/oauth/token",
             headers=headers,
             params=params,
             timeout=30,
