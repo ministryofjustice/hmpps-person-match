@@ -49,7 +49,8 @@ class TestAuth:
         assert response.status_code == HTTPStatus.OK
 
     def test_allows_correct_level_of_auth_user_has_multiple_roles_on_endpoints_that_accepts_multi_roles(
-            self, test_app, jwt_token_factory, mock_jwks):
+        self, test_app, jwt_token_factory, mock_jwks,
+    ):
         """
         Test that method with multiple role is accessible when authenticated with user that has multiple roles
         """
