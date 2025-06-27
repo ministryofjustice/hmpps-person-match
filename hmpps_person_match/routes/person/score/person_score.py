@@ -11,6 +11,7 @@ from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
+from hmpps_person_match.models.person.person_score import PersonScore
 
 ROUTE = "/person/score/{match_id}"
 
@@ -30,13 +31,13 @@ async def get_person_score(
     match_id: str,
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
-) -> list[score.ScoredCandidate]:
+) -> list[PersonScore]:
     """
     Person score GET request handler
     Returns a list of scored candidates against the provided record match identifier
     """
     if await score.match_record_exists(match_id, session):
-        scored_candidates: list[score.ScoredCandidate] = await score.get_scored_candidates(
+        scored_candidates: list[PersonScore] = await score.get_scored_candidates(
             match_id,
             url.pg_database_url,
             session,
