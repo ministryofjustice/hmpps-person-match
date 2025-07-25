@@ -31,7 +31,7 @@ default-groups = ["dev"]
 
 [dependency-groups]
 dev = [
-  "ipykernel==6.29.5",
+  "ipykernel==6.30.0",
   "ruff==0.12.4",
   "pyyaml==6.0.2",
   "pytest==8.4.1",
