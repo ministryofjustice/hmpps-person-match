@@ -16,7 +16,7 @@ dependencies = [
   "authlib==1.6.1",
   "cachetools==6.1.0",
   "pyjwt==2.10.1",
-  "cryptography==45.0.5",
+  "cryptography==45.0.6",
   "alembic==1.16.4",
   "asyncpg==0.30.0",
   "greenlet==3.2.3",
@@ -31,13 +31,13 @@ default-groups = ["dev"]
 
 [dependency-groups]
 dev = [
-  "ipykernel==6.30.0",
-  "ruff==0.12.5",
+  "ipykernel==6.30.1",
+  "ruff==0.12.7",
   "pyyaml==6.0.2",
   "pytest==8.4.1",
   "pytest-cov==6.2.1",
   "pytest-asyncio==1.1.0",
-  "faker==37.4.2",
+  "faker==37.5.3",
   "httpx==0.28.1",
   "requests-mock==1.12.1",
 ]
