@@ -19,7 +19,7 @@ dependencies = [
   "cryptography==45.0.6",
   "alembic==1.16.4",
   "asyncpg==0.30.0",
-  "greenlet==3.2.3",
+  "greenlet==3.2.4",
   "opentelemetry-instrumentation-sqlalchemy==0.51b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
