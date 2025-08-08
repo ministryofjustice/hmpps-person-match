@@ -1,5 +1,3 @@
-from typing import TypedDict
-
 import duckdb
 from splink import DuckDBAPI
 from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
@@ -11,16 +9,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search, enqueue_join_term_frequency_tables
 from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
-from hmpps_cpr_splink.cpr_splink.model.model import MATCH_WEIGHT_THRESHOLD, MODEL_PATH
+from hmpps_cpr_splink.cpr_splink.model.model import (
+    FRACTURE_MATCH_WEIGHT_THRESHOLD,
+    IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
+    JOINING_MATCH_WEIGHT_THRESHOLD,
+    MODEL_PATH,
+)
 from hmpps_cpr_splink.cpr_splink.model.score import score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
-
-
-class ScoredCandidate(TypedDict):
-    candidate_match_id: str
-    candidate_match_probability: float
-    candidate_match_weight: float
+from hmpps_person_match.models.person.person_score import PersonScore
 
 
 def insert_data_into_duckdb(connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str):
@@ -59,7 +57,7 @@ async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
     connection_pg: AsyncSession,
-) -> list[ScoredCandidate]:
+) -> list[PersonScore]:
     """
     Takes a primary record, generates candidates, scores
     """
@@ -76,11 +74,13 @@ async def get_scored_candidates(
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
         return [
-            {
-                "candidate_match_id": row["match_id_r"],  # match_id_l is primary record
-                "candidate_match_probability": row["match_probability"],
-                "candidate_match_weight": row["match_weight"],
-            }
+            PersonScore(
+                candidate_match_id=row["match_id_r"],  # match_id_l is primary record
+                candidate_match_probability=row["match_probability"],
+                candidate_match_weight=row["match_weight"],
+                candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
+                candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
+            )
             for row in data
         ]
 
@@ -115,42 +115,40 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
 
 async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
-        records_l_tablename = "records_l"
-        records_r_tablename = "records_r"
+        tablename = "records_to_check"
 
-        tf_enhanced_table_names = []
-        for tablename in (records_l_tablename, records_r_tablename):
-            pipeline = CTEPipeline()
-            pipeline.enqueue_sql(
-                sql="SELECT * FROM personmatch.person WHERE match_id = ANY(:match_ids)",
-                output_table_name="people_to_check_cluster_status",
-            )
-            enqueue_join_term_frequency_tables(
-                pipeline,
-                table_to_join_to=pipeline.output_table_name,
-                output_table_name=tablename,
-            )
+        pipeline = CTEPipeline()
+        pipeline.enqueue_sql(
+            sql="SELECT * FROM personmatch.person WHERE match_id = ANY(:match_ids)",
+            output_table_name="people_to_check_cluster_status",
+        )
+        enqueue_join_term_frequency_tables(
+            pipeline,
+            table_to_join_to=pipeline.output_table_name,
+            output_table_name=tablename,
+        )
 
-            sql = pipeline.generate_cte_pipeline_sql()
-            res = await connection_pg.execute(text(sql), {"match_ids": match_ids})
+        sql = pipeline.generate_cte_pipeline_sql()
+        res = await connection_pg.execute(text(sql), {"match_ids": match_ids})
 
-            tf_enhanced_table_name = insert_data_into_duckdb(connection_duckdb, res.mappings().fetchall(), tablename)
-            tf_enhanced_table_names.append(tf_enhanced_table_name)
+        tf_enhanced_table_name = insert_data_into_duckdb(connection_duckdb, res.mappings().fetchall(), tablename)
 
         db_api = DuckDBAPI(connection_duckdb)
         scores = compare_records(  # noqa: F841
-            *tf_enhanced_table_names,
+            tf_enhanced_table_name,
+            tf_enhanced_table_name,
             settings=MODEL_PATH,
             db_api=db_api,
-            use_sql_from_cache=True,
+            sql_cache_key="get_clusters_compare_sql",
+            join_condition="l.id < r.id",
         )
 
         df_clusters = cluster_pairwise_predictions_at_threshold(
-            nodes=records_l_tablename,
+            nodes=tablename,
             edges=scores.physical_name,
             db_api=db_api,
             node_id_column_name="match_id",
-            threshold_match_weight=MATCH_WEIGHT_THRESHOLD,
+            threshold_match_weight=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
         )
         clusters = connection_duckdb.execute(
             f"SELECT match_id, cluster_id FROM {df_clusters.physical_name} "  # noqa: S608

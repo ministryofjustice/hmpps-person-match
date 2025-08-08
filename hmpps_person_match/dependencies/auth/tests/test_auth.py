@@ -14,14 +14,20 @@ class TestAuth:
     """
 
     TEST_ROLE = "ROLE_TEST"
+    TEST_ROLE_2 = "ROLE_TEST_EXTRA"
 
     SINGLE_ROLE_ROUTE = "/single_role"
     NO_ROLE_ROUTE = "/no_role"
+    MULTIPLE_ROLE_ROUTE = "/multiple_roles"
 
     app = FastAPI()
 
     @app.get(SINGLE_ROLE_ROUTE, dependencies=[Depends(JWTBearer(required_roles=[TEST_ROLE]))])
     def method_with_single_role():
+        return Response(status_code=HTTPStatus.OK)
+
+    @app.get(MULTIPLE_ROLE_ROUTE, dependencies=[Depends(JWTBearer(required_roles=[TEST_ROLE, TEST_ROLE_2]))])
+    def method_with_multiple_role():
         return Response(status_code=HTTPStatus.OK)
 
     @app.get(NO_ROLE_ROUTE)
@@ -40,6 +46,27 @@ class TestAuth:
         token_header = {"Authorization": f"Bearer {token}"}
 
         response = test_app.get(self.SINGLE_ROLE_ROUTE, headers=token_header)
+        assert response.status_code == HTTPStatus.OK
+
+    def test_allows_correct_level_of_auth_user_has_multiple_roles_on_endpoints_that_accepts_multi_roles(
+        self,
+        test_app,
+        jwt_token_factory,
+        mock_jwks,
+    ):
+        """
+        Test that method with multiple role is accessible when authenticated with user that has multiple roles
+        """
+        token = jwt_token_factory(
+            roles=[
+                self.TEST_ROLE,
+                "ROLE_EXTRA_ROLE_1",
+                "ROLE_EXTRA_ROLE_2",
+            ],
+        )
+        token_header = {"Authorization": f"Bearer {token}"}
+
+        response = test_app.get(self.MULTIPLE_ROLE_ROUTE, headers=token_header)
         assert response.status_code == HTTPStatus.OK
 
     def test_allows_correct_level_of_auth_user_has_multiple_roles(self, test_app, jwt_token_factory, mock_jwks):

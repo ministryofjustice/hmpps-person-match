@@ -3,9 +3,9 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from hmpps_cpr_splink.cpr_splink.interface.score import ScoredCandidate
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
+from hmpps_person_match.models.person.person_score import PersonScore
 from hmpps_person_match.routes.person.score.person_score import ROUTE
 
 
@@ -52,15 +52,19 @@ class TestPersonScoreRoute:
         match_id_1 = str(uuid.uuid4())
         match_id_2 = str(uuid.uuid4())
         mock_score_results.return_value = [
-            ScoredCandidate(
+            PersonScore(
                 candidate_match_id=match_id_1,
                 candidate_match_probability=0.9999,
-                candidate_match_weight=0.12345,
+                candidate_match_weight=24,
+                candidate_should_fracture=False,
+                candidate_should_join=True,
             ),
-            ScoredCandidate(
+            PersonScore(
                 candidate_match_id=match_id_2,
                 candidate_match_probability=0.9999,
-                candidate_match_weight=0.12345,
+                candidate_match_weight=24,
+                candidate_should_fracture=False,
+                candidate_should_join=True,
             ),
         ]
         response = call_endpoint(
@@ -73,12 +77,16 @@ class TestPersonScoreRoute:
             {
                 "candidate_match_id": match_id_1,
                 "candidate_match_probability": 0.9999,
-                "candidate_match_weight": 0.12345,
+                "candidate_match_weight": 24,
+                "candidate_should_fracture": False,
+                "candidate_should_join": True,
             },
             {
                 "candidate_match_id": match_id_2,
                 "candidate_match_probability": 0.9999,
-                "candidate_match_weight": 0.12345,
+                "candidate_match_weight": 24,
+                "candidate_should_fracture": False,
+                "candidate_should_join": True,
             },
         ]
         mock_logger.info.assert_called_with(
