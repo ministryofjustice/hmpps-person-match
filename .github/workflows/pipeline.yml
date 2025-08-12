@@ -41,7 +41,7 @@ jobs:
     name: test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -72,7 +72,7 @@ jobs:
     name: int-test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -115,7 +115,7 @@ jobs:
     name: Generate Database Schema Report
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Start Required Services
         run: make start-containers
