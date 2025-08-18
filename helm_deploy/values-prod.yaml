@@ -8,6 +8,9 @@ generic-service:
     OAUTH_BASE_URL: https://sign-in.hmpps.service.justice.gov.uk
     OAUTH_ISSUER_URL_KEY: https://sign-in.hmpps.service.justice.gov.uk
 
+  postgresDatabaseRestore:
+    enabled: true
+
 generic-prometheus-alerts:
   rdsAlertsDatabases:
     cloud-platform-ee08837ab8b048b1: "hmpps-person-match-database"
