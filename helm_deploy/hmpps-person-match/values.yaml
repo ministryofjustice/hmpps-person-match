@@ -64,9 +64,19 @@ generic-service:
       DATABASE_USERNAME: "database_username"
       DATABASE_PASSWORD: "database_password"
       DATABASE_HOST: "rds_instance_address"
+      DB_NAME: "database_name"
+      DB_USER: "database_username"
+      DB_PASS: "database_password"
+      DB_HOST: "rds_instance_address"
+    hmpps-person-match-preprod-rds-instance-output:
+      DB_NAME_PREPROD: "database_name"
+      DB_USER_PREPROD: "database_username"
+      DB_PASS_PREPROD: "database_password"
+      DB_HOST_PREPROD: "rds_instance_address"
 
   env:
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
+    SCHEMA_TO_RESTORE: "personmatch"
 
   allowlist:
     groups:
