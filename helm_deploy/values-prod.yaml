@@ -27,7 +27,6 @@ generic-service:
       MIGRATIONS_VENDOR: "alembic"
       ALEMBIC_SCHEMA: "public"
 
-
 generic-prometheus-alerts:
   rdsAlertsDatabases:
     cloud-platform-ee08837ab8b048b1: "hmpps-person-match-database"
