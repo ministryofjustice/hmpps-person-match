@@ -7,6 +7,22 @@ generic-service:
   env:
     OAUTH_BASE_URL: https://sign-in.hmpps.service.justice.gov.uk
     OAUTH_ISSUER_URL_KEY: https://sign-in.hmpps.service.justice.gov.uk
+    SCHEMA_TO_RESTORE: "personmatch"
+
+  postgresDatabaseRestore:
+    enabled: true
+
+  namespace_secrets:
+    hmpps-person-match-rds-instance-output:
+      DB_NAME: "database_name"
+      DB_USER: "database_username"
+      DB_PASS: "database_password"
+      DB_HOST: "rds_instance_address"
+    hmpps-person-match-preprod-rds-instance-output:
+      DB_NAME_PREPROD: "database_name"
+      DB_USER_PREPROD: "database_username"
+      DB_PASS_PREPROD: "database_password"
+      DB_HOST_PREPROD: "rds_instance_address"
 
 generic-prometheus-alerts:
   rdsAlertsDatabases:
