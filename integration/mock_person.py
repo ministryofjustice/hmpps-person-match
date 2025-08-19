@@ -45,3 +45,6 @@ class MockPerson(Person):
         alias="sourceSystemId",
         default_factory=lambda: random_test_data.random_source_system_id(),
     )
+
+    manual_override: str | None = Field(alias="manualOverride", default=None)
+    override_scopes: list[str] | None = Field(alias="overrideScopes", default=None)
