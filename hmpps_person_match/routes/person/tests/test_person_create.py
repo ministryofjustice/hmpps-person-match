@@ -24,6 +24,8 @@ class TestPersonRoute:
             "cros": ["4444566"],
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
+            "manualOverride": None,
+            "overrideScopes": None,
         }
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
@@ -55,6 +57,8 @@ class TestPersonRoute:
             "cros": ["4444566"],
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
+            "manualOverride": None,
+            "overrideScopes": None,
         }
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
@@ -95,6 +99,8 @@ class TestPersonRoute:
             "cros": ["4444566"],
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
+            "manualOverride": None,
+            "overrideScopes": None,
         }
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
@@ -127,6 +133,8 @@ class TestPersonRoute:
             "cros": ["4444566"],
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
+            "manualOverride": None,
+            "overrideScopes": None,
         }
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
