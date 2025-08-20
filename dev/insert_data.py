@@ -19,7 +19,7 @@ con.execute(f"ATTACH '{database_url.render_as_string(hide_password=False)}' AS p
 con.execute("TRUNCATE TABLE pg_db.personmatch.person")
 
 t1 = time.time()
-# can't parse dates as-is, so do some fiddling
+
 sql = "CREATE TABLE temp_data AS SELECT * FROM read_csv('dev/data/people.csv', auto_detect=true);"
 con.execute(sql)
 
@@ -91,9 +91,9 @@ con.execute(
     SELECT
         {select_col_string}
     FROM temp_data;
-""",
+""",  # NOQA: S608
 )
-# --- END OF CHANGE ---
+
 t3 = time.time()
 
 print(f"Inserted in: {t3 - t2}")
