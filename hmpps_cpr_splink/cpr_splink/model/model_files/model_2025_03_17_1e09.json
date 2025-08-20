@@ -315,14 +315,14 @@
                 {
                     "sql_condition": "manual_override_l = manual_override_r",
                     "label_for_charts": "Exact match on manual_override",
-                    "m_probability": 0.99999,
-                    "u_probability": 0.00001
+                    "m_probability": 0.99999999999999999999999999999999999999999999999999,
+                    "u_probability": 1e-50
                 },
                 {
                     "sql_condition": "manual_override_l != manual_override_r AND array_length(list_intersect(override_scopes_l, override_scopes_r)) >= 1",
                     "label_for_charts": "Different manual override in same scope",
-                    "m_probability": 0.00001,
-                    "u_probability": 0.99999
+                    "m_probability": 1e-50,
+                    "u_probability": 0.99999999999999999999999999999999999999999999999999
                 },
                 {
                     "sql_condition": "ELSE",

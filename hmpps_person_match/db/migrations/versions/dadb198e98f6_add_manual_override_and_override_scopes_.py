@@ -22,7 +22,16 @@ def upgrade() -> None:
     op.add_column("person", sa.Column("manual_override", sa.VARCHAR(), nullable=True), schema="personmatch")
     op.add_column("person", sa.Column("override_scopes", sa.ARRAY(sa.VARCHAR()), nullable=True), schema="personmatch")
 
+    op.create_index(
+        "ix_personmatch_person_manual_override",
+        "person",
+        ["manual_override"],
+        unique=False,
+        schema="personmatch",
+    )
+
 
 def downgrade() -> None:
+    op.drop_index("ix_personmatch_person_manual_override", table_name="person", schema="personmatch")
     op.drop_column("person", "override_scopes", schema="personmatch")
     op.drop_column("person", "manual_override", schema="personmatch")
