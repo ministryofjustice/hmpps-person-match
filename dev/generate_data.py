@@ -9,10 +9,16 @@ fake = Faker(["en_GB"])
 Faker.seed(4321)
 
 
-def stringify(datum):
+def stringify_list_element(datum):
+    """
+    Correctly formats a single element for use inside a DuckDB list constructor.
+    """
     if isinstance(datum, datetime):
-        return datum.strftime("%Y-%m-%d")
-    return str(datum)
+        datum = datum.strftime("%Y-%m-%d")
+    if datum is None:
+        return "NULL"  # Use the string NULL for nulls inside lists
+    # Quote the string and escape any internal quotes (e.g., O'Connor -> 'O''Connor')
+    return f"'{str(datum).replace("'", "''")}'"
 
 
 def make_person(id_val):
@@ -35,8 +41,11 @@ def make_person(id_val):
         "pnc_single": str(fake.random_int(min=1, max=650_000)),
         "source_system": None,
         "source_system_id": None,
+        "manual_override": None,
+        "override_scopes": None,
     }
-    # NB: not completely consistent with real data - no duplicates, arrays not sorted
+
+    # Create all derived columns first, leaving them as Python lists
     cleaned_person["first_and_last_name_std"] = cleaned_person["name_1_std"] + " " + cleaned_person["last_name_std"]
     cleaned_person["forename_std_arr"] = [
         cleaned_person["name_1_std"],
@@ -45,9 +54,8 @@ def make_person(id_val):
     ]
     cleaned_person["last_name_std_arr"] = [cleaned_person["last_name_std"], fake.last_name().upper()]
     cleaned_person["date_of_birth_arr"] = [cleaned_person["date_of_birth"].strftime("%Y-%m-%d")]
-    cleaned_person["postcode_outcode_arr"] = list(map(lambda pc: pc.split(" ")[0], cleaned_person["postcode_arr"]))
-    cleaned_person["postcode_arr"] = list(map(lambda pc: pc.replace(" ", ""), cleaned_person["postcode_arr"]))
-    # derived columns
+    cleaned_person["postcode_outcode_arr"] = [pc.split(" ")[0] for pc in cleaned_person["postcode_arr"]]
+    cleaned_person["postcode_arr"] = [pc.replace(" ", "") for pc in cleaned_person["postcode_arr"]]
     cleaned_person["sentence_date_first"] = sentence_dates[0]
     cleaned_person["sentence_date_last"] = sentence_dates[-1]
     cleaned_person["postcode_first"] = cleaned_person["postcode_arr"][0]
@@ -61,14 +69,21 @@ def make_person(id_val):
     cleaned_person["last_name_first"] = cleaned_person["last_name_std_arr"][0]
     cleaned_person["last_name_last"] = cleaned_person["last_name_std_arr"][-1]
 
-    for col in cleaned_person.keys():  # NOQA
-        if isinstance(cleaned_person[col], list):
-            cleaned_person[col] = "[" + ", ".join(map(stringify, cleaned_person[col])) + "]"
+    for col, value in cleaned_person.items():
+        if isinstance(value, list):
+            stringified_elements = ", ".join(map(stringify_list_element, value))
+            cleaned_person[col] = f"[{stringified_elements}]"  # Using DuckDB's standard array syntax
+        elif isinstance(value, datetime):
+            cleaned_person[col] = value.strftime("%Y-%m-%d")
+        elif value is None:
+            cleaned_person[col] = ""  # Represent NULL as empty string in CSV for simplicity
+        else:
+            cleaned_person[col] = str(value)
 
     return cleaned_person
 
 
-n_people = 3_500_000
+n_people = 3_500_0
 people = []
 t1 = time.time()
 for i in range(n_people):

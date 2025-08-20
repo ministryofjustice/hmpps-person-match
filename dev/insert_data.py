@@ -20,20 +20,12 @@ con.execute("TRUNCATE TABLE pg_db.personmatch.person")
 
 t1 = time.time()
 # can't parse dates as-is, so do some fiddling
-sql = (
-    "CREATE TABLE temp_data AS SELECT * FROM read_csv("
-    "'dev/data/people.csv', "
-    "types={"
-    "'forename_std_arr': 'VARCHAR[]', 'last_name_std_arr': 'VARCHAR[]', 'sentence_date_arr': 'DATE[]', "
-    "'date_of_birth_arr': 'DATE[]', 'postcode_arr': 'VARCHAR[]', 'postcode_outcode_arr': 'VARCHAR[]'"
-    "}"
-    ");"
-)
+sql = "CREATE TABLE temp_data AS SELECT * FROM read_csv('dev/data/people.csv', auto_detect=true);"
 con.execute(sql)
 
 t2 = time.time()
 
-con.table("temp_data").show()
+con.table("temp_data").show(max_width=100000)
 
 print(f"Read csv: {t2 - t1}")
 
@@ -72,15 +64,36 @@ columns = {
 }
 col_string = ", ".join(columns)
 
+select_columns = []
+array_columns = {
+    "forename_std_arr",
+    "last_name_std_arr",
+    "sentence_date_arr",
+    "date_of_birth_arr",
+    "postcode_arr",
+    "postcode_outcode_arr",
+}
+
+for col in columns:
+    if col in array_columns:
+        # For array columns, add a cast to VARCHAR[]
+        # This tells DuckDB's postgres extension to format it correctly for Postgres
+        select_columns.append(f"{col}::VARCHAR[]")
+    else:
+        select_columns.append(col)
+
+select_col_string = ", ".join(select_columns)
+
 con.execute(
     f"""
     INSERT INTO pg_db.personmatch.person
         ({col_string})
     SELECT
-        {col_string}
+        {select_col_string}
     FROM temp_data;
-""",  # NOQA: S608
+""",
 )
+# --- END OF CHANGE ---
 t3 = time.time()
 
 print(f"Inserted in: {t3 - t2}")
