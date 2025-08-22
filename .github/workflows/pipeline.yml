@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
-  PYTHON_VERSION: "3.12.7"
+  PYTHON_VERSION: "3.13.1"
 
 jobs:
   helm_lint:
