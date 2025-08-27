@@ -1,5 +1,6 @@
 import uuid
 
+import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -269,3 +270,57 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         row = await self.find_by_match_id(db_connection, match_id)
         assert row["override_marker"] == override_marker
         assert set(row["override_scopes"]) == set([override_scope1, override_scope2])
+
+    @pytest.mark.parametrize(
+        "person_fields",
+        [
+            (
+                {
+                    "firstName": "",
+                    "middleNames": "",
+                    "lastName": "",
+                },
+                ["name_1_std", "name_2_std", "name_3_std"],
+            ),
+            ({"cros": []}, ["cro_single"]),
+            ({"pncs": []}, ["pnc_single"]),
+            (
+                {"postcodes": []},
+                [
+                    "postcode_arr",
+                    "postcode_first",
+                    "postcode_second",
+                    "postcode_last",
+                    "postcode_outcode_first",
+                    "postcode_outcode_last",
+                ],
+            ),
+            ({"sentenceDates": []}, ["sentence_date_first", "sentence_date_last"]),
+            ({"overrideMarker": ""}, ["override_marker"]),
+            ({"overrideScopes": []}, ["override_scopes"]),
+        ],
+    )
+    async def test_data_stored_as_none_if_blank(
+        self,
+        match_id,
+        call_endpoint,
+        db_connection,
+        person_fields: tuple,
+    ):
+        """
+        Test that we can score candidates even if fields are 'empty'
+        """
+        fields, db_row_names = person_fields
+        # primary record
+        person_data = MockPerson(matchId=match_id, **fields)
+
+        response = call_endpoint(
+            "post",
+            ROUTE,
+            json=person_data.model_dump(by_alias=True),
+            client=Client.HMPPS_PERSON_MATCH,
+        )
+        assert response.status_code == 200
+        row = await self.find_by_match_id(db_connection, match_id)
+        for db_row_name in db_row_names:
+            assert row[db_row_name] is None

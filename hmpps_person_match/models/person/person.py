@@ -8,9 +8,13 @@ class Person(BaseModel):
     Pydantic Person Model
     """
 
-    match_id: str = Field(alias="matchId", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"])
-    source_system: str = Field(alias="sourceSystem", examples=["COMMON_PLATFORM"])
-    source_system_id: str = Field(alias="sourceSystemId", examples=["479bdd8e-f22a-42c5-8f7e-91e690426464"])
+    match_id: str = Field(alias="matchId", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"], min_length=1)
+    source_system: str = Field(alias="sourceSystem", examples=["COMMON_PLATFORM"], min_length=1)
+    source_system_id: str = Field(
+        alias="sourceSystemId",
+        examples=["479bdd8e-f22a-42c5-8f7e-91e690426464"],
+        min_length=1,
+    )
     first_name: str = Field(alias="firstName", examples=["Jane"])
     middle_names: str = Field(alias="middleNames", examples=["Grace"])
     last_name: str = Field(alias="lastName", examples=["Doe"])

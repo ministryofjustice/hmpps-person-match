@@ -105,7 +105,7 @@ columns_basic = [
         ],  # TODO: Remove?  Problem dob vs. sentence dates?
         alias="sentence_date_arr",
     ),
-    TransformedColumn("override_marker", column_type="VARCHAR"),
+    TransformedColumn("override_marker", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn("override_scopes", column_type="VARCHAR[]"),
 ]
 
@@ -254,7 +254,7 @@ columns_reshaping = [
         alias="sentence_date_last",
     ),
     TransformedColumn("override_marker"),
-    TransformedColumn("override_scopes"),
+    TransformedColumn("override_scopes", TIDY_NULLS_FROM_ARRAY),
 ]
 
 columns_simple_select = [
