@@ -70,4 +70,6 @@ class TestPersonMigrateRoute:
             "cros": ["4444566"],
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
+            "overrideMarker": "49813017-f686-415e-9a77-b27f279144b7",
+            "overrideScopes": ["72ce2365-6ab8-4642-805a-77c84bd9612b"],
         }
