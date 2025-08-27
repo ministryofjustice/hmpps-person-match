@@ -27,3 +27,5 @@ last_name_first: VARCHAR
 last_name_last: VARCHAR
 sentence_date_first: DATE
 sentence_date_last: DATE
+override_marker: "VARCHAR"
+override_scopes: "VARCHAR[]"

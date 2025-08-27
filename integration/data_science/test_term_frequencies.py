@@ -30,6 +30,8 @@ class TestTFs(IntegrationTestBase):
             "cros": ["4444566"],
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
+            "overrideMarker": None,
+            "overrideScopes": None,
         }
 
     @pytest.fixture(autouse=True, scope="function")
