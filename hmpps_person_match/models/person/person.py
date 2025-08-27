@@ -35,6 +35,11 @@ class Person(BaseModel):
         format="date",
         examples=[["2025-01-01"]],
     )  # Ensures YYYY-MM-DD
+    override_marker: str | None = Field(alias="overrideMarker", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"])
+    override_scopes: list[str] | None = Field(
+        alias="overrideScopes",
+        examples=[["dk38987d-skd8-d077-knd9-d0983ld9dfj8"]],
+    )
 
     @field_validator("date_of_birth", mode="before")
     @classmethod

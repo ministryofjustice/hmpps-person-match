@@ -83,6 +83,8 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         )
         assert row["sentence_date_first"] == self.to_datetime_object(person_data.sentence_dates[0])
         assert row["sentence_date_last"] == self.to_datetime_object(person_data.sentence_dates[0])
+        assert row["override_marker"] is None
+        assert row["override_scopes"] is None
 
     async def test_clean_and_update_message(
         self,
@@ -236,3 +238,34 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         record_2 = await self.find_by_match_id(db_connection, record_2_match_id)
         assert record_2["source_system_id"] == source_system_id
         assert record_2["source_system"] == "DELIUS"
+
+    async def test_stores_override_markers(
+        self,
+        call_endpoint,
+        match_id: str,
+        db_connection: AsyncSession,
+    ):
+        """
+        Test persons override marker data is stored
+        """
+        override_marker = str(uuid.uuid4())
+        override_scope1 = str(uuid.uuid4())
+        override_scope2 = str(uuid.uuid4())
+        person_data = MockPerson(
+            matchId=match_id,
+            overrideMarker=override_marker,
+            overrideScopes=[
+                override_scope1,
+                override_scope2,
+            ],
+        )
+        response = call_endpoint(
+            "post",
+            ROUTE,
+            json=person_data.model_dump(by_alias=True),
+            client=Client.HMPPS_PERSON_MATCH,
+        )
+        assert response.status_code == 200
+        row = await self.find_by_match_id(db_connection, match_id)
+        assert row["override_marker"] == override_marker
+        assert set(row["override_scopes"]) == set([override_scope1, override_scope2])
