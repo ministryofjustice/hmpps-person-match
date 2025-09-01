@@ -309,7 +309,7 @@
             "comparison_levels": [
                 {
                     "sql_condition": "override_marker_l IS NULL OR override_marker_r IS NULL",
-                    "label_for_charts": "override_marker_r is NULL",
+                    "label_for_charts": "override_marker is NULL",
                     "is_null_level": true
                 },
                 {

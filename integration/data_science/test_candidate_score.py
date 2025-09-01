@@ -183,14 +183,14 @@ class TestPersonScore(IntegrationTestBase):
             firstName="John",
             lastName="Smith",
             pncs=[shared_pnc],
-            manualOverride=override_id,
+            overrideMarker=override_id,
         )
         person_2 = MockPerson(
             matchId=str(uuid.uuid4()),
             firstName="Jane",
             lastName="Doe",
             pncs=[shared_pnc],
-            manualOverride=override_id,
+            overrideMarker=override_id,
         )
 
         await create_person_record(person_1)
