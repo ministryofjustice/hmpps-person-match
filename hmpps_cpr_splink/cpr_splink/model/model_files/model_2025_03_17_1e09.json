@@ -305,21 +305,21 @@
             "comparison_description": "CustomComparison"
         },
         {
-            "output_column_name": "manual_override",
+            "output_column_name": "override_marker",
             "comparison_levels": [
                 {
-                    "sql_condition": "manual_override_l IS NULL OR manual_override_r IS NULL",
-                    "label_for_charts": "manual_override_r is NULL",
+                    "sql_condition": "override_marker_l IS NULL OR override_marker_r IS NULL",
+                    "label_for_charts": "override_marker_r is NULL",
                     "is_null_level": true
                 },
                 {
-                    "sql_condition": "manual_override_l = manual_override_r",
-                    "label_for_charts": "Exact match on manual_override",
+                    "sql_condition": "override_marker_l = override_marker_r",
+                    "label_for_charts": "Exact match on override_marker",
                     "m_probability": 0.99999999999999999999999999999999999999999999999999,
                     "u_probability": 1e-50
                 },
                 {
-                    "sql_condition": "manual_override_l != manual_override_r AND array_length(list_intersect(override_scopes_l, override_scopes_r)) >= 1",
+                    "sql_condition": "override_marker_l != override_marker_r AND array_length(list_intersect(override_scopes_l, override_scopes_r)) >= 1",
                     "label_for_charts": "Different manual override in same scope",
                     "m_probability": 1e-50,
                     "u_probability": 0.99999999999999999999999999999999999999999999999999
