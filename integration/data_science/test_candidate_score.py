@@ -126,7 +126,7 @@ class TestPersonScore(IntegrationTestBase):
         db_connection,
     ):
         """
-        Tests that a NULL manual_override has no effect on the score.
+        Tests that a NULL override_marker has no effect on the score.
 
         It does this by creating two moderately similar records and scoring them.
         It then creates an identical pair where one record has a NULL override
@@ -168,7 +168,7 @@ class TestPersonScore(IntegrationTestBase):
         db_connection,
     ):
         """
-        Tests that if two records share the same manual_override UUID,
+        Tests that if two records share the same override_marker UUID,
         they receive a very high match weight, forcing them to match.
         """
         # Arrange: Two completely different people linked by an override ID
@@ -208,7 +208,7 @@ class TestPersonScore(IntegrationTestBase):
         db_connection,
     ):
         """
-        Tests that if two records have different manual_overrides but share
+        Tests that if two records have different override_markers but share
         an override_scope, they receive a very low match weight, forcing them apart.
         """
         # Two identical people who should be forced NOT to match
@@ -222,13 +222,13 @@ class TestPersonScore(IntegrationTestBase):
         base_person_data = MockPerson(matchId=person_1_id, pncs=[shared_pnc])
 
         person_1 = base_person_data.model_copy(deep=True)
-        person_1.manual_override = str(uuid.uuid4())
+        person_1.override_marker = str(uuid.uuid4())
         person_1.override_scopes = [scope_id]
 
         person_2 = base_person_data.model_copy(deep=True)
         person_2.source_system_id = random_test_data.random_source_system_id()
         person_2.match_id = str(uuid.uuid4())
-        person_2.manual_override = str(uuid.uuid4())
+        person_2.override_marker = str(uuid.uuid4())
         person_2.override_scopes = [scope_id]
 
         await create_person_record(person_1)

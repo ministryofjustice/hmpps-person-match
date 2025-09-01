@@ -41,7 +41,7 @@ def make_person(id_val):
         "pnc_single": str(fake.random_int(min=1, max=650_000)),
         "source_system": None,
         "source_system_id": None,
-        "manual_override": None,
+        "override_marker": None,
         "override_scopes": None,
     }
 
