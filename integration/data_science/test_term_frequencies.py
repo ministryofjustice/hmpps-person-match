@@ -30,7 +30,7 @@ class TestTFs(IntegrationTestBase):
             "cros": ["4444566"],
             "pncs": ["22224555"],
             "sentenceDates": ["2001-03-01"],
-            "manualOverride": None,
+            "overrideMarker": None,
             "overrideScopes": None,
         }
 

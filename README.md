@@ -16,7 +16,7 @@ In the event that changes are needed  to it either to improve performance or to 
 
 ## Pre-Requisites
 
-* Python 3.12+
+* Python 3.13+
 * [uv](https://docs.astral.sh/uv/)
 
 

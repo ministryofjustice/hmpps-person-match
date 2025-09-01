@@ -8,9 +8,13 @@ class Person(BaseModel):
     Pydantic Person Model
     """
 
-    match_id: str = Field(alias="matchId", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"])
-    source_system: str = Field(alias="sourceSystem", examples=["COMMON_PLATFORM"])
-    source_system_id: str = Field(alias="sourceSystemId", examples=["479bdd8e-f22a-42c5-8f7e-91e690426464"])
+    match_id: str = Field(alias="matchId", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"], min_length=1)
+    source_system: str = Field(alias="sourceSystem", examples=["COMMON_PLATFORM"], min_length=1)
+    source_system_id: str = Field(
+        alias="sourceSystemId",
+        examples=["479bdd8e-f22a-42c5-8f7e-91e690426464"],
+        min_length=1,
+    )
     first_name: str = Field(alias="firstName", examples=["Jane"])
     middle_names: str = Field(alias="middleNames", examples=["Grace"])
     last_name: str = Field(alias="lastName", examples=["Doe"])
@@ -35,6 +39,11 @@ class Person(BaseModel):
         format="date",
         examples=[["2025-01-01"]],
     )  # Ensures YYYY-MM-DD
+    override_marker: str | None = Field(alias="overrideMarker", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"])
+    override_scopes: list[str] | None = Field(
+        alias="overrideScopes",
+        examples=[["dk38987d-skd8-d077-knd9-d0983ld9dfj8"]],
+    )
 
     # TOD: Does this need | None?
     manual_override: str | None = Field(alias="manualOverride", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"])

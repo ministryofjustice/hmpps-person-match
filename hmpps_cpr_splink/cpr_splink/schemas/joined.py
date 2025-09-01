@@ -27,7 +27,7 @@ class JoinedRecord(TypedDict):
     cros: list[str] | None
     pncs: list[str] | None
     sentence_dates: list[date] | None
-    manual_override: str | None
+    override_marker: str | None
     override_scopes: list[str] | None
 
 

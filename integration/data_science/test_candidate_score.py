@@ -68,6 +68,8 @@ class TestPersonScore(IntegrationTestBase):
             {"sentenceDates": []},
             {"sourceSystem": ""},
             {"sourceSystemId": ""},
+            {"overrideMarker": ""},
+            {"overrideScopes": []},
         ],
     )
     async def test_get_scored_candidates_blank_data(
@@ -79,7 +81,7 @@ class TestPersonScore(IntegrationTestBase):
         person_data,
     ):
         """
-        Test that we can scor candidates even if fields are 'empty'
+        Test that we can score candidates even if fields are 'empty'
         """
         # primary record
         person_data = MockPerson(matchId=match_id, **person_data)
