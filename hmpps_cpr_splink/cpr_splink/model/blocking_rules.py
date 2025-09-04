@@ -31,4 +31,5 @@ blocking_rules_for_prediction_tight_for_candidate_search = [
     CustomRule(
         "l.name_1_std = r.last_name_std and l.last_name_std = r.name_1_std and l.date_of_birth = r.date_of_birth",
     ),
+    block_on("override_marker"),
 ]
