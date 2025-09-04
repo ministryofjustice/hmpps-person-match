@@ -5,7 +5,7 @@ class TelemetryEvents:
 
     PERSON_UPDATED_OR_CREATED = "PersonMatchUpdatedOrCreated"
     PERSON_BATCH_UPDATED_OR_CREATED = "PersonMatchBatchUpdatedOrCreated"
-    PERSON_DELETED = "PersonMatchUpdatedOrCreated"
+    PERSON_DELETED = "PersonMatchDeleted"
     PERSON_SCORE = "PersonMatchScoresCollected"
     IS_CLUSTER_VALID = "IsClusterValidCheck"
     JOBS_TERM_FREQUENCY_REFRESH = "JobsTermFrequencyRefreshTriggered"
