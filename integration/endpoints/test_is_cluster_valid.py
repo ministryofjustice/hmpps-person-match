@@ -171,12 +171,8 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         response_data = response.json()
         # in this case the cluster is NOT valid
         assert not response_data["isClusterValid"]
-        # we should have two clusters
-        assert len(response_data["clusters"]) == 2
-        # these should be of size 1 & 2
-        cluster_len_1 = len(response_data["clusters"][0])
-        cluster_len_2 = len(response_data["clusters"][1])
-        assert {cluster_len_1, cluster_len_2} == {1, 2}
+        # override markers inconsistent, so should get back empty list
+        assert len(response_data["clusters"]) == 0
 
     async def test_is_cluster_valid_include_override_marker(self, call_endpoint, match_id, create_person_record):
         """
@@ -210,15 +206,15 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
 
         person_data.override_marker = override_marker
         person_data.override_scopes = [scope]
-        self._update_person(call_endpoint, person_data)
+        await self._update_person(call_endpoint, person_data)
 
         non_matching_person_2_data.override_marker = override_marker
         non_matching_person_2_data.override_scopes = [scope]
-        self._update_person(call_endpoint, non_matching_person_2_data)
+        await self._update_person(call_endpoint, non_matching_person_2_data)
 
         non_matching_person_3_data.override_marker = override_marker
         non_matching_person_3_data.override_scopes = [scope]
-        self._update_person(call_endpoint, non_matching_person_3_data)
+        await self._update_person(call_endpoint, non_matching_person_3_data)
 
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=record_match_ids_data)
         assert response.status_code == 200
