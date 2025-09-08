@@ -26,7 +26,6 @@ class TestPersonScore(IntegrationTestBase):
 
     async def test_get_scored_candidates(
         self,
-        match_id,
         create_person_record,
         pg_db_url,
         db_connection,
@@ -35,16 +34,17 @@ class TestPersonScore(IntegrationTestBase):
         Test retrieving scored candidates gives correct number
         """
         # primary record
-        person_data = MockPerson(matchId=match_id)
+        primary_record_match_id = random_test_data.random_match_id()
+        person_data = MockPerson(matchId=primary_record_match_id)
         await create_person_record(person_data)
         # candidates - all should match with high match weight
         n_candidates = 10
         for _ in range(n_candidates):
-            person_data.match_id = str(uuid.uuid4())
+            person_data.match_id = random_test_data.random_match_id()
             person_data.source_system_id = random_test_data.random_source_system_id()
             await create_person_record(person_data)
 
-        res = await get_scored_candidates(match_id, pg_db_url, db_connection)
+        res = await get_scored_candidates(primary_record_match_id, pg_db_url, db_connection)
 
         # we have all candidates + original record
         assert len(res) == n_candidates
@@ -74,7 +74,6 @@ class TestPersonScore(IntegrationTestBase):
     )
     async def test_get_scored_candidates_blank_data(
         self,
-        match_id,
         create_person_record,
         pg_db_url,
         db_connection,
@@ -84,7 +83,8 @@ class TestPersonScore(IntegrationTestBase):
         Test that we can score candidates even if fields are 'empty'
         """
         # primary record
-        person_data = MockPerson(matchId=match_id, **person_data)
+        primary_record_match_id = random_test_data.random_match_id()
+        person_data = MockPerson(matchId=primary_record_match_id, **person_data)
         await create_person_record(person_data)
         # candidates - all should match with high match weight
         n_candidates = 10
@@ -93,7 +93,7 @@ class TestPersonScore(IntegrationTestBase):
             person_data.source_system_id = random_test_data.random_source_system_id()
             await create_person_record(person_data)
 
-        res = await get_scored_candidates(match_id, pg_db_url, db_connection)
+        res = await get_scored_candidates(primary_record_match_id, pg_db_url, db_connection)
 
         # we have all candidates + original record
         assert len(res) == n_candidates

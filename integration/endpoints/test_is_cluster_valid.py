@@ -1,11 +1,9 @@
-import uuid
-
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.cluster.is_cluster_valid import ROUTE
-from integration import random_test_data
 from integration.client import Client
+from integration.conftest import PersonFactory
 from integration.mock_person import MockPerson
 from integration.test_base import IntegrationTestBase
 
@@ -16,7 +14,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def before_each(self, db_connection: AsyncSession, person_match_url: str):
+    async def before_each(self, db_connection: AsyncSession):
         """
         Before Each
         """
@@ -40,29 +38,29 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {"unknownIds": [match_id]}
 
-    async def test_is_cluster_valid_validates_cluster(self, call_endpoint, match_id, create_person_record):
+    async def test_is_cluster_valid_validates_cluster(
+        self,
+        call_endpoint,
+        person_factory: PersonFactory,
+    ):
         """
         Test is cluster valid correctly identifies a valid cluster
         """
         # Create person to match and score
-        person_data = MockPerson(matchId=match_id)
-        await create_person_record(person_data)
-        # Create different person
-        matching_person_id_1 = str(uuid.uuid4())
-        person_data.match_id = matching_person_id_1
-        person_data.source_system_id = random_test_data.random_source_system_id()
-        await create_person_record(person_data)
+        person_1 = await person_factory.create_from(MockPerson())
 
         # Create different person
-        matching_person_id_2 = str(uuid.uuid4())
-        person_data.match_id = matching_person_id_2
-        person_data.source_system_id = random_test_data.random_source_system_id()
-        await create_person_record(person_data)
+        person_2 = await person_factory.create_from(person_1)
+
+        # Create different person
+        person_3 = await person_factory.create_from(person_1)
 
         # Call is-cluster-valid endpoint - should all be in same cluster
-        data = [match_id, matching_person_id_1, matching_person_id_2]
+        data = [person_1.match_id, person_2.match_id, person_3.match_id]
+
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
+
         response_data = response.json()
         assert len(response_data) == 2
         assert "isClusterValid" in response_data
@@ -73,59 +71,30 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # that cluster should be of size 3
         assert len(response_data["clusters"][0]) == 3
 
-    async def test_is_cluster_valid_identifies_multiple_clusters(self, call_endpoint, match_id, create_person_record):
+    async def test_is_cluster_valid_identifies_multiple_clusters(
+        self,
+        call_endpoint,
+        person_factory: PersonFactory,
+    ):
         """
         Test is cluster valid correctly identifies when we have multiple clusters
         """
         # Create initial person
-        person_data = MockPerson(
-            matchId=match_id,
-            firstName="First",
-            middleNames="",
-            lastName="Last",
-            firstNameAliases=[],
-            lastNameAliases=[],
-            dateOfBirth="1980-01-01",
-            dateOfBirthAliases=[],
-            postcodes=["AA1 1AA"],
-            cros=["00/123456A"],
-            pncs=["00/1234567A"],
-            sentenceDates=["2005-04-04"],
-        )
-        await create_person_record(person_data)
+        person_1 = await person_factory.create_from(MockPerson())
+
         # Create a duplicate person
-        matching_person_id_1 = str(uuid.uuid4())
-        person_data.match_id = matching_person_id_1
-        person_data.source_system_id = random_test_data.random_source_system_id()
-        await create_person_record(person_data)
+        person_2 = await person_factory.create_from(person_1)
 
         # Create an entirely different person
-        person_data = MockPerson(
-            matchId=match_id,
-            firstName="Different",
-            middleNames="",
-            lastName="Name",
-            firstNameAliases=[],
-            lastNameAliases=[],
-            dateOfBirth="1990-07-23",
-            dateOfBirthAliases=[],
-            postcodes=["BB2 2BB"],
-            cros=["11/654321Z"],
-            pncs=["11/7654321Z"],
-            sentenceDates=["2000-03-02"],
-        )
-        matching_person_id_2 = str(uuid.uuid4())
-        person_data = MockPerson(
-            matchId=matching_person_id_2,
-            sourceSystemId=random_test_data.random_source_system_id(),
-        )
-        await create_person_record(person_data)
+        person_3 = await person_factory.create_from(MockPerson())
 
         # Call is-cluster-valid endpoint - should all be in same cluster
-        data = [match_id, matching_person_id_1, matching_person_id_2]
+        data = [person_1.match_id, person_2.match_id, person_3.match_id]
+
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
         response_data = response.json()
+
         assert len(response_data) == 2
         assert "isClusterValid" in response_data
         assert "clusters" in response_data

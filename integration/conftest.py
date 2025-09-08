@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
+from integration.person_factory import PersonFactory
 
 
 class Service(Enum):
@@ -113,3 +114,8 @@ async def create_person_record(db_connection):
         await clean.clean_and_insert(PersonBatch(records=[person]), db_connection)
 
     return _create_person
+
+
+@pytest.fixture()
+async def person_factory(db_connection) -> PersonFactory:
+    return PersonFactory(db_connection)

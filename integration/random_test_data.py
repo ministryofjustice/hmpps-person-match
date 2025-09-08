@@ -4,6 +4,10 @@ import string
 import uuid
 
 
+def random_match_id() -> str:
+    return str(uuid.uuid4())
+
+
 def random_name() -> str:
     return random_lower_case_string()
 
