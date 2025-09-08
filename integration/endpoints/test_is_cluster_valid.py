@@ -174,7 +174,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # override markers inconsistent, so should get back empty list
         assert len(response_data["clusters"]) == 0
 
-    async def test_is_cluster_valid_exclude_override_marker_different_scopes(self, call_endpoint, match_id, create_person_record):
+    async def test_is_cluster_valid_exclude_override_marker_different_scopes(
+        self, call_endpoint, match_id, create_person_record,
+    ):
         """
         Test is-cluster-valid correctly ignores an override marker within a valid cluster
         Records have different override marker, but with no overlapping scope
