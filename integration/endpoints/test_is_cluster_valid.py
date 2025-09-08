@@ -174,6 +174,39 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # override markers inconsistent, so should get back empty list
         assert len(response_data["clusters"]) == 0
 
+    async def test_is_cluster_valid_exclude_override_marker_different_scopes(self, call_endpoint, match_id, create_person_record):
+        """
+        Test is-cluster-valid correctly ignores an override marker within a valid cluster
+        Records have different override marker, but with no overlapping scope
+        """
+        # Create person to match and score
+        person_data = MockPerson(matchId=match_id)
+
+        await create_person_record(person_data)
+        # Create different person
+        matching_person_id_1 = str(uuid.uuid4())
+        person_data.match_id = matching_person_id_1
+        person_data.source_system_id = random_test_data.random_source_system_id()
+        person_data.override_marker = self.new_override_marker()
+        person_data.override_scopes = [self.new_scope()]
+        await create_person_record(person_data)
+
+        # Create different matching person
+        matching_person_id_2 = str(uuid.uuid4())
+        person_data.match_id = matching_person_id_2
+        person_data.source_system_id = random_test_data.random_source_system_id()
+        person_data.override_marker = self.new_override_marker()
+        person_data.override_scopes = [self.new_scope()]
+        await create_person_record(person_data)
+
+        data = [match_id, matching_person_id_1, matching_person_id_2]
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
+        assert response.status_code == 200
+        response_data = response.json()
+        # in this case the cluster is valid - the differing scopes mean that we should not care
+        # that override_markers are different
+        assert response_data["isClusterValid"]
+
     async def test_is_cluster_valid_include_override_marker(self, call_endpoint, match_id, create_person_record):
         """
         Test is-cluster-valid correctly identifies a override marker with a invalid cluster
