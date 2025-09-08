@@ -18,8 +18,8 @@ run-local:
 build:
 	docker build . --tag hmpps-person-match \
 		--build-arg BUILD_NUMBER="local" \
-		--build-arg GIT_REF=$(shell git rev-parse --short HEAD) \
-		--build-arg GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
+		--build-arg GIT_REF="ref" \
+		--build-arg GIT_BRANCH="branch"
 
 run-docker:
 	docker run -p 5000:5000 -t hmpps_person_match
