@@ -226,7 +226,6 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # in this case the cluster is now valid
         assert response_data["isClusterValid"]
 
-
     async def _update_person(self, call_endpoint, person_data: Person):
         response = call_endpoint(
             "post",
