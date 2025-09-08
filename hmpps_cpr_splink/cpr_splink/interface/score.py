@@ -160,4 +160,4 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
                 cluster_assignments[cluster_id] = []
             cluster_assignments[cluster_id].append(match_id)
 
-    return Clusters(list(cluster_assignments.values()))
+        return Clusters(list(cluster_assignments.values()))

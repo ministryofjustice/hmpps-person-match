@@ -109,7 +109,7 @@ def pg_db_url() -> URL:
 
 @pytest.fixture()
 async def create_person_record(db_connection):
-    async def _create_person(person: Person):
+    async def _upsert_person(person: Person):
         await clean.clean_and_insert(PersonBatch(records=[person]), db_connection)
 
-    return _create_person
+    return _upsert_person
