@@ -137,3 +137,43 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         cluster_len_1 = len(response_data["clusters"][0])
         cluster_len_2 = len(response_data["clusters"][1])
         assert {cluster_len_1, cluster_len_2} == {1, 2}
+
+    async def test_is_cluster_invalid_override_marker(self, call_endpoint, match_id, create_person_record):
+        """
+        Test is cluster valid correctly identifies a override marker with a invalid cluster
+        """
+        # Create person to match and score
+        scope = str(uuid.uuid4())
+        person_data = MockPerson(matchId=match_id)
+
+        await create_person_record(person_data)
+        # Create different person
+        matching_person_id_1 = str(uuid.uuid4())
+        person_data.match_id = matching_person_id_1
+        person_data.source_system_id = random_test_data.random_source_system_id()
+        person_data.override_marker = str(uuid.uuid4())
+        person_data.override_scopes = [scope]
+        await create_person_record(person_data)
+
+        # Create different matching person
+        matching_person_id_2 = str(uuid.uuid4())
+        person_data.match_id = matching_person_id_2
+        person_data.source_system_id = random_test_data.random_source_system_id()
+        person_data.override_marker = str(uuid.uuid4())
+        person_data.override_scopes = [scope]
+        await create_person_record(person_data)
+
+        # Call is-cluster-valid endpoint - should all be in same cluster
+        data = [match_id, matching_person_id_1, matching_person_id_2]
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
+        assert response.status_code == 200
+        response_data = response.json()
+        # in this case the cluster is NOT valid
+        assert not response_data["isClusterValid"]
+        # we should have two clusters
+        assert len(response_data["clusters"]) == 2
+        # these should be of size 1 & 2
+        cluster_len_1 = len(response_data["clusters"][0])
+        cluster_len_2 = len(response_data["clusters"][1])
+        assert cluster_len_1 == 1
+        assert cluster_len_2 == 1
