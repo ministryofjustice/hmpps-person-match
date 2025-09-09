@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.cluster.is_cluster_valid import ROUTE
+from integration import random_test_data
 from integration.client import Client
 from integration.conftest import PersonFactory
 from integration.mock_person import MockPerson
@@ -21,15 +22,16 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         await self.truncate_person_data(db_connection)
         await self.refresh_term_frequencies(db_connection)
 
-    async def test_is_cluster_valid_unknown_id(self, call_endpoint, match_id):
+    async def test_is_cluster_valid_unknown_id(self, call_endpoint):
         """
         Test is cluster valid handles an unknown match id
         """
+        match_id = random_test_data.random_match_id()
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=[match_id])
         assert response.status_code == 404
         assert response.json() == {"unknownIds": [match_id]}
 
-    async def test_score_invalid_match_id(self, call_endpoint, match_id):
+    async def test_score_invalid_match_id(self, call_endpoint):
         """
         Test is cluster valid handles non uuid match_id
         """
