@@ -1,11 +1,9 @@
-import uuid
-
 import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.models.person.person import Person
-from integration import random_test_data
+from integration.mock_person import MockPerson
+from integration.person_factory import PersonFactory
 from integration.test_base import IntegrationTestBase
 
 
@@ -13,26 +11,6 @@ class TestTFs(IntegrationTestBase):
     """
     Test term frequency tables
     """
-
-    def create_person_data(self, first_name: str = "Henry", postcodes: list[str] = None):
-        return {
-            "matchId": str(uuid.uuid4()),
-            "sourceSystem": random_test_data.random_source_system(),
-            "sourceSystemId": random_test_data.random_source_system_id(),
-            "firstName": first_name,
-            "middleNames": "Ahmed",
-            "lastName": "Junaed",
-            "dateOfBirth": "1992-03-02",
-            "firstNameAliases": ["Henry"],
-            "lastNameAliases": ["Junaed"],
-            "dateOfBirthAliases": ["1992-01-01"],
-            "postcodes": postcodes if postcodes is not None else ["B10 1EJ"],
-            "cros": ["4444566"],
-            "pncs": ["22224555"],
-            "sentenceDates": ["2001-03-01"],
-            "overrideMarker": None,
-            "overrideScopes": None,
-        }
 
     @pytest.fixture(autouse=True, scope="function")
     async def clean_db(self, db_connection: AsyncSession):
@@ -42,14 +20,14 @@ class TestTFs(IntegrationTestBase):
         """
         await self.truncate_person_data(db_connection)
 
-    async def test_term_frequencies_simple(self, create_person_record, db_connection):
+    async def test_term_frequencies_simple(self, person_factory: PersonFactory, db_connection):
         """
         Test term frequncies for a simple column
         """
-        await create_person_record(Person(**self.create_person_data(first_name="Andy")))
-        await create_person_record(Person(**self.create_person_data(first_name="Andy")))
-        await create_person_record(Person(**self.create_person_data(first_name="Andy")))
-        await create_person_record(Person(**self.create_person_data(first_name="Henry")))
+        await person_factory.create_from(MockPerson(firstName="Andy"))
+        await person_factory.create_from(MockPerson(firstName="Andy"))
+        await person_factory.create_from(MockPerson(firstName="Andy"))
+        await person_factory.create_from(MockPerson(firstName="Henry"))
 
         await db_connection.execute(
             text("REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.term_frequencies_name_1_std;"),
@@ -66,15 +44,15 @@ class TestTFs(IntegrationTestBase):
         )
         assert tf_name_henry.fetchone()[0] == 0.25
 
-    async def test_term_frequencies_postcode(self, create_person_record, db_connection):
+    async def test_term_frequencies_postcode(self, person_factory: PersonFactory, db_connection):
         """
         Test term frequencies for an array column
         """
-        await create_person_record(Person(**self.create_person_data(postcodes=["AB1 1ZY"])))
-        await create_person_record(Person(**self.create_person_data(postcodes=["CD2 2XW"])))
-        await create_person_record(Person(**self.create_person_data(postcodes=["AB1 1ZY", "CD2 2XW"])))
-        await create_person_record(Person(**self.create_person_data(postcodes=["AB1 1ZY", "CD2 2XW"])))
-        await create_person_record(Person(**self.create_person_data(postcodes=["AB1 1ZY", "EF3 3VU"])))
+        await person_factory.create_from(MockPerson(postcodes=["AB1 1ZY"]))
+        await person_factory.create_from(MockPerson(postcodes=["CD2 2XW"]))
+        await person_factory.create_from(MockPerson(postcodes=["AB1 1ZY", "CD2 2XW"]))
+        await person_factory.create_from(MockPerson(postcodes=["AB1 1ZY", "CD2 2XW"]))
+        await person_factory.create_from(MockPerson(postcodes=["AB1 1ZY", "EF3 3VU"]))
 
         await db_connection.execute(
             text("REFRESH MATERIALIZED VIEW CONCURRENTLY personmatch.term_frequencies_postcode;"),
