@@ -113,6 +113,37 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
     return [r[0] for r in result.fetchall()]
 
 
+def get_mutually_excluded_records(connection_duckdb: duckdb.DuckDBPyConnection, duckdb_table_name: str):
+    # check if we have any rows in our data that share a scope, but have distinct markers
+    # if we have any such rows, our cluster is invalid
+    pipeline = CTEPipeline()
+    sql = f"""
+    SELECT
+        override_marker,
+        UNNEST(override_scopes) AS override_scope,
+    FROM
+        {duckdb_table_name}
+    """  # noqa: S608
+    pipeline.enqueue_sql(sql=sql, output_table_name="exploded_scopes")
+    sql = """
+    SELECT
+        l.override_marker AS override_marker_l,
+        r.override_marker AS override_marker_r,
+    FROM
+        exploded_scopes l
+    JOIN
+        exploded_scopes r
+    ON
+        l.override_scope = r.override_scope
+    WHERE
+        override_marker_l <> override_marker_r
+    """
+    pipeline.enqueue_sql(sql=sql, output_table_name="excluded_overrides")
+
+    sql = pipeline.generate_cte_pipeline_sql()
+    return connection_duckdb.execute(sql).fetchall()
+
+
 async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         tablename = "records_to_check"
@@ -132,6 +163,13 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
         res = await connection_pg.execute(text(sql), {"match_ids": match_ids})
 
         tf_enhanced_table_name = insert_data_into_duckdb(connection_duckdb, res.mappings().fetchall(), tablename)
+
+        excluded_overrides = get_mutually_excluded_records(connection_duckdb, tf_enhanced_table_name)
+        if excluded_overrides:
+            # if we have excluded overrides amongst our records,
+            # we can't determine in general what the composition 'should be'
+            # so don't attempt to guess
+            return Clusters([])
 
         db_api = DuckDBAPI(connection_duckdb)
         scores = compare_records(  # noqa: F841
@@ -160,4 +198,4 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
                 cluster_assignments[cluster_id] = []
             cluster_assignments[cluster_id].append(match_id)
 
-    return Clusters(list(cluster_assignments.values()))
+        return Clusters(list(cluster_assignments.values()))
