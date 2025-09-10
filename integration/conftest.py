@@ -1,5 +1,4 @@
 import time
-import uuid
 from collections.abc import AsyncGenerator
 from enum import Enum
 
@@ -8,9 +7,7 @@ import requests
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
-from hmpps_cpr_splink.cpr_splink.interface import clean
-from hmpps_person_match.models.person.person import Person
-from hmpps_person_match.models.person.person_batch import PersonBatch
+from integration.person_factory import PersonFactory
 
 
 class Service(Enum):
@@ -64,14 +61,6 @@ def person_match_url(get_service):
 
 
 @pytest.fixture()
-def match_id():
-    """
-    Generate UUID
-    """
-    return str(uuid.uuid4())
-
-
-@pytest.fixture()
 async def db_connection() -> AsyncGenerator[AsyncSession]:
     database_url = URL.create(
         drivername="postgresql+asyncpg",
@@ -108,8 +97,5 @@ def pg_db_url() -> URL:
 
 
 @pytest.fixture()
-async def create_person_record(db_connection):
-    async def _create_person(person: Person):
-        await clean.clean_and_insert(PersonBatch(records=[person]), db_connection)
-
-    return _create_person
+async def person_factory(db_connection) -> PersonFactory:
+    return PersonFactory(db_connection)
