@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 import requests
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from hmpps_person_match.routes.jobs.term_frequencies import ROUTE, TERM_FREQUENCY_TABLES
 from integration import random_test_data
 from integration.mock_person import MockPerson
+from integration.person_factory import PersonFactory
 from integration.test_base import IntegrationTestBase
 
 
@@ -26,14 +25,13 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
     async def test_term_frequency_generated(
         self,
         person_match_url,
-        create_person_record,
-        match_id,
+        person_factory: PersonFactory,
         db_connection: AsyncSession,
     ):
         """
         Test all term frequency tables are generated
         """
-        await create_person_record(MockPerson(matchId=match_id))
+        await person_factory.create_from(MockPerson())
 
         response = requests.post(person_match_url + ROUTE)  # noqa: ASYNC210
         assert response.status_code == 200
@@ -44,8 +42,7 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
     async def test_term_frequency_refreshed(
         self,
         person_match_url,
-        create_person_record,
-        match_id,
+        person_factory: PersonFactory,
         db_connection: AsyncSession,
     ):
         """
@@ -53,9 +50,9 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
         """
         cro_tf_table = "term_frequencies_cro_single"
 
-        await create_person_record(MockPerson(matchId=match_id))
+        await person_factory.create_from(MockPerson())
 
-        await create_person_record(MockPerson(matchId=str(uuid.uuid4()), cros=[random_test_data.random_cro()]))
+        await person_factory.create_from(MockPerson(cros=[random_test_data.random_cro()]))
 
         response = requests.post(person_match_url + ROUTE)  # noqa: ASYNC210
         assert response.status_code == 200
@@ -65,7 +62,7 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
     async def test_term_frequency_unique(
         self,
         person_match_url,
-        create_person_record,
+        person_factory: PersonFactory,
         db_connection: AsyncSession,
     ):
         """
@@ -76,11 +73,8 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
 
         cro = random_test_data.random_cro()
 
-        person_data_1 = MockPerson(matchId=str(uuid.uuid4()), cros=[cro])
-        person_data_2 = MockPerson(matchId=str(uuid.uuid4()), cros=[cro])
-
-        await create_person_record(person_data_1)
-        await create_person_record(person_data_2)
+        await person_factory.create_from(MockPerson(cros=[cro]))
+        await person_factory.create_from(MockPerson(cros=[cro]))
 
         response = requests.post(person_match_url + ROUTE)  # noqa: ASYNC210
         assert response.status_code == 200

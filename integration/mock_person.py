@@ -10,7 +10,7 @@ class MockPerson(Person):
     Sets random test data values
     """
 
-    match_id: str = Field(alias="matchId")
+    match_id: str = Field(alias="matchId", default_factory=lambda: random_test_data.random_match_id())
     first_name: str = Field(alias="firstName", default_factory=lambda: random_test_data.random_name())
     middle_names: str = Field(alias="middleNames", default_factory=lambda: random_test_data.random_name())
     last_name: str = Field(alias="lastName", default_factory=lambda: random_test_data.random_name())

@@ -22,13 +22,13 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
         """
         await self.truncate_person_data(db_connection)
 
-    async def test_batch_clean_and_store_message(self, call_endpoint, db_connection, match_id):
+    async def test_batch_clean_and_store_message(self, call_endpoint, db_connection):
         """
         Test person cleaned and stored on person endpoint
         """
         # Create person
         data = {
-            "records": [MockPerson(matchId=match_id).model_dump(by_alias=True)],
+            "records": [MockPerson().model_dump(by_alias=True)],
         }
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
