@@ -53,10 +53,6 @@ class IntegrationTestBase:
     def new_override_marker():
         return str(uuid.uuid4())
 
-    @staticmethod
-    def new_match_id():
-        return str(uuid.uuid4())
-
     async def until_asserted(self, assertion_func, max_retries=5, delay=0.3):
         """
         Repeatedly tries to assert something until it passes or max_retries is reached.
