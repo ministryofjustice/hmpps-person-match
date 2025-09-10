@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 from datetime import datetime
 
 from sqlalchemy import text
@@ -43,6 +44,18 @@ class IntegrationTestBase:
         result = await db_connection.execute(text(f"SELECT * FROM personmatch.{table}"))  # noqa: S608
         rows = result.fetchall()
         assert len(rows) == size
+
+    @staticmethod
+    def new_scope():
+        return str(uuid.uuid4())
+
+    @staticmethod
+    def new_override_marker():
+        return str(uuid.uuid4())
+
+    @staticmethod
+    def new_match_id():
+        return str(uuid.uuid4())
 
     async def until_asserted(self, assertion_func, max_retries=5, delay=0.3):
         """
