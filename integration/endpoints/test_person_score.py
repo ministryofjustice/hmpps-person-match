@@ -118,6 +118,35 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert matched_candidate["candidate_match_id"] == person_2.match_id
         assert matched_candidate["candidate_should_fracture"]
 
+    async def test_score_return_mutually_excluded_candidate(self, call_endpoint, person_factory: PersonFactory):
+        """
+        Test score can handle mutually exclusive candidate
+        """
+        # Create person to match and score
+        scope = self.new_scope()
+        person_data = MockPerson()
+        person_1 = await person_factory.create_from(person_data)
+
+        # Create different person
+        person_data.override_marker = self.new_override_marker()
+        person_data.override_scopes = [scope]
+        person_2 = await person_factory.create_from(person_data)
+
+        # Create different matching person
+        person_data.override_marker = self.new_override_marker()
+        person_data.override_scopes = [scope]
+        person_3 = await person_factory.create_from(person_data)
+
+        # Call score for person
+        response = call_endpoint("get", self._build_score_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
+
+        assert response.status_code == 200
+        assert len(response.json()) == 2
+
+        candidates_id = [candidate["candidate_match_id"] for candidate in response.json()]
+        assert person_2.match_id in candidates_id
+        assert person_3.match_id in candidates_id
+
     @staticmethod
     def _build_score_url(match_id: str):
         return ROUTE.format(match_id=match_id)
