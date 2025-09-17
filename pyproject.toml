@@ -35,7 +35,7 @@ dev = [
   "pyyaml==6.0.2",
   "pytest==8.4.2",
   "pytest-cov==7.0.0",
-  "pytest-asyncio==1.1.0",
+  "pytest-asyncio==1.2.0",
   "faker==37.8.0",
   "httpx==0.28.1",
   "requests-mock==1.12.1",
