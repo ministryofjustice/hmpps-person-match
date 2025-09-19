@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
@@ -23,6 +24,7 @@ SQLAlchemyInstrumentor().instrument(
 AsyncSessionLocal = async_sessionmaker(engine)
 
 
+@asynccontextmanager
 async def get_db_session() -> AsyncGenerator[AsyncSession]:
     """
     Get the database async connection

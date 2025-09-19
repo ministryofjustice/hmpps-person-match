@@ -1,5 +1,6 @@
 import time
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from enum import Enum
 
 import pytest
@@ -61,6 +62,7 @@ def person_match_url(get_service):
 
 
 @pytest.fixture()
+@asynccontextmanager
 async def db_connection() -> AsyncGenerator[AsyncSession]:
     database_url = URL.create(
         drivername="postgresql+asyncpg",

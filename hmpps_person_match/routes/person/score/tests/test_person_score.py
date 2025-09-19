@@ -1,5 +1,5 @@
 import uuid
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -16,6 +16,18 @@ class TestPersonScoreRoute:
 
     @staticmethod
     @pytest.fixture(autouse=True)
+    def mock_existence_check():
+        """
+        Mock the cpr splink candidate results
+        """
+        with patch(
+            "hmpps_cpr_splink.cpr_splink.interface.score.match_record_exists",
+            new_callable=AsyncMock,
+        ) as mocked_existence_check:
+            yield mocked_existence_check
+
+    @staticmethod
+    @pytest.fixture(autouse=True)
     def mock_score_results():
         """
         Mock the cpr splink candidate results
@@ -26,7 +38,7 @@ class TestPersonScoreRoute:
         ) as mocked_score:
             yield mocked_score
 
-    def test_person_score_no_results(self, call_endpoint, mock_score_results, mock_logger):
+    def test_person_score_no_results(self, call_endpoint, mock_score_results: AsyncMock, mock_logger: Mock):
         """
         Test that returns no results when no candidates results are returned
         """
@@ -44,7 +56,7 @@ class TestPersonScoreRoute:
             },
         )
 
-    def test_person_score_with_results(self, call_endpoint, mock_score_results, mock_logger):
+    def test_person_score_with_results(self, call_endpoint, mock_score_results: AsyncMock, mock_logger: Mock):
         """
         Test that returns candidate results in correct format
         """
@@ -97,12 +109,29 @@ class TestPersonScoreRoute:
             },
         )
 
+    def test_candidate_does_not_exist(self, call_endpoint, mock_existence_check: AsyncMock):
+        """
+        Test when candidate score call for and does not exist
+        Return 404
+        """
+        mock_existence_check.return_value = False
+        response = call_endpoint("get", self._generate_match_score_url(), roles=[Roles.ROLE_PERSON_MATCH])
+        assert response.status_code == 404
+
     def test_invalid_role_unauthorized(self, call_endpoint):
+        """
+        Test endpoint called with invalid role
+        Return 403 FORBIDDEN
+        """
         response = call_endpoint("get", self._generate_match_score_url(), roles=["Invalid Role"], json={})
         assert response.status_code == 403
         assert response.json()["detail"] == "You do not have permission to access this resource."
 
     def test_no_auth_returns_unauthorized(self, client):
+        """
+        Test endpoint called with no auth
+        Return 403 FORBIDDEN
+        """
         response = client.get(self._generate_match_score_url())
         assert response.status_code == 403
         assert response.json()["detail"] == "Not authenticated"
