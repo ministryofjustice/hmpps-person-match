@@ -92,7 +92,7 @@ next_id = 0
 
 while len(people) < n_people:
     base_person = make_person(0)
-    copies = random.randint(1, 5)
+    copies = random.randint(1, 5)  # noqa: S311
     copies = min(copies, n_people - len(people))
 
     for _ in range(copies):
