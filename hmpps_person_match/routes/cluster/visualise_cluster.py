@@ -38,9 +38,8 @@ async def get_cluster_vis(
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> dict:
     """
-    Is cluster valid GET request handler
-    Returns an indication of whether all supplied match_ids belong to the same cluster,
-    as well as the cluster groupings for casese where they don't
+    visualise cluster GET request handler
+    Returns a vega spec to visualise the clusters formed by the supplied match_ids
     """
     missing_ids = await score.get_missing_record_ids(match_ids, session)
     if not missing_ids:
