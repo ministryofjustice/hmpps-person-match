@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface import score
+from hmpps_cpr_splink.cpr_splink.visualisation import load_base_spec
 from hmpps_person_match.db import get_db_session, url
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
@@ -43,7 +44,8 @@ async def get_cluster_vis(
     """
     missing_ids = await score.get_missing_record_ids(match_ids, session)
     if not missing_ids:
-        return JSONResponse(content={"status": "ok"}, status_code=status.HTTP_200_OK)
+        spec = load_base_spec()
+        return JSONResponse(content={"spec": spec}, status_code=status.HTTP_200_OK)
     else:
         return JSONResponse(
             content=MissingRecordIds(unknownIds=missing_ids).model_dump(by_alias=True),
