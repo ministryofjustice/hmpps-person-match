@@ -1,4 +1,5 @@
 import csv
+import random
 import time
 from datetime import datetime
 
@@ -39,8 +40,8 @@ def make_person(id_val):
         "postcode_arr": [fake.postcode(), fake.postcode(), fake.postcode()],
         "cro_single": str(fake.random_int(min=1, max=1_000_000)),  # fake.passport_number(),
         "pnc_single": str(fake.random_int(min=1, max=650_000)),
-        "source_system": None,
-        "source_system_id": None,
+        "source_system": fake.random_element(["DELIUS", "NOMIS"]),
+        "source_system_id": fake.uuid4(),
         "override_marker": None,
         "override_scopes": None,
     }
@@ -86,8 +87,21 @@ def make_person(id_val):
 n_people = 3_500_0
 people = []
 t1 = time.time()
-for i in range(n_people):
-    people.append(make_person(i))
+
+next_id = 0
+
+while len(people) < n_people:
+    base_person = make_person(0)
+    copies = random.randint(1, 5)  # noqa: S311
+    copies = min(copies, n_people - len(people))
+
+    for _ in range(copies):
+        person = base_person.copy()
+        person["id"] = str(next_id)
+        person["match_id"] = fake.uuid4()
+        person["source_system_id"] = fake.uuid4()
+        people.append(person)
+        next_id += 1
 t2 = time.time()
 
 print(f"Time is {t2 - t1}")
