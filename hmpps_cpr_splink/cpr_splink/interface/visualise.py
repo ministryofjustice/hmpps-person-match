@@ -31,6 +31,8 @@ def _serialise_value(value: object) -> JSONValue:
         result = value.isoformat()
     elif isinstance(value, (list, tuple)):
         result = [_serialise_value(item) for item in value]
+    if isinstance(value, dict):
+        return {k: _serialise_value(v) for k, v in value.items()}
     else:
         result = str(value)
     return result

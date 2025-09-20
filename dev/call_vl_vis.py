@@ -15,9 +15,7 @@ AUTH_ROOT = "http://localhost:8081"
 CLIENT = Client.HMPPS_PERSON_MATCH
 CLIENT_SECRET = "clientsecret"  # noqa: S105
 
-MATCH_IDS = [
-    "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
-]
+MATCH_IDS = ["63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9", "31c32969-31fb-4bd1-9e65-861e41bfbb1e"]
 
 
 def render_vega_inline(spec: dict):
@@ -51,9 +49,9 @@ response = requests.post(
 )
 response.raise_for_status()
 payload = response.json()
+
 print("Status:", response.status_code)
 print("Payload:", payload)
-# Only render when a spec is returned by the API
+
 if "spec" in payload:
-    print("Rendering Vega spec...")
     render_vega_inline(payload["spec"])
