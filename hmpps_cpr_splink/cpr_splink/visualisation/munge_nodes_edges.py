@@ -7,9 +7,10 @@ def build_spec(nodes, edges):
     new_nodes = []
     # for n in nodes:
     #     n["id"] = n["match_id"]
-    for n in nodes:
+    for i, n in enumerate(nodes):
         nn = {}
         nn["id"] = n["match_id"]
+        nn["index"] = i
         nn["group"] = 1
         new_nodes.append(nn)
 
@@ -19,8 +20,8 @@ def build_spec(nodes, edges):
         # n["target"] = n["match_id_r"]
         # n["value"] = float(n["match_weight"])
         ee = {}
-        ee["source"] = e["match_id_l"]
-        ee["target"] = e["match_id_r"]
+        ee["source"] = 0
+        ee["target"] = 1
         ee["weight"] = float(e["match_weight"])
         new_edges.append(ee)
 

@@ -1,7 +1,7 @@
 """Utility script to call the /visualise-cluster endpoint and render the Vega chart."""
 
 from __future__ import annotations
-
+import os
 import base64
 
 import requests
@@ -52,6 +52,31 @@ response = requests.post(
 response.raise_for_status()
 payload = response.json()
 
+
+def save_vega_html(spec: dict, out_html: str = "vega_view.html", title: str = "Vega View", actions=True) -> str:
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>{title}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>body {{ margin: 0; padding: 1rem; font-family: system-ui, sans-serif; }}</style>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    const spec = {json.dumps(spec)};
+    vegaEmbed("#vis", spec, {{ mode: "vega", actions: {str(actions).lower()} }}).catch(console.error);
+  </script>
+</body>
+</html>"""
+    with open(out_html, "w", encoding="utf-8") as f:
+        f.write(html)
+    return os.path.abspath(out_html)
+
+
 print("Status:", response.status_code)
 print("Payload:", payload)
 try:
@@ -63,3 +88,4 @@ if "spec" in payload:
     render_vega_inline(payload["spec"])
 with open("vega_spec.json", "w", encoding="utf-8") as f:
     json.dump(payload["spec"], f, indent=2, ensure_ascii=False)
+save_vega_html(payload["spec"], out_html="vega_view.html", title="Vega View", actions=True)
