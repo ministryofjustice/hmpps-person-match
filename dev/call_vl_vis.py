@@ -9,6 +9,8 @@ from IPython.display import display
 
 
 from integration.client import Client
+import json
+from pprint import pformat
 
 API_ROOT = "http://localhost:5001"
 AUTH_ROOT = "http://localhost:8081"
@@ -52,6 +54,12 @@ payload = response.json()
 
 print("Status:", response.status_code)
 print("Payload:", payload)
-
+try:
+    pretty = json.dumps(payload, indent=2, ensure_ascii=False)
+except (TypeError, ValueError):
+    pretty = pformat(payload)
+print("Pretty payload:\n" + pretty)
 if "spec" in payload:
     render_vega_inline(payload["spec"])
+with open("vega_spec.json", "w", encoding="utf-8") as f:
+    json.dump(payload["spec"], f, indent=2, ensure_ascii=False)
