@@ -13,6 +13,42 @@ BASE_SPEC: dict[str, Any] = {
         {"name": "$nodeCharge", "value": -15},
         {"name": "$linkDistance", "value": 90},
         {"name": "$static", "value": False},
+        {
+            "description": "State variable for active node fix status.",
+            "name": "fix",
+            "value": False,
+            "on": [
+                {
+                    "events": "symbol:pointerout[!event.buttons], window:pointerup",
+                    "update": "false",
+                },
+                {"events": "symbol:pointerover", "update": "fix || true"},
+                {
+                    "events": "[symbol:pointerdown, window:pointerup] > window:pointermove!",
+                    "update": "xy()",
+                    "force": True,
+                },
+            ],
+        },
+        {
+            "description": "Graph node most recently interacted with.",
+            "name": "node",
+            "value": None,
+            "on": [
+                {
+                    "events": "symbol:pointerover",
+                    "update": "fix === true ? item() : node",
+                }
+            ],
+        },
+        {
+            "description": "Flag to restart force simulation when drag state changes.",
+            "name": "restart",
+            "value": False,
+            "on": [
+                {"events": {"signal": "fix"}, "update": "fix && fix.length"}
+            ],
+        },
     ],
     "data": [
         {"name": "node-data", "values": [{"group": 1, "match_id": "a"}, {"group": 1, "match_id": "b"}]},
@@ -32,6 +68,14 @@ BASE_SPEC: dict[str, Any] = {
             "type": "symbol",
             "zindex": 1,
             "from": {"data": "node-data"},
+            "on": [
+                {
+                    "trigger": "fix",
+                    "modify": "node",
+                    "values": "fix === true ? {fx: node.x, fy: node.y} : {fx: fix[0], fy: fix[1]}",
+                },
+                {"trigger": "!fix", "modify": "node", "values": "{fx: null, fy: null}"},
+            ],
             "encode": {
                 "enter": {"fill": {"scale": "color", "field": "group"}, "stroke": {"value": "white"}},
                 "update": {"size": {"signal": "2 * $nodeRadius * $nodeRadius"}, "cursor": {"value": "pointer"}},
@@ -40,6 +84,7 @@ BASE_SPEC: dict[str, Any] = {
                 {
                     "type": "force",
                     "iterations": 300,
+                    "restart": {"signal": "restart"},
                     "static": {"signal": "$static"},
                     "signal": "force",
                     "forces": [
