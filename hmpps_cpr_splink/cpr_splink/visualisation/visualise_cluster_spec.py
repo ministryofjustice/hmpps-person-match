@@ -11,7 +11,7 @@ BASE_SPEC: dict[str, Any] = {
         {"name": "$cy", "update": "height / 2"},
         {"name": "$nodeRadius", "value": 22},
         {"name": "$nodeCharge", "value": -15},
-        {"name": "$linkDistance", "value": 90},
+        {"name": "$linkDistance", "value": 140},
         {"name": "$static", "value": False},
         {
             "name": "scoreThreshold",
@@ -91,7 +91,13 @@ BASE_SPEC: dict[str, Any] = {
             ],
             "encode": {
                 "enter": {"fill": {"scale": "color", "field": "source_system"}, "stroke": {"value": "white"}},
-                "update": {"size": {"signal": "2 * $nodeRadius * $nodeRadius"}, "cursor": {"value": "pointer"}},
+                "update": {
+                    "size": {"signal": "2 * $nodeRadius * $nodeRadius"},
+                    "cursor": {"value": "pointer"},
+                    "tooltip": {
+                        "signal": '{"id": datum.id, "match_id": datum.match_id, "source_system": datum.source_system, "source_system_id": datum.source_system_id, "name_1_std": datum.name_1_std, "name_2_std": datum.name_2_std, "name_3_std": datum.name_3_std, "last_name_std": datum.last_name_std, "first_and_last_name_std": datum.first_and_last_name_std, "date_of_birth": datum.date_of_birth, "cro_single": datum.cro_single, "pnc_single": datum.pnc_single}'
+                    },
+                },
             },
             "transform": [
                 {
@@ -118,6 +124,7 @@ BASE_SPEC: dict[str, Any] = {
             "type": "text",
             "name": "node-labels",
             "from": {"data": "nodes"},
+            "interactive": False,
             "zindex": 2,
             "encode": {
                 "enter": {
@@ -126,7 +133,7 @@ BASE_SPEC: dict[str, Any] = {
                     "fontSize": {"value": 12},
                     "fontWeight": {"value": "bold"},
                     "fill": {"value": "black"},
-                    "text": {"signal": "datum.datum.match_id"},
+                    "text": {"signal": "slice(datum.datum.match_id, 0, 4)"},
                 },
                 "update": {
                     "x": {"field": "x"},
@@ -135,11 +142,37 @@ BASE_SPEC: dict[str, Any] = {
             },
         },
         {
-            "type": "path",
+            "type": "text",
+            "name": "link-labels",
             "from": {"data": "link-data"},
             "interactive": False,
+            "zindex": 1,
             "encode": {
-                "update": {"stroke": {"scale": "linkColor", "field": "match_weight"}, "strokeWidth": {"value": 2}}
+                "enter": {
+                    "align": {"value": "center"},
+                    "baseline": {"value": "middle"},
+                    "fontSize": {"value": 14},
+                    "fill": {"value": "black"},
+                },
+                "update": {
+                    "text": {"signal": "format(datum.match_weight, '.1f')"},
+                    "x": {"signal": "(datum.source.x + datum.target.x) / 2"},
+                    "y": {"signal": "(datum.source.y + datum.target.y) / 2"},
+                },
+            },
+        },
+        {
+            "type": "path",
+            "from": {"data": "link-data"},
+            "interactive": True,
+            "encode": {
+                "update": {
+                    "stroke": {"scale": "linkColor", "field": "match_weight"},
+                    "strokeWidth": {"value": 6},
+                    "tooltip": {
+                        "signal": "{\"id\": datum.id_l + ' <-> ' + datum.id_r, \"match_id\": datum.match_id_l + ' <-> ' + datum.match_id_r, \"source_system\": datum.source_system_l + ' <-> ' + datum.source_system_r, \"source_system_id\": datum.source_system_id_l + ' <-> ' + datum.source_system_id_r, \"name_1_std\": datum.name_1_std_l + ' <-> ' + datum.name_1_std_r, \"name_2_std\": datum.name_2_std_l + ' <-> ' + datum.name_2_std_r, \"name_3_std\": datum.name_3_std_l + ' <-> ' + datum.name_3_std_r, \"last_name_std\": datum.last_name_std_l + ' <-> ' + datum.last_name_std_r, \"first_and_last_name_std\": datum.first_and_last_name_std_l + ' <-> ' + datum.first_and_last_name_std_r, \"date_of_birth\": datum.date_of_birth_l + ' <-> ' + datum.date_of_birth_r, \"cro_single\": datum.cro_single_l + ' <-> ' + datum.cro_single_r, \"pnc_single\": datum.pnc_single_l + ' <-> ' + datum.pnc_single_r}"
+                    },
+                }
             },
             "transform": [
                 {

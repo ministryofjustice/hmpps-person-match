@@ -64,7 +64,7 @@ def save_vega_html(spec: dict, out_html: str = "vega_view.html", title: str = "V
   <meta charset="utf-8"/>
   <title>{title}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@6"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
   <style>body {{ margin: 0; padding: 1rem; font-family: system-ui, sans-serif; }}</style>
 </head>
