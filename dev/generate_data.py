@@ -1,5 +1,6 @@
 import csv
 import time
+from collections import OrderedDict
 from datetime import datetime
 
 from faker import Faker
@@ -39,11 +40,15 @@ def make_person(id_val):
         "postcode_arr": [fake.postcode(), fake.postcode(), fake.postcode()],
         "cro_single": str(fake.random_int(min=1, max=1_000_000)),  # fake.passport_number(),
         "pnc_single": str(fake.random_int(min=1, max=650_000)),
-        "source_system": None,
-        "source_system_id": None,
-        "override_marker": None,
-        "override_scopes": None,
+        "source_system": fake.random_choices(["DELIUS", "NOMIS", "COMMON_PLATFORM"], length=1)[0],
+        "source_system_id": fake.uuid4(),
+        "override_marker": fake.random_elements(
+            OrderedDict([
+                (None, 0.999),
+                (fake.uuid4(), 0.001),
+            ]), length=1)[0],
     }
+    cleaned_person["override_scopes"] = [fake.uuid4()] if (cleaned_person["override_marker"] is not None) else None
 
     # Create all derived columns first, leaving them as Python lists
     cleaned_person["first_and_last_name_std"] = cleaned_person["name_1_std"] + " " + cleaned_person["last_name_std"]
