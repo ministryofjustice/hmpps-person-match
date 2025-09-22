@@ -17,7 +17,11 @@ AUTH_ROOT = "http://localhost:8081"
 CLIENT = Client.HMPPS_PERSON_MATCH
 CLIENT_SECRET = "clientsecret"  # noqa: S105
 
-MATCH_IDS = ["63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9", "31c32969-31fb-4bd1-9e65-861e41bfbb1e"]
+MATCH_IDS = [
+    "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
+    "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
+    "f716ef04-4182-427b-92f5-c25140724169",
+]
 
 
 def render_vega_inline(spec: dict):

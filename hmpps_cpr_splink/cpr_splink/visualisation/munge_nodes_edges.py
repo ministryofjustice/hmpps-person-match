@@ -9,7 +9,7 @@ def build_spec(nodes, edges):
     for i, n in enumerate(nodes):
         nn = {}
 
-        nn["group"] = 1
+        nn["source_system"] = n["source_system"]
         nn["match_id"] = n["match_id"]
         new_nodes.append(nn)
 

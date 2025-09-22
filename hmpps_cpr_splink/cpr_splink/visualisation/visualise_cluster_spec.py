@@ -45,21 +45,19 @@ BASE_SPEC: dict[str, Any] = {
             "description": "Flag to restart force simulation when drag state changes.",
             "name": "restart",
             "value": False,
-            "on": [
-                {"events": {"signal": "fix"}, "update": "fix && fix.length"}
-            ],
+            "on": [{"events": {"signal": "fix"}, "update": "fix && fix.length"}],
         },
     ],
     "data": [
-        {"name": "node-data", "values": [{"group": 1, "match_id": "a"}, {"group": 1, "match_id": "b"}]},
+        {"name": "node-data", "values": [{"source_system": 1, "match_id": "a"}, {"source_system": 1, "match_id": "b"}]},
         {"name": "link-data", "values": [{"source": "a", "target": "b", "weight": 50.784104988004216}]},
     ],
     "scales": [
         {
             "name": "color",
             "type": "ordinal",
-            "domain": {"data": "node-data", "field": "group"},
-            "range": {"scheme": "category20"},
+            "domain": {"data": "node-data", "field": "source_system"},
+            "range": {"scheme": "category10"},
         }
     ],
     "marks": [
@@ -77,7 +75,7 @@ BASE_SPEC: dict[str, Any] = {
                 {"trigger": "!fix", "modify": "node", "values": "{fx: null, fy: null}"},
             ],
             "encode": {
-                "enter": {"fill": {"scale": "color", "field": "group"}, "stroke": {"value": "white"}},
+                "enter": {"fill": {"scale": "color", "field": "source_system"}, "stroke": {"value": "white"}},
                 "update": {"size": {"signal": "2 * $nodeRadius * $nodeRadius"}, "cursor": {"value": "pointer"}},
             },
             "transform": [
