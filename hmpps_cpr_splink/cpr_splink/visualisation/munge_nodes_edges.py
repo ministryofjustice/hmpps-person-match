@@ -5,35 +5,29 @@ def build_spec(nodes, edges):
     spec = load_base_spec()
 
     new_nodes = []
-    # for n in nodes:
-    #     n["id"] = n["match_id"]
+
     for i, n in enumerate(nodes):
         nn = {}
-        nn["id"] = n["match_id"]
-        nn["index"] = i
+
         nn["group"] = 1
+        nn["match_id"] = n["match_id"]
         new_nodes.append(nn)
 
     new_edges = []
     for e in edges:
-        # n["source"] = n["match_id_l"]
-        # n["target"] = n["match_id_r"]
-        # n["value"] = float(n["match_weight"])
         ee = {}
-        ee["source"] = 0
-        ee["target"] = 1
+
+        ee["source"] = e["match_id_l"]
+        ee["target"] = e["match_id_r"]
         ee["weight"] = float(e["match_weight"])
         new_edges.append(ee)
 
     spec["data"] = [
         {
-            "name": "node-data",
-            "values": new_nodes,
-        },
-        {
             "name": "link-data",
             "values": new_edges,
         },
+        {"name": "node-data", "values": new_nodes},
     ]
 
     return spec
