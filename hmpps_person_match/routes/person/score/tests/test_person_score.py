@@ -26,7 +26,19 @@ class TestPersonScoreRoute:
         ) as mocked_score:
             yield mocked_score
 
-    def test_person_score_no_results(self, call_endpoint, mock_score_results, mock_logger):
+    @staticmethod
+    @pytest.fixture(autouse=True)
+    def mock_existence_check():
+        """
+        Mock the cpr splink record existence check
+        """
+        with patch(
+            "hmpps_cpr_splink.cpr_splink.interface.score.match_record_exists",
+            new_callable=AsyncMock,
+        ) as mocked_existence:
+            yield mocked_existence
+
+    def test_person_score_no_results(self, call_endpoint, mock_score_results: AsyncMock, mock_logger):
         """
         Test that returns no results when no candidates results are returned
         """
@@ -44,7 +56,7 @@ class TestPersonScoreRoute:
             },
         )
 
-    def test_person_score_with_results(self, call_endpoint, mock_score_results, mock_logger):
+    def test_person_score_with_results(self, call_endpoint, mock_score_results: AsyncMock, mock_logger):
         """
         Test that returns candidate results in correct format
         """
@@ -97,7 +109,24 @@ class TestPersonScoreRoute:
             },
         )
 
+    def test_missing_record_returns_404(self, call_endpoint, mock_existence_check: AsyncMock):
+        """
+        Test missing record to score
+        Returns 404 Not Found
+        """
+        mock_existence_check.return_value = False
+        response = call_endpoint(
+            "get",
+            self._generate_match_score_url(),
+            roles=[Roles.ROLE_PERSON_MATCH],
+        )
+        assert response.status_code == 404
+
     def test_invalid_role_unauthorized(self, call_endpoint):
+        """
+        Test invalid role
+        Returns 403 Forbidden
+        """
         response = call_endpoint("get", self._generate_match_score_url(), roles=["Invalid Role"], json={})
         assert response.status_code == 403
         assert response.json()["detail"] == "You do not have permission to access this resource."
