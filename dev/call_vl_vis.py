@@ -8,7 +8,7 @@ import requests
 
 from integration.client import Client
 
-API_ROOT = "http://localhost:5001"
+API_ROOT = "http://localhost:5000"
 AUTH_ROOT = "http://localhost:8081"
 CLIENT = Client.HMPPS_PERSON_MATCH
 CLIENT_SECRET = "clientsecret"  # noqa: S105
