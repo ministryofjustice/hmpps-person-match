@@ -9,10 +9,21 @@ BASE_SPEC: dict[str, Any] = {
     "signals": [
         {"name": "$cx", "update": "width / 2"},
         {"name": "$cy", "update": "height / 2"},
-        {"name": "$nodeRadius", "value": 8},
+        {"name": "$nodeRadius", "value": 22},
         {"name": "$nodeCharge", "value": -15},
         {"name": "$linkDistance", "value": 90},
         {"name": "$static", "value": False},
+        {
+            "name": "scoreThreshold",
+            "value": 18,
+            "bind": {
+                "input": "range",
+                "min": -60,
+                "max": 60,
+                "step": 1,
+                "name": "Score Threshold:",
+            },
+        },
         {
             "description": "State variable for active node fix status.",
             "name": "fix",
@@ -44,8 +55,11 @@ BASE_SPEC: dict[str, Any] = {
         {
             "description": "Flag to restart force simulation when drag state changes.",
             "name": "restart",
-            "value": False,
-            "on": [{"events": {"signal": "fix"}, "update": "fix && fix.length"}],
+            "value": 0,
+            "on": [
+                {"events": {"signal": "fix"}, "update": "restart + 1"},
+                {"events": {"signal": "scoreThreshold"}, "update": "restart + 1"},
+            ],
         },
     ],
     "data": [
@@ -99,6 +113,26 @@ BASE_SPEC: dict[str, Any] = {
                     ],
                 }
             ],
+        },
+        {
+            "type": "text",
+            "name": "node-labels",
+            "from": {"data": "nodes"},
+            "zindex": 2,
+            "encode": {
+                "enter": {
+                    "align": {"value": "center"},
+                    "baseline": {"value": "middle"},
+                    "fontSize": {"value": 12},
+                    "fontWeight": {"value": "bold"},
+                    "fill": {"value": "black"},
+                    "text": {"signal": "datum.datum.match_id"},
+                },
+                "update": {
+                    "x": {"field": "x"},
+                    "y": {"field": "y"},
+                },
+            },
         },
         {
             "type": "path",
