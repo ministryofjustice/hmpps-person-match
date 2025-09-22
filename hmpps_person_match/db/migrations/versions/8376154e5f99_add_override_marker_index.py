@@ -19,7 +19,10 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     op.create_index(
-        index_name="idx_override_marker", table_name="person", columns=["override_marker"], schema="personmatch",
+        index_name="idx_override_marker",
+        table_name="person",
+        columns=["override_marker"],
+        schema="personmatch",
     )
 
 
