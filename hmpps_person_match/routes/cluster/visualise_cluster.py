@@ -44,13 +44,13 @@ async def get_cluster_vis(
     """
     missing_ids = await score.get_missing_record_ids(match_ids, session)
 
+    logger.info(TelemetryEvents.CLUSTER_VISUALIZE_REQUESTED, extra=dict(matchIds=match_ids))
+
     if not missing_ids:
         nodes, edges = await get_nodes_edges(match_ids, url.pg_database_url, session)
         spec = build_spec(nodes, edges)
         return JSONResponse(content={"spec": spec}, status_code=status.HTTP_200_OK)
     else:
-        logger.info(TelemetryEvents.CLUSTER_VISUALIZE_REQUESTED, extra=dict(matchIds=match_ids))
-
         return JSONResponse(
             content=MissingRecordIds(unknownIds=missing_ids).model_dump(by_alias=True),
             status_code=status.HTTP_404_NOT_FOUND,
