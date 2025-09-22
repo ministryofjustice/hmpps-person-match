@@ -73,7 +73,7 @@ BASE_SPEC: dict[str, Any] = {
             "domain": {"data": "node-data", "field": "source_system"},
             "range": {"scheme": "category10"},
         },
-        {"name": "linkColor", "type": "threshold", "domain": [18, 24], "range": ["red", "orange", "green"]},
+        {"name": "linkColor", "type": "threshold", "domain": [18, 24], "range": ["#fb9191", "#fdbe7a", "#9fff9f"]},
     ],
     "marks": [
         {
@@ -132,7 +132,7 @@ BASE_SPEC: dict[str, Any] = {
                     "baseline": {"value": "middle"},
                     "fontSize": {"value": 12},
                     "fontWeight": {"value": "bold"},
-                    "fill": {"value": "black"},
+                    "fill": {"value": "white"},
                     "text": {"signal": "slice(datum.datum.match_id, 0, 4)"},
                 },
                 "update": {
@@ -151,8 +151,9 @@ BASE_SPEC: dict[str, Any] = {
                 "enter": {
                     "align": {"value": "center"},
                     "baseline": {"value": "middle"},
-                    "fontSize": {"value": 14},
+                    "fontSize": {"value": 12},
                     "fill": {"value": "black"},
+                    "fontWeight": {"value": "bold"},
                 },
                 "update": {
                     "text": {"signal": "format(datum.match_weight, '.1f')"},
@@ -168,7 +169,7 @@ BASE_SPEC: dict[str, Any] = {
             "encode": {
                 "update": {
                     "stroke": {"scale": "linkColor", "field": "match_weight"},
-                    "strokeWidth": {"value": 6},
+                    "strokeWidth": {"value": 3},
                     "tooltip": {
                         "signal": "{\"id\": datum.id_l + ' <-> ' + datum.id_r, \"match_id\": datum.match_id_l + ' <-> ' + datum.match_id_r, \"source_system\": datum.source_system_l + ' <-> ' + datum.source_system_r, \"source_system_id\": datum.source_system_id_l + ' <-> ' + datum.source_system_id_r, \"name_1_std\": datum.name_1_std_l + ' <-> ' + datum.name_1_std_r, \"name_2_std\": datum.name_2_std_l + ' <-> ' + datum.name_2_std_r, \"name_3_std\": datum.name_3_std_l + ' <-> ' + datum.name_3_std_r, \"last_name_std\": datum.last_name_std_l + ' <-> ' + datum.last_name_std_r, \"first_and_last_name_std\": datum.first_and_last_name_std_l + ' <-> ' + datum.first_and_last_name_std_r, \"date_of_birth\": datum.date_of_birth_l + ' <-> ' + datum.date_of_birth_r, \"cro_single\": datum.cro_single_l + ' <-> ' + datum.cro_single_r, \"pnc_single\": datum.pnc_single_l + ' <-> ' + datum.pnc_single_r}"
                     },
