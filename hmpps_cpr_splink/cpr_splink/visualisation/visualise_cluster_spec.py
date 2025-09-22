@@ -1,6 +1,7 @@
 from copy import deepcopy
 from typing import Any
 
+# see https://www.robinlinacre.com/microblog/#different-ways-of-setting-out-data-in-a-vega-force-directed-layout
 BASE_SPEC: dict[str, Any] = {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
     "width": 500,
