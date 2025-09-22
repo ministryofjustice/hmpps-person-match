@@ -58,7 +58,8 @@ BASE_SPEC: dict[str, Any] = {
             "type": "ordinal",
             "domain": {"data": "node-data", "field": "source_system"},
             "range": {"scheme": "category10"},
-        }
+        },
+        {"name": "linkColor", "type": "threshold", "domain": [18, 24], "range": ["red", "orange", "green"]},
     ],
     "marks": [
         {
@@ -103,7 +104,9 @@ BASE_SPEC: dict[str, Any] = {
             "type": "path",
             "from": {"data": "link-data"},
             "interactive": False,
-            "encode": {"update": {"stroke": {"value": "#ccc"}, "strokeWidth": {"value": 2}}},
+            "encode": {
+                "update": {"stroke": {"scale": "linkColor", "field": "match_weight"}, "strokeWidth": {"value": 2}}
+            },
             "transform": [
                 {
                     "type": "linkpath",

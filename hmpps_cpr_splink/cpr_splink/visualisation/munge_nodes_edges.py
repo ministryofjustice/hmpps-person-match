@@ -4,30 +4,31 @@ from hmpps_cpr_splink.cpr_splink.visualisation.visualise_cluster_spec import loa
 def build_spec(nodes, edges):
     spec = load_base_spec()
 
-    new_nodes = []
+    edge_drop_prefixes = ("bf_", "tf_", "gamma_")
+    filtered_edges = []
+    filtered_nodes = []
 
-    for i, n in enumerate(nodes):
-        nn = {}
+    for edge in edges:
+        filtered_edge = {
+            key: value for key, value in edge.items() if not key.startswith(edge_drop_prefixes)
+        }
+        filtered_edge["source"] = edge["match_id_l"]
+        filtered_edge["target"] = edge["match_id_r"]
+        filtered_edge["match_weight"] = float(filtered_edge["match_weight"])
+        filtered_edges.append(filtered_edge)
 
-        nn["source_system"] = n["source_system"]
-        nn["match_id"] = n["match_id"]
-        new_nodes.append(nn)
-
-    new_edges = []
-    for e in edges:
-        ee = {}
-
-        ee["source"] = e["match_id_l"]
-        ee["target"] = e["match_id_r"]
-        ee["weight"] = float(e["match_weight"])
-        new_edges.append(ee)
+    for node in nodes:
+        filtered_node = {
+            key: value for key, value in node.items() if not key.startswith("tf_")
+        }
+        filtered_nodes.append(filtered_node)
 
     spec["data"] = [
         {
             "name": "link-data",
-            "values": new_edges,
+            "values": filtered_edges,
         },
-        {"name": "node-data", "values": new_nodes},
+        {"name": "node-data", "values": filtered_nodes},
     ]
 
     return spec
