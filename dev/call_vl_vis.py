@@ -3,10 +3,8 @@ from __future__ import annotations
 import base64
 import json
 import os
-from pprint import pformat
 
 import requests
-from IPython.display import display
 
 from integration.client import Client
 
@@ -20,10 +18,6 @@ MATCH_IDS = [
     "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
     "f716ef04-4182-427b-92f5-c25140724169",
 ]
-
-
-def render_vega_inline(spec: dict):
-    display({"application/vnd.vega.v5+json": spec}, raw=True)
 
 
 def _get_token() -> str:
@@ -81,13 +75,8 @@ def save_vega_html(spec: dict, out_html: str = "vega_view.html", title: str = "V
 
 print("Status:", response.status_code)
 print("Payload:", payload)
-try:
-    pretty = json.dumps(payload, indent=2, ensure_ascii=False)
-except (TypeError, ValueError):
-    pretty = pformat(payload)
-print("Pretty payload:\n" + pretty)
-if "spec" in payload:
-    render_vega_inline(payload["spec"])
+
+
 with open("vega_spec.json", "w", encoding="utf-8") as f:
     json.dump(payload["spec"], f, indent=2, ensure_ascii=False)
 save_vega_html(payload["spec"], out_html="vega_view.html", title="Vega View", actions=True)
