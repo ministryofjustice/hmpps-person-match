@@ -34,7 +34,7 @@ router = APIRouter(
 
 @router.post(ROUTE, description=DESCRIPTION)
 async def get_cluster_validity(
-    match_ids: Annotated[list[str], Body(example=["ea59b57f-f3b6-4f77-88dd-64f86d37dffd"])],
+    match_ids: Annotated[list[str], Body(examples=["ea59b57f-f3b6-4f77-88dd-64f86d37dffd"])],
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> IsClusterValid:
