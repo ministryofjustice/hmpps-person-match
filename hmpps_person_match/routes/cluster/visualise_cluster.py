@@ -13,6 +13,7 @@ from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.models.cluster.is_cluster_valid import MissingRecordIds
+from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 
 ROUTE = "/visualise-cluster"
 
@@ -48,6 +49,8 @@ async def get_cluster_vis(
         spec = build_spec(nodes, edges)
         return JSONResponse(content={"spec": spec}, status_code=status.HTTP_200_OK)
     else:
+        logger.info(TelemetryEvents.CLUSTER_VISUALIZE_REQUESTED, extra=dict(matchIds=match_ids))
+
         return JSONResponse(
             content=MissingRecordIds(unknownIds=missing_ids).model_dump(by_alias=True),
             status_code=status.HTTP_404_NOT_FOUND,
