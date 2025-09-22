@@ -1,16 +1,14 @@
-"""Utility script to call the /visualise-cluster endpoint and render the Vega chart."""
-
 from __future__ import annotations
-import os
+
 import base64
+import json
+import os
+from pprint import pformat
 
 import requests
 from IPython.display import display
 
-
 from integration.client import Client
-import json
-from pprint import pformat
 
 API_ROOT = "http://localhost:5001"
 AUTH_ROOT = "http://localhost:8081"

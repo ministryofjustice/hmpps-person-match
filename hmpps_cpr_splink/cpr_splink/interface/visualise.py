@@ -22,20 +22,22 @@ type JSONValue = JSONScalar | list["JSONValue"] | dict[str, "JSONValue"]
 
 
 def _serialise_value(value: object) -> JSONValue:
-    result = value
     if value is None:
-        result = None
-    elif isinstance(value, (str, int, float, bool)):
-        result = value
-    elif isinstance(value, (datetime, date)):
-        result = value.isoformat()
-    elif isinstance(value, (list, tuple)):
-        result = [_serialise_value(item) for item in value]
+        return None
+
+    if isinstance(value, (str, int, float, bool)):
+        return value
+
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+
+    if isinstance(value, (list, tuple)):
+        return [_serialise_value(item) for item in value]
+
     if isinstance(value, dict):
         return {k: _serialise_value(v) for k, v in value.items()}
-    else:
-        result = str(value)
-    return result
+
+    return str(value)
 
 
 def _serialise_row(mapping: dict[str, Any]) -> dict[str, JSONValue]:
