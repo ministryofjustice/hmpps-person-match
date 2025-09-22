@@ -8,5 +8,6 @@ class TelemetryEvents:
     PERSON_DELETED = "PersonMatchDeleted"
     PERSON_SCORE = "PersonMatchScoresCollected"
     IS_CLUSTER_VALID = "IsClusterValidCheck"
+    CLUSTER_VISUALIZE_REQUESTED = "ClusterVisualisationRequested"
     JOBS_TERM_FREQUENCY_REFRESH = "JobsTermFrequencyRefreshTriggered"
     PERSON_MATCH_RECORD_COUNT_REPORT = "PersonMatchRecordCountReport"
