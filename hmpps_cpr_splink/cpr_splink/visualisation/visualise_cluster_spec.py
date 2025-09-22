@@ -1,6 +1,42 @@
 from copy import deepcopy
 from typing import Any
 
+NODE_TOOLTIP_FIELDS = [
+    "id",
+    "match_id",
+    "source_system",
+    "source_system_id",
+    "name_1_std",
+    "name_2_std",
+    "name_3_std",
+    "last_name_std",
+    "first_and_last_name_std",
+    "date_of_birth",
+    "cro_single",
+    "pnc_single",
+]
+
+EDGE_COMPARISON_FIELDS = [
+    "id",
+    "match_id",
+    "source_system",
+    "source_system_id",
+    "name_1_std",
+    "name_2_std",
+    "name_3_std",
+    "last_name_std",
+    "first_and_last_name_std",
+    "date_of_birth",
+    "cro_single",
+    "pnc_single",
+]
+
+NODE_TOOLTIP_SIGNAL = "{" + ", ".join(f'"{field}": datum.{field}' for field in NODE_TOOLTIP_FIELDS) + "}"
+
+EDGE_TOOLTIP_SIGNAL = (
+    "{" + ", ".join(f'"{field}": datum.{field}_l + " <-> " + datum.{field}_r' for field in EDGE_COMPARISON_FIELDS) + "}"
+)
+
 # see https://www.robinlinacre.com/microblog/#different-ways-of-setting-out-data-in-a-vega-force-directed-layout
 BASE_SPEC: dict[str, Any] = {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
@@ -49,7 +85,7 @@ BASE_SPEC: dict[str, Any] = {
                 {
                     "events": "symbol:pointerover",
                     "update": "fix === true ? item() : node",
-                }
+                },
             ],
         },
         {
@@ -94,9 +130,7 @@ BASE_SPEC: dict[str, Any] = {
                 "update": {
                     "size": {"signal": "2 * $nodeRadius * $nodeRadius"},
                     "cursor": {"value": "pointer"},
-                    "tooltip": {
-                        "signal": '{"id": datum.id, "match_id": datum.match_id, "source_system": datum.source_system, "source_system_id": datum.source_system_id, "name_1_std": datum.name_1_std, "name_2_std": datum.name_2_std, "name_3_std": datum.name_3_std, "last_name_std": datum.last_name_std, "first_and_last_name_std": datum.first_and_last_name_std, "date_of_birth": datum.date_of_birth, "cro_single": datum.cro_single, "pnc_single": datum.pnc_single}'
-                    },
+                    "tooltip": {"signal": NODE_TOOLTIP_SIGNAL},
                 },
             },
             "transform": [
@@ -117,7 +151,7 @@ BASE_SPEC: dict[str, Any] = {
                             "distance": {"signal": "$linkDistance"},
                         },
                     ],
-                }
+                },
             ],
         },
         {
@@ -170,10 +204,8 @@ BASE_SPEC: dict[str, Any] = {
                 "update": {
                     "stroke": {"scale": "linkColor", "field": "match_weight"},
                     "strokeWidth": {"value": 3},
-                    "tooltip": {
-                        "signal": "{\"id\": datum.id_l + ' <-> ' + datum.id_r, \"match_id\": datum.match_id_l + ' <-> ' + datum.match_id_r, \"source_system\": datum.source_system_l + ' <-> ' + datum.source_system_r, \"source_system_id\": datum.source_system_id_l + ' <-> ' + datum.source_system_id_r, \"name_1_std\": datum.name_1_std_l + ' <-> ' + datum.name_1_std_r, \"name_2_std\": datum.name_2_std_l + ' <-> ' + datum.name_2_std_r, \"name_3_std\": datum.name_3_std_l + ' <-> ' + datum.name_3_std_r, \"last_name_std\": datum.last_name_std_l + ' <-> ' + datum.last_name_std_r, \"first_and_last_name_std\": datum.first_and_last_name_std_l + ' <-> ' + datum.first_and_last_name_std_r, \"date_of_birth\": datum.date_of_birth_l + ' <-> ' + datum.date_of_birth_r, \"cro_single\": datum.cro_single_l + ' <-> ' + datum.cro_single_r, \"pnc_single\": datum.pnc_single_l + ' <-> ' + datum.pnc_single_r}"
-                    },
-                }
+                    "tooltip": {"signal": EDGE_TOOLTIP_SIGNAL},
+                },
             },
             "transform": [
                 {
@@ -184,7 +216,7 @@ BASE_SPEC: dict[str, Any] = {
                     "sourceY": "datum.source.y",
                     "targetX": "datum.target.x",
                     "targetY": "datum.target.y",
-                }
+                },
             ],
         },
     ],
