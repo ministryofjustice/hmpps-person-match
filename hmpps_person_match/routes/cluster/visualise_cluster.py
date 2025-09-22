@@ -7,13 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface import score
 from hmpps_cpr_splink.cpr_splink.interface.visualise import get_nodes_edges
-from hmpps_cpr_splink.cpr_splink.visualisation import load_base_spec
+from hmpps_cpr_splink.cpr_splink.visualisation.munge_nodes_edges import build_spec
 from hmpps_person_match.db import get_db_session, url
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.models.cluster.is_cluster_valid import MissingRecordIds
-from hmpps_cpr_splink.cpr_splink.visualisation.munge_nodes_edges import build_spec
 
 ROUTE = "/visualise-cluster"
 
