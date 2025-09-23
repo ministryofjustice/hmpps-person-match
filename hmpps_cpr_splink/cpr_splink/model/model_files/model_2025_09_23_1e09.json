@@ -331,6 +331,28 @@
                     "u_probability": 0.5
                 }
             ]
+        },
+        {
+            "output_column_name": "master_defendant_id",
+            "comparison_levels": [
+                {
+                    "sql_condition": "master_defendant_id_l IS NULL OR master_defendant_id_r IS NULL",
+                    "label_for_charts": "master_defendant_id is NULL",
+                    "is_null_level": true
+                },
+                {
+                    "sql_condition": "master_defendant_id_l = master_defendant_id_r",
+                    "label_for_charts": "Exact match on master_defendant_id",
+                    "m_probability": 0.99999999999999999999999999999999999999999999999999,
+                    "u_probability": 1e-6
+                },
+                {
+                    "sql_condition": "ELSE",
+                    "label_for_charts": "All other comparisons",
+                    "m_probability": 0.5,
+                    "u_probability": 0.5
+                }
+            ]
         }
     ]
 }
