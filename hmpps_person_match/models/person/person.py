@@ -1,14 +1,12 @@
 import datetime
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class Person(BaseModel):
     """
     Pydantic Person Model
     """
-
-    model_config = ConfigDict(extra="forbid")
 
     match_id: str = Field(alias="matchId", examples=["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"], min_length=1)
     source_system: str = Field(alias="sourceSystem", examples=["COMMON_PLATFORM"], min_length=1)
