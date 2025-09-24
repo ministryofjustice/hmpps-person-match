@@ -59,6 +59,7 @@ class TestPersonMigrateRoute:
             "matchId": str(uuid.uuid4()),
             "sourceSystem": "DELIUS",
             "sourceSystemId": "A12345BC",
+            "masterDefendantId": "091f2d49-82d5-44a8-8b76-818db0f0ed48",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",

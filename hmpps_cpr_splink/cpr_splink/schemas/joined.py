@@ -16,6 +16,7 @@ class JoinedRecord(TypedDict):
     match_id: str
     source_system: str
     source_system_id: str | None
+    master_defendant_id: str | None
     first_name: str | None
     middle_names: str | None
     last_name: str | None

@@ -13,6 +13,7 @@ class TestPersonRoute:
             "matchId": "M1",
             "sourceSystem": "DELIUS",
             "sourceSystemId": "A12345BC",
+            "masterDefendantId": "091f2d49-82d5-44a8-8b76-818db0f0ed48",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
@@ -46,6 +47,7 @@ class TestPersonRoute:
             "matchId": "M1",
             "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],  # Should be string
             "sourceSystemId": "A12345BC",
+            "masterDefendantId": "091f2d49-82d5-44a8-8b76-818db0f0ed48",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
@@ -88,6 +90,7 @@ class TestPersonRoute:
             "matchId": "M1",
             "sourceSystem": "DELIUS",
             "sourceSystemId": "A12345BC",
+            "masterDefendantId": "091f2d49-82d5-44a8-8b76-818db0f0ed48",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
@@ -117,11 +120,12 @@ class TestPersonRoute:
             },
         ]
 
-    def test_empty_string_as_date(self, call_endpoint):
+    def test_empty_string_as_master_defendant_id_and_date(self, call_endpoint):
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
             "sourceSystemId": "A12345BC",
+            "masterDefendantId": "",
             "firstName": "Henry",
             "middleNames": "Ahmed",
             "lastName": "Junaed",
