@@ -45,5 +45,9 @@ class MockPerson(Person):
         alias="sourceSystemId",
         default_factory=lambda: random_test_data.random_source_system_id(),
     )
+    master_defendant_id: str = Field(
+        alias="masterDefendantId",
+        default_factory=lambda: random_test_data.random_defendant_id(),
+    )
     override_marker: str | None = Field(alias="overrideMarker", default=None)
     override_scopes: list[str] | None = Field(alias="overrideScopes", default=None)

@@ -22,7 +22,7 @@ class TestTFs(IntegrationTestBase):
 
     async def test_term_frequencies_simple(self, person_factory: PersonFactory, db_connection):
         """
-        Test term frequncies for a simple column
+        Test term frequencies for a simple column
         """
         await person_factory.create_from(MockPerson(firstName="Andy"))
         await person_factory.create_from(MockPerson(firstName="Andy"))
