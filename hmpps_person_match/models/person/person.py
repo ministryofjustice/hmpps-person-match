@@ -18,7 +18,6 @@ class Person(BaseModel):
     master_defendant_id: str = Field(
         alias="masterDefendantId",
         examples=["479bdd8e-f22a-42c5-8f7e-91e690426466"],
-        min_length=1,
     )
     first_name: str = Field(alias="firstName", examples=["Jane"])
     middle_names: str = Field(alias="middleNames", examples=["Grace"])
