@@ -60,6 +60,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert row["pnc_single"] == person_data.pncs[0]
         assert row["source_system"] == person_data.source_system
         assert row["source_system_id"] == person_data.source_system_id
+        assert row["master_defendant_id"] == person_data.master_defendant_id
         assert row["postcode_first"] == person_data.postcodes[0].replace(" ", "")
         assert row["postcode_second"] is None
         assert row["postcode_last"] == person_data.postcodes[0].replace(" ", "")
