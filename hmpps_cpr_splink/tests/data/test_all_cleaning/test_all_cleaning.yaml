@@ -22,6 +22,7 @@ data:
         sentence_dates: ["2000-11-11", "2001-12-17"]
         override_marker: null
         override_scopes: null
+        master_defendant_id: null
     splink_model_format:
       - match_id: "Match12"
         source_system: "NOMIS"
@@ -54,3 +55,4 @@ data:
         sentence_date_last: "2001-12-17"
         override_marker: null
         override_scopes: null
+        master_defendant_id: null

@@ -44,6 +44,7 @@ def make_person(id_val):
         "source_system_id": fake.uuid4(),
         "override_marker": None,
         "override_scopes": None,
+        "master_defendant_id": None,
     }
 
     # Create all derived columns first, leaving them as Python lists

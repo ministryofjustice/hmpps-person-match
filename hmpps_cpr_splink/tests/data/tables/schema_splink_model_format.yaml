@@ -29,3 +29,4 @@ sentence_date_first: DATE
 sentence_date_last: DATE
 override_marker: "VARCHAR"
 override_scopes: "VARCHAR[]"
+master_defendant_id: "VARCHAR"

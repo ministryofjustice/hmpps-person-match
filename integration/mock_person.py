@@ -47,3 +47,4 @@ class MockPerson(Person):
     )
     override_marker: str | None = Field(alias="overrideMarker", default=None)
     override_scopes: list[str] | None = Field(alias="overrideScopes", default=None)
+    master_defendant_id: str | None = Field(alias="masterDefendantId", default=None)
