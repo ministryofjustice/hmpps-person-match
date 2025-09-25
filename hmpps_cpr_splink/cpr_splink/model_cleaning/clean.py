@@ -257,7 +257,6 @@ columns_reshaping = [
     ),
     TransformedColumn("override_marker"),
     TransformedColumn("override_scopes", TIDY_NULLS_FROM_ARRAY),
-    TransformedColumn("master_defendant_id"),
 ]
 
 columns_simple_select = [

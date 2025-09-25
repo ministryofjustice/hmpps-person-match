@@ -30,7 +30,6 @@ class JoinedRecord(TypedDict):
     sentence_dates: list[date] | None
     override_marker: str | None
     override_scopes: list[str] | None
-    master_defendant_id: str | None
 
 
 PYDANTIC_TO_DUCKDB_TYPE_MAPPING = {
