@@ -300,5 +300,4 @@ columns_simple_select = [
     # override
     TransformedColumn("override_marker", column_type="VARCHAR"),
     TransformedColumn("override_scopes", column_type="VARCHAR[]"),
-    TransformedColumn("master_defendant_id", column_type="VARCHAR"),
 ]
