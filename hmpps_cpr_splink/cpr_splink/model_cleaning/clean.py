@@ -108,7 +108,6 @@ columns_basic = [
     ),
     TransformedColumn("override_marker", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn("override_scopes", column_type="VARCHAR[]"),
-    TransformedColumn("master_defendant_id", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
 ]
 
 

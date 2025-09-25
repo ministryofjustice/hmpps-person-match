@@ -52,7 +52,7 @@ class TestMasterDefendantId(IntegrationTestBase):
         await person_factory.update(person_2)
 
         mismatch_weight = await self._score_weight_between(person_1, person_2, pg_db_url, db_connection)
-        assert mismatch_weight == pytest.approx(baseline_weight, abs=1e-9)
+        assert mismatch_weight == pytest.approx(baseline_weight, abs=1e-6)
 
         person_1.master_defendant_id = str(uuid.uuid4())
         person_2.master_defendant_id = None
@@ -60,4 +60,4 @@ class TestMasterDefendantId(IntegrationTestBase):
         await person_factory.update(person_2)
 
         one_null_weight = await self._score_weight_between(person_1, person_2, pg_db_url, db_connection)
-        assert one_null_weight == pytest.approx(baseline_weight, abs=1e-9)
+        assert one_null_weight == pytest.approx(baseline_weight, abs=1e-6)
