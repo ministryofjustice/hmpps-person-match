@@ -66,6 +66,7 @@ class TestPersonScore(IntegrationTestBase):
             {"sentenceDates": []},
             {"sourceSystem": ""},
             {"sourceSystemId": ""},
+            {"masterDefendantId": ""},
             {"overrideMarker": ""},
             {"overrideScopes": []},
         ],

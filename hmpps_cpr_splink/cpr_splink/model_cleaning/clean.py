@@ -57,6 +57,7 @@ columns_basic = [
     TransformedColumn("match_id", column_type="VARCHAR"),
     TransformedColumn("source_system", [UPPER], "VARCHAR"),
     TransformedColumn("source_system_id", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
+    TransformedColumn("master_defendant_id", [TRIM_AND_NULLIF_IF_EMPTY], column_type="VARCHAR"),
     TransformedColumn("first_name", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("middle_names", [UPPER, NAME_CLEANING], "VARCHAR"),
     TransformedColumn("last_name", [UPPER, NAME_CLEANING], "VARCHAR"),
@@ -122,6 +123,7 @@ columns_reshaping = [
     TransformedColumn("match_id"),
     TransformedColumn("source_system"),
     TransformedColumn("source_system_id"),
+    TransformedColumn("master_defendant_id"),
     TransformedColumn("sentence_date_arr"),
     TransformedColumn("postcode_arr"),
     TransformedColumn(
@@ -264,6 +266,7 @@ columns_simple_select = [
     TransformedColumn("match_id", column_type="VARCHAR"),
     TransformedColumn("source_system", column_type="VARCHAR"),
     TransformedColumn("source_system_id", column_type="VARCHAR"),
+    TransformedColumn("master_defendant_id", column_type="VARCHAR"),
     # names
     TransformedColumn("name_1_std", column_type="VARCHAR"),
     TransformedColumn("name_2_std", column_type="VARCHAR"),

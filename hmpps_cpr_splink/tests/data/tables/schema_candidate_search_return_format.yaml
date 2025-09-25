@@ -1,6 +1,7 @@
 match_id: "VARCHAR"
 source_system: "VARCHAR"
 source_system_id: "VARCHAR"
+master_defendant_id: "VARCHAR"
 first_name: "VARCHAR"
 middle_names: "VARCHAR"
 last_name: "VARCHAR"
