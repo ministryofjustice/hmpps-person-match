@@ -61,6 +61,9 @@ columns = {
     "forename_last",
     "last_name_first",
     "last_name_last",
+    "override_marker",
+    "override_scopes",
+    "master_defendant_id",
 }
 col_string = ", ".join(columns)
 
