@@ -1,9 +1,9 @@
 {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
-    "description": "Force-directed graph with below-the-chart hover table for edges (2 rows) and nodes (1 row).",
+    "description": "Force-directed graph with hover-driven waterfall chart (replaces the old hover table). Hover an edge to see its match-weight waterfall below.",
     "width": 800,
     "height": {
-        "signal": "plotH + gap + tableH"
+        "signal": "plotH + gap + waterfallH"
     },
     "autosize": "pad",
     "padding": 8,
@@ -17,24 +17,8 @@
             "value": 30
         },
         {
-            "name": "tableH",
-            "value": 96
-        },
-        {
-            "name": "rowH",
-            "value": 22
-        },
-        {
-            "name": "numCols",
-            "value": 9
-        },
-        {
-            "name": "cellW",
-            "update": "width / numCols"
-        },
-        {
-            "name": "cellPad",
-            "value": 8
+            "name": "waterfallH",
+            "value": 450
         },
         {
             "name": "$cx",
@@ -139,182 +123,9 @@
                     "update": "null"
                 }
             ]
-        },
-        {
-            "name": "hoverNode",
-            "value": null,
-            "on": [
-                {
-                    "events": "@nodes:mouseover",
-                    "update": "datum"
-                },
-                {
-                    "events": "@nodes:mouseout",
-                    "update": "null"
-                },
-                {
-                    "events": "@links:mouseover",
-                    "update": "null"
-                },
-                {
-                    "events": "view:mouseleave",
-                    "update": "null"
-                }
-            ]
         }
     ],
     "data": [
-        {
-            "name": "link-data",
-            "values": [
-                {
-                    "match_weight": 51.54137674766134,
-                    "match_probability": 0.9999999999999997,
-                    "source_system_l": "DELIUS",
-                    "source_system_r": "DELIUS",
-                    "id_l": 0,
-                    "id_r": 1,
-                    "last_name_std_l": "THOMAS",
-                    "last_name_std_r": "THOMAS",
-                    "name_1_std_l": "CLAIRE",
-                    "name_1_std_r": "CLAIRE",
-                    "first_and_last_name_std_l": "CLAIRE THOMAS",
-                    "first_and_last_name_std_r": "CLAIRE THOMAS",
-                    "forename_std_arr_l": [
-                        "CLAIRE",
-                        "GEOFFREY",
-                        "BRYAN"
-                    ],
-                    "forename_std_arr_r": [
-                        "CLAIRE",
-                        "GEOFFREY",
-                        "BRYAN"
-                    ],
-                    "last_name_std_arr_l": [
-                        "THOMAS",
-                        "HENRY"
-                    ],
-                    "last_name_std_arr_r": [
-                        "THOMAS",
-                        "HENRY"
-                    ],
-                    "date_of_birth_arr_l": [
-                        "1952-06-26"
-                    ],
-                    "date_of_birth_arr_r": [
-                        "1952-06-26"
-                    ],
-                    "date_of_birth_l": "1952-06-26",
-                    "date_of_birth_r": "1952-06-26",
-                    "postcode_arr_l": [
-                        "W49JR",
-                        "WA6R7AE",
-                        "G7D9HX"
-                    ],
-                    "postcode_arr_r": [
-                        "W49JR",
-                        "WA6R7AE",
-                        "G7D9HX"
-                    ],
-                    "postcode_arr_with_freq_l": [
-                        {
-                            "value": "G7D9HX",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "W49JR",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "WA6R7AE",
-                            "rel_freq": 1.0
-                        }
-                    ],
-                    "postcode_arr_with_freq_r": [
-                        {
-                            "value": "G7D9HX",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "W49JR",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "WA6R7AE",
-                            "rel_freq": 1.0
-                        }
-                    ],
-                    "postcode_outcode_arr_l": [
-                        "W4",
-                        "WA6R",
-                        "G7D"
-                    ],
-                    "postcode_outcode_arr_r": [
-                        "W4",
-                        "WA6R",
-                        "G7D"
-                    ],
-                    "name_2_std_l": "GEOFFREY",
-                    "name_2_std_r": "GEOFFREY",
-                    "cro_single_l": "354009",
-                    "cro_single_r": "354009",
-                    "pnc_single_l": "455736",
-                    "pnc_single_r": "455736",
-                    "sentence_date_arr_l": [
-                        "1998-12-10",
-                        "2004-04-30"
-                    ],
-                    "sentence_date_arr_r": [
-                        "1998-12-10",
-                        "2004-04-30"
-                    ],
-                    "override_marker_l": null,
-                    "override_marker_r": null,
-                    "override_scopes_l": null,
-                    "override_scopes_r": null,
-                    "master_defendant_id_l": null,
-                    "master_defendant_id_r": null,
-                    "match_id_l": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
-                    "match_id_r": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
-                    "source": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
-                    "target": "31c32969-31fb-4bd1-9e65-861e41bfbb1e"
-                }
-            ],
-            "transform": [
-                {
-                    "type": "filter",
-                    "expr": "datum.match_weight >= scoreThreshold"
-                },
-                {
-                    "type": "lookup",
-                    "from": "node-data",
-                    "key": "match_id",
-                    "fields": [
-                        "match_id_l"
-                    ],
-                    "values": [
-                        "name_3_std"
-                    ],
-                    "as": [
-                        "name_3_std_l"
-                    ]
-                },
-                {
-                    "type": "lookup",
-                    "from": "node-data",
-                    "key": "match_id",
-                    "fields": [
-                        "match_id_r"
-                    ],
-                    "values": [
-                        "name_3_std"
-                    ],
-                    "as": [
-                        "name_3_std_r"
-                    ]
-                }
-            ]
-        },
         {
             "name": "node-data",
             "values": [
@@ -479,81 +290,361 @@
             ]
         },
         {
-            "name": "hoverCols",
+            "name": "link-data",
             "values": [
                 {
-                    "key": "source_system",
-                    "fieldL": "source_system_l",
-                    "fieldR": "source_system_r",
-                    "fieldN": "source_system"
-                },
-                {
-                    "key": "name_1_std",
-                    "fieldL": "name_1_std_l",
-                    "fieldR": "name_1_std_r",
-                    "fieldN": "name_1_std"
-                },
-                {
-                    "key": "name_2_std",
-                    "fieldL": "name_2_std_l",
-                    "fieldR": "name_2_std_r",
-                    "fieldN": "name_2_std"
-                },
-                {
-                    "key": "name_3_std",
-                    "fieldL": "name_3_std_l",
-                    "fieldR": "name_3_std_r",
-                    "fieldN": "name_3_std"
-                },
-                {
-                    "key": "last_name_std",
-                    "fieldL": "last_name_std_l",
-                    "fieldR": "last_name_std_r",
-                    "fieldN": "last_name_std"
-                },
-                {
-                    "key": "date_of_birth",
-                    "fieldL": "date_of_birth_l",
-                    "fieldR": "date_of_birth_r",
-                    "fieldN": "date_of_birth"
-                },
-                {
-                    "key": "cro_single",
-                    "fieldL": "cro_single_l",
-                    "fieldR": "cro_single_r",
-                    "fieldN": "cro_single"
-                },
-                {
-                    "key": "pnc_single",
-                    "fieldL": "pnc_single_l",
-                    "fieldR": "pnc_single_r",
-                    "fieldN": "pnc_single"
+                    "match_weight": 51.54137674766134,
+                    "match_probability": 0.9999999999999997,
+                    "source_system_l": "DELIUS",
+                    "source_system_r": "DELIUS",
+                    "id_l": 0,
+                    "id_r": 1,
+                    "last_name_std_l": "THOMAS",
+                    "last_name_std_r": "THOMAS",
+                    "name_1_std_l": "CLAIRE",
+                    "name_1_std_r": "CLAIRE",
+                    "first_and_last_name_std_l": "CLAIRE THOMAS",
+                    "first_and_last_name_std_r": "CLAIRE THOMAS",
+                    "forename_std_arr_l": [
+                        "CLAIRE",
+                        "GEOFFREY",
+                        "BRYAN"
+                    ],
+                    "forename_std_arr_r": [
+                        "CLAIRE",
+                        "GEOFFREY",
+                        "BRYAN"
+                    ],
+                    "last_name_std_arr_l": [
+                        "THOMAS",
+                        "HENRY"
+                    ],
+                    "last_name_std_arr_r": [
+                        "THOMAS",
+                        "HENRY"
+                    ],
+                    "date_of_birth_arr_l": [
+                        "1952-06-26"
+                    ],
+                    "date_of_birth_arr_r": [
+                        "1952-06-26"
+                    ],
+                    "date_of_birth_l": "1952-06-26",
+                    "date_of_birth_r": "1952-06-26",
+                    "postcode_arr_l": [
+                        "W49JR",
+                        "WA6R7AE",
+                        "G7D9HX"
+                    ],
+                    "postcode_arr_r": [
+                        "W49JR",
+                        "WA6R7AE",
+                        "G7D9HX"
+                    ],
+                    "postcode_arr_with_freq_l": [
+                        {
+                            "value": "G7D9HX",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "W49JR",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "WA6R7AE",
+                            "rel_freq": 1.0
+                        }
+                    ],
+                    "postcode_arr_with_freq_r": [
+                        {
+                            "value": "G7D9HX",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "W49JR",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "WA6R7AE",
+                            "rel_freq": 1.0
+                        }
+                    ],
+                    "postcode_outcode_arr_l": [
+                        "W4",
+                        "WA6R",
+                        "G7D"
+                    ],
+                    "postcode_outcode_arr_r": [
+                        "W4",
+                        "WA6R",
+                        "G7D"
+                    ],
+                    "name_2_std_l": "GEOFFREY",
+                    "name_2_std_r": "GEOFFREY",
+                    "cro_single_l": "354009",
+                    "cro_single_r": "354009",
+                    "pnc_single_l": "455736",
+                    "pnc_single_r": "455736",
+                    "sentence_date_arr_l": [
+                        "1998-12-10",
+                        "2004-04-30"
+                    ],
+                    "sentence_date_arr_r": [
+                        "1998-12-10",
+                        "2004-04-30"
+                    ],
+                    "override_marker_l": null,
+                    "override_marker_r": null,
+                    "override_scopes_l": null,
+                    "override_scopes_r": null,
+                    "master_defendant_id_l": null,
+                    "master_defendant_id_r": null,
+                    "match_id_l": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
+                    "match_id_r": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
+                    "source": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
+                    "target": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
+                    "waterfall_data": [
+                        {
+                            "column_name": "Prior",
+                            "label_for_charts": "Starting match weight (prior)",
+                            "sql_condition": null,
+                            "log2_bayes_factor": -21.847920914268045,
+                            "bayes_factor": 2.6492348650474123e-07,
+                            "comparison_vector_value": null,
+                            "m_probability": null,
+                            "u_probability": null,
+                            "bayes_factor_description": null,
+                            "value_l": "",
+                            "value_r": "",
+                            "term_frequency_adjustment": null,
+                            "bar_sort_order": 0
+                        },
+                        {
+                            "sql_condition": "\"first_and_last_name_std_l\" = \"first_and_last_name_std_r\"",
+                            "label_for_charts": "Exact match on first_and_last_name_std",
+                            "m_probability": 0.8805713283069031,
+                            "u_probability": 6.4416737775260826e-06,
+                            "bayes_factor": 136699.1497425822,
+                            "log2_bayes_factor": 17.060644743964726,
+                            "comparison_vector_value": 8,
+                            "bayes_factor_description": "If comparison level is `exact match on first_and_last_name_std` then comparison is 136,699 times more likely to be a match",
+                            "column_name": "name_comparison",
+                            "value_l": "THOMAS, CLAIRE, CLAIRE THOMAS, ['THOMAS', 'HENRY'], ['CLAIRE', 'GEOFFREY', 'BRYAN']",
+                            "value_r": "THOMAS, CLAIRE, CLAIRE THOMAS, ['THOMAS', 'HENRY'], ['CLAIRE', 'GEOFFREY', 'BRYAN']",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 1
+                        },
+                        {
+                            "sql_condition": "\"first_and_last_name_std_l\" = \"first_and_last_name_std_r\"",
+                            "label_for_charts": "Term freq adjustment on first_and_last_name_std with weight {cl.tf_adjustment_weight}",
+                            "m_probability": null,
+                            "u_probability": null,
+                            "bayes_factor": 1.0,
+                            "log2_bayes_factor": 0.0,
+                            "comparison_vector_value": 8,
+                            "bayes_factor_description": "Term frequency adjustment on first_and_last_name_std makes comparison 1.00 times more likely to be a match",
+                            "column_name": "tf_name_comparison",
+                            "value_l": "CLAIRE THOMAS",
+                            "value_r": "CLAIRE THOMAS",
+                            "term_frequency_adjustment": true,
+                            "bar_sort_order": 2
+                        },
+                        {
+                            "sql_condition": "\"date_of_birth_l\" = \"date_of_birth_r\"",
+                            "label_for_charts": "Exact match on date_of_birth",
+                            "m_probability": 0.9480015447228074,
+                            "u_probability": 6.32817809183543e-05,
+                            "bayes_factor": 14980.639466293029,
+                            "log2_bayes_factor": 13.870811587802677,
+                            "comparison_vector_value": 5,
+                            "bayes_factor_description": "If comparison level is `exact match on date_of_birth` then comparison is 14,981 times more likely to be a match",
+                            "column_name": "date_of_birth_arr",
+                            "value_l": "['1952-06-26'], 1952-06-26",
+                            "value_r": "['1952-06-26'], 1952-06-26",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 3
+                        },
+                        {
+                            "sql_condition": "\"date_of_birth_l\" = \"date_of_birth_r\"",
+                            "label_for_charts": "Term freq adjustment on date_of_birth with weight {cl.tf_adjustment_weight}",
+                            "m_probability": null,
+                            "u_probability": null,
+                            "bayes_factor": 1.0,
+                            "log2_bayes_factor": 0.0,
+                            "comparison_vector_value": 5,
+                            "bayes_factor_description": "Term frequency adjustment on date_of_birth makes comparison 1.00 times more likely to be a match",
+                            "column_name": "tf_date_of_birth_arr",
+                            "value_l": "1952-06-26",
+                            "value_r": "1952-06-26",
+                            "term_frequency_adjustment": true,
+                            "bar_sort_order": 4
+                        },
+                        {
+                            "sql_condition": "array_length(list_intersect(\"postcode_outcode_arr_l\", \"postcode_outcode_arr_r\")) >= 1",
+                            "label_for_charts": "Array intersection size >= 1",
+                            "m_probability": 0.09228399254208307,
+                            "u_probability": 0.002418387421033641,
+                            "bayes_factor": 38.159308859884845,
+                            "log2_bayes_factor": 5.253963136423491,
+                            "comparison_vector_value": 1,
+                            "bayes_factor_description": "If comparison level is `array intersection size >= 1` then comparison is 38.16 times more likely to be a match",
+                            "column_name": "postcode_arr",
+                            "value_l": "['W49JR', 'WA6R7AE', 'G7D9HX'], [{'value': 'G7D9HX', 'rel_freq': 1.0}, {'value': 'W49JR', 'rel_freq': 1.0}, {'value': 'WA6R7AE', 'rel_freq': 1.0}], ['W4', 'WA6R', 'G7D']",
+                            "value_r": "['W49JR', 'WA6R7AE', 'G7D9HX'], [{'value': 'G7D9HX', 'rel_freq': 1.0}, {'value': 'W49JR', 'rel_freq': 1.0}, {'value': 'WA6R7AE', 'rel_freq': 1.0}], ['W4', 'WA6R', 'G7D']",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 5
+                        },
+                        {
+                            "sql_condition": "\"name_2_std_l\" = \"name_2_std_r\"",
+                            "label_for_charts": "Exact match on name_2_std",
+                            "m_probability": 0.9311828314925126,
+                            "u_probability": 0.012319973710486735,
+                            "bayes_factor": 75.5831833228582,
+                            "log2_bayes_factor": 6.239993376483221,
+                            "comparison_vector_value": 2,
+                            "bayes_factor_description": "If comparison level is `exact match on name_2_std` then comparison is 75.58 times more likely to be a match",
+                            "column_name": "name_2_std",
+                            "value_l": "GEOFFREY",
+                            "value_r": "GEOFFREY",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 6
+                        },
+                        {
+                            "sql_condition": "\"name_2_std_l\" = \"name_2_std_r\"",
+                            "label_for_charts": "Term freq adjustment on name_2_std with weight {cl.tf_adjustment_weight}",
+                            "m_probability": null,
+                            "u_probability": null,
+                            "bayes_factor": 1.0,
+                            "log2_bayes_factor": 0.0,
+                            "comparison_vector_value": 2,
+                            "bayes_factor_description": "Term frequency adjustment on name_2_std makes comparison 1.00 times more likely to be a match",
+                            "column_name": "tf_name_2_std",
+                            "value_l": "GEOFFREY",
+                            "value_r": "GEOFFREY",
+                            "term_frequency_adjustment": true,
+                            "bar_sort_order": 7
+                        },
+                        {
+                            "sql_condition": "\"pnc_single_l\" = \"pnc_single_r\"",
+                            "label_for_charts": "Exact match on pnc_single",
+                            "m_probability": 0.4107364720646719,
+                            "u_probability": 1.3083008349386952e-07,
+                            "bayes_factor": 3139465.0304868016,
+                            "log2_bayes_factor": 21.582087312002308,
+                            "comparison_vector_value": 3,
+                            "bayes_factor_description": "If comparison level is `exact match on pnc_single` then comparison is 3,139,465 times more likely to be a match",
+                            "column_name": "id_comparison",
+                            "value_l": "455736, 354009",
+                            "value_r": "455736, 354009",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 8
+                        },
+                        {
+                            "sql_condition": "\"pnc_single_l\" = \"pnc_single_r\"",
+                            "label_for_charts": "Term freq adjustment on pnc_single with weight {cl.tf_adjustment_weight}",
+                            "m_probability": null,
+                            "u_probability": null,
+                            "bayes_factor": 1.0,
+                            "log2_bayes_factor": 0.0,
+                            "comparison_vector_value": 3,
+                            "bayes_factor_description": "Term frequency adjustment on pnc_single makes comparison 1.00 times more likely to be a match",
+                            "column_name": "tf_id_comparison",
+                            "value_l": "455736",
+                            "value_r": "455736",
+                            "term_frequency_adjustment": true,
+                            "bar_sort_order": 9
+                        },
+                        {
+                            "sql_condition": "array_length(list_intersect(\"sentence_date_arr_l\", \"sentence_date_arr_r\")) >= 1 and len(\"sentence_date_arr_l\") * len(\"sentence_date_arr_r\") <= 9",
+                            "label_for_charts": "Array intersection size >= 1, few elements",
+                            "m_probability": 0.14687596629322805,
+                            "u_probability": 0.0002201649974203961,
+                            "bayes_factor": 667.1176981542365,
+                            "log2_bayes_factor": 9.381797505252962,
+                            "comparison_vector_value": 4,
+                            "bayes_factor_description": "If comparison level is `array intersection size >= 1, few elements` then comparison is 667 times more likely to be a match",
+                            "column_name": "sentence_date_arr",
+                            "value_l": "['1998-12-10', '2004-04-30']",
+                            "value_r": "['1998-12-10', '2004-04-30']",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 10
+                        },
+                        {
+                            "sql_condition": "override_marker_l IS NULL OR override_marker_r IS NULL",
+                            "label_for_charts": "override_marker is NULL",
+                            "bayes_factor": 1.0,
+                            "log2_bayes_factor": 0.0,
+                            "comparison_vector_value": -1,
+                            "bayes_factor_description": "If comparison level is `override_marker is null` then comparison is 1 times more likely to be a match",
+                            "column_name": "override_marker",
+                            "value_l": "None, None",
+                            "value_r": "None, None",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 11
+                        },
+                        {
+                            "sql_condition": "master_defendant_id_l IS NULL OR master_defendant_id_r IS NULL",
+                            "label_for_charts": "master_defendant_id is NULL",
+                            "bayes_factor": 1.0,
+                            "log2_bayes_factor": 0.0,
+                            "comparison_vector_value": -1,
+                            "bayes_factor_description": "If comparison level is `master_defendant_id is null` then comparison is 1 times more likely to be a match",
+                            "column_name": "master_defendant_id",
+                            "value_l": "None",
+                            "value_r": "None",
+                            "term_frequency_adjustment": false,
+                            "bar_sort_order": 12
+                        },
+                        {
+                            "column_name": "Final score",
+                            "label_for_charts": "Final score",
+                            "sql_condition": null,
+                            "log2_bayes_factor": 51.54137674766134,
+                            "bayes_factor": 3277180928793753.5,
+                            "comparison_vector_value": null,
+                            "m_probability": null,
+                            "u_probability": null,
+                            "bayes_factor_description": null,
+                            "value_l": "",
+                            "value_r": "",
+                            "term_frequency_adjustment": null,
+                            "bar_sort_order": 13
+                        }
+                    ]
                 }
             ],
             "transform": [
                 {
-                    "type": "window",
-                    "ops": [
-                        "row_number"
+                    "type": "filter",
+                    "expr": "datum.match_weight >= scoreThreshold"
+                },
+                {
+                    "type": "lookup",
+                    "from": "node-data",
+                    "key": "match_id",
+                    "fields": [
+                        "match_id_l"
+                    ],
+                    "values": [
+                        "name_3_std"
                     ],
                     "as": [
-                        "idx"
+                        "name_3_std_l"
                     ]
                 },
                 {
-                    "type": "formula",
-                    "as": "colIdx",
-                    "expr": "datum.idx - 1"
-                },
-                {
-                    "type": "formula",
-                    "as": "valL",
-                    "expr": "hoverLink ? (isValid(hoverLink[datum.fieldL]) ? hoverLink[datum.fieldL] : '') : (hoverNode ? (isValid(hoverNode.datum[datum.fieldN]) ? hoverNode.datum[datum.fieldN] : '') : '')"
-                },
-                {
-                    "type": "formula",
-                    "as": "valR",
-                    "expr": "hoverLink && isValid(hoverLink[datum.fieldR]) ? hoverLink[datum.fieldR] : ''"
+                    "type": "lookup",
+                    "from": "node-data",
+                    "key": "match_id",
+                    "fields": [
+                        "match_id_r"
+                    ],
+                    "values": [
+                        "name_3_std"
+                    ],
+                    "as": [
+                        "name_3_std_r"
+                    ]
                 }
             ]
         }
@@ -803,7 +894,7 @@
         },
         {
             "type": "group",
-            "name": "hoverTable",
+            "name": "waterfall",
             "interactive": false,
             "encode": {
                 "update": {
@@ -817,181 +908,576 @@
                         "signal": "width"
                     },
                     "height": {
-                        "signal": "tableH"
+                        "signal": "waterfallH"
                     },
                     "opacity": {
-                        "signal": "(hoverLink || hoverNode) ? 1 : 0"
+                        "signal": "hoverLink ? 1 : 0"
                     }
                 }
             },
+            "data": [
+                {
+                    "name": "wf_raw",
+                    "values": [],
+                    "on": [
+                        {
+                            "trigger": "hoverLink",
+                            "remove": true
+                        },
+                        {
+                            "trigger": "hoverLink",
+                            "insert": "hoverLink && hoverLink.waterfall_data ? hoverLink.waterfall_data : []"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_0",
+                    "source": "wf_raw",
+                    "transform": [
+                        {
+                            "type": "collect",
+                            "sort": {
+                                "field": "bar_sort_order",
+                                "order": "ascending"
+                            }
+                        },
+                        {
+                            "type": "window",
+                            "ops": [
+                                "sum",
+                                "lead"
+                            ],
+                            "as": [
+                                "sum",
+                                "lead"
+                            ],
+                            "fields": [
+                                "log2_bayes_factor",
+                                "column_name"
+                            ],
+                            "frame": [
+                                null,
+                                0
+                            ]
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.column_name === 'Final score' ? datum.sum - datum.log2_bayes_factor : datum.sum",
+                            "as": "sum"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.lead === null ? datum.column_name : datum.lead",
+                            "as": "lead"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "(datum.column_name === 'Final score' || datum.column_name === 'Prior' || datum.column_name === 'Prior match weight') ? 0 : datum.sum - datum.log2_bayes_factor",
+                            "as": "previous_sum"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum > datum.previous_sum ? datum.column_name : ''",
+                            "as": "top_label"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? datum.column_name : ''",
+                            "as": "bottom_label"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum > datum.previous_sum ? datum.sum : datum.previous_sum",
+                            "as": "sum_top"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? datum.sum : datum.previous_sum",
+                            "as": "sum_bottom"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "(datum.sum + datum.previous_sum) / 2",
+                            "as": "center"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "(datum.log2_bayes_factor > 0 ? '+' : '') + datum.log2_bayes_factor",
+                            "as": "text_log2_bayes_factor"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? 4 : -4",
+                            "as": "dy"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? 'top' : 'bottom'",
+                            "as": "baseline"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "1. / (1 + pow(2, -1.*datum.sum))",
+                            "as": "prob"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "0*datum.sum",
+                            "as": "zero"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_2",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['zero']) && isFinite(+datum['zero'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_3",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['previous_sum']) && isFinite(+datum['previous_sum'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_4",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['center']) && isFinite(+datum['center'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_5",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['sum_top']) && isFinite(+datum['sum_top'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_6",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['sum']) && isFinite(+datum['sum'])"
+                        }
+                    ]
+                }
+            ],
+            "scales": [
+                {
+                    "name": "wf_y",
+                    "type": "linear",
+                    "domain": {
+                        "fields": [
+                            {
+                                "data": "wf_2",
+                                "field": "zero"
+                            },
+                            {
+                                "data": "wf_3",
+                                "field": "previous_sum"
+                            },
+                            {
+                                "data": "wf_3",
+                                "field": "sum"
+                            },
+                            {
+                                "data": "wf_4",
+                                "field": "center"
+                            },
+                            {
+                                "data": "wf_5",
+                                "field": "sum_top"
+                            },
+                            {
+                                "data": "wf_6",
+                                "field": "sum"
+                            }
+                        ]
+                    },
+                    "range": [
+                        {
+                            "signal": "waterfallH"
+                        },
+                        0
+                    ],
+                    "zero": false,
+                    "nice": true
+                },
+                {
+                    "name": "wf_x",
+                    "type": "band",
+                    "domain": {
+                        "fields": [
+                            {
+                                "data": "wf_0",
+                                "field": "column_name"
+                            },
+                            {
+                                "data": "wf_6",
+                                "field": "lead"
+                            }
+                        ],
+                        "sort": {
+                            "op": "min",
+                            "field": "bar_sort_order"
+                        }
+                    },
+                    "range": {
+                        "step": 75
+                    },
+                    "paddingInner": 0.1,
+                    "paddingOuter": 0.05
+                }
+            ],
+            "axes": [
+                {
+                    "scale": "wf_x",
+                    "orient": "bottom",
+                    "grid": true,
+                    "tickBand": "extent",
+                    "gridScale": "wf_y",
+                    "domain": false,
+                    "labels": false,
+                    "aria": false,
+                    "maxExtent": 0,
+                    "minExtent": 0,
+                    "ticks": false,
+                    "zindex": 0
+                },
+                {
+                    "scale": "wf_x",
+                    "orient": "bottom",
+                    "grid": false,
+                    "title": "Column",
+                    "labelAlign": "center",
+                    "labelAngle": 340,
+                    "labelPadding": 10,
+                    "tickBand": "extent",
+                    "labelBaseline": "top",
+                    "encode": {
+                        "labels": {
+                            "update": {
+                                "text": {
+                                    "signal": "datum.value == 'Prior' || datum.value == 'Final score' ? '' : datum.value"
+                                }
+                            }
+                        }
+                    },
+                    "zindex": 0
+                },
+                {
+                    "scale": "wf_y",
+                    "orient": "left",
+                    "grid": false,
+                    "title": "Match Weight",
+                    "labelOverlap": true,
+                    "tickCount": {
+                        "signal": "ceil(waterfallH/40)"
+                    },
+                    "zindex": 0
+                },
+                {
+                    "scale": "wf_y",
+                    "orient": "right",
+                    "grid": false,
+                    "title": "Probability",
+                    "labelOverlap": true,
+                    "tickCount": {
+                        "signal": "ceil(waterfallH/40)"
+                    },
+                    "encode": {
+                        "labels": {
+                            "update": {
+                                "text": {
+                                    "signal": "format(1 / (1 + pow(2, -1*datum.value)), '.2r')"
+                                }
+                            }
+                        }
+                    },
+                    "zindex": 0
+                }
+            ],
             "marks": [
                 {
-                    "type": "rect",
+                    "name": "wf_zero_rule",
+                    "type": "rule",
+                    "from": {
+                        "data": "wf_2"
+                    },
                     "encode": {
                         "update": {
-                            "width": {
-                                "signal": "width"
+                            "stroke": {
+                                "value": "black"
                             },
-                            "height": {
-                                "signal": "tableH"
+                            "x": {
+                                "field": {
+                                    "group": "width"
+                                }
+                            },
+                            "x2": {
+                                "value": 0
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "zero"
+                            },
+                            "strokeWidth": {
+                                "value": 0.5
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_bars",
+                    "type": "rect",
+                    "from": {
+                        "data": "wf_3"
+                    },
+                    "encode": {
+                        "update": {
+                            "fill": [
+                                {
+                                    "test": "(datum.log2_bayes_factor < 0)",
+                                    "value": "red"
+                                },
+                                {
+                                    "value": "green"
+                                }
+                            ],
+                            "opacity": [
+                                {
+                                    "test": "datum.column_name == 'Prior' || datum.column_name == 'Final score'",
+                                    "value": 1
+                                },
+                                {
+                                    "value": 0.5
+                                }
+                            ],
+                            "tooltip": {
+                                "signal": "{\"Comparison column\": datum.column_name, \"Value (L)\": datum.value_l, \"Value (R)\": datum.value_r, \"Label\": datum.label_for_charts, \"SQL condition\": datum.sql_condition, \"Comparison vector value\": datum.comparison_vector_value, \"Bayes factor = m/u\": format(datum.bayes_factor, ',.4f'), \"Match weight = log2(m/u)\": format(datum.log2_bayes_factor, ',.4f'), \"Cumulative match probability\": format(datum.prob, '.4f'), \"Match weight description\": datum.bayes_factor_description}"
+                            },
+                            "ariaRoleDescription": {
+                                "value": "bar"
+                            },
+                            "xc": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
+                            },
+                            "width": {
+                                "value": 60
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "previous_sum"
+                            },
+                            "y2": {
+                                "scale": "wf_y",
+                                "field": "sum"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_bar_labels_inside",
+                    "type": "text",
+                    "from": {
+                        "data": "wf_4"
+                    },
+                    "encode": {
+                        "update": {
+                            "fontWeight": {
+                                "value": "bold"
                             },
                             "fill": {
                                 "value": "white"
                             },
-                            "stroke": {
-                                "value": "#999"
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
                             },
-                            "fillOpacity": {
-                                "signal": "(hoverLink || hoverNode) ? 0.95 : 0"
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "center"
                             },
-                            "strokeOpacity": {
-                                "signal": "(hoverLink || hoverNode) ? 1    : 0"
+                            "text": [
+                                {
+                                    "test": "abs(datum.log2_bayes_factor) > 1",
+                                    "signal": "format(datum.log2_bayes_factor, '.2f')"
+                                },
+                                {
+                                    "value": ""
+                                }
+                            ],
+                            "align": {
+                                "value": "center"
+                            },
+                            "baseline": {
+                                "value": "middle"
                             }
                         }
                     }
                 },
                 {
+                    "name": "wf_top_labels",
                     "type": "text",
                     "from": {
-                        "data": "hoverCols"
+                        "data": "wf_5"
                     },
                     "encode": {
                         "update": {
-                            "x": {
-                                "signal": "cellPad + datum.colIdx * cellW"
+                            "baseline": {
+                                "value": "bottom"
                             },
-                            "y": {
-                                "signal": "cellPad"
-                            },
-                            "text": {
-                                "field": "key"
+                            "dy": {
+                                "value": -25
                             },
                             "fontWeight": {
                                 "value": "bold"
                             },
-                            "baseline": {
-                                "value": "top"
+                            "fill": {
+                                "value": "black"
                             },
-                            "align": {
-                                "value": "left"
-                            },
-                            "fontSize": {
-                                "value": 12
-                            },
-                            "opacity": {
-                                "signal": "(hoverLink || hoverNode) ? 1 : 0"
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "rule",
-                    "encode": {
-                        "update": {
                             "x": {
-                                "value": 0
-                            },
-                            "x2": {
-                                "signal": "width"
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
                             },
                             "y": {
-                                "signal": "cellPad + rowH - 2"
+                                "scale": "wf_y",
+                                "field": "sum_top"
                             },
-                            "stroke": {
-                                "value": "#ddd"
+                            "text": {
+                                "signal": "datum.column_name"
                             },
-                            "strokeWidth": {
-                                "value": 1
-                            },
-                            "opacity": {
-                                "signal": "(hoverLink || hoverNode) ? 1 : 0"
+                            "align": {
+                                "value": "center"
                             }
                         }
                     }
                 },
                 {
+                    "name": "wf_value_l",
                     "type": "text",
                     "from": {
-                        "data": "hoverCols"
+                        "data": "wf_5"
                     },
                     "encode": {
                         "update": {
-                            "x": {
-                                "signal": "cellPad + datum.colIdx * cellW"
-                            },
-                            "y": {
-                                "signal": "cellPad + rowH"
-                            },
-                            "text": {
-                                "field": "valL"
-                            },
                             "baseline": {
-                                "value": "top"
+                                "value": "bottom"
                             },
-                            "align": {
-                                "value": "left"
+                            "dy": {
+                                "value": -13
                             },
                             "fontSize": {
-                                "value": 11
+                                "value": 8
                             },
-                            "opacity": {
-                                "signal": "(hoverLink || hoverNode) ? 1 : 0"
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "rule",
-                    "encode": {
-                        "update": {
+                            "fill": {
+                                "value": "grey"
+                            },
                             "x": {
-                                "value": 0
-                            },
-                            "x2": {
-                                "signal": "width"
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
                             },
                             "y": {
-                                "signal": "cellPad + 2*rowH - 2"
+                                "scale": "wf_y",
+                                "field": "sum_top"
                             },
-                            "stroke": {
-                                "value": "#eee"
+                            "text": {
+                                "signal": "datum.value_l"
                             },
-                            "strokeWidth": {
-                                "value": 1
-                            },
-                            "opacity": {
-                                "signal": "hoverLink ? 1 : 0"
+                            "align": {
+                                "value": "center"
                             }
                         }
                     }
                 },
                 {
+                    "name": "wf_value_r",
                     "type": "text",
                     "from": {
-                        "data": "hoverCols"
+                        "data": "wf_5"
                     },
                     "encode": {
                         "update": {
-                            "x": {
-                                "signal": "cellPad + datum.colIdx * cellW"
-                            },
-                            "y": {
-                                "signal": "cellPad + 2*rowH"
-                            },
-                            "text": {
-                                "field": "valR"
-                            },
                             "baseline": {
-                                "value": "top"
+                                "value": "bottom"
                             },
-                            "align": {
-                                "value": "left"
+                            "dy": {
+                                "value": -5
                             },
                             "fontSize": {
-                                "value": 11
+                                "value": 8
                             },
-                            "opacity": {
-                                "signal": "hoverLink ? 1 : 0"
+                            "fill": {
+                                "value": "grey"
+                            },
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "sum_top"
+                            },
+                            "text": {
+                                "signal": "datum.value_r"
+                            },
+                            "align": {
+                                "value": "center"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_connectors",
+                    "type": "rule",
+                    "from": {
+                        "data": "wf_6"
+                    },
+                    "encode": {
+                        "update": {
+                            "strokeWidth": {
+                                "value": 2
+                            },
+                            "stroke": {
+                                "value": "black"
+                            },
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "offset": -30,
+                                "band": 0.5
+                            },
+                            "x2": {
+                                "scale": "wf_x",
+                                "field": "lead",
+                                "offset": 30,
+                                "band": 0.5
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "sum"
                             }
                         }
                     }
