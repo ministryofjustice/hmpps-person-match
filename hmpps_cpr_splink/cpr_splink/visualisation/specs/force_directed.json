@@ -45,6 +45,10 @@
             "value": false
         },
         {
+            "name": "$x_step_waterfall",
+            "value": 100
+        },
+        {
             "name": "scoreThreshold",
             "value": 18,
             "bind": {
@@ -905,7 +909,7 @@
                         "signal": "plotH + gap"
                     },
                     "width": {
-                        "signal": "width"
+                        "signal": "$x_step_waterfall * 14"
                     },
                     "height": {
                         "signal": "waterfallH"
@@ -962,7 +966,7 @@
                         },
                         {
                             "type": "formula",
-                            "expr": "datum.column_name === 'Final score' ? datum.sum - datum.log2_bayes_factor : datum.sum",
+                            "expr": "datum.sum",
                             "as": "sum"
                         },
                         {
@@ -972,7 +976,7 @@
                         },
                         {
                             "type": "formula",
-                            "expr": "(datum.column_name === 'Final score' || datum.column_name === 'Prior' || datum.column_name === 'Prior match weight') ? 0 : datum.sum - datum.log2_bayes_factor",
+                            "expr": "(datum.column_name === 'Prior' || datum.column_name === 'Prior match weight') ? 0 : datum.sum - datum.log2_bayes_factor",
                             "as": "previous_sum"
                         },
                         {
@@ -1139,7 +1143,9 @@
                         }
                     },
                     "range": {
-                        "step": 75
+                        "step": {
+                            "signal": "$x_step_waterfall"
+                        }
                     },
                     "paddingInner": 0.1,
                     "paddingOuter": 0.05
@@ -1403,7 +1409,7 @@
                                 "field": "sum_top"
                             },
                             "text": {
-                                "signal": "datum.value_l"
+                                "signal": "datum.term_frequency_adjustment === false ? slice(datum.value_l, 0, 25) : ''"
                             },
                             "align": {
                                 "value": "center"
@@ -1441,7 +1447,7 @@
                                 "field": "sum_top"
                             },
                             "text": {
-                                "signal": "datum.value_r"
+                                "signal": "datum.term_frequency_adjustment === false ? slice(datum.value_r, 0, 25) : ''"
                             },
                             "align": {
                                 "value": "center"
