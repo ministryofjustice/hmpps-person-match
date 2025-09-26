@@ -37,9 +37,6 @@ generic-service:
           return 401;
         }
 
-  imagePullSecrets:
-    - name: dockerconfigjson-github-com
-
   livenessProbe:
     httpGet:
       path: /health
