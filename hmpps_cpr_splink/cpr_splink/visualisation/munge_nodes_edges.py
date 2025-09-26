@@ -1,12 +1,22 @@
+from splink import SettingsCreator
+from splink.internals.waterfall_chart import record_to_waterfall_data
+
+from hmpps_cpr_splink.cpr_splink.model.score import MODEL_PATH
 from hmpps_cpr_splink.cpr_splink.visualisation.visualise_cluster_spec import load_base_spec
 
 
 def build_spec(nodes, edges):
     spec = load_base_spec()
 
-    edge_drop_prefixes = ("bf_", "tf_", "gamma_")
+    settings = SettingsCreator.from_path_or_dict(MODEL_PATH).get_settings("duckdb")
+
     filtered_edges = []
     filtered_nodes = []
+
+    for e in edges:
+        e["waterfall_data"] = record_to_waterfall_data(edges[0], settings, hide_details=False)
+
+    edge_drop_prefixes = ("bf_", "tf_", "gamma_")
 
     for edge in edges:
         filtered_edge = {key: value for key, value in edge.items() if not key.startswith(edge_drop_prefixes)}
