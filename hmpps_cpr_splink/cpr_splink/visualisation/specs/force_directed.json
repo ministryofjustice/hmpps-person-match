@@ -1,6 +1,6 @@
 {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
-    "description": "Force-directed graph with below-the-chart hover table (edges).",
+    "description": "Force-directed graph with below-the-chart hover table for edges (2 rows) and nodes (1 row).",
     "width": 800,
     "height": {
         "signal": "plotH + gap + tableH"
@@ -26,7 +26,7 @@
         },
         {
             "name": "numCols",
-            "value": 8
+            "value": 9
         },
         {
             "name": "cellW",
@@ -131,13 +131,433 @@
                     "update": "null"
                 },
                 {
+                    "events": "@nodes:mouseover",
+                    "update": "null"
+                },
+                {
+                    "events": "view:mouseleave",
+                    "update": "null"
+                }
+            ]
+        },
+        {
+            "name": "hoverNode",
+            "value": null,
+            "on": [
+                {
+                    "events": "@nodes:mouseover",
+                    "update": "datum"
+                },
+                {
+                    "events": "@nodes:mouseout",
+                    "update": "null"
+                },
+                {
+                    "events": "@links:mouseover",
+                    "update": "null"
+                },
+                {
                     "events": "view:mouseleave",
                     "update": "null"
                 }
             ]
         }
     ],
-    "data": [],
+    "data": [
+        {
+            "name": "link-data",
+            "values": [
+                {
+                    "match_weight": 51.54137674766134,
+                    "match_probability": 0.9999999999999997,
+                    "source_system_l": "DELIUS",
+                    "source_system_r": "DELIUS",
+                    "id_l": 0,
+                    "id_r": 1,
+                    "last_name_std_l": "THOMAS",
+                    "last_name_std_r": "THOMAS",
+                    "name_1_std_l": "CLAIRE",
+                    "name_1_std_r": "CLAIRE",
+                    "first_and_last_name_std_l": "CLAIRE THOMAS",
+                    "first_and_last_name_std_r": "CLAIRE THOMAS",
+                    "forename_std_arr_l": [
+                        "CLAIRE",
+                        "GEOFFREY",
+                        "BRYAN"
+                    ],
+                    "forename_std_arr_r": [
+                        "CLAIRE",
+                        "GEOFFREY",
+                        "BRYAN"
+                    ],
+                    "last_name_std_arr_l": [
+                        "THOMAS",
+                        "HENRY"
+                    ],
+                    "last_name_std_arr_r": [
+                        "THOMAS",
+                        "HENRY"
+                    ],
+                    "date_of_birth_arr_l": [
+                        "1952-06-26"
+                    ],
+                    "date_of_birth_arr_r": [
+                        "1952-06-26"
+                    ],
+                    "date_of_birth_l": "1952-06-26",
+                    "date_of_birth_r": "1952-06-26",
+                    "postcode_arr_l": [
+                        "W49JR",
+                        "WA6R7AE",
+                        "G7D9HX"
+                    ],
+                    "postcode_arr_r": [
+                        "W49JR",
+                        "WA6R7AE",
+                        "G7D9HX"
+                    ],
+                    "postcode_arr_with_freq_l": [
+                        {
+                            "value": "G7D9HX",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "W49JR",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "WA6R7AE",
+                            "rel_freq": 1.0
+                        }
+                    ],
+                    "postcode_arr_with_freq_r": [
+                        {
+                            "value": "G7D9HX",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "W49JR",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "WA6R7AE",
+                            "rel_freq": 1.0
+                        }
+                    ],
+                    "postcode_outcode_arr_l": [
+                        "W4",
+                        "WA6R",
+                        "G7D"
+                    ],
+                    "postcode_outcode_arr_r": [
+                        "W4",
+                        "WA6R",
+                        "G7D"
+                    ],
+                    "name_2_std_l": "GEOFFREY",
+                    "name_2_std_r": "GEOFFREY",
+                    "cro_single_l": "354009",
+                    "cro_single_r": "354009",
+                    "pnc_single_l": "455736",
+                    "pnc_single_r": "455736",
+                    "sentence_date_arr_l": [
+                        "1998-12-10",
+                        "2004-04-30"
+                    ],
+                    "sentence_date_arr_r": [
+                        "1998-12-10",
+                        "2004-04-30"
+                    ],
+                    "override_marker_l": null,
+                    "override_marker_r": null,
+                    "override_scopes_l": null,
+                    "override_scopes_r": null,
+                    "master_defendant_id_l": null,
+                    "master_defendant_id_r": null,
+                    "match_id_l": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
+                    "match_id_r": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
+                    "source": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
+                    "target": "31c32969-31fb-4bd1-9e65-861e41bfbb1e"
+                }
+            ],
+            "transform": [
+                {
+                    "type": "filter",
+                    "expr": "datum.match_weight >= scoreThreshold"
+                },
+                {
+                    "type": "lookup",
+                    "from": "node-data",
+                    "key": "match_id",
+                    "fields": [
+                        "match_id_l"
+                    ],
+                    "values": [
+                        "name_3_std"
+                    ],
+                    "as": [
+                        "name_3_std_l"
+                    ]
+                },
+                {
+                    "type": "lookup",
+                    "from": "node-data",
+                    "key": "match_id",
+                    "fields": [
+                        "match_id_r"
+                    ],
+                    "values": [
+                        "name_3_std"
+                    ],
+                    "as": [
+                        "name_3_std_r"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "node-data",
+            "values": [
+                {
+                    "id": 0,
+                    "match_id": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
+                    "source_system": "DELIUS",
+                    "source_system_id": "55ebea32-c781-4ad2-9180-4b641b8cd606",
+                    "master_defendant_id": null,
+                    "name_1_std": "CLAIRE",
+                    "name_2_std": "GEOFFREY",
+                    "name_3_std": "FRANCES",
+                    "last_name_std": "THOMAS",
+                    "first_and_last_name_std": "CLAIRE THOMAS",
+                    "forename_std_arr": [
+                        "CLAIRE",
+                        "GEOFFREY",
+                        "BRYAN"
+                    ],
+                    "forename_first": "CLAIRE",
+                    "forename_last": "BRYAN",
+                    "last_name_std_arr": [
+                        "THOMAS",
+                        "HENRY"
+                    ],
+                    "last_name_first": "THOMAS",
+                    "last_name_last": "HENRY",
+                    "date_of_birth": "1952-06-26",
+                    "date_of_birth_arr": [
+                        "1952-06-26"
+                    ],
+                    "date_of_birth_last": "1952-06-26",
+                    "sentence_date_arr": [
+                        "1998-12-10",
+                        "2004-04-30"
+                    ],
+                    "sentence_date_first": "1998-12-10",
+                    "sentence_date_last": "2004-04-30",
+                    "postcode_arr": [
+                        "W49JR",
+                        "WA6R7AE",
+                        "G7D9HX"
+                    ],
+                    "postcode_first": "W49JR",
+                    "postcode_second": "WA6R7AE",
+                    "postcode_last": "G7D9HX",
+                    "postcode_outcode_arr": [
+                        "W4",
+                        "WA6R",
+                        "G7D"
+                    ],
+                    "postcode_outcode_first": "W4",
+                    "postcode_outcode_last": "G7D",
+                    "cro_single": "354009",
+                    "pnc_single": "455736",
+                    "override_marker": null,
+                    "override_scopes": null,
+                    "postcode_arr_repacked": [
+                        "G7D9HX",
+                        "W49JR",
+                        "WA6R7AE"
+                    ],
+                    "postcode_freq_arr": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "postcode_arr_with_freq": [
+                        {
+                            "value": "G7D9HX",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "W49JR",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "WA6R7AE",
+                            "rel_freq": 1.0
+                        }
+                    ]
+                },
+                {
+                    "id": 1,
+                    "match_id": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
+                    "source_system": "DELIUS",
+                    "source_system_id": "1086a9ed-afd8-48eb-be84-5e465804cf4b",
+                    "master_defendant_id": null,
+                    "name_1_std": "CLAIRE",
+                    "name_2_std": "GEOFFREY",
+                    "name_3_std": "FRANCES",
+                    "last_name_std": "THOMAS",
+                    "first_and_last_name_std": "CLAIRE THOMAS",
+                    "forename_std_arr": [
+                        "CLAIRE",
+                        "GEOFFREY",
+                        "BRYAN"
+                    ],
+                    "forename_first": "CLAIRE",
+                    "forename_last": "BRYAN",
+                    "last_name_std_arr": [
+                        "THOMAS",
+                        "HENRY"
+                    ],
+                    "last_name_first": "THOMAS",
+                    "last_name_last": "HENRY",
+                    "date_of_birth": "1952-06-26",
+                    "date_of_birth_arr": [
+                        "1952-06-26"
+                    ],
+                    "date_of_birth_last": "1952-06-26",
+                    "sentence_date_arr": [
+                        "1998-12-10",
+                        "2004-04-30"
+                    ],
+                    "sentence_date_first": "1998-12-10",
+                    "sentence_date_last": "2004-04-30",
+                    "postcode_arr": [
+                        "W49JR",
+                        "WA6R7AE",
+                        "G7D9HX"
+                    ],
+                    "postcode_first": "W49JR",
+                    "postcode_second": "WA6R7AE",
+                    "postcode_last": "G7D9HX",
+                    "postcode_outcode_arr": [
+                        "W4",
+                        "WA6R",
+                        "G7D"
+                    ],
+                    "postcode_outcode_first": "W4",
+                    "postcode_outcode_last": "G7D",
+                    "cro_single": "354009",
+                    "pnc_single": "455736",
+                    "override_marker": null,
+                    "override_scopes": null,
+                    "postcode_arr_repacked": [
+                        "G7D9HX",
+                        "W49JR",
+                        "WA6R7AE"
+                    ],
+                    "postcode_freq_arr": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "postcode_arr_with_freq": [
+                        {
+                            "value": "G7D9HX",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "W49JR",
+                            "rel_freq": 1.0
+                        },
+                        {
+                            "value": "WA6R7AE",
+                            "rel_freq": 1.0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "hoverCols",
+            "values": [
+                {
+                    "key": "source_system",
+                    "fieldL": "source_system_l",
+                    "fieldR": "source_system_r",
+                    "fieldN": "source_system"
+                },
+                {
+                    "key": "name_1_std",
+                    "fieldL": "name_1_std_l",
+                    "fieldR": "name_1_std_r",
+                    "fieldN": "name_1_std"
+                },
+                {
+                    "key": "name_2_std",
+                    "fieldL": "name_2_std_l",
+                    "fieldR": "name_2_std_r",
+                    "fieldN": "name_2_std"
+                },
+                {
+                    "key": "name_3_std",
+                    "fieldL": "name_3_std_l",
+                    "fieldR": "name_3_std_r",
+                    "fieldN": "name_3_std"
+                },
+                {
+                    "key": "last_name_std",
+                    "fieldL": "last_name_std_l",
+                    "fieldR": "last_name_std_r",
+                    "fieldN": "last_name_std"
+                },
+                {
+                    "key": "date_of_birth",
+                    "fieldL": "date_of_birth_l",
+                    "fieldR": "date_of_birth_r",
+                    "fieldN": "date_of_birth"
+                },
+                {
+                    "key": "cro_single",
+                    "fieldL": "cro_single_l",
+                    "fieldR": "cro_single_r",
+                    "fieldN": "cro_single"
+                },
+                {
+                    "key": "pnc_single",
+                    "fieldL": "pnc_single_l",
+                    "fieldR": "pnc_single_r",
+                    "fieldN": "pnc_single"
+                }
+            ],
+            "transform": [
+                {
+                    "type": "window",
+                    "ops": [
+                        "row_number"
+                    ],
+                    "as": [
+                        "idx"
+                    ]
+                },
+                {
+                    "type": "formula",
+                    "as": "colIdx",
+                    "expr": "datum.idx - 1"
+                },
+                {
+                    "type": "formula",
+                    "as": "valL",
+                    "expr": "hoverLink ? (isValid(hoverLink[datum.fieldL]) ? hoverLink[datum.fieldL] : '') : (hoverNode ? (isValid(hoverNode.datum[datum.fieldN]) ? hoverNode.datum[datum.fieldN] : '') : '')"
+                },
+                {
+                    "type": "formula",
+                    "as": "valR",
+                    "expr": "hoverLink && isValid(hoverLink[datum.fieldR]) ? hoverLink[datum.fieldR] : ''"
+                }
+            ]
+        }
+    ],
     "scales": [
         {
             "name": "color",
@@ -400,7 +820,7 @@
                         "signal": "tableH"
                     },
                     "opacity": {
-                        "signal": "hoverLink ? 1 : 0"
+                        "signal": "(hoverLink || hoverNode) ? 1 : 0"
                     }
                 }
             },
@@ -422,10 +842,10 @@
                                 "value": "#999"
                             },
                             "fillOpacity": {
-                                "signal": "hoverLink ? 0.95 : 0"
+                                "signal": "(hoverLink || hoverNode) ? 0.95 : 0"
                             },
                             "strokeOpacity": {
-                                "signal": "hoverLink ? 1 : 0"
+                                "signal": "(hoverLink || hoverNode) ? 1    : 0"
                             }
                         }
                     }
@@ -459,7 +879,7 @@
                                 "value": 12
                             },
                             "opacity": {
-                                "signal": "hoverLink ? 1 : 0"
+                                "signal": "(hoverLink || hoverNode) ? 1 : 0"
                             }
                         }
                     }
@@ -484,7 +904,7 @@
                                 "value": 1
                             },
                             "opacity": {
-                                "signal": "hoverLink ? 1 : 0"
+                                "signal": "(hoverLink || hoverNode) ? 1 : 0"
                             }
                         }
                     }
@@ -515,7 +935,7 @@
                                 "value": 11
                             },
                             "opacity": {
-                                "signal": "hoverLink ? 1 : 0"
+                                "signal": "(hoverLink || hoverNode) ? 1 : 0"
                             }
                         }
                     }
