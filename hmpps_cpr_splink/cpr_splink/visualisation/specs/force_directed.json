@@ -1,7 +1,7 @@
 {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
     "description": "Force-directed graph with hover-driven waterfall chart (replaces the old hover table). Hover an edge to see its match-weight waterfall below.",
-    "width": 800,
+    "width": 1400,
     "height": {
         "signal": "plotH + gap + waterfallH"
     },
