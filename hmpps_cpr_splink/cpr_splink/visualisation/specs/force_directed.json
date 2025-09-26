@@ -1,15 +1,48 @@
 {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
-    "width": 500,
-    "height": 500,
+    "description": "Force-directed graph with below-the-chart hover table (edges).",
+    "width": 800,
+    "height": {
+        "signal": "plotH + gap + tableH"
+    },
+    "autosize": "pad",
+    "padding": 8,
     "signals": [
+        {
+            "name": "plotH",
+            "value": 500
+        },
+        {
+            "name": "gap",
+            "value": 30
+        },
+        {
+            "name": "tableH",
+            "value": 96
+        },
+        {
+            "name": "rowH",
+            "value": 22
+        },
+        {
+            "name": "numCols",
+            "value": 8
+        },
+        {
+            "name": "cellW",
+            "update": "width / numCols"
+        },
+        {
+            "name": "cellPad",
+            "value": 8
+        },
         {
             "name": "$cx",
             "update": "width / 2"
         },
         {
             "name": "$cy",
-            "update": "height / 2"
+            "update": "plotH / 2"
         },
         {
             "name": "$nodeRadius",
@@ -84,6 +117,24 @@
                     "update": "restart + 1"
                 }
             ]
+        },
+        {
+            "name": "hoverLink",
+            "value": null,
+            "on": [
+                {
+                    "events": "@links:mouseover",
+                    "update": "datum"
+                },
+                {
+                    "events": "@links:mouseout",
+                    "update": "null"
+                },
+                {
+                    "events": "view:mouseleave",
+                    "update": "null"
+                }
+            ]
         }
     ],
     "data": [],
@@ -115,196 +166,415 @@
     ],
     "marks": [
         {
-            "name": "nodes",
-            "type": "symbol",
-            "zindex": 1,
-            "from": {
-                "data": "node-data"
-            },
-            "on": [
-                {
-                    "trigger": "fix",
-                    "modify": "node",
-                    "values": "{fx: fix[0], fy: fix[1]}"
-                }
-            ],
+            "type": "group",
+            "name": "chart",
+            "clip": true,
             "encode": {
-                "enter": {
-                    "fill": {
-                        "scale": "color",
-                        "field": "source_system"
-                    },
-                    "stroke": {
-                        "value": "white"
-                    }
-                },
                 "update": {
-                    "size": {
-                        "signal": "2 * $nodeRadius * $nodeRadius"
+                    "x": {
+                        "value": 0
                     },
-                    "cursor": {
-                        "value": "pointer"
+                    "y": {
+                        "value": 0
                     },
-                    "tooltip": {
-                        "signal": ""
+                    "width": {
+                        "signal": "width"
+                    },
+                    "height": {
+                        "signal": "plotH"
                     }
                 }
             },
-            "transform": [
+            "marks": [
                 {
-                    "type": "force",
-                    "iterations": 300,
-                    "restart": {
-                        "signal": "restart"
+                    "name": "nodes",
+                    "type": "symbol",
+                    "zindex": 1,
+                    "from": {
+                        "data": "node-data"
                     },
-                    "static": {
-                        "signal": "$static"
-                    },
-                    "signal": "force",
-                    "forces": [
+                    "on": [
                         {
-                            "force": "center",
+                            "trigger": "fix",
+                            "modify": "node",
+                            "values": "{fx: fix[0], fy: fix[1]}"
+                        }
+                    ],
+                    "encode": {
+                        "enter": {
+                            "fill": {
+                                "scale": "color",
+                                "field": "source_system"
+                            },
+                            "stroke": {
+                                "value": "white"
+                            }
+                        },
+                        "update": {
+                            "size": {
+                                "signal": "2 * $nodeRadius * $nodeRadius"
+                            },
+                            "cursor": {
+                                "value": "pointer"
+                            }
+                        }
+                    },
+                    "transform": [
+                        {
+                            "type": "force",
+                            "iterations": 300,
+                            "restart": {
+                                "signal": "restart"
+                            },
+                            "static": {
+                                "signal": "$static"
+                            },
+                            "signal": "force",
+                            "forces": [
+                                {
+                                    "force": "center",
+                                    "x": {
+                                        "signal": "$cx"
+                                    },
+                                    "y": {
+                                        "signal": "$cy"
+                                    }
+                                },
+                                {
+                                    "force": "collide",
+                                    "radius": {
+                                        "signal": "$nodeRadius"
+                                    }
+                                },
+                                {
+                                    "force": "nbody",
+                                    "strength": {
+                                        "signal": "$nodeCharge"
+                                    }
+                                },
+                                {
+                                    "force": "link",
+                                    "id": "datum.match_id",
+                                    "links": "link-data",
+                                    "distance": {
+                                        "signal": "$linkDistance"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "text",
+                    "name": "node-labels",
+                    "from": {
+                        "data": "nodes"
+                    },
+                    "interactive": false,
+                    "zindex": 2,
+                    "encode": {
+                        "enter": {
+                            "align": {
+                                "value": "center"
+                            },
+                            "baseline": {
+                                "value": "middle"
+                            },
+                            "fontSize": {
+                                "value": 12
+                            },
+                            "fontWeight": {
+                                "value": "bold"
+                            },
+                            "fill": {
+                                "value": "white"
+                            },
+                            "text": {
+                                "signal": "slice(datum.datum.source_system_id, 0, 4)"
+                            }
+                        },
+                        "update": {
                             "x": {
-                                "signal": "$cx"
+                                "field": "x"
                             },
                             "y": {
-                                "signal": "$cy"
+                                "field": "y"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "link-labels",
+                    "from": {
+                        "data": "link-data"
+                    },
+                    "interactive": false,
+                    "aria": false,
+                    "zindex": 1,
+                    "encode": {
+                        "enter": {
+                            "align": {
+                                "value": "center"
+                            },
+                            "baseline": {
+                                "value": "middle"
+                            },
+                            "fontSize": {
+                                "value": 12
+                            },
+                            "fill": {
+                                "value": "black"
+                            },
+                            "fontWeight": {
+                                "value": "bold"
                             }
                         },
-                        {
-                            "force": "collide",
-                            "radius": {
-                                "signal": "$nodeRadius"
+                        "update": {
+                            "text": {
+                                "signal": "format(datum.match_weight, '.1f')"
+                            },
+                            "x": {
+                                "signal": "(datum.source.x + datum.target.x) / 2"
+                            },
+                            "y": {
+                                "signal": "(datum.source.y + datum.target.y) / 2"
                             }
-                        },
-                        {
-                            "force": "nbody",
-                            "strength": {
-                                "signal": "$nodeCharge"
+                        }
+                    }
+                },
+                {
+                    "type": "path",
+                    "name": "links",
+                    "from": {
+                        "data": "link-data"
+                    },
+                    "interactive": true,
+                    "zindex": 0,
+                    "encode": {
+                        "update": {
+                            "stroke": {
+                                "scale": "linkColor",
+                                "field": "match_weight"
+                            },
+                            "strokeWidth": {
+                                "value": 3
+                            },
+                            "cursor": {
+                                "value": "pointer"
                             }
-                        },
+                        }
+                    },
+                    "transform": [
                         {
-                            "force": "link",
-                            "id": "datum.match_id",
-                            "links": "link-data",
-                            "distance": {
-                                "signal": "$linkDistance"
-                            }
+                            "type": "linkpath",
+                            "require": {
+                                "signal": "force"
+                            },
+                            "shape": "line",
+                            "sourceX": "datum.source.x",
+                            "sourceY": "datum.source.y",
+                            "targetX": "datum.target.x",
+                            "targetY": "datum.target.y"
                         }
                     ]
                 }
             ]
         },
         {
-            "type": "text",
-            "name": "node-labels",
-            "from": {
-                "data": "nodes"
-            },
+            "type": "group",
+            "name": "hoverTable",
             "interactive": false,
-            "zindex": 2,
             "encode": {
-                "enter": {
-                    "align": {
-                        "value": "center"
-                    },
-                    "baseline": {
-                        "value": "middle"
-                    },
-                    "fontSize": {
-                        "value": 12
-                    },
-                    "fontWeight": {
-                        "value": "bold"
-                    },
-                    "fill": {
-                        "value": "white"
-                    },
-                    "text": {
-                        "signal": "slice(datum.datum.source_system_id, 0, 4)"
-                    }
-                },
                 "update": {
                     "x": {
-                        "field": "x"
+                        "value": 0
                     },
                     "y": {
-                        "field": "y"
-                    }
-                }
-            }
-        },
-        {
-            "type": "text",
-            "name": "link-labels",
-            "from": {
-                "data": "link-data"
-            },
-            "interactive": false,
-            "aria": false,
-            "zindex": 1,
-            "encode": {
-                "enter": {
-                    "align": {
-                        "value": "center"
+                        "signal": "plotH + gap"
                     },
-                    "baseline": {
-                        "value": "middle"
+                    "width": {
+                        "signal": "width"
                     },
-                    "fontSize": {
-                        "value": 12
+                    "height": {
+                        "signal": "tableH"
                     },
-                    "fill": {
-                        "value": "black"
-                    },
-                    "fontWeight": {
-                        "value": "bold"
-                    }
-                },
-                "update": {
-                    "text": {
-                        "signal": "format(datum.match_weight, '.1f')"
-                    },
-                    "x": {
-                        "signal": "(datum.source.x + datum.target.x) / 2"
-                    },
-                    "y": {
-                        "signal": "(datum.source.y + datum.target.y) / 2"
-                    }
-                }
-            }
-        },
-        {
-            "type": "path",
-            "from": {
-                "data": "link-data"
-            },
-            "interactive": true,
-            "encode": {
-                "update": {
-                    "stroke": {
-                        "scale": "linkColor",
-                        "field": "match_weight"
-                    },
-                    "strokeWidth": {
-                        "value": 3
-                    },
-                    "tooltip": {
-                        "signal": ""
+                    "opacity": {
+                        "signal": "hoverLink ? 1 : 0"
                     }
                 }
             },
-            "transform": [
+            "marks": [
                 {
-                    "type": "linkpath",
-                    "require": {
-                        "signal": "force"
+                    "type": "rect",
+                    "encode": {
+                        "update": {
+                            "width": {
+                                "signal": "width"
+                            },
+                            "height": {
+                                "signal": "tableH"
+                            },
+                            "fill": {
+                                "value": "white"
+                            },
+                            "stroke": {
+                                "value": "#999"
+                            },
+                            "fillOpacity": {
+                                "signal": "hoverLink ? 0.95 : 0"
+                            },
+                            "strokeOpacity": {
+                                "signal": "hoverLink ? 1 : 0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "from": {
+                        "data": "hoverCols"
                     },
-                    "shape": "line",
-                    "sourceX": "datum.source.x",
-                    "sourceY": "datum.source.y",
-                    "targetX": "datum.target.x",
-                    "targetY": "datum.target.y"
+                    "encode": {
+                        "update": {
+                            "x": {
+                                "signal": "cellPad + datum.colIdx * cellW"
+                            },
+                            "y": {
+                                "signal": "cellPad"
+                            },
+                            "text": {
+                                "field": "key"
+                            },
+                            "fontWeight": {
+                                "value": "bold"
+                            },
+                            "baseline": {
+                                "value": "top"
+                            },
+                            "align": {
+                                "value": "left"
+                            },
+                            "fontSize": {
+                                "value": 12
+                            },
+                            "opacity": {
+                                "signal": "hoverLink ? 1 : 0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "rule",
+                    "encode": {
+                        "update": {
+                            "x": {
+                                "value": 0
+                            },
+                            "x2": {
+                                "signal": "width"
+                            },
+                            "y": {
+                                "signal": "cellPad + rowH - 2"
+                            },
+                            "stroke": {
+                                "value": "#ddd"
+                            },
+                            "strokeWidth": {
+                                "value": 1
+                            },
+                            "opacity": {
+                                "signal": "hoverLink ? 1 : 0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "from": {
+                        "data": "hoverCols"
+                    },
+                    "encode": {
+                        "update": {
+                            "x": {
+                                "signal": "cellPad + datum.colIdx * cellW"
+                            },
+                            "y": {
+                                "signal": "cellPad + rowH"
+                            },
+                            "text": {
+                                "field": "valL"
+                            },
+                            "baseline": {
+                                "value": "top"
+                            },
+                            "align": {
+                                "value": "left"
+                            },
+                            "fontSize": {
+                                "value": 11
+                            },
+                            "opacity": {
+                                "signal": "hoverLink ? 1 : 0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "rule",
+                    "encode": {
+                        "update": {
+                            "x": {
+                                "value": 0
+                            },
+                            "x2": {
+                                "signal": "width"
+                            },
+                            "y": {
+                                "signal": "cellPad + 2*rowH - 2"
+                            },
+                            "stroke": {
+                                "value": "#eee"
+                            },
+                            "strokeWidth": {
+                                "value": 1
+                            },
+                            "opacity": {
+                                "signal": "hoverLink ? 1 : 0"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "from": {
+                        "data": "hoverCols"
+                    },
+                    "encode": {
+                        "update": {
+                            "x": {
+                                "signal": "cellPad + datum.colIdx * cellW"
+                            },
+                            "y": {
+                                "signal": "cellPad + 2*rowH"
+                            },
+                            "text": {
+                                "field": "valR"
+                            },
+                            "baseline": {
+                                "value": "top"
+                            },
+                            "align": {
+                                "value": "left"
+                            },
+                            "fontSize": {
+                                "value": 11
+                            },
+                            "opacity": {
+                                "signal": "hoverLink ? 1 : 0"
+                            }
+                        }
+                    }
                 }
             ]
         }

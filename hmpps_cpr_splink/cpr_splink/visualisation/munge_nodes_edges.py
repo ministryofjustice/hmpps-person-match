@@ -31,6 +31,33 @@ def build_spec(nodes, edges):
             ],
         },
         {"name": "node-data", "values": filtered_nodes},
+        {
+            "name": "hoverCols",
+            "values": [
+                {"key": "source_system", "fieldL": "source_system_l", "fieldR": "source_system_r"},
+                {"key": "name_1_std", "fieldL": "name_1_std_l", "fieldR": "name_1_std_r"},
+                {"key": "name_2_std", "fieldL": "name_2_std_l", "fieldR": "name_2_std_r"},
+                {"key": "name_3_std", "fieldL": "name_3_std_l", "fieldR": "name_3_std_r"},
+                {"key": "last_name_std", "fieldL": "last_name_std_l", "fieldR": "last_name_std_r"},
+                {"key": "date_of_birth", "fieldL": "date_of_birth_l", "fieldR": "date_of_birth_r"},
+                {"key": "cro_single", "fieldL": "cro_single_l", "fieldR": "cro_single_r"},
+                {"key": "pnc_single", "fieldL": "pnc_single_l", "fieldR": "pnc_single_r"},
+            ],
+            "transform": [
+                {"type": "window", "ops": ["row_number"], "as": ["idx"]},
+                {"type": "formula", "as": "colIdx", "expr": "datum.idx - 1"},
+                {
+                    "type": "formula",
+                    "as": "valL",
+                    "expr": "hoverLink && isValid(hoverLink[datum.fieldL]) ? hoverLink[datum.fieldL] : ''",
+                },
+                {
+                    "type": "formula",
+                    "as": "valR",
+                    "expr": "hoverLink && isValid(hoverLink[datum.fieldR]) ? hoverLink[datum.fieldR] : ''",
+                },
+            ],
+        },
     ]
 
     return spec

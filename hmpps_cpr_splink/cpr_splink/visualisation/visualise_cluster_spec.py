@@ -50,7 +50,7 @@ def load_base_spec() -> dict[str, Any]:
     with open(MODEL_PATH) as f:
         base_spec = json.load(f)
 
-    base_spec["marks"][0]["encode"]["update"]["tooltip"]["signal"] = NODE_TOOLTIP_SIGNAL
-    base_spec["marks"][3]["encode"]["update"]["tooltip"]["signal"] = EDGE_TOOLTIP_SIGNAL
+    # base_spec["marks"][0]["encode"]["update"]["tooltip"]["signal"] = NODE_TOOLTIP_SIGNAL
+    # base_spec["marks"][3]["encode"]["update"]["tooltip"]["signal"] = EDGE_TOOLTIP_SIGNAL
 
     return base_spec
