@@ -971,7 +971,7 @@
                         },
                         {
                             "type": "formula",
-                            "expr": "datum.sum",
+                            "expr": "datum.column_name === 'Final score' ? datum.log2_bayes_factor : datum.sum",
                             "as": "sum"
                         },
                         {
