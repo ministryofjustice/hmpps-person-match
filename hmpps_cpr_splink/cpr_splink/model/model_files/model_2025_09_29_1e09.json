@@ -222,6 +222,12 @@
                     "is_null_level": true
                 },
                 {
+                    "sql_condition": "pnc_single_l = pnc_single_r and cro_single_l = cro_single_r",
+                    "label_for_charts": "Exact match on pnc and cro",
+                    "m_probability": 0.99999999999999999999999999999999999999999999999999,
+                    "u_probability": 1e-9
+                },
+                {
                     "sql_condition": "\"pnc_single_l\" = \"pnc_single_r\"",
                     "label_for_charts": "Exact match on pnc_single",
                     "m_probability": 0.4107364720646719,
