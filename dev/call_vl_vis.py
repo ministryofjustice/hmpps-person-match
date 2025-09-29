@@ -72,8 +72,8 @@ def save_vega_html(
   <meta charset="utf-8"/>
   <title>{html.escape(title)}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <script src="https://cdn.jsdelivr.net/npm/vega@6"{nonce_attr}></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-interpreter@1"{nonce_attr}></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-interpreter@1"></script>
   <style>
     :root {{ color-scheme: light dark; }}
     body {{ margin: 0; padding: 1rem; font-family: system-ui, sans-serif; }}
