@@ -16,7 +16,7 @@
         },
         {
             "name": "gap",
-            "value": 30,
+            "value": 0,
             "on": [
                 {
                     "events": {
@@ -406,9 +406,6 @@
                     },
                     "height": {
                         "signal": "waterfallH"
-                    },
-                    "opacity": {
-                        "signal": "length(clickLink) > 0 ? 1 : 0"
                     }
                 }
             },
