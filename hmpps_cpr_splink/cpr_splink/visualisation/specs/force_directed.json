@@ -1,15 +1,50 @@
 {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
-    "width": 500,
-    "height": 500,
+    "description": "Force-directed graph with hover-driven waterfall chart (replaces the old hover table). Hover an edge to see its match-weight waterfall below.",
+    "width": 1200,
+    "height": {
+        "signal": "plotH + gap + waterfallH"
+    },
+    "autosize": "pad",
+    "padding": {
+        "signal": "{'left': 50, 'right': 50, 'top': 12, 'bottom': length(clickLink) > 0 ? 50 : 0}"
+    },
     "signals": [
+        {
+            "name": "plotH",
+            "value": 500
+        },
+        {
+            "name": "gap",
+            "value": 0,
+            "on": [
+                {
+                    "events": {
+                        "signal": "clickLink"
+                    },
+                    "update": "length(clickLink) > 0 ? 30 : 0"
+                }
+            ]
+        },
+        {
+            "name": "waterfallH",
+            "value": 0,
+            "on": [
+                {
+                    "events": {
+                        "signal": "clickLink"
+                    },
+                    "update": "length(clickLink) > 0 ? 450 : 0"
+                }
+            ]
+        },
         {
             "name": "$cx",
             "update": "width / 2"
         },
         {
             "name": "$cy",
-            "update": "height / 2"
+            "update": "plotH / 2"
         },
         {
             "name": "$nodeRadius",
@@ -26,6 +61,10 @@
         {
             "name": "$static",
             "value": false
+        },
+        {
+            "name": "$x_step_waterfall",
+            "value": 75
         },
         {
             "name": "scoreThreshold",
@@ -84,6 +123,20 @@
                     "update": "restart + 1"
                 }
             ]
+        },
+        {
+            "name": "clickLink",
+            "value": [],
+            "on": [
+                {
+                    "events": "@links:click",
+                    "update": "[datum]"
+                },
+                {
+                    "events": "click[!event.item || event.item.mark.name !== 'links']",
+                    "update": "[]"
+                }
+            ]
         }
     ],
     "data": [],
@@ -115,196 +168,820 @@
     ],
     "marks": [
         {
-            "name": "nodes",
-            "type": "symbol",
-            "zindex": 1,
-            "from": {
-                "data": "node-data"
-            },
-            "on": [
-                {
-                    "trigger": "fix",
-                    "modify": "node",
-                    "values": "{fx: fix[0], fy: fix[1]}"
-                }
-            ],
+            "type": "group",
+            "name": "chart",
+            "clip": true,
             "encode": {
-                "enter": {
-                    "fill": {
-                        "scale": "color",
-                        "field": "source_system"
-                    },
-                    "stroke": {
-                        "value": "white"
-                    }
-                },
                 "update": {
-                    "size": {
-                        "signal": "2 * $nodeRadius * $nodeRadius"
+                    "x": {
+                        "value": 0
                     },
-                    "cursor": {
-                        "value": "pointer"
+                    "y": {
+                        "value": 0
                     },
-                    "tooltip": {
-                        "signal": ""
+                    "width": {
+                        "signal": "width"
+                    },
+                    "height": {
+                        "signal": "plotH"
                     }
                 }
             },
-            "transform": [
+            "marks": [
                 {
-                    "type": "force",
-                    "iterations": 300,
-                    "restart": {
-                        "signal": "restart"
+                    "name": "nodes",
+                    "type": "symbol",
+                    "zindex": 1,
+                    "from": {
+                        "data": "node-data"
                     },
-                    "static": {
-                        "signal": "$static"
-                    },
-                    "signal": "force",
-                    "forces": [
+                    "on": [
                         {
-                            "force": "center",
+                            "trigger": "fix",
+                            "modify": "node",
+                            "values": "{fx: fix[0], fy: fix[1]}"
+                        }
+                    ],
+                    "encode": {
+                        "enter": {
+                            "fill": {
+                                "scale": "color",
+                                "field": "source_system"
+                            },
+                            "stroke": {
+                                "value": "white"
+                            }
+                        },
+                        "update": {
+                            "size": {
+                                "signal": "2 * $nodeRadius * $nodeRadius"
+                            },
+                            "cursor": {
+                                "value": "pointer"
+                            },
+                            "tooltip": {
+                                "value": ""
+                            }
+                        }
+                    },
+                    "transform": [
+                        {
+                            "type": "force",
+                            "iterations": 300,
+                            "restart": {
+                                "signal": "restart"
+                            },
+                            "static": {
+                                "signal": "$static"
+                            },
+                            "signal": "force",
+                            "forces": [
+                                {
+                                    "force": "center",
+                                    "x": {
+                                        "signal": "$cx"
+                                    },
+                                    "y": {
+                                        "signal": "$cy"
+                                    }
+                                },
+                                {
+                                    "force": "collide",
+                                    "radius": {
+                                        "signal": "$nodeRadius"
+                                    }
+                                },
+                                {
+                                    "force": "nbody",
+                                    "strength": {
+                                        "signal": "$nodeCharge"
+                                    }
+                                },
+                                {
+                                    "force": "link",
+                                    "id": "datum.match_id",
+                                    "links": "link-data",
+                                    "distance": {
+                                        "signal": "$linkDistance"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "text",
+                    "name": "node-labels",
+                    "from": {
+                        "data": "nodes"
+                    },
+                    "interactive": false,
+                    "zindex": 2,
+                    "encode": {
+                        "enter": {
+                            "align": {
+                                "value": "center"
+                            },
+                            "baseline": {
+                                "value": "middle"
+                            },
+                            "fontSize": {
+                                "value": 12
+                            },
+                            "fontWeight": {
+                                "value": "bold"
+                            },
+                            "fill": {
+                                "value": "white"
+                            },
+                            "text": {
+                                "signal": "slice(datum.datum.source_system_id, 0, 4)"
+                            }
+                        },
+                        "update": {
                             "x": {
-                                "signal": "$cx"
+                                "field": "x"
                             },
                             "y": {
-                                "signal": "$cy"
+                                "field": "y"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "name": "link-labels",
+                    "from": {
+                        "data": "link-data"
+                    },
+                    "interactive": false,
+                    "aria": false,
+                    "zindex": 1,
+                    "encode": {
+                        "enter": {
+                            "align": {
+                                "value": "center"
+                            },
+                            "baseline": {
+                                "value": "middle"
+                            },
+                            "fontSize": {
+                                "value": 12
+                            },
+                            "fill": {
+                                "value": "black"
+                            },
+                            "fontWeight": {
+                                "value": "bold"
                             }
                         },
-                        {
-                            "force": "collide",
-                            "radius": {
-                                "signal": "$nodeRadius"
+                        "update": {
+                            "text": {
+                                "signal": "format(datum.match_weight, '.1f')"
+                            },
+                            "x": {
+                                "signal": "(datum.source.x + datum.target.x) / 2"
+                            },
+                            "y": {
+                                "signal": "(datum.source.y + datum.target.y) / 2"
                             }
-                        },
-                        {
-                            "force": "nbody",
-                            "strength": {
-                                "signal": "$nodeCharge"
+                        }
+                    }
+                },
+                {
+                    "type": "path",
+                    "name": "links",
+                    "from": {
+                        "data": "link-data"
+                    },
+                    "interactive": true,
+                    "zindex": 0,
+                    "encode": {
+                        "update": {
+                            "stroke": {
+                                "scale": "linkColor",
+                                "field": "match_weight"
+                            },
+                            "strokeWidth": {
+                                "value": 3
+                            },
+                            "cursor": {
+                                "value": "pointer"
+                            },
+                            "tooltip": {
+                                "value": ""
                             }
-                        },
+                        }
+                    },
+                    "transform": [
                         {
-                            "force": "link",
-                            "id": "datum.match_id",
-                            "links": "link-data",
-                            "distance": {
-                                "signal": "$linkDistance"
-                            }
+                            "type": "linkpath",
+                            "require": {
+                                "signal": "force"
+                            },
+                            "shape": "line",
+                            "sourceX": "datum.source.x",
+                            "sourceY": "datum.source.y",
+                            "targetX": "datum.target.x",
+                            "targetY": "datum.target.y"
                         }
                     ]
                 }
             ]
         },
         {
-            "type": "text",
-            "name": "node-labels",
-            "from": {
-                "data": "nodes"
-            },
+            "type": "group",
+            "name": "waterfall",
             "interactive": false,
-            "zindex": 2,
             "encode": {
-                "enter": {
-                    "align": {
-                        "value": "center"
-                    },
-                    "baseline": {
-                        "value": "middle"
-                    },
-                    "fontSize": {
-                        "value": 12
-                    },
-                    "fontWeight": {
-                        "value": "bold"
-                    },
-                    "fill": {
-                        "value": "white"
-                    },
-                    "text": {
-                        "signal": "slice(datum.datum.source_system_id, 0, 4)"
-                    }
-                },
                 "update": {
                     "x": {
-                        "field": "x"
+                        "value": 0
                     },
                     "y": {
-                        "field": "y"
-                    }
-                }
-            }
-        },
-        {
-            "type": "text",
-            "name": "link-labels",
-            "from": {
-                "data": "link-data"
-            },
-            "interactive": false,
-            "aria": false,
-            "zindex": 1,
-            "encode": {
-                "enter": {
-                    "align": {
-                        "value": "center"
+                        "signal": "plotH + gap"
                     },
-                    "baseline": {
-                        "value": "middle"
+                    "width": {
+                        "signal": "$x_step_waterfall * 14"
                     },
-                    "fontSize": {
-                        "value": 12
-                    },
-                    "fill": {
-                        "value": "black"
-                    },
-                    "fontWeight": {
-                        "value": "bold"
-                    }
-                },
-                "update": {
-                    "text": {
-                        "signal": "format(datum.match_weight, '.1f')"
-                    },
-                    "x": {
-                        "signal": "(datum.source.x + datum.target.x) / 2"
-                    },
-                    "y": {
-                        "signal": "(datum.source.y + datum.target.y) / 2"
-                    }
-                }
-            }
-        },
-        {
-            "type": "path",
-            "from": {
-                "data": "link-data"
-            },
-            "interactive": true,
-            "encode": {
-                "update": {
-                    "stroke": {
-                        "scale": "linkColor",
-                        "field": "match_weight"
-                    },
-                    "strokeWidth": {
-                        "value": 3
-                    },
-                    "tooltip": {
-                        "signal": ""
+                    "height": {
+                        "signal": "waterfallH"
                     }
                 }
             },
-            "transform": [
+            "data": [
                 {
-                    "type": "linkpath",
-                    "require": {
-                        "signal": "force"
+                    "name": "wf_raw",
+                    "values": [],
+                    "on": [
+                        {
+                            "trigger": "clickLink",
+                            "remove": true
+                        },
+                        {
+                            "trigger": "clickLink",
+                            "insert": "length(clickLink) > 0 && clickLink[0].waterfall_data ? clickLink[0].waterfall_data : []"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_0",
+                    "source": "wf_raw",
+                    "transform": [
+                        {
+                            "type": "collect",
+                            "sort": {
+                                "field": "bar_sort_order",
+                                "order": "ascending"
+                            }
+                        },
+                        {
+                            "type": "window",
+                            "ops": [
+                                "sum",
+                                "lead"
+                            ],
+                            "as": [
+                                "sum",
+                                "lead"
+                            ],
+                            "fields": [
+                                "log2_bayes_factor",
+                                "column_name"
+                            ],
+                            "frame": [
+                                null,
+                                0
+                            ]
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.column_name === 'Final score' ? datum.log2_bayes_factor : datum.sum",
+                            "as": "sum"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.lead === null ? datum.column_name : datum.lead",
+                            "as": "lead"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "(datum.column_name === 'Prior' || datum.column_name === 'Prior match weight') ? 0 : datum.sum - datum.log2_bayes_factor",
+                            "as": "previous_sum"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum > datum.previous_sum ? datum.column_name : ''",
+                            "as": "top_label"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? datum.column_name : ''",
+                            "as": "bottom_label"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum > datum.previous_sum ? datum.sum : datum.previous_sum",
+                            "as": "sum_top"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? datum.sum : datum.previous_sum",
+                            "as": "sum_bottom"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "(datum.sum + datum.previous_sum) / 2",
+                            "as": "center"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "(datum.log2_bayes_factor > 0 ? '+' : '') + datum.log2_bayes_factor",
+                            "as": "text_log2_bayes_factor"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? 4 : -4",
+                            "as": "dy"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "datum.sum < datum.previous_sum ? 'top' : 'bottom'",
+                            "as": "baseline"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "1. / (1 + pow(2, -1.*datum.sum))",
+                            "as": "prob"
+                        },
+                        {
+                            "type": "formula",
+                            "expr": "0*datum.sum",
+                            "as": "zero"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_2",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['zero']) && isFinite(+datum['zero'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_3",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['previous_sum']) && isFinite(+datum['previous_sum'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_4",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['center']) && isFinite(+datum['center'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_5",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['sum_top']) && isFinite(+datum['sum_top'])"
+                        }
+                    ]
+                },
+                {
+                    "name": "wf_6",
+                    "source": "wf_0",
+                    "transform": [
+                        {
+                            "type": "filter",
+                            "expr": "isValid(datum['sum']) && isFinite(+datum['sum'])"
+                        }
+                    ]
+                }
+            ],
+            "scales": [
+                {
+                    "name": "wf_y",
+                    "type": "linear",
+                    "domain": {
+                        "fields": [
+                            {
+                                "data": "wf_2",
+                                "field": "zero"
+                            },
+                            {
+                                "data": "wf_3",
+                                "field": "previous_sum"
+                            },
+                            {
+                                "data": "wf_3",
+                                "field": "sum"
+                            },
+                            {
+                                "data": "wf_4",
+                                "field": "center"
+                            },
+                            {
+                                "data": "wf_5",
+                                "field": "sum_top"
+                            },
+                            {
+                                "data": "wf_6",
+                                "field": "sum"
+                            }
+                        ]
                     },
-                    "shape": "line",
-                    "sourceX": "datum.source.x",
-                    "sourceY": "datum.source.y",
-                    "targetX": "datum.target.x",
-                    "targetY": "datum.target.y"
+                    "range": [
+                        {
+                            "signal": "waterfallH"
+                        },
+                        0
+                    ],
+                    "zero": false,
+                    "nice": true
+                },
+                {
+                    "name": "wf_x",
+                    "type": "band",
+                    "domain": {
+                        "fields": [
+                            {
+                                "data": "wf_0",
+                                "field": "column_name"
+                            },
+                            {
+                                "data": "wf_6",
+                                "field": "lead"
+                            }
+                        ],
+                        "sort": {
+                            "op": "min",
+                            "field": "bar_sort_order"
+                        }
+                    },
+                    "range": {
+                        "step": {
+                            "signal": "$x_step_waterfall"
+                        }
+                    },
+                    "paddingInner": 0.00,
+                    "paddingOuter": 0.00
+                }
+            ],
+            "axes": [
+                {
+                    "scale": "wf_x",
+                    "orient": "bottom",
+                    "grid": true,
+                    "tickBand": "extent",
+                    "gridScale": "wf_y",
+                    "domain": false,
+                    "labels": false,
+                    "aria": false,
+                    "maxExtent": 0,
+                    "minExtent": 0,
+                    "ticks": false,
+                    "zindex": 0,
+                    "encode": {
+                        "labels": {
+                            "update": {
+                                "opacity": {
+                                    "signal": "length(clickLink) > 0 ? 1 : 0"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "scale": "wf_x",
+                    "orient": "bottom",
+                    "grid": false,
+                    "title": "Column",
+                    "labelAlign": "center",
+                    "labelAngle": 340,
+                    "labelPadding": 20,
+                    "tickBand": "extent",
+                    "labelBaseline": "top",
+                    "encode": {
+                        "labels": {
+                            "update": {
+                                "text": {
+                                    "signal": "datum.value == 'Prior' || datum.value == 'Final score' ? '' : datum.value"
+                                }
+                            }
+                        },
+                        "title": {
+                            "update": {
+                                "opacity": {
+                                    "signal": "length(clickLink) > 0 ? 1 : 0"
+                                }
+                            }
+                        }
+                    },
+                    "zindex": 0
+                },
+                {
+                    "scale": "wf_y",
+                    "orient": "left",
+                    "grid": false,
+                    "title": "Match Weight",
+                    "labelOverlap": true,
+                    "tickCount": {
+                        "signal": "ceil(waterfallH/40)"
+                    },
+                    "zindex": 0,
+                    "encode": {
+                        "title": {
+                            "update": {
+                                "opacity": {
+                                    "signal": "length(clickLink) > 0 ? 1 : 0"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "marks": [
+                {
+                    "name": "wf_zero_rule",
+                    "type": "rule",
+                    "from": {
+                        "data": "wf_2"
+                    },
+                    "encode": {
+                        "update": {
+                            "stroke": {
+                                "value": "black"
+                            },
+                            "x": {
+                                "field": {
+                                    "group": "width"
+                                }
+                            },
+                            "x2": {
+                                "value": 0
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "zero"
+                            },
+                            "strokeWidth": {
+                                "value": 0.5
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_bars",
+                    "type": "rect",
+                    "from": {
+                        "data": "wf_3"
+                    },
+                    "encode": {
+                        "update": {
+                            "fill": [
+                                {
+                                    "test": "(datum.log2_bayes_factor < 0)",
+                                    "value": "red"
+                                },
+                                {
+                                    "value": "green"
+                                }
+                            ],
+                            "opacity": [
+                                {
+                                    "test": "datum.column_name == 'Prior' || datum.column_name == 'Final score'",
+                                    "value": 1
+                                },
+                                {
+                                    "value": 0.5
+                                }
+                            ],
+                            "tooltip": {
+                                "signal": "{\"Comparison column\": datum.column_name, \"Value (L)\": datum.value_l, \"Value (R)\": datum.value_r, \"Label\": datum.label_for_charts, \"SQL condition\": datum.sql_condition, \"Comparison vector value\": datum.comparison_vector_value, \"Bayes factor = m/u\": format(datum.bayes_factor, ',.4f'), \"Match weight = log2(m/u)\": format(datum.log2_bayes_factor, ',.4f'), \"Cumulative match probability\": format(datum.prob, '.4f'), \"Match weight description\": datum.bayes_factor_description}"
+                            },
+                            "ariaRoleDescription": {
+                                "value": "bar"
+                            },
+                            "xc": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
+                            },
+                            "width": {
+                                "value": 60
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "previous_sum"
+                            },
+                            "y2": {
+                                "scale": "wf_y",
+                                "field": "sum"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_bar_labels_inside",
+                    "type": "text",
+                    "from": {
+                        "data": "wf_4"
+                    },
+                    "encode": {
+                        "update": {
+                            "fontWeight": {
+                                "value": "bold"
+                            },
+                            "fill": {
+                                "value": "white"
+                            },
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "center"
+                            },
+                            "text": [
+                                {
+                                    "test": "abs(datum.log2_bayes_factor) > 1",
+                                    "signal": "format(datum.log2_bayes_factor, '.2f')"
+                                },
+                                {
+                                    "value": ""
+                                }
+                            ],
+                            "align": {
+                                "value": "center"
+                            },
+                            "baseline": {
+                                "value": "middle"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_top_labels",
+                    "type": "text",
+                    "from": {
+                        "data": "wf_5"
+                    },
+                    "encode": {
+                        "update": {
+                            "baseline": {
+                                "value": "bottom"
+                            },
+                            "dy": {
+                                "value": -25
+                            },
+                            "fontWeight": {
+                                "value": "bold"
+                            },
+                            "fill": {
+                                "value": "black"
+                            },
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "sum_top"
+                            },
+                            "text": {
+                                "signal": "datum.column_name"
+                            },
+                            "align": {
+                                "value": "center"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_value_l",
+                    "type": "text",
+                    "from": {
+                        "data": "wf_5"
+                    },
+                    "encode": {
+                        "update": {
+                            "baseline": {
+                                "value": "bottom"
+                            },
+                            "dy": {
+                                "value": -13
+                            },
+                            "fontSize": {
+                                "value": 8
+                            },
+                            "fill": {
+                                "value": "grey"
+                            },
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "sum_top"
+                            },
+                            "text": {
+                                "signal": "datum.term_frequency_adjustment === false ? slice(datum.value_l, 0, 25) : ''"
+                            },
+                            "align": {
+                                "value": "center"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_value_r",
+                    "type": "text",
+                    "from": {
+                        "data": "wf_5"
+                    },
+                    "encode": {
+                        "update": {
+                            "baseline": {
+                                "value": "bottom"
+                            },
+                            "dy": {
+                                "value": -5
+                            },
+                            "fontSize": {
+                                "value": 8
+                            },
+                            "fill": {
+                                "value": "grey"
+                            },
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "band": 0.5
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "sum_top"
+                            },
+                            "text": {
+                                "signal": "datum.term_frequency_adjustment === false ? slice(datum.value_r, 0, 25) : ''"
+                            },
+                            "align": {
+                                "value": "center"
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "wf_connectors",
+                    "type": "rule",
+                    "from": {
+                        "data": "wf_6"
+                    },
+                    "encode": {
+                        "update": {
+                            "strokeWidth": {
+                                "value": 2
+                            },
+                            "stroke": {
+                                "value": "black"
+                            },
+                            "x": {
+                                "scale": "wf_x",
+                                "field": "column_name",
+                                "offset": -30,
+                                "band": 0.5
+                            },
+                            "x2": {
+                                "scale": "wf_x",
+                                "field": "lead",
+                                "offset": 30,
+                                "band": 0.5
+                            },
+                            "y": {
+                                "scale": "wf_y",
+                                "field": "sum"
+                            }
+                        }
+                    }
                 }
             ]
         }
