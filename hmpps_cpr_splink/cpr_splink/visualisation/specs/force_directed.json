@@ -39,17 +39,14 @@
             }
         },
         {
-            "description": "State variable for active node fix status.",
+            "description": "Current pointer position during a drag.",
             "name": "fix",
-            "value": false,
+            "value": null,
             "on": [
                 {
-                    "events": "symbol:pointerout[!event.buttons], window:pointerup",
-                    "update": "false"
-                },
-                {
-                    "events": "symbol:pointerover",
-                    "update": "fix || true"
+                    "events": "symbol:pointerdown",
+                    "update": "xy()",
+                    "force": true
                 },
                 {
                     "events": "[symbol:pointerdown, window:pointerup] > window:pointermove!",
@@ -59,18 +56,18 @@
             ]
         },
         {
-            "description": "Graph node most recently interacted with.",
+            "description": "Graph node currently being dragged.",
             "name": "node",
             "value": null,
             "on": [
                 {
-                    "events": "symbol:pointerover",
-                    "update": "fix === true ? item() : node"
+                    "events": "symbol:pointerdown",
+                    "update": "item()"
                 }
             ]
         },
         {
-            "description": "Flag to restart force simulation when drag state changes.",
+            "description": "Flag to restart force simulation when drag state or threshold changes.",
             "name": "restart",
             "value": 0,
             "on": [
@@ -128,12 +125,7 @@
                 {
                     "trigger": "fix",
                     "modify": "node",
-                    "values": "fix === true ? {fx: node.x, fy: node.y} : {fx: fix[0], fy: fix[1]}"
-                },
-                {
-                    "trigger": "!fix",
-                    "modify": "node",
-                    "values": "{fx: null, fy: null}"
+                    "values": "{fx: fix[0], fy: fix[1]}"
                 }
             ],
             "encode": {
@@ -154,7 +146,7 @@
                         "value": "pointer"
                     },
                     "tooltip": {
-                        "signal": "{\"id\": datum.id, \"match_id\": datum.match_id, \"source_system\": datum.source_system, \"source_system_id\": datum.source_system_id, \"name_1_std\": datum.name_1_std, \"name_2_std\": datum.name_2_std, \"name_3_std\": datum.name_3_std, \"last_name_std\": datum.last_name_std, \"first_and_last_name_std\": datum.first_and_last_name_std, \"date_of_birth\": datum.date_of_birth, \"cro_single\": datum.cro_single, \"pnc_single\": datum.pnc_single}"
+                        "signal": ""
                     }
                 }
             },
@@ -229,7 +221,7 @@
                         "value": "white"
                     },
                     "text": {
-                        "signal": "slice(datum.datum.match_id, 0, 4)"
+                        "signal": "slice(datum.datum.source_system_id, 0, 4)"
                     }
                 },
                 "update": {
@@ -249,6 +241,7 @@
                 "data": "link-data"
             },
             "interactive": false,
+            "aria": false,
             "zindex": 1,
             "encode": {
                 "enter": {
@@ -297,7 +290,7 @@
                         "value": 3
                     },
                     "tooltip": {
-                        "signal": "{\"id\": datum.id_l + \" <-> \" + datum.id_r, \"match_id\": datum.match_id_l + \" <-> \" + datum.match_id_r, \"source_system\": datum.source_system_l + \" <-> \" + datum.source_system_r, \"source_system_id\": datum.source_system_id_l + \" <-> \" + datum.source_system_id_r, \"name_1_std\": datum.name_1_std_l + \" <-> \" + datum.name_1_std_r, \"name_2_std\": datum.name_2_std_l + \" <-> \" + datum.name_2_std_r, \"name_3_std\": datum.name_3_std_l + \" <-> \" + datum.name_3_std_r, \"last_name_std\": datum.last_name_std_l + \" <-> \" + datum.last_name_std_r, \"first_and_last_name_std\": datum.first_and_last_name_std_l + \" <-> \" + datum.first_and_last_name_std_r, \"date_of_birth\": datum.date_of_birth_l + \" <-> \" + datum.date_of_birth_r, \"cro_single\": datum.cro_single_l + \" <-> \" + datum.cro_single_r, \"pnc_single\": datum.pnc_single_l + \" <-> \" + datum.pnc_single_r}"
+                        "signal": ""
                     }
                 }
             },

@@ -23,7 +23,6 @@ EDGE_COMPARISON_FIELDS = [
     "id",
     "match_id",
     "source_system",
-    "source_system_id",
     "name_1_std",
     "name_2_std",
     "name_3_std",
@@ -37,7 +36,10 @@ EDGE_COMPARISON_FIELDS = [
 NODE_TOOLTIP_SIGNAL = "{" + ", ".join(f'"{field}": datum.{field}' for field in NODE_TOOLTIP_FIELDS) + "}"
 
 EDGE_TOOLTIP_SIGNAL = (
-    "{" + ", ".join(f'"{field}": datum.{field}_l + " <-> " + datum.{field}_r' for field in EDGE_COMPARISON_FIELDS) + "}"
+    "{"
+    + "match_weight: datum.match_weight, "
+    + ", ".join(f'"{field}": datum.{field}_l + " <-> " + datum.{field}_r' for field in EDGE_COMPARISON_FIELDS)
+    + "}"
 )
 
 

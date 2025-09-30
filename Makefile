@@ -27,6 +27,9 @@ run-docker:
 start-containers:
 	docker compose up -d
 
+start-containers-local:
+	docker compose up -d migrations hmpps-person-match
+
 stop-containers:
 	docker compose down
 
