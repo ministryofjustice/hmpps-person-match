@@ -1,6 +1,6 @@
 from pathlib import Path
 
-MODEL_VERSION = "model_2025_09_23_1e09"
+MODEL_VERSION = "model_2025_09_29_1e09"
 
 MODEL_PATH = Path(__file__).parent / f"model_files/{MODEL_VERSION}.json"
 

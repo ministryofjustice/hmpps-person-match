@@ -19,9 +19,9 @@ class Person(BaseModel):
         alias="masterDefendantId",
         examples=["479bdd8e-f22a-42c5-8f7e-91e690426466"],
     )
-    first_name: str = Field(alias="firstName", examples=["Jane"])
-    middle_names: str = Field(alias="middleNames", examples=["Grace"])
-    last_name: str = Field(alias="lastName", examples=["Doe"])
+    first_name: str | None = Field(alias="firstName", examples=["Jane"])
+    middle_names: str | None = Field(alias="middleNames", examples=["Grace"])
+    last_name: str | None = Field(alias="lastName", examples=["Doe"])
     date_of_birth: datetime.date | None = Field(
         alias="dateOfBirth",
         json_schema_extra={"format": "date"},
