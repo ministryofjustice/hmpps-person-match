@@ -218,6 +218,9 @@
                             },
                             "cursor": {
                                 "value": "pointer"
+                            },
+                            "tooltip": {
+                                "value": ""
                             }
                         }
                     },
@@ -364,6 +367,9 @@
                             },
                             "cursor": {
                                 "value": "pointer"
+                            },
+                            "tooltip": {
+                                "value": ""
                             }
                         }
                     },
