@@ -1,16 +1,13 @@
 {
     "$schema": "https://vega.github.io/schema/vega/v6.json",
     "description": "Force-directed graph with hover-driven waterfall chart (replaces the old hover table). Hover an edge to see its match-weight waterfall below.",
-    "width": 1400,
+    "width": 1200,
     "height": {
         "signal": "plotH + gap + waterfallH"
     },
     "autosize": "pad",
     "padding": {
-        "left": 50,
-        "right": 50,
-        "top": 12,
-        "bottom": 50
+        "signal": "{'left': 50, 'right': 50, 'top': 12, 'bottom': length(clickLink) > 0 ? 50 : 0}"
     },
     "signals": [
         {
@@ -25,7 +22,7 @@
                     "events": {
                         "signal": "clickLink"
                     },
-                    "update": "clickLink && clickLink.waterfall_data ? 30 : 0"
+                    "update": "length(clickLink) > 0 ? 30 : 0"
                 }
             ]
         },
@@ -37,7 +34,7 @@
                     "events": {
                         "signal": "clickLink"
                     },
-                    "update": "clickLink && clickLink.waterfall_data ? 450 : 0"
+                    "update": "length(clickLink) > 0 ? 450 : 0"
                 }
             ]
         },
@@ -129,15 +126,15 @@
         },
         {
             "name": "clickLink",
-            "value": null,
+            "value": [],
             "on": [
                 {
                     "events": "@links:click",
-                    "update": "datum"
+                    "update": "[datum]"
                 },
                 {
-                    "events": "@nodes:click",
-                    "update": "[null]"
+                    "events": "click[!event.item || event.item.mark.name !== 'links']",
+                    "update": "[]"
                 }
             ]
         }
@@ -187,9 +184,6 @@
                     },
                     "height": {
                         "signal": "plotH"
-                    },
-                    "fill": {
-                        "value": "yellow"
                     }
                 }
             },
@@ -408,7 +402,7 @@
                         "signal": "waterfallH"
                     },
                     "opacity": {
-                        "signal": "clickLink ? 1 : 0"
+                        "signal": "length(clickLink) > 0 ? 1 : 0"
                     }
                 }
             },
@@ -423,7 +417,7 @@
                         },
                         {
                             "trigger": "clickLink",
-                            "insert": "clickLink && clickLink.waterfall_data ? clickLink.waterfall_data : []"
+                            "insert": "length(clickLink) > 0 && clickLink[0].waterfall_data ? clickLink[0].waterfall_data : []"
                         }
                     ]
                 },
@@ -662,7 +656,7 @@
                         "labels": {
                             "update": {
                                 "opacity": {
-                                    "signal": "clickLink ? 1 : 0"
+                                    "signal": "length(clickLink) > 0 ? 1 : 0"
                                 }
                             }
                         }
@@ -689,7 +683,7 @@
                         "title": {
                             "update": {
                                 "opacity": {
-                                    "signal": "clickLink ? 1 : 0"
+                                    "signal": "length(clickLink) > 0 ? 1 : 0"
                                 }
                             }
                         }
@@ -710,7 +704,7 @@
                         "title": {
                             "update": {
                                 "opacity": {
-                                    "signal": "clickLink ? 1 : 0"
+                                    "signal": "length(clickLink) > 0 ? 1 : 0"
                                 }
                             }
                         }
