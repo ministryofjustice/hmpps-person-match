@@ -19,11 +19,27 @@
         },
         {
             "name": "gap",
-            "value": 30
+            "value": 30,
+            "on": [
+                {
+                    "events": {
+                        "signal": "clickLink"
+                    },
+                    "update": "clickLink && clickLink.waterfall_data ? 30 : 0"
+                }
+            ]
         },
         {
             "name": "waterfallH",
-            "value": 450
+            "value": 0,
+            "on": [
+                {
+                    "events": {
+                        "signal": "clickLink"
+                    },
+                    "update": "clickLink && clickLink.waterfall_data ? 450 : 0"
+                }
+            ]
         },
         {
             "name": "$cx",
@@ -126,530 +142,7 @@
             ]
         }
     ],
-    "data": [
-        {
-            "name": "node-data",
-            "values": [
-                {
-                    "id": 0,
-                    "match_id": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
-                    "source_system": "DELIUS",
-                    "source_system_id": "55ebea32-c781-4ad2-9180-4b641b8cd606",
-                    "master_defendant_id": null,
-                    "name_1_std": "CLAIRE",
-                    "name_2_std": "GEOFFREY",
-                    "name_3_std": "FRANCES",
-                    "last_name_std": "THOMAS",
-                    "first_and_last_name_std": "CLAIRE THOMAS",
-                    "forename_std_arr": [
-                        "CLAIRE",
-                        "GEOFFREY",
-                        "BRYAN"
-                    ],
-                    "forename_first": "CLAIRE",
-                    "forename_last": "BRYAN",
-                    "last_name_std_arr": [
-                        "THOMAS",
-                        "HENRY"
-                    ],
-                    "last_name_first": "THOMAS",
-                    "last_name_last": "HENRY",
-                    "date_of_birth": "1952-06-26",
-                    "date_of_birth_arr": [
-                        "1952-06-26"
-                    ],
-                    "date_of_birth_last": "1952-06-26",
-                    "sentence_date_arr": [
-                        "1998-12-10",
-                        "2004-04-30"
-                    ],
-                    "sentence_date_first": "1998-12-10",
-                    "sentence_date_last": "2004-04-30",
-                    "postcode_arr": [
-                        "W49JR",
-                        "WA6R7AE",
-                        "G7D9HX"
-                    ],
-                    "postcode_first": "W49JR",
-                    "postcode_second": "WA6R7AE",
-                    "postcode_last": "G7D9HX",
-                    "postcode_outcode_arr": [
-                        "W4",
-                        "WA6R",
-                        "G7D"
-                    ],
-                    "postcode_outcode_first": "W4",
-                    "postcode_outcode_last": "G7D",
-                    "cro_single": "354009",
-                    "pnc_single": "455736",
-                    "override_marker": null,
-                    "override_scopes": null,
-                    "postcode_arr_repacked": [
-                        "G7D9HX",
-                        "W49JR",
-                        "WA6R7AE"
-                    ],
-                    "postcode_freq_arr": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "postcode_arr_with_freq": [
-                        {
-                            "value": "G7D9HX",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "W49JR",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "WA6R7AE",
-                            "rel_freq": 1.0
-                        }
-                    ]
-                },
-                {
-                    "id": 1,
-                    "match_id": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
-                    "source_system": "DELIUS",
-                    "source_system_id": "1086a9ed-afd8-48eb-be84-5e465804cf4b",
-                    "master_defendant_id": null,
-                    "name_1_std": "CLAIRE",
-                    "name_2_std": "GEOFFREY",
-                    "name_3_std": "FRANCES",
-                    "last_name_std": "THOMAS",
-                    "first_and_last_name_std": "CLAIRE THOMAS",
-                    "forename_std_arr": [
-                        "CLAIRE",
-                        "GEOFFREY",
-                        "BRYAN"
-                    ],
-                    "forename_first": "CLAIRE",
-                    "forename_last": "BRYAN",
-                    "last_name_std_arr": [
-                        "THOMAS",
-                        "HENRY"
-                    ],
-                    "last_name_first": "THOMAS",
-                    "last_name_last": "HENRY",
-                    "date_of_birth": "1952-06-26",
-                    "date_of_birth_arr": [
-                        "1952-06-26"
-                    ],
-                    "date_of_birth_last": "1952-06-26",
-                    "sentence_date_arr": [
-                        "1998-12-10",
-                        "2004-04-30"
-                    ],
-                    "sentence_date_first": "1998-12-10",
-                    "sentence_date_last": "2004-04-30",
-                    "postcode_arr": [
-                        "W49JR",
-                        "WA6R7AE",
-                        "G7D9HX"
-                    ],
-                    "postcode_first": "W49JR",
-                    "postcode_second": "WA6R7AE",
-                    "postcode_last": "G7D9HX",
-                    "postcode_outcode_arr": [
-                        "W4",
-                        "WA6R",
-                        "G7D"
-                    ],
-                    "postcode_outcode_first": "W4",
-                    "postcode_outcode_last": "G7D",
-                    "cro_single": "354009",
-                    "pnc_single": "455736",
-                    "override_marker": null,
-                    "override_scopes": null,
-                    "postcode_arr_repacked": [
-                        "G7D9HX",
-                        "W49JR",
-                        "WA6R7AE"
-                    ],
-                    "postcode_freq_arr": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "postcode_arr_with_freq": [
-                        {
-                            "value": "G7D9HX",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "W49JR",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "WA6R7AE",
-                            "rel_freq": 1.0
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "link-data",
-            "values": [
-                {
-                    "match_weight": 51.54137674766134,
-                    "match_probability": 0.9999999999999997,
-                    "source_system_l": "DELIUS",
-                    "source_system_r": "DELIUS",
-                    "id_l": 0,
-                    "id_r": 1,
-                    "last_name_std_l": "THOMAS",
-                    "last_name_std_r": "THOMAS",
-                    "name_1_std_l": "CLAIRE",
-                    "name_1_std_r": "CLAIRE",
-                    "first_and_last_name_std_l": "CLAIRE THOMAS",
-                    "first_and_last_name_std_r": "CLAIRE THOMAS",
-                    "forename_std_arr_l": [
-                        "CLAIRE",
-                        "GEOFFREY",
-                        "BRYAN"
-                    ],
-                    "forename_std_arr_r": [
-                        "CLAIRE",
-                        "GEOFFREY",
-                        "BRYAN"
-                    ],
-                    "last_name_std_arr_l": [
-                        "THOMAS",
-                        "HENRY"
-                    ],
-                    "last_name_std_arr_r": [
-                        "THOMAS",
-                        "HENRY"
-                    ],
-                    "date_of_birth_arr_l": [
-                        "1952-06-26"
-                    ],
-                    "date_of_birth_arr_r": [
-                        "1952-06-26"
-                    ],
-                    "date_of_birth_l": "1952-06-26",
-                    "date_of_birth_r": "1952-06-26",
-                    "postcode_arr_l": [
-                        "W49JR",
-                        "WA6R7AE",
-                        "G7D9HX"
-                    ],
-                    "postcode_arr_r": [
-                        "W49JR",
-                        "WA6R7AE",
-                        "G7D9HX"
-                    ],
-                    "postcode_arr_with_freq_l": [
-                        {
-                            "value": "G7D9HX",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "W49JR",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "WA6R7AE",
-                            "rel_freq": 1.0
-                        }
-                    ],
-                    "postcode_arr_with_freq_r": [
-                        {
-                            "value": "G7D9HX",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "W49JR",
-                            "rel_freq": 1.0
-                        },
-                        {
-                            "value": "WA6R7AE",
-                            "rel_freq": 1.0
-                        }
-                    ],
-                    "postcode_outcode_arr_l": [
-                        "W4",
-                        "WA6R",
-                        "G7D"
-                    ],
-                    "postcode_outcode_arr_r": [
-                        "W4",
-                        "WA6R",
-                        "G7D"
-                    ],
-                    "name_2_std_l": "GEOFFREY",
-                    "name_2_std_r": "GEOFFREY",
-                    "cro_single_l": "354009",
-                    "cro_single_r": "354009",
-                    "pnc_single_l": "455736",
-                    "pnc_single_r": "455736",
-                    "sentence_date_arr_l": [
-                        "1998-12-10",
-                        "2004-04-30"
-                    ],
-                    "sentence_date_arr_r": [
-                        "1998-12-10",
-                        "2004-04-30"
-                    ],
-                    "override_marker_l": null,
-                    "override_marker_r": null,
-                    "override_scopes_l": null,
-                    "override_scopes_r": null,
-                    "master_defendant_id_l": null,
-                    "master_defendant_id_r": null,
-                    "match_id_l": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
-                    "match_id_r": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
-                    "source": "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
-                    "target": "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
-                    "waterfall_data": [
-                        {
-                            "column_name": "Prior",
-                            "label_for_charts": "Starting match weight (prior)",
-                            "sql_condition": null,
-                            "log2_bayes_factor": -21.847920914268045,
-                            "bayes_factor": 2.6492348650474123e-07,
-                            "comparison_vector_value": null,
-                            "m_probability": null,
-                            "u_probability": null,
-                            "bayes_factor_description": null,
-                            "value_l": "",
-                            "value_r": "",
-                            "term_frequency_adjustment": null,
-                            "bar_sort_order": 0
-                        },
-                        {
-                            "sql_condition": "\"first_and_last_name_std_l\" = \"first_and_last_name_std_r\"",
-                            "label_for_charts": "Exact match on first_and_last_name_std",
-                            "m_probability": 0.8805713283069031,
-                            "u_probability": 6.4416737775260826e-06,
-                            "bayes_factor": 136699.1497425822,
-                            "log2_bayes_factor": 17.060644743964726,
-                            "comparison_vector_value": 8,
-                            "bayes_factor_description": "If comparison level is `exact match on first_and_last_name_std` then comparison is 136,699 times more likely to be a match",
-                            "column_name": "name_comparison",
-                            "value_l": "THOMAS, CLAIRE, CLAIRE THOMAS, ['THOMAS', 'HENRY'], ['CLAIRE', 'GEOFFREY', 'BRYAN']",
-                            "value_r": "THOMAS, CLAIRE, CLAIRE THOMAS, ['THOMAS', 'HENRY'], ['CLAIRE', 'GEOFFREY', 'BRYAN']",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 1
-                        },
-                        {
-                            "sql_condition": "\"first_and_last_name_std_l\" = \"first_and_last_name_std_r\"",
-                            "label_for_charts": "Term freq adjustment on first_and_last_name_std with weight {cl.tf_adjustment_weight}",
-                            "m_probability": null,
-                            "u_probability": null,
-                            "bayes_factor": 1.0,
-                            "log2_bayes_factor": 0.0,
-                            "comparison_vector_value": 8,
-                            "bayes_factor_description": "Term frequency adjustment on first_and_last_name_std makes comparison 1.00 times more likely to be a match",
-                            "column_name": "tf_name_comparison",
-                            "value_l": "CLAIRE THOMAS",
-                            "value_r": "CLAIRE THOMAS",
-                            "term_frequency_adjustment": true,
-                            "bar_sort_order": 2
-                        },
-                        {
-                            "sql_condition": "\"date_of_birth_l\" = \"date_of_birth_r\"",
-                            "label_for_charts": "Exact match on date_of_birth",
-                            "m_probability": 0.9480015447228074,
-                            "u_probability": 6.32817809183543e-05,
-                            "bayes_factor": 14980.639466293029,
-                            "log2_bayes_factor": 13.870811587802677,
-                            "comparison_vector_value": 5,
-                            "bayes_factor_description": "If comparison level is `exact match on date_of_birth` then comparison is 14,981 times more likely to be a match",
-                            "column_name": "date_of_birth_arr",
-                            "value_l": "['1952-06-26'], 1952-06-26",
-                            "value_r": "['1952-06-26'], 1952-06-26",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 3
-                        },
-                        {
-                            "sql_condition": "\"date_of_birth_l\" = \"date_of_birth_r\"",
-                            "label_for_charts": "Term freq adjustment on date_of_birth with weight {cl.tf_adjustment_weight}",
-                            "m_probability": null,
-                            "u_probability": null,
-                            "bayes_factor": 1.0,
-                            "log2_bayes_factor": 0.0,
-                            "comparison_vector_value": 5,
-                            "bayes_factor_description": "Term frequency adjustment on date_of_birth makes comparison 1.00 times more likely to be a match",
-                            "column_name": "tf_date_of_birth_arr",
-                            "value_l": "1952-06-26",
-                            "value_r": "1952-06-26",
-                            "term_frequency_adjustment": true,
-                            "bar_sort_order": 4
-                        },
-                        {
-                            "sql_condition": "array_length(list_intersect(\"postcode_outcode_arr_l\", \"postcode_outcode_arr_r\")) >= 1",
-                            "label_for_charts": "Array intersection size >= 1",
-                            "m_probability": 0.09228399254208307,
-                            "u_probability": 0.002418387421033641,
-                            "bayes_factor": 38.159308859884845,
-                            "log2_bayes_factor": 5.253963136423491,
-                            "comparison_vector_value": 1,
-                            "bayes_factor_description": "If comparison level is `array intersection size >= 1` then comparison is 38.16 times more likely to be a match",
-                            "column_name": "postcode_arr",
-                            "value_l": "['W49JR', 'WA6R7AE', 'G7D9HX'], [{'value': 'G7D9HX', 'rel_freq': 1.0}, {'value': 'W49JR', 'rel_freq': 1.0}, {'value': 'WA6R7AE', 'rel_freq': 1.0}], ['W4', 'WA6R', 'G7D']",
-                            "value_r": "['W49JR', 'WA6R7AE', 'G7D9HX'], [{'value': 'G7D9HX', 'rel_freq': 1.0}, {'value': 'W49JR', 'rel_freq': 1.0}, {'value': 'WA6R7AE', 'rel_freq': 1.0}], ['W4', 'WA6R', 'G7D']",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 5
-                        },
-                        {
-                            "sql_condition": "\"name_2_std_l\" = \"name_2_std_r\"",
-                            "label_for_charts": "Exact match on name_2_std",
-                            "m_probability": 0.9311828314925126,
-                            "u_probability": 0.012319973710486735,
-                            "bayes_factor": 75.5831833228582,
-                            "log2_bayes_factor": 6.239993376483221,
-                            "comparison_vector_value": 2,
-                            "bayes_factor_description": "If comparison level is `exact match on name_2_std` then comparison is 75.58 times more likely to be a match",
-                            "column_name": "name_2_std",
-                            "value_l": "GEOFFREY",
-                            "value_r": "GEOFFREY",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 6
-                        },
-                        {
-                            "sql_condition": "\"name_2_std_l\" = \"name_2_std_r\"",
-                            "label_for_charts": "Term freq adjustment on name_2_std with weight {cl.tf_adjustment_weight}",
-                            "m_probability": null,
-                            "u_probability": null,
-                            "bayes_factor": 1.0,
-                            "log2_bayes_factor": 0.0,
-                            "comparison_vector_value": 2,
-                            "bayes_factor_description": "Term frequency adjustment on name_2_std makes comparison 1.00 times more likely to be a match",
-                            "column_name": "tf_name_2_std",
-                            "value_l": "GEOFFREY",
-                            "value_r": "GEOFFREY",
-                            "term_frequency_adjustment": true,
-                            "bar_sort_order": 7
-                        },
-                        {
-                            "sql_condition": "\"pnc_single_l\" = \"pnc_single_r\"",
-                            "label_for_charts": "Exact match on pnc_single",
-                            "m_probability": 0.4107364720646719,
-                            "u_probability": 1.3083008349386952e-07,
-                            "bayes_factor": 3139465.0304868016,
-                            "log2_bayes_factor": 21.582087312002308,
-                            "comparison_vector_value": 3,
-                            "bayes_factor_description": "If comparison level is `exact match on pnc_single` then comparison is 3,139,465 times more likely to be a match",
-                            "column_name": "id_comparison",
-                            "value_l": "455736, 354009",
-                            "value_r": "455736, 354009",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 8
-                        },
-                        {
-                            "sql_condition": "\"pnc_single_l\" = \"pnc_single_r\"",
-                            "label_for_charts": "Term freq adjustment on pnc_single with weight {cl.tf_adjustment_weight}",
-                            "m_probability": null,
-                            "u_probability": null,
-                            "bayes_factor": 1.0,
-                            "log2_bayes_factor": 0.0,
-                            "comparison_vector_value": 3,
-                            "bayes_factor_description": "Term frequency adjustment on pnc_single makes comparison 1.00 times more likely to be a match",
-                            "column_name": "tf_id_comparison",
-                            "value_l": "455736",
-                            "value_r": "455736",
-                            "term_frequency_adjustment": true,
-                            "bar_sort_order": 9
-                        },
-                        {
-                            "sql_condition": "array_length(list_intersect(\"sentence_date_arr_l\", \"sentence_date_arr_r\")) >= 1 and len(\"sentence_date_arr_l\") * len(\"sentence_date_arr_r\") <= 9",
-                            "label_for_charts": "Array intersection size >= 1, few elements",
-                            "m_probability": 0.14687596629322805,
-                            "u_probability": 0.0002201649974203961,
-                            "bayes_factor": 667.1176981542365,
-                            "log2_bayes_factor": 9.381797505252962,
-                            "comparison_vector_value": 4,
-                            "bayes_factor_description": "If comparison level is `array intersection size >= 1, few elements` then comparison is 667 times more likely to be a match",
-                            "column_name": "sentence_date_arr",
-                            "value_l": "['1998-12-10', '2004-04-30']",
-                            "value_r": "['1998-12-10', '2004-04-30']",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 10
-                        },
-                        {
-                            "sql_condition": "override_marker_l IS NULL OR override_marker_r IS NULL",
-                            "label_for_charts": "override_marker is NULL",
-                            "bayes_factor": 1.0,
-                            "log2_bayes_factor": 0.0,
-                            "comparison_vector_value": -1,
-                            "bayes_factor_description": "If comparison level is `override_marker is null` then comparison is 1 times more likely to be a match",
-                            "column_name": "override_marker",
-                            "value_l": "None, None",
-                            "value_r": "None, None",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 11
-                        },
-                        {
-                            "sql_condition": "master_defendant_id_l IS NULL OR master_defendant_id_r IS NULL",
-                            "label_for_charts": "master_defendant_id is NULL",
-                            "bayes_factor": 1.0,
-                            "log2_bayes_factor": 0.0,
-                            "comparison_vector_value": -1,
-                            "bayes_factor_description": "If comparison level is `master_defendant_id is null` then comparison is 1 times more likely to be a match",
-                            "column_name": "master_defendant_id",
-                            "value_l": "None",
-                            "value_r": "None",
-                            "term_frequency_adjustment": false,
-                            "bar_sort_order": 12
-                        },
-                        {
-                            "column_name": "Final score",
-                            "label_for_charts": "Final score",
-                            "sql_condition": null,
-                            "log2_bayes_factor": 51.54137674766134,
-                            "bayes_factor": 3277180928793753.5,
-                            "comparison_vector_value": null,
-                            "m_probability": null,
-                            "u_probability": null,
-                            "bayes_factor_description": null,
-                            "value_l": "",
-                            "value_r": "",
-                            "term_frequency_adjustment": null,
-                            "bar_sort_order": 13
-                        }
-                    ]
-                }
-            ],
-            "transform": [
-                {
-                    "type": "filter",
-                    "expr": "datum.match_weight >= scoreThreshold"
-                },
-                {
-                    "type": "lookup",
-                    "from": "node-data",
-                    "key": "match_id",
-                    "fields": [
-                        "match_id_l"
-                    ],
-                    "values": [
-                        "name_3_std"
-                    ],
-                    "as": [
-                        "name_3_std_l"
-                    ]
-                },
-                {
-                    "type": "lookup",
-                    "from": "node-data",
-                    "key": "match_id",
-                    "fields": [
-                        "match_id_r"
-                    ],
-                    "values": [
-                        "name_3_std"
-                    ],
-                    "as": [
-                        "name_3_std_r"
-                    ]
-                }
-            ]
-        }
-    ],
+    "data": [],
     "scales": [
         {
             "name": "color",
@@ -694,6 +187,9 @@
                     },
                     "height": {
                         "signal": "plotH"
+                    },
+                    "fill": {
+                        "value": "yellow"
                     }
                 }
             },
@@ -1161,7 +657,16 @@
                     "maxExtent": 0,
                     "minExtent": 0,
                     "ticks": false,
-                    "zindex": 0
+                    "zindex": 0,
+                    "encode": {
+                        "labels": {
+                            "update": {
+                                "opacity": {
+                                    "signal": "clickLink ? 1 : 0"
+                                }
+                            }
+                        }
+                    }
                 },
                 {
                     "scale": "wf_x",
@@ -1180,6 +685,13 @@
                                     "signal": "datum.value == 'Prior' || datum.value == 'Final score' ? '' : datum.value"
                                 }
                             }
+                        },
+                        "title": {
+                            "update": {
+                                "opacity": {
+                                    "signal": "clickLink ? 1 : 0"
+                                }
+                            }
                         }
                     },
                     "zindex": 0
@@ -1193,27 +705,16 @@
                     "tickCount": {
                         "signal": "ceil(waterfallH/40)"
                     },
-                    "zindex": 0
-                },
-                {
-                    "scale": "wf_y",
-                    "orient": "right",
-                    "grid": false,
-                    "title": "Probability",
-                    "labelOverlap": true,
-                    "tickCount": {
-                        "signal": "ceil(waterfallH/40)"
-                    },
+                    "zindex": 0,
                     "encode": {
-                        "labels": {
+                        "title": {
                             "update": {
-                                "text": {
-                                    "signal": "format(1 / (1 + pow(2, -1*datum.value)), '.2r')"
+                                "opacity": {
+                                    "signal": "clickLink ? 1 : 0"
                                 }
                             }
                         }
-                    },
-                    "zindex": 0
+                    }
                 }
             ],
             "marks": [
