@@ -112,24 +112,16 @@
             ]
         },
         {
-            "name": "hoverLink",
+            "name": "clickLink",
             "value": null,
             "on": [
                 {
-                    "events": "@links:mouseover",
+                    "events": "@links:click",
                     "update": "datum"
                 },
                 {
-                    "events": "@links:mouseout",
-                    "update": "null"
-                },
-                {
-                    "events": "@nodes:mouseover",
-                    "update": "null"
-                },
-                {
-                    "events": "view:mouseleave",
-                    "update": "null"
+                    "events": "@nodes:click",
+                    "update": "[null]"
                 }
             ]
         }
@@ -920,7 +912,7 @@
                         "signal": "waterfallH"
                     },
                     "opacity": {
-                        "signal": "hoverLink ? 1 : 0"
+                        "signal": "clickLink ? 1 : 0"
                     }
                 }
             },
@@ -930,12 +922,12 @@
                     "values": [],
                     "on": [
                         {
-                            "trigger": "hoverLink",
+                            "trigger": "clickLink",
                             "remove": true
                         },
                         {
-                            "trigger": "hoverLink",
-                            "insert": "hoverLink && hoverLink.waterfall_data ? hoverLink.waterfall_data : []"
+                            "trigger": "clickLink",
+                            "insert": "clickLink && clickLink.waterfall_data ? clickLink.waterfall_data : []"
                         }
                     ]
                 },
