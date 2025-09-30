@@ -428,16 +428,16 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.117.1"
+version = "0.118.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
     { name = "starlette" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7e/7e/d9788300deaf416178f61fb3c2ceb16b7d0dc9f82a08fdb87a5e64ee3cc7/fastapi-0.117.1.tar.gz", hash = "sha256:fb2d42082d22b185f904ca0ecad2e195b851030bd6c5e4c032d1c981240c631a", size = 307155, upload-time = "2025-09-20T20:16:56.663Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/28/3c/2b9345a6504e4055eaa490e0b41c10e338ad61d9aeaae41d97807873cdf2/fastapi-0.118.0.tar.gz", hash = "sha256:5e81654d98c4d2f53790a7d32d25a7353b30c81441be7d0958a26b5d761fa1c8", size = 310536, upload-time = "2025-09-29T03:37:23.126Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6d/45/d9d3e8eeefbe93be1c50060a9d9a9f366dba66f288bb518a9566a23a8631/fastapi-0.117.1-py3-none-any.whl", hash = "sha256:33c51a0d21cab2b9722d4e56dbb9316f3687155be6b276191790d8da03507552", size = 95959, upload-time = "2025-09-20T20:16:53.661Z" },
+    { url = "https://files.pythonhosted.org/packages/54/20/54e2bdaad22ca91a59455251998d43094d5c3d3567c52c7c04774b3f43f2/fastapi-0.118.0-py3-none-any.whl", hash = "sha256:705137a61e2ef71019d2445b123aa8845bd97273c395b744d5a7dfe559056855", size = 97694, upload-time = "2025-09-29T03:37:21.338Z" },
 ]
 
 [[package]]
@@ -526,14 +526,14 @@ requires-dist = [
     { name = "cachetools", specifier = "==6.2.0" },
     { name = "cryptography", specifier = "==46.0.1" },
     { name = "duckdb", specifier = "==1.3.2" },
-    { name = "fastapi", specifier = "==0.117.1" },
+    { name = "fastapi", specifier = "==0.118.0" },
     { name = "greenlet", specifier = "==3.2.4" },
     { name = "h11", specifier = "==0.16.0" },
     { name = "opentelemetry-instrumentation-sqlalchemy", specifier = "==0.57b0" },
     { name = "psycopg2-binary", specifier = "==2.9.10" },
     { name = "pyjwt", specifier = "==2.10.1" },
     { name = "pytz", specifier = "==2025.2" },
-    { name = "splink", specifier = "==4.0.8" },
+    { name = "splink", specifier = "==4.0.9" },
     { name = "uvicorn", specifier = "==0.37.0" },
 ]
 
@@ -1432,7 +1432,7 @@ wheels = [
 
 [[package]]
 name = "splink"
-version = "4.0.8"
+version = "4.0.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "altair" },
@@ -1444,9 +1444,9 @@ dependencies = [
     { name = "pandas" },
     { name = "sqlglot" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1b/21/2a82f219baa28152c2277e548fba045de599fdb0ec1e651a7e5296fbfe74/splink-4.0.8.tar.gz", hash = "sha256:84f4ad5a1d86c42837de60b662904c74ba27b1a8c6dde2042551dcc57ade5f25", size = 4830864, upload-time = "2025-06-04T13:50:06.387Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/f9/296d24a45200463289271d611339279cb57ea6b139b4c9a94b7444d25a33/splink-4.0.9.tar.gz", hash = "sha256:9e55672c89cc5f348ad2ab59df3db0079ee800ae7732eb6ead94efd372017ec0", size = 4832278, upload-time = "2025-09-24T19:06:31.197Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3e/fe/a73dba7b3d7850bdaa3e2e997c55981c9e2f87b1091685f5a20d83d41ed3/splink-4.0.8-py3-none-any.whl", hash = "sha256:fbba32b8065d523e8ab56b46009dcd3d1d627a7641e8b06f14aadd381aaa9f0e", size = 4900528, upload-time = "2025-06-04T13:50:04.022Z" },
+    { url = "https://files.pythonhosted.org/packages/b9/18/5abf634a8af56a6424a891ce3f2e3245a6297c5281e5931aa44edf7d4d1c/splink-4.0.9-py3-none-any.whl", hash = "sha256:4590d7ef2c4cf797d4c756bb9c924ad8a6d0af21c0439cf23b3943303677604d", size = 4902061, upload-time = "2025-09-24T19:06:29.264Z" },
 ]
 
 [[package]]
