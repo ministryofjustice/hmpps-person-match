@@ -7,3 +7,4 @@ class PersonScore(BaseModel):
     candidate_match_weight: float = Field(examples=[24.0])
     candidate_should_join: bool = Field(examples=[True])
     candidate_should_fracture: bool = Field(examples=[False])
+    possible_twins: bool = Field(examples=False)
