@@ -1,8 +1,11 @@
 import base64
 import time
 
+import duckdb
 import requests
+from sqlalchemy import URL
 
+from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_person_match.routes.jobs.term_frequencies import ROUTE as ROUTE_TF
 from hmpps_person_match.routes.person.score.person_score import ROUTE as ROUTE_SCORE
 from integration.client import Client
@@ -29,19 +32,18 @@ if response.status_code == 200:
 else:
     raise Exception(f"Failed to generate access token: {response.status_code}")
 
-match_ids = [
-    "15728f46-ef22-4f18-81f0-9fad76502087",
-    "00d48107-5e16-4596-9931-d272c4c9ce67",
-    "26b2106f-b152-4251-aeee-19f1766807bf",
-    "1fe55afa-67da-4772-9748-c4ec0d183f2b",
-    "93529fbc-0a8c-43c9-bb83-05d01e350035",
-    "9f4293af-22c6-41bd-9d2c-e46a5e656796",
-    "259ae982-78e6-47c8-a3a7-c397b1e22a91",
-    "20182803-ae68-4d66-ac7d-49853dffe597",
-    "9a7e79fc-23e8-4ed4-8320-74b2f5617d52",
-    "c6afbb1c-7c4e-465d-93f0-49992c7ee1f4",
-    "5ffda560-6e22-425f-a8b0-873438c03c53",
-]
+pg_url = URL.create(
+    drivername="postgresql",
+    username="root",
+    password="dev",  # noqa: S106
+    host="localhost",
+    port="5432",
+    database="postgres",
+)
+lim = 1_000
+with duckdb_connected_to_postgres(pg_url) as con:
+    match_ids = [row[0] for row in con.sql(f"SELECT match_id FROM pg_db.personmatch.person LIMIT {lim}").fetchall()]  # noqa: S608
+
 headers = {"Authorization": f"Bearer {token}"}
 r = requests.request("get", "http://localhost:5000/health", headers=headers, timeout=30)
 print(r.status_code)
@@ -56,7 +58,10 @@ for match_id in match_ids:
         headers=headers,
         timeout=60,
     )
-    print(r.status_code)
-    print(r.json())
+    r.raise_for_status()
+    json_data = r.json()
+    if any([row["possible_twins"] for row in json_data]):
+        print(f"\t{match_id=}")
+        print(json_data)
 t2 = time.time()
 print(f"Scored {n_calls} in: {t2 - t1}, at an average of {(t2 - t1) / n_calls}")
