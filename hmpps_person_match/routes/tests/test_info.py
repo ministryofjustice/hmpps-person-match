@@ -14,6 +14,6 @@ class TestInfoView:
         assert response is not None
         assert response.headers.get("Content-Type") == "application/json"
         assert response.status_code == 200
-        assert response.json()["version"] == "number"
-        assert response.json()["commit_id"] == "ref"
-        assert response.json()["branch"] == "branch"
+        assert response.json()["build"]["version"] == "number"
+        assert response.json()["git"]["commit"]["id"] == "ref"
+        assert response.json()["git"]["branch"] == "branch"
