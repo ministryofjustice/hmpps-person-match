@@ -33,7 +33,7 @@ def term_frequency_sql_simple(column_name: str) -> str:
         CREATE MATERIALIZED VIEW IF NOT EXISTS personmatch.term_frequencies_{column_name} AS (
             {term_frequency_select_sql(column_name)}
         );
-        """  # noqa: S608
+        """
 
 
 def term_frequency_sql_array(column_name: str) -> str:

@@ -104,6 +104,10 @@ select = [
     "TID",
     # ERA
     "ERA",
+    # refurb
+    "FURB",
+    # ruff-specific-rules
+    "RUF"
 ]
 ignore = [
     # magic-value-comparison

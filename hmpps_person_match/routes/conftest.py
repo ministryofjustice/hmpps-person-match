@@ -7,8 +7,8 @@ def call_endpoint(client, jwt_token_factory, mock_jwks):
     def _call_endpoint(
         method: str,
         route: str,
-        json: dict = None,
-        roles: list[str] = None,
+        json: dict | None = None,
+        roles: list[str] | None = None,
     ) -> Response:
         token = jwt_token_factory(roles=roles)
         headers = {"Authorization": f"Bearer {token}"}

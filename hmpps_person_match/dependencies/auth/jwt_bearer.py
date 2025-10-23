@@ -15,7 +15,7 @@ class JWTBearer(HTTPBearer):
     Validates JWT tokens and raises an HTTPException if invalid or expired
     """
 
-    def __init__(self, required_roles: list = None):
+    def __init__(self, required_roles: list | None = None):
         super().__init__()
         if required_roles is None:
             required_roles = []
