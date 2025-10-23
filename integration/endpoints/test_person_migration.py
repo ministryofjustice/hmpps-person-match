@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Callable
 
 import pytest
 from sqlalchemy import text
@@ -16,13 +17,13 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def before_each(self, db_connection: AsyncSession):
+    async def before_each(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         """
         await self.truncate_person_data(db_connection)
 
-    async def test_batch_clean_and_store_message(self, call_endpoint, db_connection):
+    async def test_batch_clean_and_store_message(self, call_endpoint: Callable, db_connection: AsyncSession) -> None:
         """
         Test person cleaned and stored on person endpoint
         """
@@ -37,7 +38,7 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
         result = await db_connection.execute(text("SELECT count(*) FROM personmatch.person"))
         assert result.scalar_one() == 1
 
-    async def test_batch_clean_errors(self, call_endpoint):
+    async def test_batch_clean_errors(self, call_endpoint: Callable) -> None:
         """
         Test person cleaned and stored on person endpoint
         """
@@ -47,7 +48,11 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 400
 
-    async def test_batch_clean_and_store_thousand_records(self, call_endpoint, db_connection):
+    async def test_batch_clean_and_store_thousand_records(
+        self,
+        call_endpoint: Callable,
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test person cleaned and stored on person endpoint
         """

@@ -39,7 +39,7 @@ async def post_term_frequency(
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)
 
 
-async def trigger_term_frequency_refresh():
+async def trigger_term_frequency_refresh() -> None:
     """
     Refresh the term frequency materialized views
     """

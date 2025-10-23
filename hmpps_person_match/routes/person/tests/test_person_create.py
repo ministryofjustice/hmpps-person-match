@@ -1,3 +1,8 @@
+from collections.abc import Callable
+from unittest.mock import Mock
+
+from fastapi.testclient import TestClient
+
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 from hmpps_person_match.routes.person.person_create import ROUTE
@@ -8,7 +13,7 @@ class TestPersonRoute:
     Test Person Create Route
     """
 
-    def test_complete_message(self, call_endpoint, mock_logger):
+    def test_complete_message(self, call_endpoint: Callable, mock_logger: Mock) -> None:
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
@@ -36,13 +41,13 @@ class TestPersonRoute:
             extra={"matchId": "M1"},
         )
 
-    def test_bad_request_on_empty(self, call_endpoint):
+    def test_bad_request_on_empty(self, call_endpoint: Callable) -> None:
         json = None
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
 
-    def test_bad_request_different_data_types(self, call_endpoint):
+    def test_bad_request_different_data_types(self, call_endpoint: Callable) -> None:
         json = {
             "matchId": "M1",
             "sourceSystem": ["DELIUS", "NOMIS", "COMMON_PLATFORM"],  # Should be string
@@ -74,7 +79,7 @@ class TestPersonRoute:
             },
         ]
 
-    def test_bad_request_on_missing_fields(self, call_endpoint):
+    def test_bad_request_on_missing_fields(self, call_endpoint: Callable) -> None:
         json = {
             "sourceSystem": "DELIUS",
             "firstName": "Henry",
@@ -85,7 +90,7 @@ class TestPersonRoute:
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."
 
-    def test_invalid_date_format(self, call_endpoint):
+    def test_invalid_date_format(self, call_endpoint: Callable) -> None:
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
@@ -120,7 +125,7 @@ class TestPersonRoute:
             },
         ]
 
-    def test_empty_string_as_master_defendant_id_and_date(self, call_endpoint):
+    def test_empty_string_as_master_defendant_id_and_date(self, call_endpoint: Callable) -> None:
         json = {
             "matchId": "M1",
             "sourceSystem": "DELIUS",
@@ -143,12 +148,12 @@ class TestPersonRoute:
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=json)
         assert response.status_code == 200
 
-    def test_invalid_role_unauthorized(self, call_endpoint):
+    def test_invalid_role_unauthorized(self, call_endpoint: Callable) -> None:
         response = call_endpoint("post", ROUTE, roles=["Invalid Role"], json={})
         assert response.status_code == 403
         assert response.json()["detail"] == "You do not have permission to access this resource."
 
-    def test_no_auth_returns_unauthorized(self, client):
+    def test_no_auth_returns_unauthorized(self, client: TestClient) -> None:
         response = client.post(ROUTE, json={})
         assert response.status_code == 403
         assert response.json()["detail"] == "Not authenticated"

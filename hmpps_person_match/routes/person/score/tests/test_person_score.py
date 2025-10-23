@@ -1,7 +1,9 @@
 import uuid
-from unittest.mock import AsyncMock, patch
+from collections.abc import Callable, Generator
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
+from fastapi.testclient import TestClient
 
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
@@ -16,7 +18,7 @@ class TestPersonScoreRoute:
 
     @staticmethod
     @pytest.fixture(autouse=True)
-    def mock_score_results():
+    def mock_score_results() -> Generator[AsyncMock]:
         """
         Mock the cpr splink candidate results
         """
@@ -28,7 +30,7 @@ class TestPersonScoreRoute:
 
     @staticmethod
     @pytest.fixture(autouse=True)
-    def mock_existence_check():
+    def mock_existence_check() -> Generator[AsyncMock]:
         """
         Mock the cpr splink record existence check
         """
@@ -38,7 +40,12 @@ class TestPersonScoreRoute:
         ) as mocked_existence:
             yield mocked_existence
 
-    def test_person_score_no_results(self, call_endpoint, mock_score_results: AsyncMock, mock_logger):
+    def test_person_score_no_results(
+        self,
+        call_endpoint: Callable,
+        mock_score_results: AsyncMock,
+        mock_logger: Mock,
+    ) -> None:
         """
         Test that returns no results when no candidates results are returned
         """
@@ -56,7 +63,12 @@ class TestPersonScoreRoute:
             },
         )
 
-    def test_person_score_with_results(self, call_endpoint, mock_score_results: AsyncMock, mock_logger):
+    def test_person_score_with_results(
+        self,
+        call_endpoint: Callable,
+        mock_score_results: AsyncMock,
+        mock_logger: Mock,
+    ) -> None:
         """
         Test that returns candidate results in correct format
         """
@@ -109,7 +121,7 @@ class TestPersonScoreRoute:
             },
         )
 
-    def test_missing_record_returns_404(self, call_endpoint, mock_existence_check: AsyncMock):
+    def test_missing_record_returns_404(self, call_endpoint: Callable, mock_existence_check: AsyncMock) -> None:
         """
         Test missing record to score
         Returns 404 Not Found
@@ -122,7 +134,7 @@ class TestPersonScoreRoute:
         )
         assert response.status_code == 404
 
-    def test_invalid_role_unauthorized(self, call_endpoint):
+    def test_invalid_role_unauthorized(self, call_endpoint: Callable) -> None:
         """
         Test invalid role
         Returns 403 Forbidden
@@ -131,11 +143,11 @@ class TestPersonScoreRoute:
         assert response.status_code == 403
         assert response.json()["detail"] == "You do not have permission to access this resource."
 
-    def test_no_auth_returns_unauthorized(self, client):
+    def test_no_auth_returns_unauthorized(self, client: TestClient) -> None:
         response = client.get(self._generate_match_score_url())
         assert response.status_code == 403
         assert response.json()["detail"] == "Not authenticated"
 
     @staticmethod
-    def _generate_match_score_url(match_id=uuid.uuid4()):  # noqa: B008
+    def _generate_match_score_url(match_id: uuid.UUID = uuid.uuid4()) -> str:  # noqa: B008
         return ROUTE.format(match_id=match_id)

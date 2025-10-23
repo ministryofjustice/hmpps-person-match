@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from unittest.mock import Mock
 
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
@@ -11,10 +12,10 @@ class TestRecordCountReportEndPoint:
 
     async def test_no_records_found_report(
         self,
-        call_endpoint,
-        mock_db_connection,
-        mock_logger,
-    ):
+        call_endpoint: Callable,
+        mock_db_connection: Mock,
+        mock_logger: Mock,
+    ) -> None:
         """
         Test when record count report is empty
         """
@@ -33,10 +34,10 @@ class TestRecordCountReportEndPoint:
 
     async def test_record_count_report(
         self,
-        call_endpoint,
-        mock_db_connection,
-        mock_logger,
-    ):
+        call_endpoint: Callable,
+        mock_db_connection: Mock,
+        mock_logger: Mock,
+    ) -> None:
         """
         Test record count report
         """

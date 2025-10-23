@@ -107,7 +107,11 @@ select = [
     # refurb
     "FURB",
     # ruff-specific-rules
-    "RUF"
+    "RUF",
+    # perflint
+    "PERF",
+    # flake8-annotation
+    "ANN",
 ]
 ignore = [
     # magic-value-comparison

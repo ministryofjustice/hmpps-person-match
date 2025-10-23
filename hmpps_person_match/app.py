@@ -44,7 +44,7 @@ class PersonMatchApplication:
     def __init__(self) -> None:
         self.initialise()
 
-    def initialise(self):
+    def initialise(self) -> None:
         """
         Initialise application
         """
@@ -52,7 +52,7 @@ class PersonMatchApplication:
         self.log_version()
         self.initialise_request_handlers()
 
-    def log_version(self):
+    def log_version(self) -> None:
         """
         Log application version
         """
@@ -60,7 +60,7 @@ class PersonMatchApplication:
         log_message = f"Starting hmpps-person-match using Python {version} on {platform.platform()}"
         self.logger.info(log_message)
 
-    def initialise_request_handlers(self):
+    def initialise_request_handlers(self) -> None:
         """
         Set up request handlers
         """
@@ -70,7 +70,7 @@ class PersonMatchApplication:
         self.app.include_router(info_router)
         self.app.include_router(cluster_router)
 
-    def initialise_logger(self):
+    def initialise_logger(self) -> None:
         """
         Set up application logger
         """
@@ -80,7 +80,7 @@ class PersonMatchApplication:
 
     @staticmethod
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    async def validation_exception_handler(request: Request, exc: RequestValidationError) -> None:
         """
         Custom exception handler for validation errors
         """
@@ -95,7 +95,7 @@ class PersonMatchApplication:
 
     @staticmethod
     @app.exception_handler(HTTPException)
-    async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    async def custom_http_exception_handler(request: Request, exc: HTTPException) -> None:
         """
         Custom exception handler for http errors
         """
