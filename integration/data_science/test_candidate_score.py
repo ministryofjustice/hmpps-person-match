@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
@@ -18,7 +19,7 @@ class TestPersonScore(IntegrationTestBase):
     HIGH_MATCH_WEIGHT = 20
 
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(self, db_connection: AsyncSession):
+    async def clean_db(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         Delete all records from the database
@@ -27,10 +28,10 @@ class TestPersonScore(IntegrationTestBase):
 
     async def test_get_scored_candidates(
         self,
-        pg_db_url,
-        db_connection,
+        pg_db_url: URL,
+        db_connection: AsyncSession,
         person_factory: PersonFactory,
-    ):
+    ) -> None:
         """
         Test retrieving scored candidates gives correct number
         """
@@ -74,10 +75,10 @@ class TestPersonScore(IntegrationTestBase):
     async def test_get_scored_candidates_blank_data(
         self,
         person_factory: PersonFactory,
-        pg_db_url,
-        db_connection,
-        person_data,
-    ):
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+        person_data: dict,
+    ) -> None:
         """
         Test that we can score candidates even if fields are 'empty'
         """
@@ -99,9 +100,9 @@ class TestPersonScore(IntegrationTestBase):
     async def test_get_scored_candidates_none_in_db(
         self,
         person_factory: PersonFactory,
-        pg_db_url,
-        db_connection,
-    ):
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test scoring returns nothing if the given match_id is not in db
         """
@@ -116,9 +117,9 @@ class TestPersonScore(IntegrationTestBase):
     async def test_score_unaffected_when_manual_override_is_null(
         self,
         person_factory: PersonFactory,
-        pg_db_url,
-        db_connection,
-    ):
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Tests that a NULL override_marker has no effect on the score.
 
@@ -157,9 +158,9 @@ class TestPersonScore(IntegrationTestBase):
     async def test_score_is_very_high_when_manual_overrides_match(
         self,
         person_factory: PersonFactory,
-        pg_db_url,
-        db_connection,
-    ):
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Tests that if two records share the same override_marker UUID,
         they receive a very high match weight, forcing them to match.
@@ -196,9 +197,9 @@ class TestPersonScore(IntegrationTestBase):
     async def test_score_is_very_low_when_overrides_differ_in_same_scope(
         self,
         person_factory: PersonFactory,
-        pg_db_url,
-        db_connection,
-    ):
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Tests that if two records have different override_markers but share
         an override_scope, they receive a very low match weight, forcing them apart.
@@ -227,9 +228,9 @@ class TestPersonScore(IntegrationTestBase):
     async def test_score_is_unaffected_when_overrides_differ_in_different_scopes(
         self,
         person_factory: PersonFactory,
-        pg_db_url,
-        db_connection,
-    ):
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Tests that if two records have different override_markers _and_ no overlapping
         override_scopes, their match weight is unaffected.

@@ -23,7 +23,7 @@ class RetryExecutor:
         max_attempts: int = MAX_RETRY_COUNT,
         base_delay: int = DELAY_BASE_MS,
         max_delay: int = MAX_DELAY_MS,
-    ):
+    ) -> any:
         """
         Retries a function with a jittered backoff strategy.
         """

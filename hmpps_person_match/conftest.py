@@ -1,4 +1,5 @@
 import datetime
+from collections.abc import Callable, Generator
 from unittest.mock import AsyncMock, Mock, patch
 
 import jwt
@@ -14,7 +15,7 @@ from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
 
 @pytest.fixture(autouse=True)
-def set_env_vars(monkeypatch):
+def set_env_vars(monkeypatch: Generator[pytest.MonkeyPatch]) -> None:
     monkeypatch.setenv("APP_BUILD_NUMBER", "number")
     monkeypatch.setenv("APP_GIT_REF", "ref")
     monkeypatch.setenv("APP_GIT_BRANCH", "branch")
@@ -23,7 +24,7 @@ def set_env_vars(monkeypatch):
 
 
 @pytest.fixture()
-def app():
+def app() -> Generator:
     app = PersonMatchApplication().app
     # other setup can go here
     yield app
@@ -31,48 +32,48 @@ def app():
 
 
 @pytest.fixture(autouse=True)
-def mock_db_connection(app):
+def mock_db_connection(app: PersonMatchApplication) -> Generator[Mock]:
     mock_connection = AsyncMock()
     app.dependency_overrides[get_db_session] = lambda: mock_connection
     yield mock_connection
 
 
 @pytest.fixture(autouse=True)
-def mock_logger(app):
+def mock_logger(app: PersonMatchApplication) -> Generator[Mock]:
     mock_logger = Mock()
     app.dependency_overrides[get_logger] = lambda: mock_logger
     yield mock_logger
 
 
 @pytest.fixture()
-def client(app):
+def client(app: PersonMatchApplication) -> Generator[TestClient]:
     return TestClient(app)
 
 
 @pytest.fixture(autouse=True)
-def disable_cache():
+def disable_cache() -> Generator:
     with patch("hmpps_person_match.dependencies.auth.jwks.jwks_cache", {}):
         yield
 
 
+class TestContext:
+    DEFAULT_KID = "test_kid"
+
+    def __init__(self) -> None:
+        self.kid = self.DEFAULT_KID
+        self.issuer = f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/issuer"
+
+
 @pytest.fixture
-def context():
+def context() -> TestContext:
     """
     Returns test context to use throughout app
     """
-
-    class TestContext:
-        DEFAULT_KID = "test_kid"
-
-        def __init__(self):
-            self.kid = self.DEFAULT_KID
-            self.issuer = f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/issuer"
-
     return TestContext()
 
 
 @pytest.fixture(scope="session")
-def private_key():
+def private_key() -> rsa.RSAPrivateKey:
     """
     Returns a generated private key for testing purposes.
     """
@@ -84,7 +85,7 @@ def private_key():
 
 
 @pytest.fixture(scope="session")
-def public_key(private_key):
+def public_key(private_key: rsa.RSAPrivateKey) -> rsa.RSAPublicKey:
     """
     Returns the public key from the private key for testing purposes.
     """
@@ -93,7 +94,7 @@ def public_key(private_key):
 
 
 @pytest.fixture
-def jwks(context, public_key):
+def jwks(context: TestContext, public_key: rsa.RSAPublicKey) -> dict:
     """
     Return a JWKS for testing purposes
     """
@@ -109,7 +110,7 @@ def jwks(context, public_key):
 
 
 @pytest.fixture
-def jwt_token_factory(context, private_key):
+def jwt_token_factory(context: TestContext, private_key: rsa.RSAPrivateKey) -> Callable:
     """
     Returns a JWT token for testing purposes
     """
@@ -119,7 +120,7 @@ def jwt_token_factory(context, private_key):
         roles: list[str] | None = None,
         issuer: str = context.issuer,
         expiry: datetime.timedelta = datetime.timedelta(hours=1),
-    ):
+    ) -> str:
         if roles is None:
             roles = []
 
@@ -136,12 +137,12 @@ def jwt_token_factory(context, private_key):
 
 
 @pytest.fixture
-def mock_jwks_call_factory(jwks, requests_mock):
+def mock_jwks_call_factory(jwks: dict, requests_mock: Callable) -> Callable:
     """
     Returns a func to create a mock request to JWKS endpoint.
     """
 
-    def _mock_jwks_call(status_code: int = 200, headers: dict | None = None, json_data: dict | None = None):
+    def _mock_jwks_call(status_code: int = 200, headers: dict | None = None, json_data: dict | None = None) -> None:
         """
         Mock call to JWKS endpoint.
         """
@@ -158,7 +159,7 @@ def mock_jwks_call_factory(jwks, requests_mock):
 
 
 @pytest.fixture()
-def mock_jwks(mock_jwks_call_factory, jwks):
+def mock_jwks(mock_jwks_call_factory: Callable, jwks: dict) -> None:
     """
     Returns a mock JWKS with public key generated.
     """

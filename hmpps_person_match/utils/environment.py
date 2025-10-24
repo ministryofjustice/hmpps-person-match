@@ -7,7 +7,7 @@ class EnvVars(Enum):
     OAUTH_ISSUER_URL_KEY = "OAUTH_ISSUER_URL_KEY"
 
 
-def get_env_var(key: EnvVars):
+def get_env_var(key: EnvVars) -> str:
     """
     Helper function to retrieve an environment variable.
     """

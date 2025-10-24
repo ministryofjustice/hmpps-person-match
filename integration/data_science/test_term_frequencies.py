@@ -13,14 +13,14 @@ class TestTFs(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(self, db_connection: AsyncSession):
+    async def clean_db(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         Delete all records from the database
         """
         await self.truncate_person_data(db_connection)
 
-    async def test_term_frequencies_simple(self, person_factory: PersonFactory, db_connection):
+    async def test_term_frequencies_simple(self, person_factory: PersonFactory, db_connection: AsyncSession) -> None:
         """
         Test term frequencies for a simple column
         """
@@ -44,7 +44,7 @@ class TestTFs(IntegrationTestBase):
         )
         assert tf_name_henry.fetchone()[0] == 0.25
 
-    async def test_term_frequencies_postcode(self, person_factory: PersonFactory, db_connection):
+    async def test_term_frequencies_postcode(self, person_factory: PersonFactory, db_connection: AsyncSession) -> None:
         """
         Test term frequencies for an array column
         """

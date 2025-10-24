@@ -51,7 +51,7 @@ class Person(BaseModel):
 
     @field_validator("date_of_birth", mode="before")
     @classmethod
-    def validate_date(cls, v):
+    def validate_date(cls, v: any) -> any:
         if v == "":
             return None
         return v

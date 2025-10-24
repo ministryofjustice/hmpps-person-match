@@ -14,14 +14,14 @@ class TestCandidateSearch(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(self, db_connection: AsyncSession):
+    async def clean_db(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         Delete all records from the database
         """
         await self.truncate_person_data(db_connection)
 
-    async def test_candidate_search(self, person_factory: PersonFactory, db_connection):
+    async def test_candidate_search(self, person_factory: PersonFactory, db_connection: AsyncSession) -> None:
         """
         Test candidate search returns correct number of people
         """
@@ -40,8 +40,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_no_record_in_db(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns nothing if the given match_id is not in db
         """
@@ -57,8 +57,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_pnc(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on pnc
         """
@@ -76,8 +76,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_cro(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on cro
         """
@@ -95,8 +95,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_dob_postcode_first(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         date_of_birth + postcode_first
@@ -120,8 +120,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_dob_postcode_first_name_1_substr(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         date_of_birth + postcode_outcode_first + substr(name_1_std, 1, 2)
@@ -148,8 +148,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_dob_postcode_last_name_std_substr(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         date_of_birth_last + postcode_outcode_first + substr(last_name_std, 1, 2)
@@ -184,8 +184,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_forename_frst_last_name_frst_postcode_frst(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         forename_first + last_name_first + postcode_first
@@ -210,8 +210,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_sentence_dates_first_date_of_birth(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         sentence_date_first + date_of_birth

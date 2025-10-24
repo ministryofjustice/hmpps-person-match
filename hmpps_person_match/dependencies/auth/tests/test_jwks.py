@@ -1,4 +1,6 @@
 import os
+from collections.abc import Callable
+from unittest.mock import Mock
 
 import pytest
 import requests
@@ -14,8 +16,7 @@ class TestJwks:
     Test JWKS class
     """
 
-    @pytest.mark.asyncio
-    async def test_retrieves_jwks(self, jwt_token_factory, mock_jwks):
+    async def test_retrieves_jwks(self, jwt_token_factory: Callable, mock_jwks: Mock) -> None:
         """
         Test the JWKS class using a mock JWKS endpoint
         """
@@ -25,7 +26,7 @@ class TestJwks:
         assert public_key.kid == "test_kid"
         assert public_key.kty == "RSA"
 
-    def test_missing_oauth_env_var_throws_error(self):
+    def test_missing_oauth_env_var_throws_error(self) -> None:
         """
         Test that an error is raised when the OAUTH_BASE_URL environment variable is missing
         """
@@ -34,8 +35,7 @@ class TestJwks:
             JWKS()
         assert str(e.value) == "Missing environment variable: OAUTH_BASE_URL"
 
-    @pytest.mark.asyncio
-    async def test_raises_error_no_key_found(self, jwt_token_factory, mock_jwks):
+    async def test_raises_error_no_key_found(self, jwt_token_factory: Callable, mock_jwks: Mock) -> None:
         """
         Test that an error is raised when a public key for a specific kid is not found
         """
@@ -44,9 +44,13 @@ class TestJwks:
             await JWKS().get_public_key_from_jwt(token)
         assert str(e.value) == "Public key for kid: 'invalid_kid' not found."
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("status_code", [429, 500, 502, 503, 504])
-    async def test_raises_error_from_jwks_endpoint(self, status_code, jwt_token_factory, mock_jwks_call_factory):
+    async def test_raises_error_from_jwks_endpoint(
+        self,
+        status_code: int,
+        jwt_token_factory: Callable,
+        mock_jwks_call_factory: Callable,
+    ) -> None:
         """
         Test that an error is raised when the JWKS endpoint returns an error response
         """
@@ -55,9 +59,13 @@ class TestJwks:
         with pytest.raises(requests.exceptions.HTTPError):
             await JWKS().get_public_key_from_jwt(token)
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("status_code", [429, 500, 502, 503, 504])
-    async def test_retry_on_error_from_jwks_endpoint(self, status_code, jwt_token_factory, jwks):
+    async def test_retry_on_error_from_jwks_endpoint(
+        self,
+        status_code: int,
+        jwt_token_factory: Callable,
+        jwks: dict,
+    ) -> None:
         """
         Test that an error is raised is retried and succeeds
         """
@@ -74,9 +82,13 @@ class TestJwks:
             assert jwk is not None
             assert mock_requests.call_count == 3
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("exception", [ConnError, Timeout])
-    async def test_retry_on_request_exceptions(self, exception, jwt_token_factory, jwks):
+    async def test_retry_on_request_exceptions(
+        self,
+        exception: Exception,
+        jwt_token_factory: Callable,
+        jwks: dict,
+    ) -> None:
         """
         Test that an error is raised is retried and succeeds
         """

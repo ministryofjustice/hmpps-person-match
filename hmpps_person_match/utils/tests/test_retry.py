@@ -11,7 +11,7 @@ class TestRetry:
     Test Retry class
     """
 
-    def test_successfully_returns_on_success(self):
+    def test_successfully_returns_on_success(self) -> None:
         """
         Test returns result straight away when successful
         """
@@ -20,7 +20,7 @@ class TestRetry:
         assert result == "Always succeeds"
         mock_func.assert_called_once()
 
-    def test_retries_on_exception(self):
+    def test_retries_on_exception(self) -> None:
         """
         Test retries on exceptions until successful
         """
@@ -35,7 +35,7 @@ class TestRetry:
         assert result == "Third time lucky"
         assert mock_func.call_count == 3
 
-    def test_max_retries_reached(self):
+    def test_max_retries_reached(self) -> None:
         """
         Test raises exception when max retries reached
         """
@@ -44,7 +44,7 @@ class TestRetry:
             asyncio.run(RetryExecutor.retry(mock_func))
         assert mock_func.call_count == 3
 
-    def test_immediate_failure_on_different_exception(self):
+    def test_immediate_failure_on_different_exception(self) -> None:
         """
         Test that different exceptions do not trigger retries.
         """

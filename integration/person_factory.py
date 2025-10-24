@@ -1,3 +1,5 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from hmpps_cpr_splink.cpr_splink.interface import clean
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
@@ -6,7 +8,7 @@ from integration.mock_person import MockPerson
 
 
 class PersonFactory:
-    def __init__(self, db_conn):
+    def __init__(self, db_conn: AsyncSession) -> None:
         self.db_connection = db_conn
 
     async def create_from(self, person: MockPerson) -> Person:
@@ -24,5 +26,5 @@ class PersonFactory:
     async def update(self, person: Person) -> Person:
         await self._upsert_record(person)
 
-    async def _upsert_record(self, person: Person):
+    async def _upsert_record(self, person: Person) -> None:
         await clean.clean_and_insert(PersonBatch(records=[person]), self.db_connection)

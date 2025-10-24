@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,14 +17,14 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def before_each(self, db_connection: AsyncSession):
+    async def before_each(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         """
         await self.truncate_person_data(db_connection)
         await self.refresh_term_frequencies(db_connection)
 
-    async def test_score_no_matching(self, call_endpoint):
+    async def test_score_no_matching(self, call_endpoint: Callable) -> None:
         """
         Test person score handles no matching match id
         """
@@ -34,7 +36,7 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {}
 
-    async def test_score_invalid_match_id(self, call_endpoint):
+    async def test_score_invalid_match_id(self, call_endpoint: Callable) -> None:
         """
         Test person score handles non uuid match_id
         """
@@ -43,7 +45,7 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {}
 
-    async def test_score_does_not_return_self(self, call_endpoint, person_factory: PersonFactory):
+    async def test_score_does_not_return_self(self, call_endpoint: Callable, person_factory: PersonFactory) -> None:
         """
         Test person score doesn't return its own record as part of candidates
         """
@@ -55,7 +57,7 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert response.status_code == 200
         assert response.json() == []
 
-    async def test_score_returns_candidates(self, call_endpoint, person_factory: PersonFactory):
+    async def test_score_returns_candidates(self, call_endpoint: Callable, person_factory: PersonFactory) -> None:
         """
         Test person cleaned and stored on person endpoint
         """
@@ -76,7 +78,11 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert person_2.match_id in candidates_id
         assert person_3.match_id in candidates_id
 
-    async def test_returns_joining_flag_for_candidate(self, call_endpoint, person_factory: PersonFactory):
+    async def test_returns_joining_flag_for_candidate(
+        self,
+        call_endpoint: Callable,
+        person_factory: PersonFactory,
+    ) -> None:
         """
         Test person has joining flag when it passes the threshold
         """
@@ -96,7 +102,11 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert matched_candidate["candidate_match_id"] == person_2.match_id
         assert matched_candidate["candidate_should_join"]
 
-    async def test_returns_fracture_flag_for_candidate(self, call_endpoint, person_factory: PersonFactory):
+    async def test_returns_fracture_flag_for_candidate(
+        self,
+        call_endpoint: Callable,
+        person_factory: PersonFactory,
+    ) -> None:
         """
         Test person has fracture flag when it passes the threshold
         """
@@ -118,7 +128,11 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert matched_candidate["candidate_match_id"] == person_2.match_id
         assert matched_candidate["candidate_should_fracture"]
 
-    async def test_score_return_mutually_excluded_candidate(self, call_endpoint, person_factory: PersonFactory):
+    async def test_score_return_mutually_excluded_candidate(
+        self,
+        call_endpoint: Callable,
+        person_factory: PersonFactory,
+    ) -> None:
         """
         Test score can handle mutually exclusive candidate
         """
@@ -148,5 +162,5 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert person_3.match_id in candidates_id
 
     @staticmethod
-    def _build_score_url(match_id: str):
+    def _build_score_url(match_id: str) -> str:
         return ROUTE.format(match_id=match_id)

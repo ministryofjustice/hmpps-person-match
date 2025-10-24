@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,14 +17,14 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def before_each(self, db_connection: AsyncSession):
+    async def before_each(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         """
         await self.truncate_person_data(db_connection)
         await self.refresh_term_frequencies(db_connection)
 
-    async def test_is_cluster_valid_unknown_id(self, call_endpoint):
+    async def test_is_cluster_valid_unknown_id(self, call_endpoint: Callable) -> None:
         """
         Test is cluster valid handles an unknown match id
         """
@@ -31,7 +33,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {"unknownIds": [match_id]}
 
-    async def test_score_invalid_match_id(self, call_endpoint):
+    async def test_score_invalid_match_id(self, call_endpoint: Callable) -> None:
         """
         Test is cluster valid handles non uuid match_id
         """
@@ -42,9 +44,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
 
     async def test_is_cluster_valid_validates_cluster(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         person_factory: PersonFactory,
-    ):
+    ) -> None:
         """
         Test is cluster valid correctly identifies a valid cluster
         """
@@ -75,9 +77,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
 
     async def test_is_cluster_valid_identifies_multiple_clusters(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         person_factory: PersonFactory,
-    ):
+    ) -> None:
         """
         Test is cluster valid correctly identifies when we have multiple clusters
         """
@@ -109,7 +111,11 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         cluster_len_2 = len(response_data["clusters"][1])
         assert {cluster_len_1, cluster_len_2} == {1, 2}
 
-    async def test_is_cluster_invalid_exclude_override_marker(self, call_endpoint, person_factory: PersonFactory):
+    async def test_is_cluster_invalid_exclude_override_marker(
+        self,
+        call_endpoint: Callable,
+        person_factory: PersonFactory,
+    ) -> None:
         """
         Test is-cluster-valid correctly identifies a override marker within a invalid cluster
         Records have same scope but different override marker
@@ -140,9 +146,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
 
     async def test_is_cluster_valid_exclude_override_marker_different_scopes(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         person_factory: PersonFactory,
-    ):
+    ) -> None:
         """
         Test is-cluster-valid correctly ignores an override marker within a valid cluster
         Records have different override marker, but with no overlapping scope
@@ -169,7 +175,11 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         # that override_markers are different
         assert response_data["isClusterValid"]
 
-    async def test_is_cluster_valid_include_override_marker(self, call_endpoint, person_factory: PersonFactory):
+    async def test_is_cluster_valid_include_override_marker(
+        self,
+        call_endpoint: Callable,
+        person_factory: PersonFactory,
+    ) -> None:
         """
         Test is-cluster-valid correctly identifies a override marker with a invalid cluster
         Records have same scope and override marker

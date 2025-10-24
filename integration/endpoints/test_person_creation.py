@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Callable
 
 import pytest
 from sqlalchemy import text
@@ -19,9 +20,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
 
     async def test_clean_and_store_message(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test person cleaned and stored on person endpoint
         """
@@ -90,10 +91,10 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
 
     async def test_clean_and_update_message(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         db_connection: AsyncSession,
         person_factory: PersonFactory,
-    ):
+    ) -> None:
         """
         Test person cleaned and update existing person on person endpoint
         """
@@ -118,7 +119,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         assert row["name_1_std"] == updated_first_name.upper()
         assert row["date_of_birth"] == self.to_datetime_object(updated_dob)
 
-    def test_invalid_client_returns_forbidden(self, call_endpoint):
+    def test_invalid_client_returns_forbidden(self, call_endpoint: Callable) -> None:
         """
         Test person endpoint return 403 forbidden when invalid roles
         """
@@ -132,9 +133,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
 
     async def test_does_not_create_duplicates_on_source_system_id(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test only unique source system id allowed. Even if match_id is different
         """
@@ -162,9 +163,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
 
     async def test_match_id_is_upserted_on_same_source_system_id(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test match id is upserted on conflict with source system id
         """
@@ -204,9 +205,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
 
     async def test_source_system_id_can_be_same_if_different_source_system(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test unique constraint applies to source system
         """
@@ -246,9 +247,9 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
 
     async def test_stores_override_markers(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test persons override marker data is stored
         """
@@ -305,10 +306,10 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
     )
     async def test_data_stored_as_none_if_blank(
         self,
-        call_endpoint,
-        db_connection,
+        call_endpoint: Callable,
+        db_connection: AsyncSession,
         person_fields: tuple,
-    ):
+    ) -> None:
         """
         Test that we can score candidates even if fields are 'empty'
         """

@@ -1,3 +1,5 @@
+from fastapi.testclient import TestClient
+
 from hmpps_person_match.routes.info import ROUTE
 
 
@@ -6,7 +8,7 @@ class TestInfoView:
     Test info view
     """
 
-    def test_response_ok(self, client):
+    def test_response_ok(self, client: TestClient) -> None:
         """
         Test a get to the info endpoint returns a 200 ok
         """

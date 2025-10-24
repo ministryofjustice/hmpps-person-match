@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,11 +13,11 @@ from integration.test_base import IntegrationTestBase
 
 class TestVisualiseClusterEndpoint(IntegrationTestBase):
     @pytest.fixture(autouse=True, scope="function")
-    async def before_each(self, db_connection: AsyncSession):
+    async def before_each(self, db_connection: AsyncSession) -> None:
         await self.truncate_person_data(db_connection)
         await self.refresh_term_frequencies(db_connection)
 
-    async def test_visualise_cluster_unknown_id(self, call_endpoint):
+    async def test_visualise_cluster_unknown_id(self, call_endpoint: Callable) -> None:
         missing_id = random_test_data.random_match_id()
 
         response = call_endpoint(
@@ -30,9 +32,9 @@ class TestVisualiseClusterEndpoint(IntegrationTestBase):
 
     async def test_visualise_cluster_returns_spec(
         self,
-        call_endpoint,
+        call_endpoint: Callable,
         person_factory: PersonFactory,
-    ):
+    ) -> None:
         person_1 = await person_factory.create_from(MockPerson())
         person_2 = await person_factory.create_from(person_1)
 

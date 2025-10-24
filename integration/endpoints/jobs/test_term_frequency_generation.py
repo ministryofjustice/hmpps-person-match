@@ -15,7 +15,7 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(self, db_connection: AsyncSession):
+    async def clean_db(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         Delete all records from the database
@@ -24,10 +24,10 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
 
     async def test_term_frequency_generated(
         self,
-        person_match_url,
+        person_match_url: str,
         person_factory: PersonFactory,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test all term frequency tables are generated
         """
@@ -41,10 +41,10 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
 
     async def test_term_frequency_refreshed(
         self,
-        person_match_url,
+        person_match_url: str,
         person_factory: PersonFactory,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test all term frequency tables are refreshed, with new value
         """
@@ -61,10 +61,10 @@ class TestTermFrequencyGeneration(IntegrationTestBase):
 
     async def test_term_frequency_unique(
         self,
-        person_match_url,
+        person_match_url: str,
         person_factory: PersonFactory,
         db_connection: AsyncSession,
-    ):
+    ) -> None:
         """
         Test all term frequency tables are unique values.
         Create 2 sperate people with the same value

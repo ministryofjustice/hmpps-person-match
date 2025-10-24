@@ -1,8 +1,11 @@
 import uuid
 
 import pytest
+from sqlalchemy import URL
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
+from hmpps_person_match.models.person.person import Person
 from integration import random_test_data
 from integration.mock_person import MockPerson
 from integration.person_factory import PersonFactory
@@ -11,15 +14,15 @@ from integration.test_base import IntegrationTestBase
 
 class TestMasterDefendantId(IntegrationTestBase):
     @pytest.fixture(autouse=True)
-    async def clean_db(self, db_connection):
+    async def clean_db(self, db_connection: AsyncSession) -> None:
         await self.truncate_person_data(db_connection)
 
     @staticmethod
     async def _score_weight_between(
-        primary,
-        candidate,
-        pg_db_url,
-        db_connection,
+        primary: Person,
+        candidate: Person,
+        pg_db_url: URL,
+        db_connection: AsyncSession,
     ) -> float:
         scores = await get_scored_candidates(primary.match_id, pg_db_url, db_connection)
         matched = next(score for score in scores if score.candidate_match_id == candidate.match_id)
@@ -28,9 +31,9 @@ class TestMasterDefendantId(IntegrationTestBase):
     async def test_weight_changes_only_for_equal_master_defendant_id(
         self,
         person_factory: PersonFactory,
-        pg_db_url,
-        db_connection,
-    ):
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+    ) -> None:
         shared_pnc = random_test_data.random_pnc()
         person_1 = await person_factory.create_from(MockPerson(pncs=[shared_pnc]))
         person_2 = await person_factory.create_from(MockPerson(pncs=[shared_pnc]))
