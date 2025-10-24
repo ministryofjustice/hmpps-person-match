@@ -1,9 +1,6 @@
 ---
 generic-service:
-
-  autoscaling:
-    minReplicas: 1
-    maxReplicas: 1
+  replicaCount: 8
 
   scheduledDowntime:
     enabled: true
