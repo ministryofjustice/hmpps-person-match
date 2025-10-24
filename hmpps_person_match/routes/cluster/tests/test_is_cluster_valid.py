@@ -59,7 +59,11 @@ class TestIsClusterValidRoute:
         assert response.json() == {"unknownIds": [match_id_1]}
 
     def test_is_cluster_valid_results(
-        self, call_endpoint: Callable, mock_ids_check: AsyncMock, mock_cluster_results: AsyncMock, mock_logger: Mock,
+        self,
+        call_endpoint: Callable,
+        mock_ids_check: AsyncMock,
+        mock_cluster_results: AsyncMock,
+        mock_logger: Mock,
     ) -> None:
         """
         Test that get results in right format when cluster is valid
@@ -90,7 +94,11 @@ class TestIsClusterValidRoute:
         )
 
     def test_is_cluster_valid_multiple_clusters(
-        self, call_endpoint: Callable, mock_ids_check: AsyncMock, mock_cluster_results: AsyncMock, mock_logger: Mock,
+        self,
+        call_endpoint: Callable,
+        mock_ids_check: AsyncMock,
+        mock_cluster_results: AsyncMock,
+        mock_logger: Mock,
     ) -> None:
         """
         Test that we get information on multiple clusters if cluster is not valid

@@ -127,6 +127,8 @@ ignore = [
     # flake8-self
     # keep this as we need to access Splink internals - not a problem as we own it
     "SLF",
+    # flake8-annotation - todo
+    "ANN",
 ]
 "hmpps_cpr_splink/tests/*" = [
     # flake8-bandit
