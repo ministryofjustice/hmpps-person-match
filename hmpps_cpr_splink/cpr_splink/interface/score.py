@@ -172,7 +172,7 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             return Clusters([])
 
         db_api = DuckDBAPI(connection_duckdb)
-        scores = compare_records(  # noqa: F841
+        scores = compare_records(
             tf_enhanced_table_name,
             tf_enhanced_table_name,
             settings=MODEL_PATH,

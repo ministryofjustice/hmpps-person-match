@@ -49,7 +49,7 @@ def call_endpoint(person_match_url, access_token_factory):
         method: str,
         route: str,
         client: Client,
-        json: dict = None,
+        json: dict | None = None,
     ) -> requests.Response:
         token = access_token_factory(client)
         headers = {"Authorization": f"Bearer {token}"}

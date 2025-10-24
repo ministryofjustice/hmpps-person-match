@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import jwt
 import requests
 from authlib.jose import JsonWebKey
@@ -15,8 +17,8 @@ class JWKS:
     JWKS class to be used to retrieve credentials
     """
 
-    ALGORITHMS = ["RS256"]
-    TIMEOUT = 10
+    ALGORITHMS: ClassVar[list] = ["RS256"]
+    TIMEOUT: ClassVar[int] = 10
 
     RETRY_EXCEPTIONS = (
         rq_ex.Timeout,

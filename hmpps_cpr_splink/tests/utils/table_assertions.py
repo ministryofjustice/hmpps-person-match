@@ -131,7 +131,7 @@ def check_output_matches_expected(
         try:
             rows = test_data[table_name]
         except KeyError as e:
-            print(f"Didn't find any test data for specified table: '{table_name}'")  # noqa: T201
+            print(f"Didn't find any test data for specified table: '{table_name}'")
             raise e
         load_frame(con, rows, schema_data, table_name)
 

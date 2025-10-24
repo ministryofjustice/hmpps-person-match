@@ -41,7 +41,7 @@ class IntegrationTestBase:
 
     @staticmethod
     async def assert_size_of_table(db_connection, table, size=1):
-        result = await db_connection.execute(text(f"SELECT * FROM personmatch.{table}"))  # noqa: S608
+        result = await db_connection.execute(text(f"SELECT * FROM personmatch.{table}"))
         rows = result.fetchall()
         assert len(rows) == size
 

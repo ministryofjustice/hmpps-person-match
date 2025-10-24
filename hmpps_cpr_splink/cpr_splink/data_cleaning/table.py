@@ -49,7 +49,7 @@ class Table:
         """
         if isinstance(self.from_condition, str):
             return []
-        return self.from_condition.with_lineage + [self.from_condition]
+        return [*self.from_condition.with_lineage, self.from_condition]
 
     @property
     def select_statement_with_lineage(self) -> str:

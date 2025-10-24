@@ -116,7 +116,7 @@ def jwt_token_factory(context, private_key):
 
     def _create_token(
         kid: str = context.kid,
-        roles: list[str] = None,
+        roles: list[str] | None = None,
         issuer: str = context.issuer,
         expiry: datetime.timedelta = datetime.timedelta(hours=1),
     ):
@@ -141,7 +141,7 @@ def mock_jwks_call_factory(jwks, requests_mock):
     Returns a func to create a mock request to JWKS endpoint.
     """
 
-    def _mock_jwks_call(status_code: int = 200, headers: dict = None, json_data: dict = None):
+    def _mock_jwks_call(status_code: int = 200, headers: dict | None = None, json_data: dict | None = None):
         """
         Mock call to JWKS endpoint.
         """
