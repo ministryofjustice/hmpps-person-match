@@ -1,6 +1,6 @@
 ---
 generic-service:
-  replicaCount: 2
+  replicaCount: 4
 
   scheduledDowntime:
     enabled: true
