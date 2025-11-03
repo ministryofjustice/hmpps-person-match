@@ -62,7 +62,7 @@ jobs:
         run: make test-ci
         
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: unit-test-results
           path: test_results/pytest-unit-test-report.xml
@@ -93,7 +93,7 @@ jobs:
         run: make test-integration-ci
         
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: int-test-results
           path: test_results/pytest-integration-test-report.xml
