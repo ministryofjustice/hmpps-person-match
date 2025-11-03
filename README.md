@@ -21,8 +21,19 @@ In the event that changes are needed  to it either to improve performance or to 
 
 
 ```shell
-curl -LsSf https://astral.sh/uv/0.5.24/install.sh | sh
+curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
 ```
+
+Keep `uv` up to date by running `uv self update` to make sure it matches the version specified in the Dockerfile
+
+If you need to update a transitive dependency, do this:
+
+0. make sure you are on the latest version of uv
+1. `uv add yourdependency==yourversion`
+2. revert the change to `pyproject.toml`
+3. `uv lock`
+
+This should result in a small change to the lockfile updating the transitive dependency to the desired version.
 
 ## Quickstart
 
