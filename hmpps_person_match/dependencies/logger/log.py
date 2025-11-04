@@ -9,7 +9,7 @@ logging.basicConfig(
 )
 
 
-def get_logger():
+def get_logger() -> logging.Logger:
     """
     Return the logger
     """

@@ -23,6 +23,9 @@ dependencies = [
   "opentelemetry-instrumentation-sqlalchemy==0.57b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
+  "types-authlib>=1.6.5.20251005",
+  "types-cachetools>=6.2.0.20251022",
+  "types-requests>=2.32.4.20250913",
 ]
 
 [tool.uv]
@@ -39,6 +42,7 @@ dev = [
   "faker==37.12.0",
   "httpx==0.28.1",
   "requests-mock==1.12.1",
+  "mypy>=1.18.2",
 ]
 
 [build-system]
@@ -107,7 +111,11 @@ select = [
     # refurb
     "FURB",
     # ruff-specific-rules
-    "RUF"
+    "RUF",
+    # perflint
+    "PERF",
+    # flake8-annotation
+    "ANN",
 ]
 ignore = [
     # magic-value-comparison
@@ -123,6 +131,8 @@ ignore = [
     # flake8-self
     # keep this as we need to access Splink internals - not a problem as we own it
     "SLF",
+    # flake8-annotation - todo
+    "ANN",
 ]
 "hmpps_cpr_splink/tests/*" = [
     # flake8-bandit

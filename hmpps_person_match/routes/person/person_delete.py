@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 from fastapi.responses import JSONResponse
-from sqlalchemy import text
+from sqlalchemy import Result, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.db import get_db_session
@@ -37,7 +37,7 @@ async def delete_person(
     """
     logger.info(TelemetryEvents.PERSON_DELETED, extra=dict(matchId=person_identifier.match_id))
     query = text("DELETE FROM personmatch.person WHERE match_id = :match_id")
-    result = await session.execute(query, {"match_id": person_identifier.match_id})
+    result: Result = await session.execute(query, {"match_id": person_identifier.match_id})
     if result.rowcount == 0:
         return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)
     return JSONResponse(content={}, status_code=status.HTTP_200_OK)

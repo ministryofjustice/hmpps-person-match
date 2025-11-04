@@ -1,5 +1,4 @@
-from fastapi import APIRouter, status
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter
 
 from hmpps_person_match.models.health import Health, Status
 
@@ -15,7 +14,4 @@ async def get_health() -> Health:
     """
     GET request handler
     """
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content=Health(status=Status.UP).model_dump(),
-    )
+    return Health(status=Status.UP)
