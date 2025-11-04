@@ -27,7 +27,7 @@ class JWTBearer(HTTPBearer):
         Class initialization function
         Verify provided auth token is valid
         """
-        credentials: HTTPAuthorizationCredentials = await super().__call__(request)
+        credentials: HTTPAuthorizationCredentials | None = await super().__call__(request)
         if credentials:
             await self.verify_jwt(credentials.credentials)
         else:

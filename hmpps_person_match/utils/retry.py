@@ -1,6 +1,9 @@
 import asyncio
 import random
 from collections.abc import Callable
+from typing import TypeVar
+
+T = TypeVar("T")
 
 
 class RetryExecutor:
@@ -18,12 +21,12 @@ class RetryExecutor:
     @classmethod
     async def retry(
         cls,
-        action: Callable,
+        action: Callable[[], T],
         retry_exceptions: tuple = (Exception,),
         max_attempts: int = MAX_RETRY_COUNT,
         base_delay: int = DELAY_BASE_MS,
         max_delay: int = MAX_DELAY_MS,
-    ) -> any:
+    ) -> T:
         """
         Retries a function with a jittered backoff strategy.
         """
@@ -36,3 +39,4 @@ class RetryExecutor:
                 jitter = random.uniform(cls.JITTER_MIN, cls.JITTER_MAX)  # noqa: S311
                 delay = min(base_delay * pow(2, attempt), max_delay) * jitter
                 await asyncio.sleep(delay / 1000)
+        raise Exception("Max retries exceeded")

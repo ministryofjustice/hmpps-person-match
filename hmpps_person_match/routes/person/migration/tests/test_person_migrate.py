@@ -29,7 +29,7 @@ class TestPersonMigrateRoute:
         assert response.json() == {}
 
     def test_batch_message_no_records(self, call_endpoint: Callable) -> None:
-        data = {
+        data: dict = {
             "records": [],
         }
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=data)

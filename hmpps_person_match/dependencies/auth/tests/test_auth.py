@@ -24,14 +24,17 @@ class TestAuth:
 
     app = FastAPI()
 
+    @staticmethod
     @app.get(SINGLE_ROLE_ROUTE, dependencies=[Depends(JWTBearer(required_roles=[TEST_ROLE]))])
     def method_with_single_role() -> Response:
         return Response(status_code=HTTPStatus.OK)
 
+    @staticmethod
     @app.get(MULTIPLE_ROLE_ROUTE, dependencies=[Depends(JWTBearer(required_roles=[TEST_ROLE, TEST_ROLE_2]))])
     def method_with_multiple_role() -> Response:
         return Response(status_code=HTTPStatus.OK)
 
+    @staticmethod
     @app.get(NO_ROLE_ROUTE)
     def method_with_no_roles() -> Response:
         return Response(status_code=HTTPStatus.OK)
@@ -41,7 +44,10 @@ class TestAuth:
         return TestClient(self.app)
 
     def test_allows_correct_level_of_auth(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that method with single role is accessible when authenticated with correct role
@@ -53,7 +59,10 @@ class TestAuth:
         assert response.status_code == HTTPStatus.OK
 
     def test_allows_correct_level_of_auth_user_has_multiple_roles_on_endpoints_that_accepts_multi_roles(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that method with multiple role is accessible when authenticated with user that has multiple roles
@@ -71,7 +80,10 @@ class TestAuth:
         assert response.status_code == HTTPStatus.OK
 
     def test_allows_correct_level_of_auth_user_has_multiple_roles(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that method with single role is accessible when authenticated with user that has multiple roles
@@ -89,7 +101,10 @@ class TestAuth:
         assert response.status_code == HTTPStatus.OK
 
     def test_allows_correct_level_of_auth_no_roles(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that method with no role required is accessible when authenticated
@@ -101,7 +116,10 @@ class TestAuth:
         assert response.status_code == HTTPStatus.OK
 
     def test_unauthorised_when_expired_token(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that method with expired token throws unauthorized exception
@@ -114,7 +132,10 @@ class TestAuth:
         assert response.json()["detail"] == "Invalid or expired token."
 
     def test_forbidden_when_user_does_not_have_role(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that method with roles is called with a user that does not have the role
@@ -139,7 +160,10 @@ class TestAuth:
         assert response.json()["detail"] == "Invalid or expired token."
 
     def test_forbidden_when_wrong_auth_scheme(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that token with wrong auth scheme returns forbidden
@@ -152,7 +176,10 @@ class TestAuth:
         assert response.json()["detail"] == "Invalid authentication credentials"
 
     def test_forbidden_when_no_token_provided(
-        self, test_app: TestClient, jwt_token_factory: Callable, mock_jwks: Mock,
+        self,
+        test_app: TestClient,
+        jwt_token_factory: Callable,
+        mock_jwks: Mock,
     ) -> None:
         """
         Test that token with wrong auth scheme returns forbidden

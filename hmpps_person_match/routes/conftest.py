@@ -1,8 +1,8 @@
 from collections.abc import Callable
 
 import pytest
-from fastapi import Response
 from fastapi.testclient import TestClient
+from httpx import Response
 
 
 @pytest.fixture()

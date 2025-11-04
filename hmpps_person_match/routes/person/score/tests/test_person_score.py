@@ -149,5 +149,5 @@ class TestPersonScoreRoute:
         assert response.json()["detail"] == "Not authenticated"
 
     @staticmethod
-    def _generate_match_score_url(match_id: uuid.UUID = uuid.uuid4()) -> str:  # noqa: B008
+    def _generate_match_score_url(match_id: str = str(uuid.uuid4())) -> str:
         return ROUTE.format(match_id=match_id)

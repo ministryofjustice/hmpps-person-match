@@ -4,8 +4,10 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import jwt
 import pytest
-from authlib.jose import JsonWebKey
+import requests_mock
+from authlib.jose import JsonWebKey, Key, RSAKey
 from cryptography.hazmat.primitives.asymmetric import rsa
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from hmpps_person_match.app import PersonMatchApplication
@@ -15,7 +17,7 @@ from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
 
 @pytest.fixture(autouse=True)
-def set_env_vars(monkeypatch: Generator[pytest.MonkeyPatch]) -> None:
+def set_env_vars(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("APP_BUILD_NUMBER", "number")
     monkeypatch.setenv("APP_GIT_REF", "ref")
     monkeypatch.setenv("APP_GIT_BRANCH", "branch")
@@ -24,7 +26,7 @@ def set_env_vars(monkeypatch: Generator[pytest.MonkeyPatch]) -> None:
 
 
 @pytest.fixture()
-def app() -> Generator:
+def app() -> Generator[FastAPI]:
     app = PersonMatchApplication().app
     # other setup can go here
     yield app
@@ -32,21 +34,21 @@ def app() -> Generator:
 
 
 @pytest.fixture(autouse=True)
-def mock_db_connection(app: PersonMatchApplication) -> Generator[Mock]:
+def mock_db_connection(app: FastAPI) -> Generator[Mock]:
     mock_connection = AsyncMock()
     app.dependency_overrides[get_db_session] = lambda: mock_connection
     yield mock_connection
 
 
 @pytest.fixture(autouse=True)
-def mock_logger(app: PersonMatchApplication) -> Generator[Mock]:
+def mock_logger(app: FastAPI) -> Generator[Mock]:
     mock_logger = Mock()
     app.dependency_overrides[get_logger] = lambda: mock_logger
     yield mock_logger
 
 
 @pytest.fixture()
-def client(app: PersonMatchApplication) -> Generator[TestClient]:
+def client(app: FastAPI) -> TestClient:
     return TestClient(app)
 
 
@@ -98,8 +100,8 @@ def jwks(context: TestContext, public_key: rsa.RSAPublicKey) -> dict:
     """
     Return a JWKS for testing purposes
     """
-    jwk = JsonWebKey.import_key(
-        public_key,
+    jwk: RSAKey | Key = JsonWebKey.import_key(
+        public_key,  # type: ignore
         {
             "kty": "RSA",
             "kid": context.kid,
@@ -137,7 +139,7 @@ def jwt_token_factory(context: TestContext, private_key: rsa.RSAPrivateKey) -> C
 
 
 @pytest.fixture
-def mock_jwks_call_factory(jwks: dict, requests_mock: Callable) -> Callable:
+def mock_jwks_call_factory(jwks: dict, requests_mock: requests_mock.Mocker) -> Callable:
     """
     Returns a func to create a mock request to JWKS endpoint.
     """

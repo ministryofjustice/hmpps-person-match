@@ -80,7 +80,7 @@ class PersonMatchApplication:
 
     @staticmethod
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError) -> None:
+    async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
         """
         Custom exception handler for validation errors
         """
@@ -89,13 +89,13 @@ class PersonMatchApplication:
             status_code=400,
             content=ErrorResponse(
                 detail=ErrorMessages.INVALID_REQUEST,
-                errors=exc.errors(),
+                errors=list(exc.errors()),
             ).model_dump(),
         )
 
     @staticmethod
     @app.exception_handler(HTTPException)
-    async def custom_http_exception_handler(request: Request, exc: HTTPException) -> None:
+    async def custom_http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
         """
         Custom exception handler for http errors
         """
