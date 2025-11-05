@@ -140,9 +140,3 @@ ignore = [
     # flake8-no-pep420
     "INP",
 ]
-"hmpps_cpr_splink/scripts/*" = [
-    # flake8-bandit
-    "S",
-    # flake8-no-pep420
-    "INP",
-]
