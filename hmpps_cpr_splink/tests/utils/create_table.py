@@ -5,7 +5,7 @@ import duckdb
 
 
 # TODO: more robust
-def value_to_sql_literal(value: Any):
+def value_to_sql_literal(value: Any) -> str:
     """
     Takes any literal and translates it into a literal suitable
     for use in a SQL expression

@@ -6,7 +6,7 @@ def create_table_from_records(
     records: list,
     table_name: str,
     schema: list[tuple[str, str]],
-):
+) -> str:
     """Creates a DuckDB table from a list of records using the provided schema.
 
     Args:

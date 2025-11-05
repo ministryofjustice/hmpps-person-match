@@ -21,7 +21,9 @@ from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
 from hmpps_person_match.models.person.person_score import PersonScore
 
 
-def insert_data_into_duckdb(connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str):
+def insert_data_into_duckdb(
+    connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str,
+) -> str:
     tf_columns = [
         "name_1_std",
         "name_2_std",
@@ -113,7 +115,7 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
     return [r[0] for r in result.fetchall()]
 
 
-def get_mutually_excluded_records(connection_duckdb: duckdb.DuckDBPyConnection, duckdb_table_name: str):
+def get_mutually_excluded_records(connection_duckdb: duckdb.DuckDBPyConnection, duckdb_table_name: str) -> list[str]:
     # check if we have any rows in our data that share a scope, but have distinct markers
     # if we have any such rows, our cluster is invalid
     pipeline = CTEPipeline()

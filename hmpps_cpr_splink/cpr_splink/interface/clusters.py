@@ -6,5 +6,5 @@ class Clusters:
     clusters_groupings: list[list[str]]
 
     @property
-    def is_single_cluster(self):
+    def is_single_cluster(self) -> bool:
         return len(self.clusters_groupings) == 1

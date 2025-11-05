@@ -5,7 +5,7 @@ class Table:
     def __init__(
         self,
         name: str,
-        *select_expressions,
+        *select_expressions: str,
         from_table: str | Table,
         post_from_clauses: str = "",
     ) -> None:

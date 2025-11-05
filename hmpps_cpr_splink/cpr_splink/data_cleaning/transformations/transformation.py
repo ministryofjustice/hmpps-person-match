@@ -5,5 +5,5 @@ class Transformation:
     def __str__(self) -> str:
         return self.expression
 
-    def full_expression(self, *args):
+    def full_expression(self, *args) -> str:
         return self.expression
