@@ -10,7 +10,7 @@ lint-fix:
 	uv run ruff check hmpps_person_match/ hmpps_cpr_splink/ integration/ --fix
 
 type-check:
-	uv run mypy hmpps_person_match/ integration/
+	uv run mypy hmpps_person_match/ hmpps_cpr_splink/ integration/
 
 format:
 	uv run ruff format 
