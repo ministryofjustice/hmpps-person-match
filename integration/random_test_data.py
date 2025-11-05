@@ -28,10 +28,8 @@ def random_c_id() -> str:
     return random_digit(9)
 
 
-def random_date() -> str:
-    return datetime.date(random_year(), random.randint(1, 12), random.randint(1, 28)).strftime(  # noqa: S311
-        "%Y-%m-%d",
-    )
+def random_date() -> datetime.date:
+    return datetime.date(random_year(), random.randint(1, 12), random.randint(1, 28))  # noqa: S311
 
 
 def random_digit(length: int = 7) -> str:

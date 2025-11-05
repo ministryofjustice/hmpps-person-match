@@ -1,8 +1,8 @@
 import uuid
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 
 import pytest
-from sqlalchemy import text
+from sqlalchemy import RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.person.person_create import ROUTE
@@ -30,64 +30,66 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         response = call_endpoint(
             "post",
             ROUTE,
-            json=person_data.model_dump(by_alias=True),
+            data=person_data.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, person_data.match_id)
-        assert row["match_id"] == person_data.match_id
-        assert row["name_1_std"] == person_data.first_name.upper()
-        assert row["name_2_std"] == person_data.middle_names.upper()
-        assert row["name_3_std"] is None
-        assert row["last_name_std"] == person_data.last_name.upper()
-        assert row["first_and_last_name_std"] == person_data.first_name.upper() + " " + person_data.last_name.upper()
-        assert set(row["forename_std_arr"]) == set(
+        assert row.get("match_id") == person_data.match_id
+        assert row.get("name_1_std") == person_data.first_name.upper()
+        assert row.get("name_2_std") == person_data.middle_names.upper()
+        assert row.get("name_3_std") is None
+        assert row.get("last_name_std") == person_data.last_name.upper()
+        assert (
+            row.get("first_and_last_name_std") == person_data.first_name.upper() + " " + person_data.last_name.upper()
+        )
+        assert set(row.get("forename_std_arr") or []) == set(
             [person_data.first_name.upper(), person_data.first_name_aliases[0].upper()],
         )
-        assert set(row["last_name_std_arr"]) == set(
+        assert set(row.get("last_name_std_arr") or []) == set(
             [person_data.last_name.upper(), person_data.last_name_aliases[0].upper()],
         )
-        assert row["sentence_date_arr"] == [self.to_datetime_object(person_data.sentence_dates[0])]
-        assert row["date_of_birth"] == self.to_datetime_object(person_data.date_of_birth)
-        assert set(row["date_of_birth_arr"]) == set(
+        assert row.get("sentence_date_arr") == [person_data.sentence_dates[0]]
+        assert row.get("date_of_birth") == person_data.date_of_birth
+        assert set(row.get("date_of_birth_arr") or []) == set(
             [
-                self.to_datetime_object(person_data.date_of_birth),
-                self.to_datetime_object(person_data.date_of_birth_aliases[0]),
+                person_data.date_of_birth,
+                person_data.date_of_birth_aliases[0],
             ],
         )
-        assert row["postcode_arr"] == [person_data.postcodes[0].replace(" ", "")]
-        assert row["postcode_outcode_arr"] == [person_data.postcodes[0][:3]]
-        assert row["cro_single"] == person_data.cros[0]
-        assert row["pnc_single"] == person_data.pncs[0]
-        assert row["source_system"] == person_data.source_system
-        assert row["source_system_id"] == person_data.source_system_id
-        assert row["master_defendant_id"] == person_data.master_defendant_id
-        assert row["postcode_first"] == person_data.postcodes[0].replace(" ", "")
-        assert row["postcode_second"] is None
-        assert row["postcode_last"] == person_data.postcodes[0].replace(" ", "")
-        assert row["postcode_outcode_first"] == person_data.postcodes[0][:3]
-        assert row["postcode_outcode_last"] == person_data.postcodes[0][:3]
-        assert row["date_of_birth_last"] == self.to_datetime_object(person_data.date_of_birth_aliases[0])
+        assert row.get("postcode_arr") == [person_data.postcodes[0].replace(" ", "")]
+        assert row.get("postcode_outcode_arr") == [person_data.postcodes[0][:3]]
+        assert row.get("cro_single") == person_data.cros[0]
+        assert row.get("pnc_single") == person_data.pncs[0]
+        assert row.get("source_system") == person_data.source_system
+        assert row.get("source_system_id") == person_data.source_system_id
+        assert row.get("master_defendant_id") == person_data.master_defendant_id
+        assert row.get("postcode_first") == person_data.postcodes[0].replace(" ", "")
+        assert row.get("postcode_second") is None
+        assert row.get("postcode_last") == person_data.postcodes[0].replace(" ", "")
+        assert row.get("postcode_outcode_first") == person_data.postcodes[0][:3]
+        assert row.get("postcode_outcode_last") == person_data.postcodes[0][:3]
+        assert row.get("date_of_birth_last") == person_data.date_of_birth_aliases[0]
         assert (
-            row["forename_first"] == person_data.first_name_aliases[0].upper()
-            or row["forename_first"] == person_data.first_name.upper()
+            row.get("forename_first") == person_data.first_name_aliases[0].upper()
+            or row.get("forename_first") == person_data.first_name.upper()
         )
         assert (
-            row["forename_last"] == person_data.first_name_aliases[0].upper()
-            or row["forename_last"] == person_data.first_name.upper()
+            row.get("forename_last") == person_data.first_name_aliases[0].upper()
+            or row.get("forename_last") == person_data.first_name.upper()
         )
         assert (
-            row["last_name_first"] == person_data.last_name_aliases[0].upper()
-            or row["last_name_first"] == person_data.last_name.upper()
+            row.get("last_name_first") == person_data.last_name_aliases[0].upper()
+            or row.get("last_name_first") == person_data.last_name.upper()
         )
         assert (
-            row["last_name_last"] == person_data.last_name_aliases[0].upper()
-            or row["last_name_last"] == person_data.last_name.upper()
+            row.get("last_name_last") == person_data.last_name_aliases[0].upper()
+            or row.get("last_name_last") == person_data.last_name.upper()
         )
-        assert row["sentence_date_first"] == self.to_datetime_object(person_data.sentence_dates[0])
-        assert row["sentence_date_last"] == self.to_datetime_object(person_data.sentence_dates[0])
-        assert row["override_marker"] is None
-        assert row["override_scopes"] is None
+        assert row.get("sentence_date_first") == person_data.sentence_dates[0]
+        assert row.get("sentence_date_last") == person_data.sentence_dates[0]
+        assert row.get("override_marker") is None
+        assert row.get("override_scopes") is None
 
     async def test_clean_and_update_message(
         self,
@@ -110,14 +112,14 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         response = call_endpoint(
             "post",
             ROUTE,
-            json=person.model_dump(by_alias=True),
+            data=person.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, person.match_id)
-        assert row["match_id"] == person.match_id
-        assert row["name_1_std"] == updated_first_name.upper()
-        assert row["date_of_birth"] == self.to_datetime_object(updated_dob)
+        assert row.get("match_id") == person.match_id
+        assert row.get("name_1_std") == updated_first_name.upper()
+        assert row.get("date_of_birth") == updated_dob
 
     def test_invalid_client_returns_forbidden(self, call_endpoint: Callable) -> None:
         """
@@ -126,7 +128,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         response = call_endpoint(
             "post",
             ROUTE,
-            json=MockPerson(matchId=random_test_data.random_match_id()).model_dump(by_alias=True),
+            data=MockPerson(matchId=random_test_data.random_match_id()).model_dump_json(by_alias=True),
             client=Client.HMPPS_TIER,
         )
         assert response.status_code == 403
@@ -151,14 +153,14 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
             call_endpoint(
                 "post",
                 ROUTE,
-                json=person_data.model_dump(by_alias=True),
+                data=person_data.as_json(),
                 client=Client.HMPPS_PERSON_MATCH,
             )
 
-        result = await db_connection.execute(
+        db_result = await db_connection.execute(
             text(f"SELECT * FROM personmatch.person WHERE source_system_id = '{source_system_id}'"),
         )
-        result = result.mappings().fetchall()
+        result: Sequence[RowMapping] = db_result.mappings().fetchall()
         assert len(result) == 1
 
     async def test_match_id_is_upserted_on_same_source_system_id(
@@ -177,7 +179,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         call_endpoint(
             "post",
             ROUTE,
-            json=person.model_dump(by_alias=True),
+            data=person.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
 
@@ -194,12 +196,12 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         call_endpoint(
             "post",
             ROUTE,
-            json=updated_person_data.model_dump(by_alias=True),
+            data=updated_person_data.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
 
         result = await self.find_by_match_id(db_connection, updated_person_data.match_id)
-        assert result["last_name_std"] == updated_last_name.upper()
+        assert result.get("last_name_std") == updated_last_name.upper()
 
         assert await self.find_by_match_id(db_connection, person.match_id) is None
 
@@ -221,7 +223,7 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         call_endpoint(
             "post",
             ROUTE,
-            json=person_1_data.model_dump(by_alias=True),
+            data=person_1_data.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
 
@@ -233,17 +235,17 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         call_endpoint(
             "post",
             ROUTE,
-            json=person_2_data.model_dump(by_alias=True),
+            data=person_2_data.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
 
         record_1 = await self.find_by_match_id(db_connection, person_1_data.match_id)
-        assert record_1["source_system_id"] == source_system_id
-        assert record_1["source_system"] == "NOMIS"
+        assert record_1.get("source_system_id") == source_system_id
+        assert record_1.get("source_system") == "NOMIS"
 
         record_2 = await self.find_by_match_id(db_connection, person_2_data.match_id)
-        assert record_2["source_system_id"] == source_system_id
-        assert record_2["source_system"] == "DELIUS"
+        assert record_2.get("source_system_id") == source_system_id
+        assert record_2.get("source_system") == "DELIUS"
 
     async def test_stores_override_markers(
         self,
@@ -267,13 +269,13 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         response = call_endpoint(
             "post",
             ROUTE,
-            json=person_data.model_dump(by_alias=True),
+            data=person_data.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, person_data.match_id)
-        assert row["override_marker"] == override_marker
-        assert set(row["override_scopes"]) == set([override_scope1, override_scope2])
+        assert row.get("override_marker") == override_marker
+        assert set(row.get("override_scopes") or []) == set([override_scope1, override_scope2])
 
     @pytest.mark.parametrize(
         "person_fields",
@@ -320,10 +322,10 @@ class TestPersonCreationEndpoint(IntegrationTestBase):
         response = call_endpoint(
             "post",
             ROUTE,
-            json=person_data.model_dump(by_alias=True),
+            data=person_data.as_json(),
             client=Client.HMPPS_PERSON_MATCH,
         )
         assert response.status_code == 200
         row = await self.find_by_match_id(db_connection, person_data.match_id)
         for db_row_name in db_row_names:
-            assert row[db_row_name] is None
+            assert row.get(db_row_name) is None

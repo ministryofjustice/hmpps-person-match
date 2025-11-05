@@ -1,9 +1,9 @@
 import asyncio
 import uuid
 from collections.abc import Callable
-from datetime import datetime
+from datetime import date, datetime
 
-from sqlalchemy import text
+from sqlalchemy import RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.jobs.term_frequencies import TERM_FREQUENCY_TABLES
@@ -32,16 +32,16 @@ class IntegrationTestBase:
             await self.until_asserted(lambda: self.assert_size_of_table(db_connection, table, size=0))  # noqa: B023
 
     @staticmethod
-    async def find_by_match_id(db_connection: AsyncSession, match_id: str) -> dict:
+    async def find_by_match_id(db_connection: AsyncSession, match_id: str) -> RowMapping | None:
         result = await db_connection.execute(text(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'"))
         return result.mappings().fetchone()
 
     @staticmethod
-    def to_datetime_object(date: str) -> datetime:
+    def to_date_object(date: str) -> date:
         return datetime.strptime(date, "%Y-%m-%d").astimezone().date()
 
     @staticmethod
-    async def assert_size_of_table(db_connection: AsyncSession, table: str, size: int = 1) -> bool:
+    async def assert_size_of_table(db_connection: AsyncSession, table: str, size: int = 1) -> None:
         result = await db_connection.execute(text(f"SELECT * FROM personmatch.{table}"))
         rows = result.fetchall()
         assert len(rows) == size

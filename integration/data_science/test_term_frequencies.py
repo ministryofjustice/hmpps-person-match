@@ -37,12 +37,14 @@ class TestTFs(IntegrationTestBase):
         tf_name_andy = await db_connection.execute(
             text("SELECT tf_name_1_std FROM personmatch.term_frequencies_name_1_std WHERE name_1_std = 'ANDY'"),
         )
-        assert tf_name_andy.fetchone()[0] == 0.75
+        tf_name_andy_row = tf_name_andy.fetchone()
+        assert tf_name_andy_row is not None and tf_name_andy_row[0] == 0.75
 
         tf_name_henry = await db_connection.execute(
             text("SELECT tf_name_1_std FROM personmatch.term_frequencies_name_1_std WHERE name_1_std = 'HENRY'"),
         )
-        assert tf_name_henry.fetchone()[0] == 0.25
+        tf_name_henry_row = tf_name_henry.fetchone()
+        assert tf_name_henry_row is not None and tf_name_henry_row[0] == 0.25
 
     async def test_term_frequencies_postcode(self, person_factory: PersonFactory, db_connection: AsyncSession) -> None:
         """
@@ -62,14 +64,17 @@ class TestTFs(IntegrationTestBase):
         tf_postcode_ab = await db_connection.execute(
             text("SELECT tf_postcode FROM personmatch.term_frequencies_postcode WHERE postcode = 'AB11ZY'"),
         )
-        assert tf_postcode_ab.fetchone()[0] == 0.5
+        tf_postcode_ab_row = tf_postcode_ab.fetchone()
+        assert tf_postcode_ab_row is not None and tf_postcode_ab_row[0] == 0.5
 
         tf_postcode_cd = await db_connection.execute(
             text("SELECT tf_postcode FROM personmatch.term_frequencies_postcode WHERE postcode = 'CD22XW'"),
         )
-        assert tf_postcode_cd.fetchone()[0] == 0.375
+        tf_postcode_cd_row = tf_postcode_cd.fetchone()
+        assert tf_postcode_cd_row is not None and tf_postcode_cd_row[0] == 0.375
 
         tf_postcode_ef = await db_connection.execute(
             text("SELECT tf_postcode FROM personmatch.term_frequencies_postcode WHERE postcode = 'EF33VU'"),
         )
-        assert tf_postcode_ef.fetchone()[0] == 0.125
+        tf_postcode_ef_row = tf_postcode_ef.fetchone()
+        assert tf_postcode_ef_row is not None and tf_postcode_ef_row[0] == 0.125
