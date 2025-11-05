@@ -1,4 +1,7 @@
+from collections.abc import Sequence
+
 import pytest
+from sqlalchemy import RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
@@ -155,8 +158,8 @@ class TestCandidateSearch(IntegrationTestBase):
         date_of_birth_last + postcode_outcode_first + substr(last_name_std, 1, 2)
         """
 
-        date_of_birth = "2000-01-01"
-        alias_date_of_birth = "1990-01-01"
+        date_of_birth = self.to_date_object("2000-01-01")
+        alias_date_of_birth = self.to_date_object("1990-01-01")
 
         searching_person = await person_factory.create_from(
             MockPerson(
@@ -233,7 +236,7 @@ class TestCandidateSearch(IntegrationTestBase):
         )
 
     @staticmethod
-    def extract_match_ids(candidate_data: list[dict]) -> set[str]:
+    def extract_match_ids(candidate_data: Sequence[RowMapping]) -> set[str]:
         """
         Extract a list of match_ids from
         """

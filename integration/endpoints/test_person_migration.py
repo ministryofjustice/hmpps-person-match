@@ -1,3 +1,4 @@
+import json
 import uuid
 from collections.abc import Callable
 
@@ -29,7 +30,7 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
         """
         # Create person
         data = {
-            "records": [MockPerson().model_dump(by_alias=True)],
+            "records": [json.loads(MockPerson().as_json())],
         }
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)
@@ -57,7 +58,7 @@ class TestPersonMigrationEndpoint(IntegrationTestBase):
         Test person cleaned and stored on person endpoint
         """
         data = {
-            "records": [MockPerson(matchId=str(uuid.uuid4())).model_dump(by_alias=True) for _ in range(1000)],
+            "records": [json.loads(MockPerson(matchId=str(uuid.uuid4())).as_json()) for _ in range(1000)],
         }
 
         response = call_endpoint("post", ROUTE, json=data, client=Client.HMPPS_PERSON_MATCH)

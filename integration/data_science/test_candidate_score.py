@@ -134,7 +134,7 @@ class TestPersonScore(IntegrationTestBase):
             MockPerson(
                 firstName="Baseline",
                 lastName="Person",
-                dateOfBirth="1990-01-01",
+                dateOfBirth=self.to_date_object("1990-01-01"),
                 pncs=[shared_pnc],
             ),
         )
@@ -142,7 +142,7 @@ class TestPersonScore(IntegrationTestBase):
             MockPerson(
                 firstName="Baseline",
                 lastName="Person",
-                dateOfBirth="1991-02-02",
+                dateOfBirth=self.to_date_object("1991-02-02"),
                 pncs=[shared_pnc],
             ),
         )
@@ -243,7 +243,7 @@ class TestPersonScore(IntegrationTestBase):
             MockPerson(
                 firstName="Baseline",
                 lastName="Person",
-                dateOfBirth="1990-01-01",
+                dateOfBirth=self.to_date_object("1990-01-01"),
                 pncs=[shared_pnc],
             ),
         )
@@ -251,7 +251,7 @@ class TestPersonScore(IntegrationTestBase):
             MockPerson(
                 firstName="Baseline",
                 lastName="Person",
-                dateOfBirth="1991-02-02",
+                dateOfBirth=self.to_date_object("1991-02-02"),
                 pncs=[shared_pnc],
             ),
         )
@@ -263,12 +263,12 @@ class TestPersonScore(IntegrationTestBase):
         assert -40 < scored_candidates_weight < 40
 
         # update people to have different override markers with no overlapping scope
-        person_1.override_marker = uuid.uuid4()
-        person_1.override_scopes = [uuid.uuid4()]
+        person_1.override_marker = str(uuid.uuid4())
+        person_1.override_scopes = [str(uuid.uuid4())]
         await person_factory.update(person_1)
 
-        person_2.override_marker = uuid.uuid4()
-        person_2.override_scopes = [uuid.uuid4()]
+        person_2.override_marker = str(uuid.uuid4())
+        person_2.override_scopes = [str(uuid.uuid4())]
         await person_factory.update(person_2)
 
         scored_candidates = await get_scored_candidates(person_1.match_id, pg_db_url, db_connection)
