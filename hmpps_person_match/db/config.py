@@ -7,19 +7,19 @@ class Config:
     """
 
     # Database connection settings
-    DB_ASYNCPG_DRIVER = "postgresql+asyncpg"
-    DB_PG_DRIVER = "postgresql"
-    DB_USER = os.environ.get("DATABASE_USERNAME")
-    DB_PASSWORD = os.environ.get("DATABASE_PASSWORD")
-    DB_HOST = os.environ.get("DATABASE_HOST")
-    DB_PORT = os.environ.get("DATABASE_PORT", "5432")
-    DB_NAME = os.environ.get("DATABASE_NAME")
-    DB_LOGGING = os.environ.get("DB_LOGGING", "False") == "True"
-    DB_SSL_ENABLED = os.environ.get("DB_SSL_ENABLED", "True") == "True"
+    DB_ASYNCPG_DRIVER: str = "postgresql+asyncpg"
+    DB_PG_DRIVER: str = "postgresql"
+    DB_USER: str | None = os.environ.get("DATABASE_USERNAME")
+    DB_PASSWORD: str | None = os.environ.get("DATABASE_PASSWORD")
+    DB_HOST: str | None = os.environ.get("DATABASE_HOST")
+    DB_PORT: int = int(os.environ.get("DATABASE_PORT", "5432"))
+    DB_NAME: str | None = os.environ.get("DATABASE_NAME")
+    DB_LOGGING: bool = os.environ.get("DB_LOGGING", "False") == "True"
+    DB_SSL_ENABLED: bool = os.environ.get("DB_SSL_ENABLED", "True") == "True"
 
     # Database connection pool settings
-    DB_CON_POOL_SIZE = 100  # Max connections in the pool
-    DB_CON_POOL_MAX_OVERFLOW = 10  # Additional connections allowed beyond pool size
-    DB_CON_POOL_TIMEOUT = 60  # Wait time before timeout if pool is full (seconds)
-    DB_CON_POOL_RECYCLE = 300  # Wait time before connection is recycled (seconds)
-    DB_CON_POOL_PRE_PING = True  # Test connections before using them
+    DB_CON_POOL_SIZE: int = 100  # Max connections in the pool
+    DB_CON_POOL_MAX_OVERFLOW: int = 10  # Additional connections allowed beyond pool size
+    DB_CON_POOL_TIMEOUT: int = 60  # Wait time before timeout if pool is full (seconds)
+    DB_CON_POOL_RECYCLE: int = 300  # Wait time before connection is recycled (seconds)
+    DB_CON_POOL_PRE_PING: bool = True  # Test connections before using them

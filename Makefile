@@ -9,6 +9,9 @@ lint:
 lint-fix:
 	uv run ruff check hmpps_person_match/ hmpps_cpr_splink/ integration/ --fix
 
+type-check:
+	uv run mypy hmpps_person_match/
+
 format:
 	uv run ruff format 
 
@@ -35,7 +38,7 @@ stop-containers:
 
 restart-containers: stop-containers start-containers
 
-test: lint
+test: lint type-check
 	uv run pytest hmpps_person_match/ hmpps_cpr_splink/ -vvv
 
 test-ci: lint

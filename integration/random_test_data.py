@@ -34,11 +34,11 @@ def random_date() -> str:
     )
 
 
-def random_digit(length=7) -> str:
+def random_digit(length: int = 7) -> str:
     return "".join(str(random.randint(0, 9)) for _ in range(length))  # noqa: S311
 
 
-def random_lower_case_string(length=7) -> str:
+def random_lower_case_string(length: int = 7) -> str:
     return "".join(random.choice(string.ascii_lowercase) for _ in range(length))  # noqa: S311
 
 

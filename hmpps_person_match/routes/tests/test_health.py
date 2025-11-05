@@ -1,3 +1,5 @@
+from fastapi.testclient import TestClient
+
 from hmpps_person_match.routes.health import ROUTE
 
 
@@ -6,7 +8,7 @@ class TestHealthView:
     Test health view
     """
 
-    def test_response_ok(self, client):
+    def test_response_ok(self, client: TestClient) -> None:
         """
         Test a get to the health endpoint returns a 200 ok
         """

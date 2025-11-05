@@ -37,7 +37,7 @@ async def get_cluster_vis(
     match_ids: Annotated[list[str], Body(examples=["ea59b57f-f3b6-4f77-88dd-64f86d37dffd"])],
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
-) -> dict:
+) -> JSONResponse:
     """
     visualise cluster GET request handler
     Returns a vega spec to visualise the clusters formed by the supplied match_ids

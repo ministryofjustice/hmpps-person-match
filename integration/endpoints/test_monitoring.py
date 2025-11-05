@@ -6,7 +6,7 @@ class TestMonitoring:
     Test monitoring endpoints
     """
 
-    def test_health(self, person_match_url):
+    def test_health(self, person_match_url: str) -> None:
         """
         Test health endpont
         """
@@ -14,7 +14,7 @@ class TestMonitoring:
         assert response.status_code == 200
         assert response.json() == {"status": "UP"}
 
-    def test_health_ping(self, person_match_url):
+    def test_health_ping(self, person_match_url: str) -> None:
         """
         Test health ping endpont
         """
@@ -22,7 +22,7 @@ class TestMonitoring:
         assert response.status_code == 200
         assert response.json() == {"status": "UP"}
 
-    def test_info(self, person_match_url):
+    def test_info(self, person_match_url: str) -> None:
         """
         Test info endpoint
         """

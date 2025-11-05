@@ -16,6 +16,8 @@ def info() -> Info:
     """
     return Info(
         build=Build(version=os.environ.get("APP_BUILD_NUMBER", "unknown")),
-        git=Git(branch=os.environ.get("APP_GIT_BRANCH", "unknown"),
-                commit=Commit(id=os.environ.get("APP_GIT_REF", "unknown"))),
+        git=Git(
+            branch=os.environ.get("APP_GIT_BRANCH", "unknown"),
+            commit=Commit(id=os.environ.get("APP_GIT_REF", "unknown")),
+        ),
     )
