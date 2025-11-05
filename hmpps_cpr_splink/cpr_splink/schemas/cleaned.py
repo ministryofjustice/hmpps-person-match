@@ -20,7 +20,6 @@ class CleanedRecord(TypedDict):
     forename_first: str | None
     forename_last: str | None
     last_name_std_arr: list[str] | None
-    forename_last: str | None
     last_name_last: str | None
     # name 2
     name_2_std: str | None

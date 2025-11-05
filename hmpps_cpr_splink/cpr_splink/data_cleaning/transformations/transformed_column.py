@@ -1,12 +1,14 @@
 from dataclasses import dataclass, field
 
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformation import Transformation
+
 
 @dataclass
 class TransformedColumn:
-    column_name: str
-    sql_transformations: list[str] = field(default_factory=list)
-    column_type: str = None
-    alias: str = None
+    column_name: str | Transformation
+    sql_transformations: list[Transformation] = field(default_factory=list)
+    column_type: str | None = None
+    alias: str | None = None
 
     @property
     def as_column(self) -> str:

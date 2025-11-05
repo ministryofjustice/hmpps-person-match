@@ -22,7 +22,7 @@ def value_to_sql_literal(value: Any) -> str:
 
 def load_frame(
     con: duckdb.DuckDBPyConnection,
-    rows: list[dict[list[dict[str, Any]]]],
+    rows: list[dict[str, list[dict[str, Any]]]],
     table_schema: dict[str, str],
     table_name: str,
 ) -> None:
