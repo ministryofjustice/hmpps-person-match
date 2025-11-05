@@ -2,6 +2,8 @@
 
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hmpps-person-match-dev.hmpps.service.justice.gov.uk/swagger-ui.html)
 
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/hmpps-person-match/badge?style=flat)](https://github-community.service.justice.gov.uk/repository-standards/hmpps-person-match)
+
 An API wrapper around a model developed by the MoJ Analytical Platform for scoring the confidence 
 of people matches across MoJ systems.
 
