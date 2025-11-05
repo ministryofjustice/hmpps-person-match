@@ -29,7 +29,7 @@ from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.filter.filter_str
 from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformed_column import TransformedColumn
 
 
-def array_concat_distinct(*args):
+def array_concat_distinct(*args) -> str:
     array_str = ", ".join(args)
     return f"array_distinct(array_concat({array_str}))"
 

@@ -8,7 +8,7 @@ class Table:
         *select_expressions,
         from_table: str | Table,
         post_from_clauses: str = "",
-    ):
+    ) -> None:
         """
         Initialises a Table object to represent a SQL query.
 

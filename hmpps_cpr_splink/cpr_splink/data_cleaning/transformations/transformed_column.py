@@ -20,8 +20,8 @@ class TransformedColumn:
         return expr
 
     @property
-    def select_expression(self):
+    def select_expression(self) -> str:
         return f"{self.expression} AS {self.as_column}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.expression

@@ -2,5 +2,5 @@ from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.chainable_transfo
 
 
 class FilterByStringLength(ChainableTransformation):
-    def __init__(self, length: int):
+    def __init__(self, length: int) -> None:
         super().__init__(expression=f"LIST_FILTER(x -> LENGTH(x) >= {length})")

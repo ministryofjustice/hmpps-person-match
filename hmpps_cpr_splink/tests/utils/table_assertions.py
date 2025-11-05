@@ -106,7 +106,7 @@ def check_output_matches_expected(
     sql: str,
     schemas: dict[str, dict[str, str]],
     expected_output_table: str = "expected_output_table",
-):
+) -> None:
     """
     Creates tables as specified in schemas, and loads in the corresponding data,
     as specified in test_data.

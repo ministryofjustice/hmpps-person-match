@@ -25,7 +25,7 @@ def load_frame(
     rows: list[dict[list[dict[str, Any]]]],
     table_schema: dict[str, str],
     table_name: str,
-):
+) -> None:
     """
     Create (or replace) a table `table_name` with schema `table_schema`.
 

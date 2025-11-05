@@ -27,7 +27,7 @@ t_dob_enhanced = Table("cleaned_2", *dob_columns_reshaping, from_table=t_dob_bas
     t_dob_enhanced.select_statement_with_lineage,
     expected_output_table="cleaned_2",
 )
-def test_dob_processing_end_to_end(): ...
+def test_dob_processing_end_to_end() -> None: ...
 
 
 NAME_COLUMNS = [
@@ -61,7 +61,7 @@ t_name_simple_select = Table("cleaned_3", *name_columns_simple_select, from_tabl
     t_name_simple_select.select_statement_with_lineage,
     expected_output_table="cleaned_2",
 )
-def test_name_processing_end_to_end(): ...
+def test_name_processing_end_to_end() -> None: ...
 
 
 SENTENCE_DATE_COLUMNS = ["sentence_dates", "sentence_date_arr", "sentence_date_first", "sentence_date_last"]
@@ -78,7 +78,7 @@ t_sentence_date_enhanced = Table("cleaned_2", *sentence_date_columns_reshaping, 
     t_sentence_date_enhanced.select_statement_with_lineage,
     expected_output_table="cleaned_2",
 )
-def test_sentence_date_processing_end_to_end(): ...
+def test_sentence_date_processing_end_to_end() -> None: ...
 
 
 POSTCODE_COLUMNS = [
@@ -100,4 +100,4 @@ t_postcode_enhanced = Table("cleaned_2", *postcode_columns_reshaping, from_table
     t_postcode_enhanced.select_statement_with_lineage,
     expected_output_table="cleaned_2",
 )
-def test_postcode_processing_end_to_end(): ...
+def test_postcode_processing_end_to_end() -> None: ...
