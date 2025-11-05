@@ -24,12 +24,12 @@ class Service(Enum):
 
 
 @pytest.fixture(scope="session")
-def get_service() -> None:
+def get_service() -> Callable:
     """
     Start and check service is running
     """
 
-    def _wait_for_health(service: Service, timeout: int = 60, interval: int = 2) -> None:
+    def _wait_for_health(service: Service, timeout: int = 60, interval: int = 2) -> str:
         """
         Polls a health endpoint until it returns HTTP 200 OK.
         """
@@ -67,7 +67,7 @@ async def db_connection() -> AsyncGenerator[AsyncSession]:
         username="root",
         password="dev",  # noqa: S106
         host="localhost",
-        port="5432",
+        port=5432,
         database="postgres",
     )
 
@@ -91,7 +91,7 @@ def pg_db_url() -> URL:
         username="root",
         password="dev",  # noqa: S106
         host="localhost",
-        port="5432",
+        port=5432,
         database="postgres",
     )
 

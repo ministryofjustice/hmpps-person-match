@@ -1,3 +1,5 @@
+from datetime import date
+
 from pydantic import Field
 
 from hmpps_person_match.models.person.person import Person
@@ -22,18 +24,18 @@ class MockPerson(Person):
         alias="lastNameAliases",
         default_factory=lambda: [random_test_data.random_name()],
     )
-    date_of_birth: str = Field(
+    date_of_birth: date | None = Field(
         alias="dateOfBirth",
         default_factory=lambda: random_test_data.random_date(),
     )
-    date_of_birth_aliases: list[str] = Field(
+    date_of_birth_aliases: list[date] = Field(
         alias="dateOfBirthAliases",
         default_factory=lambda: [random_test_data.random_date()],
     )
     postcodes: list[str] = Field(default_factory=lambda: [random_test_data.random_postcode()])
     cros: list[str] = Field(default_factory=lambda: [random_test_data.random_cro()])
     pncs: list[str] = Field(default_factory=lambda: [random_test_data.random_pnc()])
-    sentence_dates: list[str] = Field(
+    sentence_dates: list[date] = Field(
         alias="sentenceDates",
         default_factory=lambda: [random_test_data.random_date()],
     )
@@ -45,9 +47,12 @@ class MockPerson(Person):
         alias="sourceSystemId",
         default_factory=lambda: random_test_data.random_source_system_id(),
     )
-    master_defendant_id: str = Field(
+    master_defendant_id: str | None = Field(
         alias="masterDefendantId",
         default_factory=lambda: random_test_data.random_defendant_id(),
     )
     override_marker: str | None = Field(alias="overrideMarker", default=None)
     override_scopes: list[str] | None = Field(alias="overrideScopes", default=None)
+
+    def as_json(self) -> str:
+        return self.model_dump_json(by_alias=True)

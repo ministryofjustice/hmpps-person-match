@@ -49,7 +49,9 @@ def _ddb_relation_to_serialised_dicts(relation: DuckDBPyRelation) -> list[dict[s
 
 
 async def get_nodes_edges(
-    match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession,
+    match_ids: list[str],
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         tablename = "records_to_check"
