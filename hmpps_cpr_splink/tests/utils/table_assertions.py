@@ -239,9 +239,9 @@ def check_data(
 
     # wrapper runs check_output_matches_expected for each dataset in test_data
     # run each as a separate test instance using pytest.mark.parameterize
-    def decorator(test_function):
-        def check_function_wrapper(test_data_set):
-            return check_output_matches_expected(
+    def decorator(_test_function: Callable[[], None]) -> None:
+        def check_function_wrapper(test_data_set: dict[str, list[dict[str, Any]]]) -> None:
+            check_output_matches_expected(
                 test_data_set,
                 con,
                 sql,
