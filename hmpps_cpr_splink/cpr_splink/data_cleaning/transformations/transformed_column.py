@@ -7,8 +7,8 @@ from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformation im
 class TransformedColumn:
     column_name: str | Transformation
     sql_transformations: list[Transformation] = field(default_factory=list)
-    column_type: str | None = None
-    alias: str | None = None
+    column_type: str = "UNSPECIFIED"
+    alias: str = ""
 
     @property
     def as_column(self) -> str:

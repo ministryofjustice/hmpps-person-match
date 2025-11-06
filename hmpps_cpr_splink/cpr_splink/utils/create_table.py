@@ -1,9 +1,11 @@
+from collections.abc import Sequence
+
 import duckdb
 
 
 def create_table_from_records(
     con: duckdb.DuckDBPyConnection,
-    records: list,
+    records: Sequence,
     table_name: str,
     schema: list[tuple[str, str]],
 ) -> str:

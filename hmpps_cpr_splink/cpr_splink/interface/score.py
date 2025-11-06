@@ -1,3 +1,6 @@
+from collections.abc import Sequence
+from typing import cast
+
 import duckdb
 from splink import DuckDBAPI
 from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
@@ -22,7 +25,7 @@ from hmpps_person_match.models.person.person_score import PersonScore
 
 
 def insert_data_into_duckdb(
-    connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: list, base_table_name: str,
+    connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: Sequence, base_table_name: str,
 ) -> str:
     tf_columns = [
         "name_1_std",
@@ -95,7 +98,7 @@ async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> boo
         text("SELECT EXISTS (SELECT 1 FROM personmatch.person WHERE match_id = :match_id)"),
         {"match_id": match_id},
     )
-    return result.scalar()
+    return cast(bool, result.scalar())
 
 
 async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSession) -> list[str]:
@@ -194,7 +197,7 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             f"SELECT match_id, cluster_id FROM {df_clusters.physical_name} "  # noqa: S608
             "GROUP BY match_id, cluster_id",
         ).fetchall()
-        cluster_assignments = {}
+        cluster_assignments: dict[str, list[str]] = {}
         for match_id, cluster_id in clusters:
             if cluster_id not in cluster_assignments:
                 cluster_assignments[cluster_id] = []
