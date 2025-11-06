@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformation import Transformation
@@ -6,13 +7,13 @@ from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformation im
 @dataclass
 class TransformedColumn:
     column_name: str | Transformation
-    sql_transformations: list[Transformation] = field(default_factory=list)
+    sql_transformations: Sequence[Transformation] = field(default_factory=list)
     column_type: str = "UNSPECIFIED"
     alias: str = ""
 
     @property
     def as_column(self) -> str:
-        return self.alias or self.column_name
+        return self.alias or str(self.column_name)
 
     @property
     def expression(self) -> str:
