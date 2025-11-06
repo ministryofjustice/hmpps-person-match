@@ -4,7 +4,7 @@ from hmpps_cpr_splink.cpr_splink.model_cleaning.tables import (
 from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 
-def sql_for_test_all_cleaning():
+def sql_for_test_all_cleaning() -> str:
     clean_table = simple_clean_whole_joined_table("candidate_search_return_format")
     clean_table.name = "splink_model_format"
     return clean_table.select_statement_with_lineage
@@ -15,4 +15,4 @@ def sql_for_test_all_cleaning():
     sql_for_test_all_cleaning(),
     expected_output_table="splink_model_format",
 )
-def test_all_cleaning(): ...
+def test_all_cleaning() -> None: ...

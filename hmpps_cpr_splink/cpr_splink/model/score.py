@@ -15,7 +15,7 @@ def score(
     primary_record_id: str,
     full_candidates_tn: str,
     return_scores_only: bool = True,
-):
+) -> duckdb.DuckDBPyRelation:
     start_time = time.perf_counter()
     # Compare records
     db_api = DuckDBAPI(connection_duckdb)

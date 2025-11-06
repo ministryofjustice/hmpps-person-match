@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformed_column import TransformedColumn
+
 
 class Table:
     def __init__(
         self,
         name: str,
-        *select_expressions,
+        *select_expressions: str | TransformedColumn,
         from_table: str | Table,
         post_from_clauses: str = "",
-    ):
+    ) -> None:
         """
         Initialises a Table object to represent a SQL query.
 

@@ -1,9 +1,9 @@
 class Transformation:
-    def __init__(self, expression: str):
+    def __init__(self, expression: str) -> None:
         self.expression = expression
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.expression
 
-    def full_expression(self, *args):
+    def full_expression(self, _expression: str) -> str:
         return self.expression

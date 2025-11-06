@@ -1,3 +1,5 @@
+from typing import Any
+
 from splink import SettingsCreator
 from splink.internals.waterfall_chart import record_to_waterfall_data
 
@@ -5,7 +7,7 @@ from hmpps_cpr_splink.cpr_splink.model.score import MODEL_PATH
 from hmpps_cpr_splink.cpr_splink.visualisation.visualise_cluster_spec import load_base_spec
 
 
-def build_spec(nodes, edges):
+def build_spec(nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> dict[str, Any]:
     spec = load_base_spec()
 
     settings = SettingsCreator.from_path_or_dict(MODEL_PATH).get_settings("duckdb")
