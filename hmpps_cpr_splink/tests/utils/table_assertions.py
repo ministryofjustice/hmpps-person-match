@@ -1,4 +1,4 @@
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import Any
 
 import duckdb
@@ -21,7 +21,7 @@ def assert_tables_equal(
     con: duckdb.DuckDBPyConnection,
     expected_relation: str,
     actual_relation: str,
-    cols_to_check: list[str],
+    cols_to_check: Iterable[str],
 ) -> None:
     """
     Compares two tables, `expected_relation` and `actual_relation`.
@@ -177,7 +177,7 @@ def check_data(
     data_file: str,
     sql: str,
     expected_output_table: str = "expected_output_table",
-) -> Callable[[None], None]:
+) -> Callable[[Callable[[], None]], None]:
     """
     Decorator for a test function (whose contents are irrelevant).
 
