@@ -1,4 +1,5 @@
 from hmpps_cpr_splink.cpr_splink.data_cleaning.table import Table
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformed_column import TransformedColumn
 from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import (
     columns_basic,
     columns_reshaping,
@@ -7,7 +8,7 @@ from hmpps_cpr_splink.cpr_splink.model_cleaning.clean import (
 from hmpps_cpr_splink.tests.utils.table_assertions import check_data
 
 
-def filter_columns(columns, columns_to_keep):
+def filter_columns(columns: list[TransformedColumn], columns_to_keep: list[str]) -> list[TransformedColumn]:
     return [c for c in columns if c.column_name in columns_to_keep or c.alias in columns_to_keep]
 
 

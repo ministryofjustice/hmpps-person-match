@@ -167,7 +167,7 @@ def check_output_matches_expected(
     )
 
 
-def load_yaml_file(file_name: str) -> Any:
+def load_yaml_file(file_name: str) -> Any:  # noqa: ANN401
     with open(f"{_TEST_DATA_DIR}/{file_name}") as f:
         data = safe_load(f)
     return data
