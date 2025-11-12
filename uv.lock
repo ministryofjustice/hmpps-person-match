@@ -551,7 +551,7 @@ requires-dist = [
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pyjwt", specifier = "==2.10.1" },
     { name = "pytz", specifier = "==2025.2" },
-    { name = "splink", specifier = "==4.0.10" },
+    { name = "splink", specifier = "==4.0.11" },
     { name = "types-authlib", specifier = ">=1.6.5.20251005" },
     { name = "types-cachetools", specifier = ">=6.2.0.20251022" },
     { name = "types-requests", specifier = ">=2.32.4.20250913" },
@@ -563,7 +563,7 @@ dev = [
     { name = "faker", specifier = "==37.12.0" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "mypy", specifier = ">=1.18.2" },
-    { name = "pytest", specifier = "==8.4.2" },
+    { name = "pytest", specifier = "==9.0.0" },
     { name = "pytest-asyncio", specifier = "==1.3.0" },
     { name = "pytest-cov", specifier = "==7.0.0" },
     { name = "pyyaml", specifier = "==6.0.3" },
@@ -1279,7 +1279,7 @@ crypto = [
 
 [[package]]
 name = "pytest"
-version = "8.4.2"
+version = "9.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
@@ -1288,9 +1288,9 @@ dependencies = [
     { name = "pluggy" },
     { name = "pygments" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a3/5c/00a0e072241553e1a7496d638deababa67c5058571567b92a7eaa258397c/pytest-8.4.2.tar.gz", hash = "sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01", size = 1519618, upload-time = "2025-09-04T14:34:22.711Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/da/1d/eb34f286b164c5e431a810a38697409cca1112cee04b287bb56ac486730b/pytest-9.0.0.tar.gz", hash = "sha256:8f44522eafe4137b0f35c9ce3072931a788a21ee40a2ed279e817d3cc16ed21e", size = 1562764, upload-time = "2025-11-08T17:25:33.34Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/a4/20da314d277121d6534b3a980b29035dcd51e6744bd79075a6ce8fa4eb8d/pytest-8.4.2-py3-none-any.whl", hash = "sha256:872f880de3fc3a5bdc88a11b39c9710c3497a547cfa9320bc3c5e62fbf272e79", size = 365750, upload-time = "2025-09-04T14:34:20.226Z" },
+    { url = "https://files.pythonhosted.org/packages/72/99/cafef234114a3b6d9f3aaed0723b437c40c57bdb7b3e4c3a575bc4890052/pytest-9.0.0-py3-none-any.whl", hash = "sha256:e5ccdf10b0bac554970ee88fc1a4ad0ee5d221f8ef22321f9b7e4584e19d7f96", size = 373364, upload-time = "2025-11-08T17:25:31.811Z" },
 ]
 
 [[package]]
@@ -1509,7 +1509,7 @@ wheels = [
 
 [[package]]
 name = "splink"
-version = "4.0.10"
+version = "4.0.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "altair" },
@@ -1520,9 +1520,9 @@ dependencies = [
     { name = "pandas" },
     { name = "sqlglot" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fb/cf/85cd7e843d13d5971966435726a56d16fdbb882503aa2d41c208f5bb59a3/splink-4.0.10.tar.gz", hash = "sha256:229f931e6ed863877c6fc3785c75dde9629700e28539d42b2a400e5727805d0b", size = 18673357, upload-time = "2025-11-03T09:21:34.323Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e3/2c/402e39378c11f86e04a0d91029afc812b1ddc6f2ec3435ebb76226e1059c/splink-4.0.11.tar.gz", hash = "sha256:df9f22bf53380d143a0f5d4340717ce56b99b360651671e3cb8d7cecbd05aabd", size = 18651771, upload-time = "2025-11-12T09:45:09.194Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/96/3a/958e29c3f057a3346233782f93924534c3c5a1806835b889f51bb6b525e2/splink-4.0.10-py3-none-any.whl", hash = "sha256:9dc93cbd6f1931dfd97da9cfb9ae8640a3fba4e6e5e36ea151ad2a14d1a2a0c1", size = 4928039, upload-time = "2025-11-03T09:21:31.579Z" },
+    { url = "https://files.pythonhosted.org/packages/03/9b/06569b6b66fe5d4bbc73f66a46a08a88ef5d0f6d0b8edb41fb0b901ecd78/splink-4.0.11-py3-none-any.whl", hash = "sha256:dcbd651a71810d0a5f8e2df05313ef2f632d95b75d8d698cecdba20eb5537423", size = 4926446, upload-time = "2025-11-12T09:45:06.376Z" },
 ]
 
 [[package]]
