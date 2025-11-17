@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import base64
+import html
 import json
 import os
-import html
 
+import duckdb
 import requests
+from sqlalchemy.engine.url import URL
 
 from integration.client import Client
 
@@ -14,12 +16,19 @@ AUTH_ROOT = "http://localhost:9090"
 CLIENT = Client.HMPPS_PERSON_MATCH
 CLIENT_SECRET = "clientsecret"  # noqa: S105
 
-MATCH_IDS = [
-    "63eb8ba5-6cad-4e2c-99a7-546dca9ff6c9",
-    "31c32969-31fb-4bd1-9e65-861e41bfbb1e",
-    "aec35b98-6527-4e9d-8eb8-bd82bb8b0132",
-    "e655d939-bb26-493f-8ff4-82d29ca1ec8d",
-]
+database_url = URL.create(
+    drivername="postgresql",
+    username="root",
+    password="dev",  # noqa: S106
+    host="localhost",
+    port=5432,
+    database="postgres",
+)
+
+con = duckdb.connect()
+con.execute(f"ATTACH '{database_url.render_as_string(hide_password=False)}' AS pg_db (TYPE POSTGRES);")
+sql = """ select match_id from pg_db.personmatch.person limit 25;"""
+MATCH_IDS = [r[0] for r in con.sql(sql).fetchall()]
 
 
 def _get_token() -> str:
