@@ -17,7 +17,7 @@ def build_spec(nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> dict
 
     waterfall_data = records_to_waterfall_data(edges, settings, hide_details=False)
 
-    waterfall_data_by_record_number = {}
+    waterfall_data_by_record_number: dict = {}
     for rec in waterfall_data:
         waterfall_data_by_record_number.setdefault(rec["record_number"], []).append(rec)
 
