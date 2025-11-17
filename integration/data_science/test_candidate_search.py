@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import Sequence
 
 import pytest
@@ -227,6 +228,30 @@ class TestCandidateSearch(IntegrationTestBase):
         )
         expected_found_person = await person_factory.create_from(
             MockPerson(dateOfBirth=date_of_birth, sentenceDates=[sentence_date]),
+        )
+
+        candidate_data = await candidate_search(searching_person.match_id, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set(
+            [searching_person.match_id, expected_found_person.match_id],
+        )
+
+    async def test_candidate_search_match_on_master_defendant_id(
+        self,
+        person_factory: PersonFactory,
+        db_connection: AsyncSession,
+    ) -> None:
+        """
+        Test candidate search returns person on match on:
+        master defendant id
+        """
+        master_defendant_id = str(uuid.uuid4())
+
+        searching_person = await person_factory.create_from(
+            MockPerson(masterDefendantId=master_defendant_id),
+        )
+        expected_found_person = await person_factory.create_from(
+            MockPerson(masterDefendantId=master_defendant_id),
         )
 
         candidate_data = await candidate_search(searching_person.match_id, db_connection)
