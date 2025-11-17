@@ -14,7 +14,7 @@ dependencies = [
   "fastapi==0.121.2",
   "uvicorn==0.38.0",
   "authlib==1.6.5",
-  "cachetools==6.2.1",
+  "cachetools==6.2.2",
   "pyjwt==2.10.1",
   "cryptography==46.0.3",
   "alembic==1.17.1",
