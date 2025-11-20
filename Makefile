@@ -41,11 +41,11 @@ restart-containers: stop-containers start-containers
 test: lint type-check
 	uv run pytest hmpps_person_match/ hmpps_cpr_splink/ -vvv
 
-test-ci: lint
+test-ci: lint type-check
 	uv run pytest hmpps_person_match/ hmpps_cpr_splink/ --junitxml=test_results/pytest-unit-test-report.xml
 
 test-integration: lint type-check start-containers
 	uv run pytest integration/ -vvv
 
-test-integration-ci: lint start-containers
+test-integration-ci: lint start-containers type-check
 	uv run pytest integration/ --junitxml=test_results/pytest-integration-test-report.xml
