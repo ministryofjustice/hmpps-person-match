@@ -24,8 +24,19 @@ def filter_twins_sql(table_name: str) -> str:
     # a long boolean condition (combination with AND) - if these are all TRUE,
     # then we consider the pair of records to possibly belong to twins
     twins_condition = f"""
+        -- no matching override marker
+            ifnull(override_marker_l, 'override_l') <> ifnull(override_marker_r, 'override_r')
+        -- no matching master_defendant_id
+        AND
+            ifnull(master_defendant_id_l, 'm_d_id_l') <> ifnull(master_defendant_id_r, 'm_d_id_r')
         -- first name not a match
+        AND
             name_1_std_l <> name_1_std_r
+        -- no cross-match on first two names
+        AND
+            name_1_std_l <> name_2_std_r
+        AND
+            name_2_std_l <> name_1_std_r
         -- every pair of aliases is dissimilar
         AND
             list_aggregate(
@@ -44,7 +55,7 @@ def filter_twins_sql(table_name: str) -> str:
                 ),
                 'bool_and'
             )
-        -- dob matchess
+        -- dob matches
         AND
             date_of_birth_l = date_of_birth_r
         -- surname matches
@@ -63,11 +74,9 @@ def filter_twins_sql(table_name: str) -> str:
         AND
             ifnull(pnc_single_l, 'pnc_l') <> ifnull(pnc_single_r, 'pnc_r')
         -- look sufficiently similar
-        -- needn't flag if they would not be linked anyhow
         AND
             match_weight > {POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD}
     """
-    # TODO: no override marker of defendant id matches!
 
     sql_filter_dob = {
         "sql": f"""
