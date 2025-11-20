@@ -131,6 +131,29 @@ class TestTwinDetection(IntegrationTestBase):
                 False,
                 id="Second name matches first name; not twins",
             ),
+            pytest.param(
+                {
+                    "first_name": ["name", "completelydifferentname"],
+                    "first_name_aliases": [[], []],
+                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
+                    "cros": [["00/000000A"], ["99/999999Z"]],
+                },
+                False,
+                id="Look like twins, but have master_defendant_id override",
+            ),
+            pytest.param(
+                {
+                    "first_name": ["name", "completelydifferentname"],
+                    "first_name_aliases": [[], []],
+                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
+                    "cros": [["00/000000A"], ["99/999999Z"]],
+                    "master_defendant_id": [None, None],
+                    "override_marker": ["A", "A"],
+                    "override_scopes": [["B"], ["B"]],
+                },
+                False,
+                id="Look like twins, but have include override marker",
+            ),
         ],
     )
     async def test_identical_data_not_twins(
