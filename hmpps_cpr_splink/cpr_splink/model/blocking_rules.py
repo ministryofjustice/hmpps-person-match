@@ -33,4 +33,10 @@ blocking_rules_for_prediction_tight_for_candidate_search = [
     ),
     block_on("override_marker"),
     block_on("master_defendant_id"),
+    CustomRule(
+        "l.postcode_arr && r.postcode_arr",
+    ),
+    CustomRule(
+        "l.date_of_birth_arr && r.date_of_birth_arr",
+    ),
 ]
