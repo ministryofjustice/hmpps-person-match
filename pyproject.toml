@@ -34,7 +34,7 @@ default-groups = ["dev"]
 
 [dependency-groups]
 dev = [
-  "ruff==0.14.5",
+  "ruff==0.14.6",
   "pyyaml==6.0.3",
   "pytest==9.0.1",
   "pytest-cov==7.0.0",
