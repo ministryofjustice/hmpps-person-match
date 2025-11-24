@@ -25,23 +25,7 @@ def upgrade() -> None:
         schema="personmatch",
         postgresql_using="gin",
     )
-    op.create_index(
-        "idx_date_of_birth_gin",
-        columns=["date_of_birth_arr"],
-        table_name="person",
-        schema="personmatch",
-        postgresql_using="gin",
-    )
-    op.create_index(
-        "idx_sentence_date_arr_gin",
-        columns=["sentence_date_arr"],
-        table_name="person",
-        schema="personmatch",
-        postgresql_using="gin",
-    )
 
 
 def downgrade() -> None:
     op.drop_index("idx_postcode_arr_gin", table_name="person")
-    op.drop_index("idx_date_of_birth_gin", table_name="person")
-    op.drop_index("idx_sentence_date_arr_gin", table_name="person")
