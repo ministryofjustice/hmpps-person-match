@@ -135,7 +135,6 @@ def score(
     end_time = time.perf_counter()
     logger.info("Time taken: %.2f seconds", end_time - start_time)
 
-    connection_duckdb.table("scores_with_twins").to_csv("twins.csv")
     if return_scores_only:
         return connection_duckdb.sql(
             "SELECT match_id_l, match_id_r, match_probability, match_weight, possible_twins, unaltered_match_weight "
