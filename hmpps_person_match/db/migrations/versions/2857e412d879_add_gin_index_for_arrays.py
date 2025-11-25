@@ -64,6 +64,11 @@ def upgrade() -> None:
         table_name="person",
         schema="personmatch",
     )
+    op.drop_index(
+        "idx_date_of_birth__postcode_second",
+        table_name="person",
+        schema="personmatch",
+    )
     # Use op.execute as the index name exceeds the 63-character limit enforced by op.drop_index
     op.execute(
         "DROP INDEX personmatch.idx_substring_name_1_std__substring_last_name_std__postcode_first",
@@ -85,6 +90,9 @@ def downgrade() -> None:
     )
     op.execute(
         "create index idx_date_of_birth__postcode_last on personmatch.person (date_of_birth, postcode_last);",
+    )
+    op.execute(
+        "create index idx_date_of_birth__postcode_second on personmatch.person (date_of_birth, postcode_second);",
     )
     op.execute(
         """
