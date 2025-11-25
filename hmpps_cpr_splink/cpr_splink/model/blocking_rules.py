@@ -2,7 +2,6 @@ from splink import block_on
 from splink.blocking_rule_library import And, CustomRule
 
 POSTCODE_INTERSECT = CustomRule("l.postcode_arr && r.postcode_arr")
-SENTENCE_DATE_INTERSECT = CustomRule("l.sentence_date_arr && r.sentence_date_arr")
 
 # If these are updated then make sure to make a corresponding update to the database indexes
 # generated columns, as appropriate
