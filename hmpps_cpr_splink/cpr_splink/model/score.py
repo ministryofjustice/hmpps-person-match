@@ -14,77 +14,142 @@ from .model import (
 
 logger = logging.getLogger(__name__)
 
+# Higher threshold = more names look different = more 'twins' flagged
+# Means even slightly distinct names 'look' totally different
+_JARO_WINKLER_THRESHOLD = 0.9
 
-def filter_twins_sql(table_name: str) -> str:
-    pipeline = CTEPipeline()
-    # higher threshold = more names look different = more 'twins' flagged
-    # means even slightly distinct names 'look' totally different
-    jw_thresh = 0.9
 
-    # a long boolean condition (combination with AND) - if these are all TRUE,
-    # then we consider the pair of records to possibly belong to twins
-    twins_condition = f"""
-        -- no matching override marker
-            ifnull(override_marker_l, 'override_l') <> ifnull(override_marker_r, 'override_r')
-        -- no matching master_defendant_id
-        AND
-            ifnull(master_defendant_id_l, 'm_d_id_l') <> ifnull(master_defendant_id_r, 'm_d_id_r')
-        -- first name not a match
-        AND
-            name_1_std_l <> name_1_std_r
-        -- no cross-match on first two names
-        AND
-            name_1_std_l <> name_2_std_r
-        AND
-            name_2_std_l <> name_1_std_r
-        -- every pair of aliases is dissimilar
-        AND
-            list_aggregate(
-                list_transform(
-                    list_transform(
-                        forename_std_arr_l,
-                        alias_l -> list_transform(
-                            forename_std_arr_r,
-                            alias_r -> jaro_winkler_similarity(alias_l, alias_r) < {jw_thresh}
-                        )
-                    ),
-                    is_dissimilar_arr -> list_aggregate(
-                        is_dissimilar_arr,
-                        'bool_and'
-                    )
-                ),
-                'bool_and'
-            )
-        -- dob matches
-        AND
-            date_of_birth_l = date_of_birth_r
-        -- surname matches
-        AND
-            last_name_std_l = last_name_std_r
-        -- either sentenced on same date, or postcode in common
-        AND (
-            array_length(array_intersect(sentence_date_arr_r, sentence_date_arr_l)) > 0
-            OR
-            array_length(array_intersect(postcode_arr_r, postcode_arr_l)) > 0
-        )
-        -- no matching ID of either type (but could be null)
-        -- this will flag more records then explicit mismatches
-        AND
-            ifnull(cro_single_l, 'cro_l') <> ifnull(cro_single_r, 'cro_r')
-        AND
-            ifnull(pnc_single_l, 'pnc_l') <> ifnull(pnc_single_r, 'pnc_r')
-        -- look sufficiently similar
-        AND
-            match_weight > {POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD}
+def _no_override_match() -> str:
+    """No matching override marker between records."""
+    return "ifnull(override_marker_l, 'override_l') <> ifnull(override_marker_r, 'override_r')"
+
+
+def _no_master_defendant_id_match() -> str:
+    """No matching master_defendant_id between records."""
+    return "ifnull(master_defendant_id_l, 'm_d_id_l') <> ifnull(master_defendant_id_r, 'm_d_id_r')"
+
+
+def _first_names_differ() -> str:
+    """First names don't match and no cross-match on first two names."""
+    return """
+        name_1_std_l <> name_1_std_r
+        AND name_1_std_l <> name_2_std_r
+        AND name_2_std_l <> name_1_std_r
     """
 
-    sql_filter_dob = {
+def _all_aliases_satisfy_condition(boolean_condition: str) -> str:
+    """Every pair of aliases satisfies some given boolean condition)."""
+    return f"""
+        list_aggregate(
+            list_transform(
+                list_transform(
+                    forename_std_arr_l,
+                    alias_l -> list_transform(
+                        forename_std_arr_r,
+                        alias_r -> {boolean_condition}
+                    )
+                ),
+                is_dissimilar_arr -> list_aggregate(is_dissimilar_arr, 'bool_and')
+            ),
+            'bool_and'
+        )
+    """
+
+
+def _all_aliases_dissimilar_exact() -> str:
+    """Every pair of aliases is completely dissimilar (exact mismatch)."""
+    return _all_aliases_satisfy_condition("alias_l <> alias_r")
+
+
+def _all_aliases_dissimilar_fuzzy(jw_threshold: float) -> str:
+    """Every pair of aliases is dissimilar (using Jaro-Winkler similarity)."""
+    return _all_aliases_satisfy_condition(f"jaro_winkler_similarity(alias_l, alias_r) < {jw_threshold}")
+
+
+def _explicit_id_mismatch() -> str:
+    """Explicit double mismatch on CRO and PNC IDs (both must be non-null and different)."""
+    return """
+        coalesce(cro_single_l <> cro_single_r, FALSE)
+        AND coalesce(pnc_single_l <> pnc_single_r, FALSE)
+    """
+
+
+def _no_id_match() -> str:
+    """No matching ID of either type (but one or other could be null)."""
+    return """
+        ifnull(cro_single_l, 'cro_l') <> ifnull(cro_single_r, 'cro_r')
+        AND ifnull(pnc_single_l, 'pnc_l') <> ifnull(pnc_single_r, 'pnc_r')
+    """
+
+
+def _dob_and_surname_match() -> str:
+    """Date of birth and surname must match."""
+    return """
+        date_of_birth_l = date_of_birth_r
+        AND last_name_std_l = last_name_std_r
+    """
+
+
+def _shared_sentence_date_or_postcode() -> str:
+    """Either sentenced on the same date, or have a postcode in common."""
+    return """
+        array_length(array_intersect(sentence_date_arr_r, sentence_date_arr_l)) > 0
+        OR array_length(array_intersect(postcode_arr_r, postcode_arr_l)) > 0
+    """
+
+
+def _twins_condition() -> str:
+    """
+    Build the full twins detection condition.
+
+    A pair of records is flagged as possible twins when ALL of the following are true:
+    - No matching override marker
+    - No matching master_defendant_id
+    - First names differ (including cross-matches on first two names)
+    - All aliases are dissimilar (with explicit ID mismatch we disbar exact matches only,
+        if at least one of CRO or PNC doesn't explicitly mismatch then we tolerate fuzzy alias match)
+    - Same date of birth
+    - Same surname
+    - Share either a sentence date or postcode
+    - Match weight exceeds the similarity threshold
+    """
+    # Two paths for alias dissimilarity:
+    # 1. Explicit ID mismatch on both CRO and PNC means we flag any records that have no exact alias matches
+    # 2. No matching IDs (allowing nulls) means we only flag records that have no fuzzy alias matches
+    # this is done so that we can avoid flagging twins with similar names if we ensure that source
+    # data includes explicitly mismatched IDs
+    alias_and_id_condition = f"""
+        (
+            ({_all_aliases_dissimilar_exact()})
+            AND ({_explicit_id_mismatch()})
+        )
+        OR
+        (
+            ({_all_aliases_dissimilar_fuzzy(_JARO_WINKLER_THRESHOLD)})
+            AND ({_no_id_match()})
+        )
+    """
+
+    return f"""
+        ({_no_override_match()})
+        AND ({_no_master_defendant_id_match()})
+        AND ({_first_names_differ()})
+        AND ({alias_and_id_condition})
+        AND ({_dob_and_surname_match()})
+        AND ({_shared_sentence_date_or_postcode()})
+        AND match_weight > {POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD}
+    """
+
+
+def filter_twins_sql(table_name: str) -> str:
+    """Generate SQL to identify and flag possible twin records."""
+    pipeline = CTEPipeline()
+
+    sql_filter_twins = {
         "sql": f"""
             SELECT
                 * RENAME (match_weight AS unaltered_match_weight),
-                (
-                    {twins_condition}
-                ) AS possible_twins,
+                ({_twins_condition()}) AS possible_twins,
                 CASE
                     WHEN possible_twins THEN {POSSIBLE_TWINS_ASSIGNED_MATCH_WEIGHT}
                     ELSE unaltered_match_weight
@@ -92,9 +157,9 @@ def filter_twins_sql(table_name: str) -> str:
             FROM
                 {table_name}
         """,  # noqa: S608
-        "output_table_name": "scored_same_birthdate_no_id_match",
+        "output_table_name": "scored_with_twins_flag",
     }
-    pipeline.enqueue_list_of_sqls([sql_filter_dob])
+    pipeline.enqueue_list_of_sqls([sql_filter_twins])
 
     return pipeline.generate_cte_pipeline_sql()
 

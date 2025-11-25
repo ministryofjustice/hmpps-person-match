@@ -113,7 +113,7 @@ class TestTwinDetection(IntegrationTestBase):
                     "first_name": ["name", "completelydifferentname"],
                     "first_name_aliases": [["alias"], ["aliasa"]],
                     "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
+                    "cros": [["00/000000A"], []],
                     "master_defendant_id": [None, None],
                 },
                 False,
