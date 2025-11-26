@@ -1,12 +1,15 @@
+from collections.abc import Sequence
+from typing import Any
+
 import duckdb
 
 
 def create_table_from_records(
     con: duckdb.DuckDBPyConnection,
-    records: list,
+    records: Sequence,
     table_name: str,
     schema: list[tuple[str, str]],
-):
+) -> str:
     """Creates a DuckDB table from a list of records using the provided schema.
 
     Args:
@@ -23,7 +26,7 @@ def create_table_from_records(
 
     con.execute(create_sql)
 
-    def extract_record_values(record, schema):
+    def extract_record_values(record: dict[str, Any], schema: list[tuple[str, str]]) -> list[Any]:
         return [record[col] for col, _ in schema]
 
     values = [extract_record_values(record, schema) for record in records]

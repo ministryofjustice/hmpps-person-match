@@ -1,7 +1,7 @@
 import duckdb
 
 
-def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
+def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection) -> None:
     con.execute(
         """
         CREATE TABLE  candidate_search_return_format (
@@ -50,7 +50,7 @@ def get_data_from_candidate_search(con: duckdb.DuckDBPyConnection):
     )
 
 
-def populate_raw_tables(con: duckdb.DuckDBPyConnection):
+def populate_raw_tables(con: duckdb.DuckDBPyConnection) -> None:
     con.execute(
         """
     CREATE TABLE person (

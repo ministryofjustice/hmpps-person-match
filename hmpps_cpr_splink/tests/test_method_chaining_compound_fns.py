@@ -16,7 +16,7 @@ FROM input_table
     "test_method_chaining_compound_fns/test_individual_names_cleaning.yaml",
     sql_name_cleaning,
 )
-def test_name_cleaning(): ...
+def test_name_cleaning() -> None: ...
 
 
 sql_list_transform_name_cleaning = f"""
@@ -30,7 +30,7 @@ FROM input_table
     "test_method_chaining_compound_fns/test_list_transform_name_cleaning.yaml",
     sql_list_transform_name_cleaning,
 )
-def test_list_transform_name_cleaning(): ...
+def test_list_transform_name_cleaning() -> None: ...
 
 
 POSTCODE_BASIC_INPUT_COLUMN = POSTCODE_BASIC.__str__().replace("postcodes", "input_column")
@@ -45,4 +45,4 @@ FROM input_table
     "test_method_chaining_compound_fns/test_individual_postcode_cleaning.yaml",
     sql_postcode_cleaning,
 )
-def test_postcode_cleaning(): ...
+def test_postcode_cleaning() -> None: ...

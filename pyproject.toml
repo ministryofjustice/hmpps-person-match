@@ -6,23 +6,26 @@ authors = []
 
 requires-python = ">=3.13"
 dependencies = [
-  "splink==4.0.9",
+  "splink==4.0.11",
   "duckdb==1.3.2",
   "psycopg2-binary==2.9.11",
   "pytz==2025.2",
   "azure-monitor-opentelemetry==1.8.1",
-  "fastapi==0.120.0",
+  "fastapi==0.122.0",
   "uvicorn==0.38.0",
   "authlib==1.6.5",
-  "cachetools==6.2.1",
+  "cachetools==6.2.2",
   "pyjwt==2.10.1",
   "cryptography==46.0.3",
-  "alembic==1.17.0",
+  "alembic==1.17.2",
   "asyncpg==0.30.0",
   "greenlet==3.2.4",
   "opentelemetry-instrumentation-sqlalchemy==0.57b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
+  "types-authlib>=1.6.5.20251005",
+  "types-cachetools>=6.2.0.20251022",
+  "types-requests>=2.32.4.20250913",
 ]
 
 [tool.uv]
@@ -31,14 +34,15 @@ default-groups = ["dev"]
 
 [dependency-groups]
 dev = [
-  "ruff==0.14.2",
+  "ruff==0.14.6",
   "pyyaml==6.0.3",
-  "pytest==8.4.2",
+  "pytest==9.0.1",
   "pytest-cov==7.0.0",
-  "pytest-asyncio==1.2.0",
-  "faker==37.11.0",
+  "pytest-asyncio==1.3.0",
+  "faker==38.2.0",
   "httpx==0.28.1",
   "requests-mock==1.12.1",
+  "mypy>=1.18.2",
 ]
 
 [build-system]
@@ -104,6 +108,14 @@ select = [
     "TID",
     # ERA
     "ERA",
+    # refurb
+    "FURB",
+    # ruff-specific-rules
+    "RUF",
+    # perflint
+    "PERF",
+    # flake8-annotation
+    "ANN",
 ]
 ignore = [
     # magic-value-comparison
@@ -121,12 +133,6 @@ ignore = [
     "SLF",
 ]
 "hmpps_cpr_splink/tests/*" = [
-    # flake8-bandit
-    "S",
-    # flake8-no-pep420
-    "INP",
-]
-"hmpps_cpr_splink/scripts/*" = [
     # flake8-bandit
     "S",
     # flake8-no-pep420

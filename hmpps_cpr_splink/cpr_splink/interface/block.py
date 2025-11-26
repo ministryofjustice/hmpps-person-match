@@ -113,7 +113,7 @@ def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: 
             exploded_postcodes
         LEFT JOIN personmatch.term_frequencies_postcode AS pc_tf
         ON exploded_postcodes.postcode = pc_tf.postcode
-        """,  # noqa: S608
+        """,
         output_table_name="exploded_postcodes_with_term_frequencies",
     )
     pipeline.enqueue_sql(
@@ -130,7 +130,7 @@ def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: 
             exploded_postcodes_with_term_frequencies
         GROUP BY
             match_id
-        """,  # noqa: S608
+        """,
         output_table_name="postcodes_repacked_with_term_frequencies",
     )
 

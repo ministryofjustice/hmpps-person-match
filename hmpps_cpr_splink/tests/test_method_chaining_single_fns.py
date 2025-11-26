@@ -16,7 +16,7 @@ FROM input_table
     "test_method_chaining_single_fns/test_list_transform_remove_all_spaces.yaml",
     sql_list_transform_remove_spaces,
 )
-def test_list_transform_remove_all_spaces(): ...
+def test_list_transform_remove_all_spaces() -> None: ...
 
 
 sql_list_filter_problem_cros = f"""
@@ -30,7 +30,7 @@ FROM input_table
     "test_method_chaining_single_fns/test_list_filter_problem_cros.yaml",
     sql_list_filter_problem_cros,
 )
-def test_list_filter_problem_cros(): ...
+def test_list_filter_problem_cros() -> None: ...
 
 
 sql_list_append_from_scalar = """
@@ -45,7 +45,7 @@ FROM input_table
     sql_list_append_from_scalar,
     expected_output_table="output_table",
 )
-def test_list_append_from_scalar(): ...
+def test_list_append_from_scalar() -> None: ...
 
 
 sql_list_filter_out_strings_of_length_lt = f"""
@@ -59,4 +59,4 @@ FROM input_table
     "test_method_chaining_single_fns/test_list_filter_out_strings_of_length_lt.yaml",
     sql_list_filter_out_strings_of_length_lt,
 )
-def test_list_filter_out_strings_of_length_lt(): ...
+def test_list_filter_out_strings_of_length_lt() -> None: ...

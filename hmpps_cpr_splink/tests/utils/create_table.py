@@ -1,11 +1,10 @@
 from collections import OrderedDict
-from typing import Any
 
 import duckdb
 
 
 # TODO: more robust
-def value_to_sql_literal(value: Any):
+def value_to_sql_literal(value: str | list[str] | None) -> str:
     """
     Takes any literal and translates it into a literal suitable
     for use in a SQL expression
@@ -22,10 +21,10 @@ def value_to_sql_literal(value: Any):
 
 def load_frame(
     con: duckdb.DuckDBPyConnection,
-    rows: list[dict[list[dict[str, Any]]]],
+    rows: list[dict[str, str]],
     table_schema: dict[str, str],
     table_name: str,
-):
+) -> None:
     """
     Create (or replace) a table `table_name` with schema `table_schema`.
 

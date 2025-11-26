@@ -1,5 +1,5 @@
 import time
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Callable
 from enum import Enum
 
 import pytest
@@ -15,7 +15,7 @@ class Service(Enum):
     Docker services
     """
 
-    def __init__(self, host: str, port: int, health_route: str = "/"):
+    def __init__(self, host: str, port: int, health_route: str = "/") -> None:
         self.host: str = host
         self.port: int = port
         self.health_route: str = health_route
@@ -24,12 +24,12 @@ class Service(Enum):
 
 
 @pytest.fixture(scope="session")
-def get_service():
+def get_service() -> Callable:
     """
     Start and check service is running
     """
 
-    def _wait_for_health(service: Service, timeout=60, interval=2):
+    def _wait_for_health(service: Service, timeout: int = 60, interval: int = 2) -> str:
         """
         Polls a health endpoint until it returns HTTP 200 OK.
         """
@@ -53,7 +53,7 @@ def get_service():
 
 
 @pytest.fixture(scope="session")
-def person_match_url(get_service):
+def person_match_url(get_service: Callable) -> None:
     """
     Start and check service is running for hmpps-person-match
     """
@@ -67,7 +67,7 @@ async def db_connection() -> AsyncGenerator[AsyncSession]:
         username="root",
         password="dev",  # noqa: S106
         host="localhost",
-        port="5432",
+        port=5432,
         database="postgres",
     )
 
@@ -91,11 +91,11 @@ def pg_db_url() -> URL:
         username="root",
         password="dev",  # noqa: S106
         host="localhost",
-        port="5432",
+        port=5432,
         database="postgres",
     )
 
 
 @pytest.fixture()
-async def person_factory(db_connection) -> PersonFactory:
+async def person_factory(db_connection: AsyncSession) -> PersonFactory:
     return PersonFactory(db_connection)

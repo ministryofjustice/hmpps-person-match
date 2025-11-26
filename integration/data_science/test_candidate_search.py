@@ -1,4 +1,8 @@
+import uuid
+from collections.abc import Sequence
+
 import pytest
+from sqlalchemy import RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
@@ -14,14 +18,14 @@ class TestCandidateSearch(IntegrationTestBase):
     """
 
     @pytest.fixture(autouse=True, scope="function")
-    async def clean_db(self, db_connection: AsyncSession):
+    async def clean_db(self, db_connection: AsyncSession) -> None:
         """
         Before Each
         Delete all records from the database
         """
         await self.truncate_person_data(db_connection)
 
-    async def test_candidate_search(self, person_factory: PersonFactory, db_connection):
+    async def test_candidate_search(self, person_factory: PersonFactory, db_connection: AsyncSession) -> None:
         """
         Test candidate search returns correct number of people
         """
@@ -40,8 +44,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_no_record_in_db(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns nothing if the given match_id is not in db
         """
@@ -57,8 +61,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_pnc(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on pnc
         """
@@ -76,8 +80,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_cro(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on cro
         """
@@ -95,8 +99,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_dob_postcode_first(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         date_of_birth + postcode_first
@@ -120,8 +124,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_dob_postcode_first_name_1_substr(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         date_of_birth + postcode_outcode_first + substr(name_1_std, 1, 2)
@@ -148,15 +152,15 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_dob_postcode_last_name_std_substr(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         date_of_birth_last + postcode_outcode_first + substr(last_name_std, 1, 2)
         """
 
-        date_of_birth = "2000-01-01"
-        alias_date_of_birth = "1990-01-01"
+        date_of_birth = self.to_date_object("2000-01-01")
+        alias_date_of_birth = self.to_date_object("1990-01-01")
 
         searching_person = await person_factory.create_from(
             MockPerson(
@@ -184,8 +188,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_forename_frst_last_name_frst_postcode_frst(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         forename_first + last_name_first + postcode_first
@@ -210,8 +214,8 @@ class TestCandidateSearch(IntegrationTestBase):
     async def test_candidate_search_match_on_sentence_dates_first_date_of_birth(
         self,
         person_factory: PersonFactory,
-        db_connection,
-    ):
+        db_connection: AsyncSession,
+    ) -> None:
         """
         Test candidate search returns person on match on:
         sentence_date_first + date_of_birth
@@ -232,8 +236,72 @@ class TestCandidateSearch(IntegrationTestBase):
             [searching_person.match_id, expected_found_person.match_id],
         )
 
+    async def test_candidate_search_match_on_master_defendant_id(
+        self,
+        person_factory: PersonFactory,
+        db_connection: AsyncSession,
+    ) -> None:
+        """
+        Test candidate search returns person on match on:
+        master defendant id
+        """
+        master_defendant_id = str(uuid.uuid4())
+
+        searching_person = await person_factory.create_from(
+            MockPerson(masterDefendantId=master_defendant_id),
+        )
+        expected_found_person = await person_factory.create_from(
+            MockPerson(masterDefendantId=master_defendant_id),
+        )
+
+        candidate_data = await candidate_search(searching_person.match_id, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set(
+            [searching_person.match_id, expected_found_person.match_id],
+        )
+
+    async def test_candidate_search_match_postcode_where_order_does_not_matter(
+        self,
+        person_factory: PersonFactory,
+        db_connection: AsyncSession,
+    ) -> None:
+        """
+        Test candidate search returns person on match on:
+        date of birth + postcode
+        """
+        date_of_birth = random_test_data.random_date()
+        postcode = random_test_data.random_postcode()
+
+        searching_person = await person_factory.create_from(
+            MockPerson(dateOfBirth=date_of_birth, postcodes=self.generate_postcodes_with(postcode, size=10)),
+        )
+        expected_found_person = await person_factory.create_from(
+            MockPerson(dateOfBirth=date_of_birth, postcodes=self.generate_postcodes_with(postcode, size=10)),
+        )
+
+        candidate_data = await candidate_search(searching_person.match_id, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set(
+            [searching_person.match_id, expected_found_person.match_id],
+        )
+
+    def generate_postcodes_with(self, postcode: str, size: int) -> list[str]:
+        """
+        Create list of random postcodes
+        """
+        postcodes = self.generate_postcodes_of_size(size)
+        postcodes.append(postcode)
+        return postcodes
+
     @staticmethod
-    def extract_match_ids(candidate_data: list[dict]) -> set[str]:
+    def generate_postcodes_of_size(size: int) -> list[str]:
+        """
+        Create list of random postcodes
+        """
+        return [random_test_data.random_postcode() for _ in range(size)]
+
+    @staticmethod
+    def extract_match_ids(candidate_data: Sequence[RowMapping]) -> set[str]:
         """
         Extract a list of match_ids from
         """

@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+from hmpps_cpr_splink.cpr_splink.data_cleaning.transformations.transformed_column import TransformedColumn
+
 
 class Table:
     def __init__(
         self,
         name: str,
-        *select_expressions,
+        *select_expressions: str | TransformedColumn,
         from_table: str | Table,
         post_from_clauses: str = "",
-    ):
+    ) -> None:
         """
         Initialises a Table object to represent a SQL query.
 
@@ -49,7 +51,7 @@ class Table:
         """
         if isinstance(self.from_condition, str):
             return []
-        return self.from_condition.with_lineage + [self.from_condition]
+        return [*self.from_condition.with_lineage, self.from_condition]
 
     @property
     def select_statement_with_lineage(self) -> str:

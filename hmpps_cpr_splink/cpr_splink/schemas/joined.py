@@ -1,54 +1,20 @@
-from datetime import date
-from typing import TypedDict
-
-
 # TODO: get information elsewhere to avoid doubling up
-class JoinedRecord(TypedDict):
-    """
-    Represents a 'raw' (uncleaned) record retrieved from the Core Person Record (CPR)
-    system.
-
-    This class defines the schema for records exchanged between the CPR system and the
-    `cpr_splink` library.  Records are expected to conform to this schema,
-    as specified by a Pydantic model.
-    """
-
-    match_id: str
-    source_system: str
-    source_system_id: str | None
-    master_defendant_id: str | None
-    first_name: str | None
-    middle_names: str | None
-    last_name: str | None
-    date_of_birth: date | None
-    first_name_aliases: list[str] | None
-    last_name_aliases: list[str] | None
-    date_of_birth_aliases: list[date] | None
-    postcodes: list[str] | None
-    cros: list[str] | None
-    pncs: list[str] | None
-    sentence_dates: list[date] | None
-    override_marker: str | None
-    override_scopes: list[str] | None
-
-
-PYDANTIC_TO_DUCKDB_TYPE_MAPPING = {
-    int: "INTEGER",
-    str: "VARCHAR",
-    str | None: "VARCHAR",
-    int | None: "INTEGER",
-    date | None: "DATE",
-    list[str] | None: "TEXT[]",
-    list[date] | None: "DATE[]",
-}
-
-
-def generate_duckdb_columns_with_types(typed_dict):
-    columns = []
-    for key, value in typed_dict.__annotations__.items():
-        sql_type = PYDANTIC_TO_DUCKDB_TYPE_MAPPING.get(value)
-        columns.append((key, sql_type))
-    return columns
-
-
-DUCKDB_COLUMNS_WITH_TYPES = generate_duckdb_columns_with_types(JoinedRecord)
+DUCKDB_COLUMNS_WITH_TYPES = [
+    ("match_id", "VARCHAR"),
+    ("source_system", "VARCHAR"),
+    ("source_system_id", "VARCHAR"),
+    ("master_defendant_id", "VARCHAR"),
+    ("first_name", "VARCHAR"),
+    ("middle_names", "VARCHAR"),
+    ("last_name", "VARCHAR"),
+    ("date_of_birth", "DATE"),
+    ("first_name_aliases", "TEXT[]"),
+    ("last_name_aliases", "TEXT[]"),
+    ("date_of_birth_aliases", "DATE[]"),
+    ("postcodes", "TEXT[]"),
+    ("cros", "TEXT[]"),
+    ("pncs", "TEXT[]"),
+    ("sentence_dates", "DATE[]"),
+    ("override_marker", "VARCHAR"),
+    ("override_scopes", "TEXT[]"),
+]

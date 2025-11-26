@@ -2,6 +2,8 @@
 
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hmpps-person-match-dev.hmpps.service.justice.gov.uk/swagger-ui.html)
 
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/hmpps-person-match/badge?style=flat)](https://github-community.service.justice.gov.uk/repository-standards/hmpps-person-match)
+
 An API wrapper around a model developed by the MoJ Analytical Platform for scoring the confidence 
 of people matches across MoJ systems.
 
@@ -21,8 +23,19 @@ In the event that changes are needed  to it either to improve performance or to 
 
 
 ```shell
-curl -LsSf https://astral.sh/uv/0.5.24/install.sh | sh
+curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
 ```
+
+Keep `uv` up to date by running `uv self update` to make sure it matches the version specified in the Dockerfile
+
+If you need to update a transitive dependency, do this:
+
+0. make sure you are on the latest version of uv
+1. `uv add yourdependency==yourversion`
+2. revert the change to `pyproject.toml`
+3. `uv lock`
+
+This should result in a small change to the lockfile updating the transitive dependency to the desired version.
 
 ## Quickstart
 

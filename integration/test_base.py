@@ -1,8 +1,9 @@
 import asyncio
 import uuid
-from datetime import datetime
+from collections.abc import Callable
+from datetime import date, datetime
 
-from sqlalchemy import text
+from sqlalchemy import RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.jobs.term_frequencies import TERM_FREQUENCY_TABLES
@@ -13,7 +14,7 @@ class IntegrationTestBase:
     Base class for integration tests.
     """
 
-    async def truncate_person_data(self, db_connection: AsyncSession):
+    async def truncate_person_data(self, db_connection: AsyncSession) -> None:
         """
         Delete all records from the person table
         """
@@ -21,7 +22,7 @@ class IntegrationTestBase:
         await db_connection.commit()
         await self.until_asserted(lambda: self.assert_size_of_table(db_connection, "person", size=0))
 
-    async def refresh_term_frequencies(self, db_connection: AsyncSession):
+    async def refresh_term_frequencies(self, db_connection: AsyncSession) -> None:
         """
         Refresh term frequencies
         """
@@ -31,29 +32,29 @@ class IntegrationTestBase:
             await self.until_asserted(lambda: self.assert_size_of_table(db_connection, table, size=0))  # noqa: B023
 
     @staticmethod
-    async def find_by_match_id(db_connection: AsyncSession, match_id: str) -> dict:
+    async def find_by_match_id(db_connection: AsyncSession, match_id: str) -> RowMapping | None:
         result = await db_connection.execute(text(f"SELECT * FROM personmatch.person WHERE match_id = '{match_id}'"))
         return result.mappings().fetchone()
 
     @staticmethod
-    def to_datetime_object(date: str) -> datetime:
+    def to_date_object(date: str) -> date:
         return datetime.strptime(date, "%Y-%m-%d").astimezone().date()
 
     @staticmethod
-    async def assert_size_of_table(db_connection, table, size=1):
-        result = await db_connection.execute(text(f"SELECT * FROM personmatch.{table}"))  # noqa: S608
+    async def assert_size_of_table(db_connection: AsyncSession, table: str, size: int = 1) -> None:
+        result = await db_connection.execute(text(f"SELECT * FROM personmatch.{table}"))
         rows = result.fetchall()
         assert len(rows) == size
 
     @staticmethod
-    def new_scope():
+    def new_scope() -> str:
         return str(uuid.uuid4())
 
     @staticmethod
-    def new_override_marker():
+    def new_override_marker() -> str:
         return str(uuid.uuid4())
 
-    async def until_asserted(self, assertion_func, max_retries=5, delay=0.3):
+    async def until_asserted(self, assertion_func: Callable, max_retries: int = 5, delay: float = 0.3) -> None:
         """
         Repeatedly tries to assert something until it passes or max_retries is reached.
 

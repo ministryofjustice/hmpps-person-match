@@ -1,13 +1,16 @@
+from typing import ClassVar
+
 import jwt
 import requests
-from authlib.jose import JsonWebKey
+from authlib.jose import JsonWebKey, Key
 from cachetools import TTLCache
+from requests import Response
 from requests import exceptions as rq_ex
 
 from hmpps_person_match.utils.environment import EnvVars, get_env_var
 from hmpps_person_match.utils.retry import RetryExecutor
 
-jwks_cache = TTLCache(maxsize=1, ttl=3600)
+jwks_cache: TTLCache = TTLCache(maxsize=1, ttl=3600)
 
 
 class JWKS:
@@ -15,8 +18,8 @@ class JWKS:
     JWKS class to be used to retrieve credentials
     """
 
-    ALGORITHMS = ["RS256"]
-    TIMEOUT = 10
+    ALGORITHMS: ClassVar[list] = ["RS256"]
+    TIMEOUT: ClassVar[int] = 10
 
     RETRY_EXCEPTIONS = (
         rq_ex.Timeout,
@@ -24,10 +27,10 @@ class JWKS:
         rq_ex.HTTPError,
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._jwk_url = self._get_jwk_url()
 
-    async def get_public_key_from_jwt(self, jwt_token):
+    async def get_public_key_from_jwt(self, jwt_token: str) -> JsonWebKey | Key:
         """
         Fetch the public key from the JWT token
         """
@@ -43,13 +46,13 @@ class JWKS:
         raise ValueError(f"Public key for kid: '{kid}' not found.")
 
     @staticmethod
-    def _get_jwk_url():
+    def _get_jwk_url() -> str:
         """
         Construct JWKS URL
         """
         return f"{get_env_var(EnvVars.OAUTH_BASE_URL_KEY)}/auth/.well-known/jwks.json"
 
-    def _call_jwks_endpoint(self):
+    def _call_jwks_endpoint(self) -> Response:
         """
         Call JWKS endpoint
         raise exception if failed to call endpoint
@@ -58,7 +61,7 @@ class JWKS:
         response.raise_for_status()
         return response
 
-    async def _get_jwks(self):
+    async def _get_jwks(self) -> dict:
         """
         Get the keys from the JWKS endpoint
         """

@@ -45,4 +45,4 @@ async def get_person_score(
         logger.info(TelemetryEvents.PERSON_SCORE, extra=dict(matchId=match_id, candidate_size=len(scored_candidates)))
         return scored_candidates
     else:
-        return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)
+        return JSONResponse(content={}, status_code=status.HTTP_404_NOT_FOUND)  # type: ignore

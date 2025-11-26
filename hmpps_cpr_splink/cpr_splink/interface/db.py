@@ -19,7 +19,7 @@ async def insert_duckdb_table_into_postgres_table(
     ddb_tab: duckdb.DuckDBPyRelation,
     pg_table_name: str,
     connection_pg: AsyncSession,
-):
+) -> None:
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]
 

@@ -1,4 +1,5 @@
 import base64
+from collections.abc import Callable
 
 import pytest
 import requests
@@ -7,12 +8,12 @@ from integration.client import Client
 
 
 @pytest.fixture
-def access_token_factory():
+def access_token_factory() -> Callable:
     """
     Factory func to create access token
     """
 
-    def generate_access_token(client: Client):
+    def generate_access_token(client: Client) -> str:
         """
         Generate access token for testing purposes
         """
@@ -40,7 +41,7 @@ def access_token_factory():
 
 
 @pytest.fixture()
-def call_endpoint(person_match_url, access_token_factory):
+def call_endpoint(person_match_url: str, access_token_factory: Callable) -> Callable:
     """
     Factory func to call person-match endpoint with access token
     """
@@ -49,10 +50,11 @@ def call_endpoint(person_match_url, access_token_factory):
         method: str,
         route: str,
         client: Client,
-        json: dict = None,
+        json: dict | None = None,
+        data: str | None = None,
     ) -> requests.Response:
         token = access_token_factory(client)
         headers = {"Authorization": f"Bearer {token}"}
-        return requests.request(method, person_match_url + route, json=json, headers=headers, timeout=30)
+        return requests.request(method, person_match_url + route, json=json, data=data, headers=headers, timeout=30)
 
     return _call_endpoint

@@ -1,11 +1,25 @@
+from typing import Any
+
 from splink import SettingsCreator
-from splink.internals.waterfall_chart import record_to_waterfall_data
+from splink.internals.settings import Settings
+from splink.internals.waterfall_chart import records_to_waterfall_data
 
 from hmpps_cpr_splink.cpr_splink.model.score import MODEL_PATH
 from hmpps_cpr_splink.cpr_splink.visualisation.visualise_cluster_spec import load_base_spec
 
 
-def build_spec(nodes, edges):
+def _add_waterfall_data(edges: list[dict[str, Any]], settings: Settings) -> None:
+    waterfall_data = records_to_waterfall_data(edges, settings, hide_details=False)
+
+    waterfall_data_by_record_number: dict = {}
+    for rec in waterfall_data:
+        waterfall_data_by_record_number.setdefault(rec["record_number"], []).append(rec)
+
+    for idx, e in enumerate(edges):
+        e["waterfall_data"] = waterfall_data_by_record_number.get(idx, [])
+
+
+def build_spec(nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> dict[str, Any]:
     spec = load_base_spec()
 
     settings = SettingsCreator.from_path_or_dict(MODEL_PATH).get_settings("duckdb")
@@ -14,7 +28,11 @@ def build_spec(nodes, edges):
     filtered_nodes = []
 
     for e in edges:
-        e["waterfall_data"] = record_to_waterfall_data(e, settings, hide_details=False)
+        e["waterfall_data"] = []
+
+    # Above 30, the number of edges gets very large and performance degrades
+    if len(nodes) <= 30:
+        _add_waterfall_data(edges, settings)
 
     edge_drop_prefixes = ("bf_", "tf_", "gamma_")
 

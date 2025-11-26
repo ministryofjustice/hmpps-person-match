@@ -1,4 +1,4 @@
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import Any
 
 import duckdb
@@ -21,7 +21,7 @@ def assert_tables_equal(
     con: duckdb.DuckDBPyConnection,
     expected_relation: str,
     actual_relation: str,
-    cols_to_check: list[str],
+    cols_to_check: Iterable[str],
 ) -> None:
     """
     Compares two tables, `expected_relation` and `actual_relation`.
@@ -106,7 +106,7 @@ def check_output_matches_expected(
     sql: str,
     schemas: dict[str, dict[str, str]],
     expected_output_table: str = "expected_output_table",
-):
+) -> None:
     """
     Creates tables as specified in schemas, and loads in the corresponding data,
     as specified in test_data.
@@ -131,7 +131,7 @@ def check_output_matches_expected(
         try:
             rows = test_data[table_name]
         except KeyError as e:
-            print(f"Didn't find any test data for specified table: '{table_name}'")  # noqa: T201
+            print(f"Didn't find any test data for specified table: '{table_name}'")
             raise e
         load_frame(con, rows, schema_data, table_name)
 
@@ -167,7 +167,7 @@ def check_output_matches_expected(
     )
 
 
-def load_yaml_file(file_name: str):
+def load_yaml_file(file_name: str) -> Any:  # noqa: ANN401
     with open(f"{_TEST_DATA_DIR}/{file_name}") as f:
         data = safe_load(f)
     return data
@@ -177,7 +177,7 @@ def check_data(
     data_file: str,
     sql: str,
     expected_output_table: str = "expected_output_table",
-) -> Callable[[None], None]:
+) -> Callable[[Callable[[], None]], None]:
     """
     Decorator for a test function (whose contents are irrelevant).
 
@@ -239,9 +239,9 @@ def check_data(
 
     # wrapper runs check_output_matches_expected for each dataset in test_data
     # run each as a separate test instance using pytest.mark.parameterize
-    def decorator(test_function):
-        def check_function_wrapper(test_data_set):
-            return check_output_matches_expected(
+    def decorator(_test_function: Callable[[], None]) -> None:
+        def check_function_wrapper(test_data_set: dict[str, list[dict[str, Any]]]) -> None:
+            check_output_matches_expected(
                 test_data_set,
                 con,
                 sql,

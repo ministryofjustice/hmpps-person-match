@@ -9,7 +9,6 @@ from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import enqueue_join_term_frequency_tables
-from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_cpr_splink.cpr_splink.model.model import (
     MODEL_PATH,
@@ -49,7 +48,11 @@ def _ddb_relation_to_serialised_dicts(relation: DuckDBPyRelation) -> list[dict[s
     return [_serialise_row(row) for row in res_list_dicts]
 
 
-async def get_nodes_edges(match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession) -> Clusters:
+async def get_nodes_edges(
+    match_ids: list[str],
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         tablename = "records_to_check"
 

@@ -1,7 +1,9 @@
 import uuid
-from unittest.mock import AsyncMock, patch
+from collections.abc import Callable, Generator
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
+from fastapi.testclient import TestClient
 
 from hmpps_cpr_splink.cpr_splink.interface.score import Clusters
 from hmpps_person_match.domain.roles import Roles
@@ -16,7 +18,7 @@ class TestIsClusterValidRoute:
 
     @staticmethod
     @pytest.fixture(autouse=True)
-    def mock_ids_check():
+    def mock_ids_check() -> Generator[AsyncMock]:
         """
         Mock checking if match_ids exist
         """
@@ -28,7 +30,7 @@ class TestIsClusterValidRoute:
 
     @staticmethod
     @pytest.fixture(autouse=True)
-    def mock_cluster_results():
+    def mock_cluster_results() -> Generator[AsyncMock]:
         """
         Mock the cpr splink clusters results
         """
@@ -38,7 +40,7 @@ class TestIsClusterValidRoute:
         ) as mocked_clusters:
             yield mocked_clusters
 
-    def test_is_cluster_valid_missing_id(self, call_endpoint, mock_ids_check, mock_logger):
+    def test_is_cluster_valid_missing_id(self, call_endpoint: Callable, mock_ids_check: AsyncMock) -> None:
         """
         Test that we get 404 when we ask for match_id that isn't in db
         """
@@ -56,7 +58,13 @@ class TestIsClusterValidRoute:
         assert response.status_code == 404
         assert response.json() == {"unknownIds": [match_id_1]}
 
-    def test_is_cluster_valid_results(self, call_endpoint, mock_ids_check, mock_cluster_results, mock_logger):
+    def test_is_cluster_valid_results(
+        self,
+        call_endpoint: Callable,
+        mock_ids_check: AsyncMock,
+        mock_cluster_results: AsyncMock,
+        mock_logger: Mock,
+    ) -> None:
         """
         Test that get results in right format when cluster is valid
         """
@@ -85,7 +93,13 @@ class TestIsClusterValidRoute:
             },
         )
 
-    def test_is_cluster_valid_multiple_clusters(self, call_endpoint, mock_ids_check, mock_cluster_results, mock_logger):
+    def test_is_cluster_valid_multiple_clusters(
+        self,
+        call_endpoint: Callable,
+        mock_ids_check: AsyncMock,
+        mock_cluster_results: AsyncMock,
+        mock_logger: Mock,
+    ) -> None:
         """
         Test that we get information on multiple clusters if cluster is not valid
         """
@@ -115,7 +129,7 @@ class TestIsClusterValidRoute:
             },
         )
 
-    def test_invalid_role_unauthorized(self, call_endpoint):
+    def test_invalid_role_unauthorized(self, call_endpoint: Callable) -> None:
         match_id_1 = str(uuid.uuid4())
         match_id_2 = str(uuid.uuid4())
         data = [match_id_1, match_id_2]
@@ -128,10 +142,10 @@ class TestIsClusterValidRoute:
         assert response.status_code == 403
         assert response.json()["detail"] == "You do not have permission to access this resource."
 
-    def test_no_auth_returns_unauthorized(self, client):
+    def test_no_auth_returns_unauthorized(self, client: TestClient) -> None:
         match_id_1 = str(uuid.uuid4())
         match_id_2 = str(uuid.uuid4())
         data = [match_id_1, match_id_2]
         response = client.post(ROUTE, json=data)
-        assert response.status_code == 403
+        assert response.status_code == 401
         assert response.json()["detail"] == "Not authenticated"
