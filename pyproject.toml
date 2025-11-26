@@ -26,6 +26,7 @@ dependencies = [
   "types-authlib>=1.6.5.20251005",
   "types-cachetools>=6.2.0.20251022",
   "types-requests>=2.32.4.20250913",
+  "pydantic==2.12.4",
 ]
 
 [tool.uv]
