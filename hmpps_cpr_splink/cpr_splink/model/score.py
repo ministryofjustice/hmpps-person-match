@@ -30,11 +30,11 @@ def _no_master_defendant_id_match() -> str:
 
 
 def _first_names_differ() -> str:
-    """First names don't match and no cross-match on first two names."""
+    """First names mismatch and no cross-match on first two names."""
     return """
-        name_1_std_l <> name_1_std_r
-        AND name_1_std_l <> name_2_std_r
-        AND name_2_std_l <> name_1_std_r
+        coalesce(name_1_std_l <> name_1_std_r, FALSE)
+        AND coalesce(name_1_std_l <> name_2_std_r, TRUE)
+        AND coalesce(name_2_std_l <> name_1_std_r, TRUE)
     """
 
 def _all_aliases_satisfy_condition(boolean_condition: str) -> str:
@@ -85,16 +85,16 @@ def _no_id_match() -> str:
 def _dob_and_surname_match() -> str:
     """Date of birth and surname must match."""
     return """
-        date_of_birth_l = date_of_birth_r
-        AND last_name_std_l = last_name_std_r
+        coalesce(date_of_birth_l = date_of_birth_r, FALSE)
+        AND coalesce(last_name_std_l = last_name_std_r, FALSE)
     """
 
 
 def _shared_sentence_date_or_postcode() -> str:
     """Either sentenced on the same date, or have a postcode in common."""
     return """
-        array_length(array_intersect(sentence_date_arr_r, sentence_date_arr_l)) > 0
-        OR array_length(array_intersect(postcode_arr_r, postcode_arr_l)) > 0
+        coalesce(array_length(array_intersect(sentence_date_arr_r, sentence_date_arr_l)) > 0, FALSE)
+        OR coalesce(array_length(array_intersect(postcode_arr_r, postcode_arr_l)) > 0, FALSE)
     """
 
 
