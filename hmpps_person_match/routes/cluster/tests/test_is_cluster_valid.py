@@ -147,5 +147,5 @@ class TestIsClusterValidRoute:
         match_id_2 = str(uuid.uuid4())
         data = [match_id_1, match_id_2]
         response = client.post(ROUTE, json=data)
-        assert response.status_code == 403
+        assert response.status_code == 401
         assert response.json()["detail"] == "Not authenticated"
