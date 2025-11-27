@@ -200,7 +200,6 @@ class TestTwinDetection(IntegrationTestBase):
         mock_people = make_semi_identical_people(differing_fields)
         for mock_person in mock_people:
             person = await person_factory.create_from(mock_person)
-            print(person)
         scored_candidates = await get_scored_candidates(person.match_id, pg_db_url, db_connection)
         assert len(scored_candidates) == 1
         assert scored_candidates[0].candidate_is_possible_twin == expected_flagged_as_twins
