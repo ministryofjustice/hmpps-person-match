@@ -59,7 +59,7 @@ class TestPersonDeleteRoute:
 
     def test_delete_no_auth_returns_unauthorized(self, client: TestClient) -> None:
         response = client.delete(ROUTE)
-        assert response.status_code == 403
+        assert response.status_code == 401
         assert response.json()["detail"] == "Not authenticated"
 
     def test_delete_invalid_role_unauthorized(self, call_endpoint: Callable) -> None:
