@@ -25,7 +25,6 @@ def upgrade() -> None:
         schema="personmatch",
     )
 
-
 def downgrade() -> None:
     op.drop_column(
         table_name="person",

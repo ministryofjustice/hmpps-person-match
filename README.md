@@ -19,7 +19,7 @@ curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
 
 Keep `uv` up to date by running `uv self update` to make sure it matches the version specified in the Dockerfile
 
-If you need to update a transitive dependency ( for example to fix a security vulnerability), do this:
+If you need to update a transitive dependency (for example to fix a security vulnerability), do this:
 
 0. make sure you are on the latest version of uv
 1. `uv add yourdependency==yourversion`
