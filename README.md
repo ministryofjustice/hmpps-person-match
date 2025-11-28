@@ -7,15 +7,6 @@
 An API wrapper around a model developed by the MoJ Analytical Platform for scoring the confidence 
 of people matches across MoJ systems.
 
-`hmpps-person-match` is a simple service built in Python which takes key details about a defendant from a court system and corresponding data from a matched offender from Delius and generates a score. This score is the probability that the two sets of details represent the same individual.
-
-## History
-
-The system is based on some code that was provided by the data science team and subsequently productionised by Probation in Court. Unfortunately at the time the code was produced there were limited options for productionising an algorithm of this type so the implementation relies on a somewhat clunky architecture involving an sqlite database which is not used for storage - only for data processing.
-
-In the event that changes are needed  to it either to improve performance or to extend functionality then we should discuss with Data Science as to whether a better method of productionising is available.
-
-
 ## Pre-Requisites
 
 * Python 3.13+
@@ -28,7 +19,7 @@ curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
 
 Keep `uv` up to date by running `uv self update` to make sure it matches the version specified in the Dockerfile
 
-If you need to update a transitive dependency, do this:
+If you need to update a transitive dependency (for example to fix a security vulnerability), do this:
 
 0. make sure you are on the latest version of uv
 1. `uv add yourdependency==yourversion`
