@@ -275,12 +275,12 @@ class TestCandidateSearch(IntegrationTestBase):
 
         searching_person = await person_factory.create_from(
             MockPerson(
-                dateOfBirth=date_of_birth, sentenceDates=self.generate_sentence_dates_with(sentence_date, size=10)
+                dateOfBirth=date_of_birth, sentenceDates=self.generate_sentence_dates_with(sentence_date, size=10),
             ),
         )
         expected_found_person = await person_factory.create_from(
             MockPerson(
-                dateOfBirth=date_of_birth, sentenceDates=self.generate_sentence_dates_with(sentence_date, size=10)
+                dateOfBirth=date_of_birth, sentenceDates=self.generate_sentence_dates_with(sentence_date, size=10),
             ),
         )
         candidate_data = await candidate_search(searching_person.match_id, db_connection)
