@@ -27,11 +27,11 @@ def upgrade() -> None:
     )
     # Use op.execute as the index name exceeds the 63-character limit enforced by op.drop_index
     op.execute("DROP INDEX personmatch.idx_substring_name_1_std__substring_last_name_std__sentence_date_last")
-    op.drop_index("idx_sentence_date_first__date_of_birth")
+    op.execute("DROP INDEX personmatch.idx_sentence_date_first__date_of_birth")
 
 
 def downgrade() -> None:
-    op.drop_index("idx_sentence_date_arr_gin", table_name="person")
+    op.execute("DROP INDEX personmatch.idx_sentence_date_arr_gin")
     op.create_index(
         index_name="idx_substring_name_1_std__substring_last_name_std__sentence_date_last",
         columns=[
