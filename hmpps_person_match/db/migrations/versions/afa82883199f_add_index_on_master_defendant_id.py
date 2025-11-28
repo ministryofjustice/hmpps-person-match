@@ -25,5 +25,6 @@ def upgrade() -> None:
         schema="personmatch",
     )
 
+
 def downgrade() -> None:
     op.drop_index(index_name="idx_master_defendant_id", table_name="person", schema="personmatch", if_exists=True)
