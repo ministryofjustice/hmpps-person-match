@@ -87,6 +87,8 @@ async def get_scored_candidates(
                 candidate_match_weight=row["match_weight"],
                 candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
                 candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
+                candidate_is_possible_twin=row["possible_twins"],
+                unadjusted_match_weight=row["unaltered_match_weight"],
             )
             for row in data
         ]

@@ -82,6 +82,8 @@ class TestPersonScoreRoute:
                 candidate_match_weight=24,
                 candidate_should_fracture=False,
                 candidate_should_join=True,
+                candidate_is_possible_twin=False,
+                unadjusted_match_weight=24,
             ),
             PersonScore(
                 candidate_match_id=match_id_2,
@@ -89,6 +91,8 @@ class TestPersonScoreRoute:
                 candidate_match_weight=24,
                 candidate_should_fracture=False,
                 candidate_should_join=True,
+                candidate_is_possible_twin=False,
+                unadjusted_match_weight=24,
             ),
         ]
         response = call_endpoint(
@@ -104,6 +108,8 @@ class TestPersonScoreRoute:
                 "candidate_match_weight": 24,
                 "candidate_should_fracture": False,
                 "candidate_should_join": True,
+                "candidate_is_possible_twin": False,
+                "unadjusted_match_weight": 24,
             },
             {
                 "candidate_match_id": match_id_2,
@@ -111,6 +117,8 @@ class TestPersonScoreRoute:
                 "candidate_match_weight": 24,
                 "candidate_should_fracture": False,
                 "candidate_should_join": True,
+                "candidate_is_possible_twin": False,
+                "unadjusted_match_weight": 24,
             },
         ]
         mock_logger.info.assert_called_with(
