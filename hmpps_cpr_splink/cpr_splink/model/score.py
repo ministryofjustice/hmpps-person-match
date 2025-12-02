@@ -66,11 +66,21 @@ def _all_aliases_dissimilar_fuzzy(jw_threshold: float) -> str:
     return _all_aliases_satisfy_condition(f"jaro_winkler_similarity(alias_l, alias_r) < {jw_threshold}")
 
 
-def _explicit_id_mismatch() -> str:
-    """Explicit double mismatch on CRO and PNC IDs (both must be non-null and different)."""
+def _one_or_more_explicit_id_mismatch() -> str:
+    """Explicit mismatch on one of CRO and PNC IDs (both must be non-null and different),
+    and lack of match on the other ID (allowing dual nulls).
+    """
     return """
-        coalesce(cro_single_l <> cro_single_r, FALSE)
-        AND coalesce(pnc_single_l <> pnc_single_r, FALSE)
+        (
+            coalesce(cro_single_l <> cro_single_r, FALSE)
+            AND
+            ifnull(pnc_single_l, 'pnc_l') <> ifnull(pnc_single_r, 'pnc_r')
+        )
+        OR (
+            coalesce(pnc_single_l <> pnc_single_r, FALSE)
+            AND
+            ifnull(cro_single_l, 'cro_l') <> ifnull(cro_single_r, 'cro_r')
+        )
     """
 
 
@@ -127,7 +137,7 @@ def _twins_condition() -> str:
     alias_and_id_condition = f"""
         (
             ({_all_aliases_dissimilar_exact()})
-            AND ({_explicit_id_mismatch()})
+            AND ({_one_or_more_explicit_id_mismatch()})
         )
         OR
         (

@@ -87,6 +87,17 @@ class TestTwinDetection(IntegrationTestBase):
                     "cros": [["00/000000A"], []],
                     "master_defendant_id": [None, None],
                 },
+                True,
+                id="One explicitly mismatched ID, and non-matching (but similar names); twins",
+            ),
+            pytest.param(
+                {
+                    "first_name": ["brian", "rian"],
+                    "first_name_aliases": [[], []],
+                    "pncs": [["00/0000000A"], []],
+                    "cros": [["00/000000A"], []],
+                    "master_defendant_id": [None, None],
+                },
                 False,
                 id="Not fully explicitly mismatched IDs, and non-matching (but similar names); not twins",
             ),
@@ -126,8 +137,8 @@ class TestTwinDetection(IntegrationTestBase):
                 {
                     "first_name": ["name", "completelydifferentname"],
                     "first_name_aliases": [["alias"], ["aliasa"]],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], []],
+                    "pncs": [["00/0000000A"], []],
+                    "cros": [[], ["00/000000A"]],
                     "master_defendant_id": [None, None],
                 },
                 False,
