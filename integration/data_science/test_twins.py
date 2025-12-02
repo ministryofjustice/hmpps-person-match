@@ -67,6 +67,20 @@ class TestTwinDetection(IntegrationTestBase):
             ),
             pytest.param(
                 {
+                    # first two letters of name so we can match on blocking rule
+                    "first_name": ["name", "nacompletelydifferentname"],
+                    "first_name_aliases": [[], []],
+                    "date_of_birth": ["1990-01-01", "1990-05-05"],
+                    "date_of_birth_aliases": [["1990-05-05"], []],
+                    "pncs": [["00/0000000A"], []],
+                    "cros": [[], ["99/999999Z"]],
+                    "master_defendant_id": [None, None],
+                },
+                True,
+                id="DOB matches only via alias; twins",
+            ),
+            pytest.param(
+                {
                     "first_name": ["brian", "rian"],
                     "first_name_aliases": [[], []],
                     "pncs": [["00/0000000A"], ["99/9999999Z"]],

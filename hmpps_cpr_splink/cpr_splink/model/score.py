@@ -82,11 +82,17 @@ def _no_id_match() -> str:
     """
 
 
-def _dob_and_surname_match() -> str:
-    """Date of birth and surname must match."""
+def _matching_dob_in_arrays() -> str:
+    """Matching date of birth in the alias arrays."""
     return """
-        coalesce(date_of_birth_l = date_of_birth_r, FALSE)
-        AND coalesce(last_name_std_l = last_name_std_r, FALSE)
+        coalesce(array_length(array_intersect(date_of_birth_arr_l, date_of_birth_arr_r)) > 0, FALSE)
+    """
+
+
+def _surname_match() -> str:
+    """Surname must match."""
+    return """
+        coalesce(last_name_std_l = last_name_std_r, FALSE)
     """
 
 
@@ -108,7 +114,7 @@ def _twins_condition() -> str:
     - First names differ (including cross-matches on first two names)
     - All aliases are dissimilar (with explicit ID mismatch we disbar exact matches only,
         if at least one of CRO or PNC doesn't explicitly mismatch then we tolerate fuzzy alias match)
-    - Same date of birth
+    - Matching date of birth in arrays
     - Same surname
     - Share either a sentence date or postcode
     - Match weight exceeds the similarity threshold
@@ -135,7 +141,8 @@ def _twins_condition() -> str:
         AND ({_no_master_defendant_id_match()})
         AND ({_first_names_differ()})
         AND ({alias_and_id_condition})
-        AND ({_dob_and_surname_match()})
+        AND ({_surname_match()})
+        AND ({_matching_dob_in_arrays()})
         AND ({_shared_sentence_date_or_postcode()})
         AND match_weight > {POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD}
     """
