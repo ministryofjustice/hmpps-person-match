@@ -1,5 +1,6 @@
 import uuid
 from collections.abc import Sequence
+from datetime import date
 
 import pytest
 from sqlalchemy import RowMapping
@@ -259,6 +260,89 @@ class TestCandidateSearch(IntegrationTestBase):
         assert self.extract_match_ids(candidate_data) == set(
             [searching_person.match_id, expected_found_person.match_id],
         )
+
+    async def test_candidate_search_match_sentence_date_where_order_does_not_matter(
+        self,
+        person_factory: PersonFactory,
+        db_connection: AsyncSession,
+    ) -> None:
+        """
+        Test candidate search returns person on match on:
+        date of birth + sentence date
+        """
+        date_of_birth = random_test_data.random_date()
+        sentence_date = random_test_data.random_date()
+
+        searching_person = await person_factory.create_from(
+            MockPerson(
+                dateOfBirth=date_of_birth, sentenceDates=self.generate_sentence_dates_with(sentence_date, size=10),
+            ),
+        )
+        expected_found_person = await person_factory.create_from(
+            MockPerson(
+                dateOfBirth=date_of_birth, sentenceDates=self.generate_sentence_dates_with(sentence_date, size=10),
+            ),
+        )
+        candidate_data = await candidate_search(searching_person.match_id, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set(
+            [searching_person.match_id, expected_found_person.match_id],
+        )
+
+    async def test_candidate_search_match_postcode_where_order_does_not_matter(
+        self,
+        person_factory: PersonFactory,
+        db_connection: AsyncSession,
+    ) -> None:
+        """
+        Test candidate search returns person on match on:
+        date of birth + postcode
+        """
+        date_of_birth = random_test_data.random_date()
+        postcode = random_test_data.random_postcode()
+
+        searching_person = await person_factory.create_from(
+            MockPerson(dateOfBirth=date_of_birth, postcodes=self.generate_postcodes_with(postcode, size=10)),
+        )
+        expected_found_person = await person_factory.create_from(
+            MockPerson(dateOfBirth=date_of_birth, postcodes=self.generate_postcodes_with(postcode, size=10)),
+        )
+
+        candidate_data = await candidate_search(searching_person.match_id, db_connection)
+
+        assert self.extract_match_ids(candidate_data) == set(
+            [searching_person.match_id, expected_found_person.match_id],
+        )
+
+    def generate_postcodes_with(self, postcode: str, size: int) -> list[str]:
+        """
+        Create list of random postcodes
+        """
+        postcodes = self.generate_postcodes_of_size(size)
+        postcodes.append(postcode)
+        return postcodes
+
+    @staticmethod
+    def generate_postcodes_of_size(size: int) -> list[str]:
+        """
+        Create list of random postcodes
+        """
+        return [random_test_data.random_postcode() for _ in range(size)]
+
+    def generate_sentence_dates_with(self, sentence_date: date, size: int) -> list[date]:
+        """
+        Create list of random sentence dates
+        """
+        sentence_dates = self.generate_sentence_dates_of_size(size)
+        sentence_dates.append(sentence_date)
+        return sentence_dates
+
+    @staticmethod
+    def generate_sentence_dates_of_size(size: int) -> list[date]:
+        """
+        Create list of random sentence dates
+        """
+        return [random_test_data.random_date() for _ in range(size)]
 
     @staticmethod
     def extract_match_ids(candidate_data: Sequence[RowMapping]) -> set[str]:

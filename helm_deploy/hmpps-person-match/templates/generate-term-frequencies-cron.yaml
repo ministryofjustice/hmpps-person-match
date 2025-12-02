@@ -7,7 +7,7 @@ spec:
   concurrencyPolicy: Replace
   failedJobsHistoryLimit: 1
   startingDeadlineSeconds: 43200
-  successfulJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 2
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 345600 # 4 days

@@ -155,5 +155,5 @@ class TestPersonRoute:
 
     def test_no_auth_returns_unauthorized(self, client: TestClient) -> None:
         response = client.post(ROUTE, json={})
-        assert response.status_code == 403
+        assert response.status_code == 401
         assert response.json()["detail"] == "Not authenticated"

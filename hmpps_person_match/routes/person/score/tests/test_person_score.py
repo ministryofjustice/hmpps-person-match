@@ -153,7 +153,7 @@ class TestPersonScoreRoute:
 
     def test_no_auth_returns_unauthorized(self, client: TestClient) -> None:
         response = client.get(self._generate_match_score_url())
-        assert response.status_code == 403
+        assert response.status_code == 401
         assert response.json()["detail"] == "Not authenticated"
 
     @staticmethod

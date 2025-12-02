@@ -25,7 +25,9 @@ from hmpps_person_match.models.person.person_score import PersonScore
 
 
 def insert_data_into_duckdb(
-    connection_duckdb: duckdb.DuckDBPyConnection, data_to_insert: Sequence, base_table_name: str,
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    data_to_insert: Sequence,
+    base_table_name: str,
 ) -> str:
     tf_columns = [
         "name_1_std",
