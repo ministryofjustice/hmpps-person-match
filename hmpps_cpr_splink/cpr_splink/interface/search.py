@@ -1,5 +1,4 @@
 import uuid
-from logging import Logger
 
 import duckdb
 from sqlalchemy import text
@@ -20,7 +19,6 @@ from hmpps_person_match.models.person.person_score import PersonScore
 async def search_candidates(
     person: Person,
     session: AsyncSession,
-    logger: Logger,
 ) -> list[PersonScore]:
     """
     Search for candidates matching the provided person record.
@@ -45,16 +43,13 @@ async def search_candidates(
         await session.execute(
             text(f"CREATE TEMP TABLE {temp_table_name} (LIKE personmatch.person INCLUDING ALL) ON COMMIT DROP"),
         )
-        logger.debug("Created temp table: %s", temp_table_name)
 
         # Step 2: Clean and insert the search record
         await _clean_and_insert_to_temp_table(
             person=person,
             session=session,
             temp_table_name=temp_table_name,
-            logger=logger,
         )
-        logger.debug("Inserted search record with match_id: %s", search_match_id)
 
         # Step 3: Run blocking query (uses same session - can see temp table)
         candidates_data = await candidate_search_from_table(
@@ -62,25 +57,19 @@ async def search_candidates(
             primary_table=temp_table_name,
             candidates_table="personmatch.person",
             connection_pg=session,
-            logger=logger,
         )
 
         if not candidates_data:
-            logger.info("No candidates found for search %s", search_match_id)
             return []
-
-        logger.debug("Found %s candidates", len(candidates_data))
 
         # Step 4: Fetch search record with term frequencies (same format as candidates)
         search_record_with_tf = await get_record_with_term_frequencies(
             record_id=search_match_id,
             table_name=temp_table_name,
             connection_pg=session,
-            logger=logger,
         )
 
         if not search_record_with_tf:
-            logger.error("Failed to fetch search record with TFs for %s", search_match_id)
             return []
 
         # Step 5: Pass to DuckDB for Splink scoring
@@ -95,31 +84,20 @@ async def search_candidates(
                 table_name="all_records",
             )
 
-        logger.info(
-            "Person search completed",
-            extra={
-                "search_match_id": search_match_id,
-                "candidates_found": len(candidates_data),
-                "scores_returned": len(scores),
-            },
-        )
-
         return scores
 
     finally:
         # Step 6: Cleanup (defensive - temp table would auto-drop anyway)
         try:
             await session.execute(text(f"DROP TABLE IF EXISTS {temp_table_name}"))
-            logger.debug("Dropped temp table: %s", temp_table_name)
         except SQLAlchemyError:
-            logger.warning("Failed to drop temp table %s", temp_table_name, exc_info=True)
+            pass
 
 
 async def _clean_and_insert_to_temp_table(
     person: Person,
     session: AsyncSession,
     temp_table_name: str,
-    logger: Logger | None = None,
 ) -> None:
     """
     Clean the person record and insert into the temp table.
@@ -128,15 +106,6 @@ async def _clean_and_insert_to_temp_table(
     # Use existing DuckDB cleaning logic (context manager ensures cleanup)
     with duckdb.connect(":memory:") as duckdb_conn:
         cleaned_table = clean_record_to_duckdb(duckdb_conn, person)
-
-        # Log the cleaned record at DEBUG level (contains PII)
-        if logger:
-            cleaned_data = duckdb_conn.table(cleaned_table).fetchall()
-            columns = [desc[0] for desc in duckdb_conn.table(cleaned_table).description]
-            logger.debug("Cleaned search record columns: %s", columns)
-            for row in cleaned_data:
-                record_dict = dict(zip(columns, row, strict=True))
-                logger.debug("Cleaned search record: %s", record_dict)
 
         # Insert from DuckDB to Postgres temp table (parameterized, no upsert/commit)
         await insert_duckdb_table_into_postgres_table(

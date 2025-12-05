@@ -1,6 +1,5 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
 from collections.abc import Sequence
-from logging import Logger
 
 from splink.internals.blocking import (
     BlockingRule,
@@ -195,7 +194,6 @@ async def candidate_search_from_table(
     primary_table: str,
     candidates_table: str,
     connection_pg: AsyncSession,
-    logger: Logger | None = None,
 ) -> Sequence[RowMapping]:
     """
     Given a primary record id, return candidates ready to be scored.
@@ -205,7 +203,6 @@ async def candidate_search_from_table(
         primary_table: Table containing the primary record (can be temp table)
         candidates_table: Table containing candidates (typically personmatch.person)
         connection_pg: AsyncSession to use
-        logger: Optional logger for debugging SQL and results
 
     Returns:
         Sequence of candidate records with term frequencies
@@ -231,34 +228,24 @@ async def candidate_search_from_table(
     )
 
     sql = pipeline.generate_cte_pipeline_sql()
-
-    if logger:
-        logger.debug("Blocking SQL query:\n%s", sql)
-        logger.debug("Query parameters: mid=%s", primary_record_id)
-
+    
+    # TEMP: Print EXPLAIN ANALYZE to check index usage
+    explain_sql = f"EXPLAIN ANALYZE {sql}"
+    explain_result = await connection_pg.execute(text(explain_sql), {"mid": primary_record_id})
+    print("\n=== EXPLAIN ANALYZE ===")
+    for row in explain_result:
+        print(row[0])
+    print("=== END EXPLAIN ===\n")
+    
     res = await connection_pg.execute(text(sql), {"mid": primary_record_id})
-    candidates = res.mappings().fetchall()
 
-    if logger:
-        logger.debug("Candidates returned: %d rows", len(candidates))
-        # Log candidate details at DEBUG level (contains PII)
-        for i, candidate in enumerate(candidates[:10]):
-            logger.debug(
-                "Candidate %d: match_id=%s",
-                i + 1,
-                candidate.get("match_id"),
-            )
-        if len(candidates) > 10:
-            logger.debug("... and %d more candidates", len(candidates) - 10)
-
-    return candidates
+    return res.mappings().fetchall()
 
 
 async def get_record_with_term_frequencies(
     record_id: str,
     table_name: str,
     connection_pg: AsyncSession,
-    logger: Logger | None = None,
 ) -> Sequence[RowMapping]:
     """
     Fetch a single record with its term frequencies.
@@ -270,7 +257,6 @@ async def get_record_with_term_frequencies(
         record_id: The match_id of the record to fetch
         table_name: Table containing the record (can be temp table)
         connection_pg: AsyncSession to use
-        logger: Optional logger for debugging
 
     Returns:
         Sequence containing the single record with term frequencies
@@ -289,14 +275,6 @@ async def get_record_with_term_frequencies(
     )
 
     sql = pipeline.generate_cte_pipeline_sql()
-
-    if logger:
-        logger.debug("Fetching search record with TFs, SQL:\n%s", sql)
-
     res = await connection_pg.execute(text(sql), {"mid": record_id})
-    records = res.mappings().fetchall()
 
-    if logger:
-        logger.debug("Search record with TFs: %d rows", len(records))
-
-    return records
+    return res.mappings().fetchall()
