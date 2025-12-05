@@ -1,5 +1,6 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
 from collections.abc import Sequence
+from logging import Logger
 
 from splink.internals.blocking import (
     BlockingRule,
@@ -181,17 +182,43 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
 
     Requires a duckdb connexion with a postgres database attached as 'pg_db'
     """
+    return await candidate_search_from_table(
+        primary_record_id=primary_record_id,
+        primary_table="personmatch.person",
+        candidates_table="personmatch.person",
+        connection_pg=connection_pg,
+    )
+
+
+async def candidate_search_from_table(
+    primary_record_id: str,
+    primary_table: str,
+    candidates_table: str,
+    connection_pg: AsyncSession,
+    logger: Logger | None = None,
+) -> Sequence[RowMapping]:
+    """
+    Given a primary record id, return candidates ready to be scored.
+
+    Args:
+        primary_record_id: The match_id to search for
+        primary_table: Table containing the primary record (can be temp table)
+        candidates_table: Table containing candidates (typically personmatch.person)
+        connection_pg: AsyncSession to use
+        logger: Optional logger for debugging SQL and results
+
+    Returns:
+        Sequence of candidate records with term frequencies
+    """
     pipeline = CTEPipeline()
 
-    cleaned_table_name = "personmatch.person"
-
     table_name_primary = "primary_record"
-    sql = f"SELECT * FROM {cleaned_table_name} WHERE match_id = :mid"  # noqa: S608
+    sql = f"SELECT * FROM {primary_table} WHERE match_id = :mid"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     sql_info = _block_using_rules_sqls(
         input_tablename_l=table_name_primary,
-        input_tablename_r=cleaned_table_name,
+        input_tablename_r=candidates_table,
         blocking_rules=_blocking_rules_concrete,
         link_type="link_only",
     )
@@ -204,6 +231,72 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     )
 
     sql = pipeline.generate_cte_pipeline_sql()
-    res = await connection_pg.execute(text(sql), {"mid": primary_record_id})
 
-    return res.mappings().fetchall()
+    if logger:
+        logger.debug("Blocking SQL query:\n%s", sql)
+        logger.debug("Query parameters: mid=%s", primary_record_id)
+
+    res = await connection_pg.execute(text(sql), {"mid": primary_record_id})
+    candidates = res.mappings().fetchall()
+
+    if logger:
+        logger.debug("Candidates returned: %d rows", len(candidates))
+        # Log candidate details at DEBUG level (contains PII)
+        for i, candidate in enumerate(candidates[:10]):
+            logger.debug(
+                "Candidate %d: match_id=%s",
+                i + 1,
+                candidate.get("match_id"),
+            )
+        if len(candidates) > 10:
+            logger.debug("... and %d more candidates", len(candidates) - 10)
+
+    return candidates
+
+
+async def get_record_with_term_frequencies(
+    record_id: str,
+    table_name: str,
+    connection_pg: AsyncSession,
+    logger: Logger | None = None,
+) -> Sequence[RowMapping]:
+    """
+    Fetch a single record with its term frequencies.
+
+    This is needed for scoring - we need both the search record AND candidates
+    with their term frequencies in the same format.
+
+    Args:
+        record_id: The match_id of the record to fetch
+        table_name: Table containing the record (can be temp table)
+        connection_pg: AsyncSession to use
+        logger: Optional logger for debugging
+
+    Returns:
+        Sequence containing the single record with term frequencies
+    """
+    pipeline = CTEPipeline()
+
+    # Start with the single record
+    sql = f"SELECT * FROM {table_name} WHERE match_id = :mid"  # noqa: S608
+    pipeline.enqueue_sql(sql=sql, output_table_name="single_record")
+
+    # Add term frequencies
+    enqueue_join_term_frequency_tables(
+        pipeline,
+        table_to_join_to="single_record",
+        output_table_name="record_with_tfs",
+    )
+
+    sql = pipeline.generate_cte_pipeline_sql()
+
+    if logger:
+        logger.debug("Fetching search record with TFs, SQL:\n%s", sql)
+
+    res = await connection_pg.execute(text(sql), {"mid": record_id})
+    records = res.mappings().fetchall()
+
+    if logger:
+        logger.debug("Search record with TFs: %d rows", len(records))
+
+    return records

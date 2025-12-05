@@ -60,6 +60,48 @@ def insert_data_into_duckdb(
     return table_with_postcode_tf_tablename
 
 
+def score_records_to_person_scores(
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    primary_record_id: str,
+    records_with_tf: Sequence,
+    table_name: str = "all_records",
+) -> list[PersonScore]:
+    """
+    Score records against a primary record and return PersonScore results.
+
+    This is the shared scoring helper used by both:
+    - get_scored_candidates (for records already in the database)
+    - search_candidates (for ad-hoc search records)
+
+    Args:
+        connection_duckdb: DuckDB connection to use
+        primary_record_id: The match_id of the primary record to score against
+        records_with_tf: Sequence of records with term frequencies (from candidate_search)
+        table_name: Name for the DuckDB table (default "all_records")
+
+    Returns:
+        List of PersonScore objects with scoring results
+    """
+    tf_enhanced_table = insert_data_into_duckdb(connection_duckdb, records_with_tf, table_name)
+
+    res = score(connection_duckdb, primary_record_id, tf_enhanced_table, return_scores_only=True)
+
+    data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
+
+    return [
+        PersonScore(
+            candidate_match_id=row["match_id_r"],
+            candidate_match_probability=row["match_probability"],
+            candidate_match_weight=row["match_weight"],
+            candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
+            candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
+            candidate_is_possible_twin=row["possible_twins"],
+            unadjusted_match_weight=row["unaltered_match_weight"],
+        )
+        for row in data
+    ]
+
+
 async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
