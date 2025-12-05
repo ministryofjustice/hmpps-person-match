@@ -228,15 +228,6 @@ async def candidate_search_from_table(
     )
 
     sql = pipeline.generate_cte_pipeline_sql()
-    
-    # TEMP: Print EXPLAIN ANALYZE to check index usage
-    explain_sql = f"EXPLAIN ANALYZE {sql}"
-    explain_result = await connection_pg.execute(text(explain_sql), {"mid": primary_record_id})
-    print("\n=== EXPLAIN ANALYZE ===")
-    for row in explain_result:
-        print(row[0])
-    print("=== END EXPLAIN ===\n")
-    
     res = await connection_pg.execute(text(sql), {"mid": primary_record_id})
 
     return res.mappings().fetchall()
