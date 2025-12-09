@@ -22,6 +22,184 @@ def make_semi_identical_people(differing_data: list[dict[str, dict]]) -> list[Mo
     return [person_1, person_2]
 
 
+_TWIN_PARAMETERS = [
+    pytest.param(
+        {},
+        False,
+        id="Identical data; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+        },
+        True,
+        id="Simple twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["brian", "rian"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+        },
+        True,
+        id="Explicitly mismatched IDs, and non-matching (but similar names); twins",
+    ),
+    pytest.param(
+        {
+            # first two letters of name so we can match on blocking rule
+            "first_name": ["name", "nacompletelydifferentname"],
+            "first_name_aliases": [[], []],
+            "date_of_birth": ["1990-01-01", "1990-05-05"],
+            "date_of_birth_aliases": [["1990-05-05"], []],
+            "pncs": [["00/0000000A"], []],
+            "cros": [[], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+        },
+        True,
+        id="DOB matches only via alias; twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["brian", "rian"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], []],
+            "master_defendant_id": [None, None],
+        },
+        True,
+        id="One explicitly mismatched ID, and non-matching (but similar names); twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["brian", "rian"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], []],
+            "cros": [["00/000000A"], []],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Not fully explicitly mismatched IDs, and non-matching (but similar names); not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["brian", "rian"],
+            "first_name_aliases": [[], ["brian"]],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Explicitly mismatched IDs, and matching names; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [[], []],
+            "pncs": [[], []],
+            "cros": [[], []],
+            "master_defendant_id": [None, None],
+        },
+        True,
+        id="Twins, IDs not explicitly mismatched",
+    ),
+    pytest.param(
+        {
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Matching first name; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [["alias"], ["aliasa"]],
+            "pncs": [["00/0000000A"], []],
+            "cros": [[], ["00/000000A"]],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Similar alias; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [[], ["name"]],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Name matches alias; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["00/0000000A"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Matching PNC; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["00/000000A"]],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Matching CRO; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "middle_names": ["name", "name"],
+            "first_name_aliases": [[], []],
+            "pncs": [[], []],
+            "cros": [[], []],
+            "master_defendant_id": [None, None],
+        },
+        False,
+        id="Second name matches first name; not twins",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+        },
+        False,
+        id="Look like twins, but have master_defendant_id override",
+    ),
+    pytest.param(
+        {
+            "first_name": ["name", "completelydifferentname"],
+            "first_name_aliases": [[], []],
+            "pncs": [["00/0000000A"], ["99/9999999Z"]],
+            "cros": [["00/000000A"], ["99/999999Z"]],
+            "master_defendant_id": [None, None],
+            "override_marker": ["A", "A"],
+            "override_scopes": [["B"], ["B"]],
+        },
+        False,
+        id="Look like twins, but have include override marker",
+    ),
+]
+
+
 class TestTwinDetection(IntegrationTestBase):
     """
     Test direct twin detection
@@ -37,182 +215,7 @@ class TestTwinDetection(IntegrationTestBase):
 
     @pytest.mark.parametrize(
         ["differing_fields", "expected_flagged_as_twins"],
-        [
-            pytest.param(
-                {},
-                False,
-                id="Identical data; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                },
-                True,
-                id="Simple twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["brian", "rian"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                },
-                True,
-                id="Explicitly mismatched IDs, and non-matching (but similar names); twins",
-            ),
-            pytest.param(
-                {
-                    # first two letters of name so we can match on blocking rule
-                    "first_name": ["name", "nacompletelydifferentname"],
-                    "first_name_aliases": [[], []],
-                    "date_of_birth": ["1990-01-01", "1990-05-05"],
-                    "date_of_birth_aliases": [["1990-05-05"], []],
-                    "pncs": [["00/0000000A"], []],
-                    "cros": [[], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                },
-                True,
-                id="DOB matches only via alias; twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["brian", "rian"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], []],
-                    "master_defendant_id": [None, None],
-                },
-                True,
-                id="One explicitly mismatched ID, and non-matching (but similar names); twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["brian", "rian"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], []],
-                    "cros": [["00/000000A"], []],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Not fully explicitly mismatched IDs, and non-matching (but similar names); not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["brian", "rian"],
-                    "first_name_aliases": [[], ["brian"]],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Explicitly mismatched IDs, and matching names; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [[], []],
-                    "cros": [[], []],
-                    "master_defendant_id": [None, None],
-                },
-                True,
-                id="Twins, IDs not explicitly mismatched",
-            ),
-            pytest.param(
-                {
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Matching first name; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [["alias"], ["aliasa"]],
-                    "pncs": [["00/0000000A"], []],
-                    "cros": [[], ["00/000000A"]],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Similar alias; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [[], ["name"]],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Name matches alias; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["00/0000000A"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Matching PNC; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["00/000000A"]],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Matching CRO; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "middle_names": ["name", "name"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [[], []],
-                    "cros": [[], []],
-                    "master_defendant_id": [None, None],
-                },
-                False,
-                id="Second name matches first name; not twins",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                },
-                False,
-                id="Look like twins, but have master_defendant_id override",
-            ),
-            pytest.param(
-                {
-                    "first_name": ["name", "completelydifferentname"],
-                    "first_name_aliases": [[], []],
-                    "pncs": [["00/0000000A"], ["99/9999999Z"]],
-                    "cros": [["00/000000A"], ["99/999999Z"]],
-                    "master_defendant_id": [None, None],
-                    "override_marker": ["A", "A"],
-                    "override_scopes": [["B"], ["B"]],
-                },
-                False,
-                id="Look like twins, but have include override marker",
-            ),
-        ],
+        _TWIN_PARAMETERS,
     )
     async def test_identical_data_not_twins(
         self,
