@@ -18,7 +18,7 @@ from hmpps_cpr_splink.cpr_splink.model.model import (
     JOINING_MATCH_WEIGHT_THRESHOLD,
     MODEL_PATH,
 )
-from hmpps_cpr_splink.cpr_splink.model.score import score
+from hmpps_cpr_splink.cpr_splink.model.score import enhance_scores_with_twins, score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
 from hmpps_person_match.models.person.person_score import PersonScore
@@ -190,9 +190,11 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             join_condition="l.id < r.id",
         )
 
+        scores_with_twins_table_name = enhance_scores_with_twins(connection_duckdb, scores.physical_name)
+
         df_clusters = cluster_pairwise_predictions_at_threshold(
             nodes=tablename,
-            edges=scores.physical_name,
+            edges=scores_with_twins_table_name,
             db_api=db_api,
             node_id_column_name="match_id",
             threshold_match_weight=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
