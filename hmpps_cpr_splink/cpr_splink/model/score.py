@@ -8,6 +8,7 @@ from splink.internals.realtime import compare_records
 
 from .model import (
     MODEL_PATH,
+    POSSIBLE_TWINS_ASSIGNED_MATCH_PROBABILITY,
     POSSIBLE_TWINS_ASSIGNED_MATCH_WEIGHT,
     POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD,
 )
@@ -165,12 +166,16 @@ def filter_twins_sql(table_name: str) -> str:
     sql_filter_twins = {
         "sql": f"""
             SELECT
-                * RENAME (match_weight AS unaltered_match_weight),
+                * RENAME (match_weight AS unaltered_match_weight, match_probability AS unaltered_match_probability),
                 ({_twins_condition()}) AS possible_twins,
                 CASE
                     WHEN possible_twins THEN {POSSIBLE_TWINS_ASSIGNED_MATCH_WEIGHT}
                     ELSE unaltered_match_weight
-                END AS match_weight
+                END AS match_weight,
+                CASE
+                    WHEN possible_twins THEN {POSSIBLE_TWINS_ASSIGNED_MATCH_PROBABILITY}
+                    ELSE unaltered_match_probability
+                END AS match_probability,
             FROM
                 {table_name}
         """,  # noqa: S608
@@ -232,7 +237,8 @@ def score(
 
     if return_scores_only:
         return connection_duckdb.sql(
-            f"SELECT match_id_l, match_id_r, match_probability, match_weight, possible_twins, unaltered_match_weight "
+            f"SELECT match_id_l, match_id_r, "  # noqa: S608
+            f"match_probability, match_weight, possible_twins, unaltered_match_weight "
             f"FROM {scores_with_twins_table}",
         )
     else:
