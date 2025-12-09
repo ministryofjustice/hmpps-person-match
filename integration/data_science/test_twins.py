@@ -217,7 +217,7 @@ class TestTwinDetection(IntegrationTestBase):
         ["differing_fields", "expected_flagged_as_twins"],
         _TWIN_PARAMETERS,
     )
-    async def test_identical_data_not_twins(
+    async def test_twin_scenarios_score(
         self,
         differing_fields: list[dict[str, dict]],
         expected_flagged_as_twins: bool,
