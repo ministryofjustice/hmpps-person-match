@@ -153,7 +153,12 @@ def get_mutually_excluded_records(connection_duckdb: duckdb.DuckDBPyConnection, 
     return connection_duckdb.execute(sql).fetchall()
 
 
-async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: AsyncSession) -> Clusters:
+async def get_clusters(
+        match_ids: list[str],
+        pg_db_url: URL,
+        connection_pg: AsyncSession,
+        default_postcode_tf: float = 1.0,
+    ) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         tablename = "records_to_check"
 
@@ -166,6 +171,7 @@ async def get_clusters(match_ids: list[str], pg_db_url: URL, connection_pg: Asyn
             pipeline,
             table_to_join_to=pipeline.output_table_name,
             output_table_name=tablename,
+            default_postcode_tf=default_postcode_tf,
         )
 
         sql = pipeline.generate_cte_pipeline_sql()

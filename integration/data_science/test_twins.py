@@ -255,6 +255,8 @@ class TestTwinDetection(IntegrationTestBase):
         for mock_person in mock_people:
             person = await person_factory.create_from(mock_person)
             person_ids.append(person.match_id)
-        clusters = await get_clusters(person_ids, pg_db_url, db_connection)
         await get_scored_candidates(person.match_id, pg_db_url, db_connection)
+        # use a high postcode default tf so that we match more highly - effectively making
+        # the random postcodes we use 'rare'
+        clusters = await get_clusters(person_ids, pg_db_url, db_connection, default_postcode_tf=0.000001)
         assert clusters.is_single_cluster == (not expected_flagged_as_twins)
