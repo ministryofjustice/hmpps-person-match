@@ -232,6 +232,10 @@ class TestTwinDetection(IntegrationTestBase):
         assert len(scored_candidates) == 1
         assert scored_candidates[0].candidate_is_possible_twin == expected_flagged_as_twins
         assert scored_candidates[0].unadjusted_match_weight > POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD
+        if expected_flagged_as_twins:
+            assert scored_candidates[0].candidate_match_weight < scored_candidates[0].unadjusted_match_weight
+        else:
+            assert scored_candidates[0].candidate_match_weight == scored_candidates[0].unadjusted_match_weight
 
 
     @pytest.mark.parametrize(
