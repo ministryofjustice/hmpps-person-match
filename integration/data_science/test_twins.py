@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_cpr_splink.cpr_splink.interface.score import get_scored_candidates
+from hmpps_cpr_splink.cpr_splink.interface.score import get_clusters, get_scored_candidates
 from hmpps_cpr_splink.cpr_splink.model.model import POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD
 from integration.mock_person import MockPerson
 from integration.person_factory import PersonFactory
@@ -232,3 +232,25 @@ class TestTwinDetection(IntegrationTestBase):
         assert len(scored_candidates) == 1
         assert scored_candidates[0].candidate_is_possible_twin == expected_flagged_as_twins
         assert scored_candidates[0].unadjusted_match_weight > POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD
+
+
+    @pytest.mark.parametrize(
+        ["differing_fields", "expected_flagged_as_twins"],
+        _TWIN_PARAMETERS,
+    )
+    async def test_twins_scenarios_is_cluster_valid(
+        self,
+        differing_fields: list[dict[str, dict]],
+        expected_flagged_as_twins: bool,
+        pg_db_url: URL,
+        db_connection: AsyncSession,
+        person_factory: PersonFactory,
+    ) -> None:
+        mock_people = make_semi_identical_people(differing_fields)
+        person_ids = []
+        for mock_person in mock_people:
+            person = await person_factory.create_from(mock_person)
+            person_ids.append(person.match_id)
+        _scored_candidates = await get_scored_candidates(person.match_id, pg_db_url, db_connection)
+        clusters = await get_clusters(person_ids, pg_db_url, db_connection)
+        assert clusters.is_single_cluster == (not expected_flagged_as_twins)
