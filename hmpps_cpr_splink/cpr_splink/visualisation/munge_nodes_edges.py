@@ -16,7 +16,51 @@ def _add_waterfall_data(edges: list[dict[str, Any]], settings: Settings) -> None
         waterfall_data_by_record_number.setdefault(rec["record_number"], []).append(rec)
 
     for idx, e in enumerate(edges):
-        e["waterfall_data"] = waterfall_data_by_record_number.get(idx, [])
+        record_waterfall = waterfall_data_by_record_number.get(idx, [])
+
+        # Calculate twins adjustment
+        unaltered = e.get("unaltered_match_weight", e.get("match_weight", 0))
+        actual = e.get("match_weight", 0)
+        twins_adjustment = actual - unaltered
+        possible_twins = e.get("possible_twins", False)
+
+        # Find the Final score entry and its bar_sort_order
+        final_score_entry = None
+        final_score_sort_order = 0
+        for entry in record_waterfall:
+            if entry["column_name"] == "Final score":
+                final_score_entry = entry
+                final_score_sort_order = entry.get("bar_sort_order", 0)
+                break
+
+        # Only add twins adjustment bar if there's an actual adjustment
+        if twins_adjustment != 0:
+            # Insert twins adjustment bar before Final score
+            twins_bar = {
+                "column_name": "twins_adjustment",
+                "label_for_charts": "Twins adjustment",
+                "sql_condition": None,
+                "log2_bayes_factor": twins_adjustment,
+                "bayes_factor": 2**twins_adjustment,
+                "comparison_vector_value": None,
+                "m_probability": None,
+                "u_probability": None,
+                "bayes_factor_description": "Score adjusted for possible twins",
+                "value_l": str(possible_twins),
+                "value_r": str(possible_twins),
+                "term_frequency_adjustment": False,
+                "bar_sort_order": final_score_sort_order,  # Takes Final score's original position
+                "record_number": idx,
+            }
+
+            record_waterfall.append(twins_bar)
+
+            # Update Final score: increment sort order and update value to actual match_weight
+            if final_score_entry:
+                final_score_entry["bar_sort_order"] = final_score_sort_order + 1
+                final_score_entry["log2_bayes_factor"] = actual
+
+        e["waterfall_data"] = record_waterfall
 
 
 def build_spec(nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> dict[str, Any]:
