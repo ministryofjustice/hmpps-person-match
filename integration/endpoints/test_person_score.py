@@ -8,7 +8,6 @@ from integration import random_test_data
 from integration.client import Client
 from integration.mock_person import MockPerson
 from integration.person_factory import PersonFactory
-from integration.random_test_data import random_name
 from integration.test_base import IntegrationTestBase
 
 
@@ -176,7 +175,7 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         person_2 = await person_factory.create_from(person_data)
 
         # Create a 'twin'
-        person_data.first_name = random_name()
+        person_data.first_name = random_test_data.random_name()
         person_data.first_name_aliases = []
         person_data.pncs = []
         person_data.cros = []

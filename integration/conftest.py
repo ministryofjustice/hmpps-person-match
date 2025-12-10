@@ -1,10 +1,10 @@
 import time
-from collections.abc import AsyncGenerator, Callable
+from collections.abc import AsyncGenerator, Callable, Generator
 from enum import Enum
 
 import pytest
 import requests
-from sqlalchemy import URL
+from sqlalchemy import URL, Engine, create_engine
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from integration.person_factory import PersonFactory
@@ -94,6 +94,13 @@ def pg_db_url() -> URL:
         port=5432,
         database="postgres",
     )
+
+
+@pytest.fixture()
+def sync_engine(pg_db_url: URL) -> Generator[Engine]:
+    engine = create_engine(pg_db_url, pool_pre_ping=True)
+    yield engine
+    engine.dispose()
 
 
 @pytest.fixture()

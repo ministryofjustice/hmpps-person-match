@@ -81,7 +81,12 @@ def _block_using_rules_sqls(
     return {"sql": sql, "output_table_name": "__splink__blocked_id_pairs"}
 
 
-def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: str, output_table_name: str) -> None:
+def enqueue_join_term_frequency_tables(
+        pipeline: CTEPipeline,
+        table_to_join_to: str,
+        output_table_name: str,
+        default_postcode_tf: float = 1.0,
+    ) -> None:
     """
     Given a CTEPipeline, enqueue SQL to join term frequency tables.
 
@@ -91,6 +96,9 @@ def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: 
     For postcodes we will have two array columns, in matching order:
     * postcode_arr_repacked containing the postcode values
     * postcode_freq_arr containing the corresponding term frequencies
+
+    `default_postcode_tf` sets the term frequency to use for postcodes not found
+    in the term frequency table.
     """
 
     pipeline.enqueue_sql(
@@ -104,16 +112,16 @@ def enqueue_join_term_frequency_tables(pipeline: CTEPipeline, table_to_join_to: 
         output_table_name="exploded_postcodes",
     )
     pipeline.enqueue_sql(
-        sql="""
+        sql=f"""
         SELECT
             exploded_postcodes.match_id AS match_id,
             exploded_postcodes.postcode AS value,
-            COALESCE(pc_tf.tf_postcode, 1) AS rel_freq
+            COALESCE(pc_tf.tf_postcode, {default_postcode_tf}) AS rel_freq
         FROM
             exploded_postcodes
         LEFT JOIN personmatch.term_frequencies_postcode AS pc_tf
         ON exploded_postcodes.postcode = pc_tf.postcode
-        """,
+        """,  # noqa: S608
         output_table_name="exploded_postcodes_with_term_frequencies",
     )
     pipeline.enqueue_sql(
