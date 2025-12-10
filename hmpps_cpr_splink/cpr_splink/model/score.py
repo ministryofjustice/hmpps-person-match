@@ -38,6 +38,7 @@ def _first_names_differ() -> str:
         AND coalesce(name_2_std_l <> name_1_std_r, TRUE)
     """
 
+
 def _all_aliases_satisfy_condition(boolean_condition: str) -> str:
     """Every pair of aliases satisfies some given boolean condition)."""
     return f"""
