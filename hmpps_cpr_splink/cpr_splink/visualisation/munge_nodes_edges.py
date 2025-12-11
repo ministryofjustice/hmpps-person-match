@@ -18,19 +18,17 @@ def _add_waterfall_data(edges: list[dict[str, Any]], settings: Settings) -> None
     for idx, e in enumerate(edges):
         record_waterfall = waterfall_data_by_record_number.get(idx, [])
 
-        # Calculate twins adjustment
-        unaltered = e.get("unaltered_match_weight", e.get("match_weight", 0))
-        actual = e.get("match_weight", 0)
+        unaltered = e["unaltered_match_weight"]  # Unaltered score is without twins adjustment
+        actual = e["match_weight"]  # Post twins adjustment
         twins_adjustment = actual - unaltered
-        possible_twins = e.get("possible_twins", False)
+        detector_fired = e["possible_twins"]
 
-        # Find the Final score entry and its bar_sort_order
         final_score_entry = None
         final_score_sort_order = 0
         for entry in record_waterfall:
             if entry["column_name"] == "Final score":
                 final_score_entry = entry
-                final_score_sort_order = entry.get("bar_sort_order", 0)
+                final_score_sort_order = entry["bar_sort_order"]
                 break
 
         # Only add twins adjustment bar if there's an actual adjustment
@@ -46,8 +44,8 @@ def _add_waterfall_data(edges: list[dict[str, Any]], settings: Settings) -> None
                 "m_probability": None,
                 "u_probability": None,
                 "bayes_factor_description": "Score adjusted for possible twins",
-                "value_l": str(possible_twins),
-                "value_r": str(possible_twins),
+                "value_l": str(detector_fired),
+                "value_r": str(detector_fired),
                 "term_frequency_adjustment": False,
                 "bar_sort_order": final_score_sort_order,  # Takes Final score's original position
                 "record_number": idx,
