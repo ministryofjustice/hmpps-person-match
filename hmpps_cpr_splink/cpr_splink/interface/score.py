@@ -1,5 +1,5 @@
-from collections.abc import Sequence
-from typing import cast
+from collections.abc import Mapping, Sequence
+from typing import Any, cast
 
 import duckdb
 from splink import DuckDBAPI
@@ -60,38 +60,57 @@ def insert_data_into_duckdb(
     return table_with_postcode_tf_tablename
 
 
+def score_records_to_person_scores(
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    primary_record_id: str,
+    records_with_tf: Sequence[Mapping[str, Any]],
+    table_name: str = "all_records",
+) -> list[PersonScore]:
+    tf_enhanced_table_name = insert_data_into_duckdb(
+        connection_duckdb,
+        records_with_tf,
+        base_table_name=table_name,
+    )
+
+    res = score(
+        connection_duckdb,
+        primary_record_id,
+        tf_enhanced_table_name,
+        return_scores_only=True,
+    )
+
+    data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
+    return [
+        PersonScore(
+            candidate_match_id=row["match_id_r"],
+            candidate_match_probability=row["match_probability"],
+            candidate_match_weight=row["match_weight"],
+            candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
+            candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
+            candidate_is_possible_twin=row["possible_twins"],
+            unadjusted_match_weight=row["unaltered_match_weight"],
+        )
+        for row in data
+    ]
+
+
 async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
     connection_pg: AsyncSession,
 ) -> list[PersonScore]:
-    """
-    Takes a primary record, generates candidates, scores
-    """
-    # TODO: allow a threshold cutoff? (depending on blocking rules)
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         candidates_data = await candidate_search(primary_record_id, connection_pg)
 
         if not candidates_data:
             return []
 
-        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
-
-        res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=True)
-
-        data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
-        return [
-            PersonScore(
-                candidate_match_id=row["match_id_r"],  # match_id_l is primary record
-                candidate_match_probability=row["match_probability"],
-                candidate_match_weight=row["match_weight"],
-                candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
-                candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
-                candidate_is_possible_twin=row["possible_twins"],
-                unadjusted_match_weight=row["unaltered_match_weight"],
-            )
-            for row in data
-        ]
+        return score_records_to_person_scores(
+            connection_duckdb,
+            primary_record_id,
+            candidates_data,
+            table_name="candidates",
+        )
 
 
 async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
@@ -154,11 +173,11 @@ def get_mutually_excluded_records(connection_duckdb: duckdb.DuckDBPyConnection, 
 
 
 async def get_clusters(
-        match_ids: list[str],
-        pg_db_url: URL,
-        connection_pg: AsyncSession,
-        default_postcode_tf: float = 1.0,
-    ) -> Clusters:
+    match_ids: list[str],
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
+    default_postcode_tf: float = 1.0,
+) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         tablename = "records_to_check"
 
