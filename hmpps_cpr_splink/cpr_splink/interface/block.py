@@ -182,7 +182,13 @@ def enqueue_join_term_frequency_tables(
     pipeline.enqueue_sql(sql=sql, output_table_name=output_table_name)
 
 
-async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[RowMapping]:
+async def candidate_search(
+    primary_record_id: str,
+    connection_pg: AsyncSession,
+    *,
+    primary_table_name: str = "personmatch.person",
+    candidates_table_name: str = "personmatch.person",
+) -> Sequence[RowMapping]:
     """
     Given a primary record id, return a table of these records
     along with the primary, ready to be scored.
@@ -191,15 +197,13 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     """
     pipeline = CTEPipeline()
 
-    cleaned_table_name = "personmatch.person"
-
     table_name_primary = "primary_record"
-    sql = f"SELECT * FROM {cleaned_table_name} WHERE match_id = :mid"  # noqa: S608
+    sql = f"SELECT * FROM {primary_table_name} WHERE match_id = :mid"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
     sql_info = _block_using_rules_sqls(
         input_tablename_l=table_name_primary,
-        input_tablename_r=cleaned_table_name,
+        input_tablename_r=candidates_table_name,
         blocking_rules=_blocking_rules_concrete,
         link_type="link_only",
     )
