@@ -8,7 +8,14 @@ from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
 from hmpps_person_match.models.person.person_batch import PersonBatch
 
 
-async def clean_and_insert(records: PersonBatch, connection_pg: AsyncSession) -> None:
+async def clean_and_insert(
+    records: PersonBatch,
+    connection_pg: AsyncSession,
+    target_table_name: str = "personmatch.person",
+    *,
+    upsert: bool = True,
+    commit: bool = True,
+) -> None:
     """
     Takes in a single record in joined format.
 
@@ -24,6 +31,8 @@ async def clean_and_insert(records: PersonBatch, connection_pg: AsyncSession) ->
     connection_duckdb.sql(sql)
     await insert_duckdb_table_into_postgres_table(
         connection_duckdb.table(t_cleaned.name),
-        "personmatch.person",
+        target_table_name,
         connection_pg,
+        upsert=upsert,
+        commit=commit,
     )
