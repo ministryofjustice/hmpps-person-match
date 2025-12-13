@@ -19,6 +19,9 @@ async def insert_duckdb_table_into_postgres_table(
     ddb_tab: duckdb.DuckDBPyRelation,
     pg_table_name: str,
     connection_pg: AsyncSession,
+    *,
+    upsert: bool = True,
+    commit: bool = True,
 ) -> None:
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]
@@ -26,10 +29,19 @@ async def insert_duckdb_table_into_postgres_table(
     data = [dict(zip(columns, row, strict=True)) for row in values]
 
     placeholders = ", ".join([f":{col}" for col in columns])
-    update_columns = ", ".join([f"{col} = EXCLUDED.{col}" for col in columns])
-    query = text(
-        f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders}) "  # noqa: S608
-        f"ON CONFLICT (source_system_id, source_system) DO UPDATE SET {update_columns}",
-    )
+
+    if upsert:
+        update_columns = ", ".join([f"{col} = EXCLUDED.{col}" for col in columns])
+        query = text(
+            f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders}) "  # noqa: S608
+            f"ON CONFLICT (source_system_id, source_system) DO UPDATE SET {update_columns}",
+        )
+    else:
+        query = text(
+            f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders})",  # noqa: S608
+        )
+
     await connection_pg.execute(query, data)
-    await connection_pg.commit()
+
+    if commit:
+        await connection_pg.commit()
