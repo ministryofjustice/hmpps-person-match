@@ -38,6 +38,11 @@ async def search_person(
     - matchId in the payload (if present) is ignored/overridden.
     - Uses a temp table; nothing is written permanently to personmatch.person.
     """
+
+    # TODO: Do we want to wrap this with  async with session.begin():
+    # The guarantees same connection used throughout and hence temp
+    # table is visible.  But this may be guaranteed already
+    # https://chatgpt.com/c/693e8c2e-ca6c-8350-9409-193fc3023d39
     scores = await search_candidates(
         person=person,
         session=session,
