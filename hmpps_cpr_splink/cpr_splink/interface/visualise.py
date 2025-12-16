@@ -13,6 +13,7 @@ from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgre
 from hmpps_cpr_splink.cpr_splink.model.model import (
     MODEL_PATH,
 )
+from hmpps_cpr_splink.cpr_splink.model.score import enhance_scores_with_twins
 
 from .score import insert_data_into_duckdb
 
@@ -82,8 +83,10 @@ async def get_nodes_edges(
             sql_cache_key="get_clusters_compare_sql",
             join_condition="l.id < r.id",
         )
-        scores_ddb = scores.as_duckdbpyrelation()
 
-        edges_as_dict = _ddb_relation_to_serialised_dicts(scores_ddb)
+        scores_with_twins_table = enhance_scores_with_twins(connection_duckdb, scores.physical_name)
+        scores_with_twins_ddb = connection_duckdb.table(scores_with_twins_table)
+
+        edges_as_dict = _ddb_relation_to_serialised_dicts(scores_with_twins_ddb)
 
         return nodes_as_dict, edges_as_dict

@@ -1,9 +1,11 @@
 from collections.abc import Callable
 
 import pytest
+from sqlalchemy import Engine, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_person_match.routes.cluster.is_cluster_valid import ROUTE
+from hmpps_person_match.routes.person.score.person_score import ROUTE as SCORE_ROUTE
 from integration import random_test_data
 from integration.client import Client
 from integration.conftest import PersonFactory
@@ -223,3 +225,72 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         response_data = response.json()
         # in this case the cluster is now valid
         assert response_data["isClusterValid"]
+
+    async def test_is_cluster_valid_rejects_twins(
+        self,
+        call_endpoint: Callable,
+        person_factory: PersonFactory,
+        sync_engine: Engine,
+    ) -> None:
+        """
+        Test is-cluster-valid correctly respects twin-adjusted scores
+        """
+        person_data = MockPerson()
+        person_data.master_defendant_id = None
+        original_name = person_data.first_name
+        person_1 = await person_factory.create_from(person_data)
+
+        # Create a 'twin'
+        person_data.first_name = random_test_data.random_name()
+        person_data.first_name_aliases = []
+        person_data.pncs = []
+        person_data.cros = []
+        person_2 = await person_factory.create_from(person_data)
+        assert person_data.first_name != original_name
+        # need to pre-populate postcode term frequency view to ensure we get a match weight
+        # high enough that these would otherwise be considered a valid cluster
+        self._pre_populate_postcode_tf_view(sync_engine)
+
+        score_response = call_endpoint(
+            "get",
+            self._build_score_url(person_1.match_id),
+            client=Client.HMPPS_PERSON_MATCH,
+        )
+        assert score_response.status_code == 200
+        score_response_data = score_response.json()
+        # check that we get our twin back in score, flagged as such, and with a match weight
+        # above the cluster threshold
+        assert len(score_response_data) == 1
+        assert score_response_data[0]["candidate_match_id"] == person_2.match_id
+        assert score_response_data[0]["candidate_is_possible_twin"]
+        assert score_response_data[0]["unadjusted_match_weight"] > 18
+
+        # now check that is-cluster-valid rejects the cluster
+        data = [person_1.match_id, person_2.match_id]
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
+        assert response.status_code == 200
+        response_data = response.json()
+        # in this case the cluster is NOT valid, as we have twins
+        assert not response_data["isClusterValid"]
+        # we should have two clusters (each record on its own)
+        assert len(response_data["clusters"]) == 2
+
+    @staticmethod
+    def _build_score_url(match_id: str) -> str:
+        return SCORE_ROUTE.format(match_id=match_id)
+
+    @staticmethod
+    def _pre_populate_postcode_tf_view(sync_engine: Engine) -> None:
+        """
+        We insert dummy values into person table to populate existing postcodes,
+        and then refresh the term frequency view.
+
+        With just over 2000 postcode values, any existing (duplicated) postcode should get a term frequency
+        just under 2 / 2000 = 0.001, which will allow such postcodes to fall into the comparison level
+        with postcode tf product < 0.001, leading to a higher match weight.
+        """
+        with sync_engine.begin() as synchronous_db_connection:
+            sql = "INSERT INTO personmatch.person (postcode_arr) VALUES (:postcode_arr)"
+            values = [{"postcode_arr": ["COMMON POSTCODE", "COMMON POSTCODE"]} for _ in range(1002)]
+            synchronous_db_connection.execute(text(sql), values)
+            synchronous_db_connection.execute(text("REFRESH MATERIALIZED VIEW personmatch.term_frequencies_postcode;"))
