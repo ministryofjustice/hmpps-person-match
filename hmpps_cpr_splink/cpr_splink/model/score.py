@@ -8,6 +8,7 @@ from splink.internals.realtime import compare_records
 
 from .model import (
     MODEL_PATH,
+    POSSIBLE_TWINS_ASSIGNED_MATCH_PROBABILITY,
     POSSIBLE_TWINS_ASSIGNED_MATCH_WEIGHT,
     POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD,
 )
@@ -165,12 +166,16 @@ def filter_twins_sql(table_name: str) -> str:
     sql_filter_twins = {
         "sql": f"""
             SELECT
-                * RENAME (match_weight AS unaltered_match_weight),
+                * RENAME (match_weight AS unaltered_match_weight, match_probability AS unaltered_match_probability),
                 ({_twins_condition()}) AS possible_twins,
                 CASE
                     WHEN possible_twins THEN {POSSIBLE_TWINS_ASSIGNED_MATCH_WEIGHT}
                     ELSE unaltered_match_weight
-                END AS match_weight
+                END AS match_weight,
+                CASE
+                    WHEN possible_twins THEN {POSSIBLE_TWINS_ASSIGNED_MATCH_PROBABILITY}
+                    ELSE unaltered_match_probability
+                END AS match_probability,
             FROM
                 {table_name}
         """,  # noqa: S608
@@ -179,6 +184,20 @@ def filter_twins_sql(table_name: str) -> str:
     pipeline.enqueue_list_of_sqls([sql_filter_twins])
 
     return pipeline.generate_cte_pipeline_sql()
+
+
+def enhance_scores_with_twins(
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    scores_table_name: str,
+) -> str:
+    """Enhance an existing scores table with possible twins flag and adjusted match weight."""
+    enhanced_table_name = f"{scores_table_name}_with_twins"
+    sql = f"""
+        CREATE TABLE {enhanced_table_name} AS
+        {filter_twins_sql(scores_table_name)}
+    """
+    connection_duckdb.execute(sql)
+    return enhanced_table_name
 
 
 def score(
@@ -211,16 +230,16 @@ def score(
         sql_cache_key="score_records_sql",
     )
 
-    sql = f"CREATE TABLE scores_with_twins AS {filter_twins_sql(scores_df.physical_name)}"
-    connection_duckdb.execute(sql)
+    scores_with_twins_table = enhance_scores_with_twins(connection_duckdb, scores_df.physical_name)
 
     end_time = time.perf_counter()
     logger.info("Time taken: %.2f seconds", end_time - start_time)
 
     if return_scores_only:
         return connection_duckdb.sql(
-            "SELECT match_id_l, match_id_r, match_probability, match_weight, possible_twins, unaltered_match_weight "
-            "FROM scores_with_twins",
+            f"SELECT match_id_l, match_id_r, "  # noqa: S608
+            f"match_probability, match_weight, possible_twins, unaltered_match_weight "
+            f"FROM {scores_with_twins_table}",
         )
     else:
-        return connection_duckdb.sql("SELECT * FROM scores_with_twins")
+        return connection_duckdb.sql(f"SELECT * FROM {scores_with_twins_table}")  #noqa: S608
