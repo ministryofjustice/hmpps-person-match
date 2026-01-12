@@ -71,7 +71,7 @@ services:
         condition: service_healthy
 
   hmpps-auth:
-    image: quay.io/hmpps/hmpps-auth:latest
+    image: ghcr.io/ministryofjustice/hmpps-auth:latest
     container_name: hmpps-auth
     networks:
       - hmpps

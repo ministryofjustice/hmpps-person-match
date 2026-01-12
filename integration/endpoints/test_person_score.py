@@ -161,6 +161,48 @@ class TestPersonScoreEndpoint(IntegrationTestBase):
         assert person_2.match_id in candidates_id
         assert person_3.match_id in candidates_id
 
+    async def test_score_flags_twins(
+        self,
+        call_endpoint: Callable,
+        person_factory: PersonFactory,
+    ) -> None:
+        person_data = MockPerson()
+        person_data.master_defendant_id = None
+        original_name = person_data.first_name
+        person_1 = await person_factory.create_from(person_data)
+
+        # Create another record of same person
+        person_2 = await person_factory.create_from(person_data)
+
+        # Create a 'twin'
+        person_data.first_name = random_test_data.random_name()
+        person_data.first_name_aliases = []
+        person_data.pncs = []
+        person_data.cros = []
+        person_3 = await person_factory.create_from(person_data)
+        assert person_data.first_name != original_name
+
+        # Call score for person
+        response = call_endpoint("get", self._build_score_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
+
+        assert response.status_code == 200
+        assert len(response.json()) == 2
+
+        candidates_id = [candidate["candidate_match_id"] for candidate in response.json()]
+        assert person_2.match_id in candidates_id
+        assert person_3.match_id in candidates_id
+        person_2_response_row = [
+            candidate for candidate in response.json() if candidate["candidate_match_id"] == person_2.match_id
+        ]
+        person_3_response_row = [
+            candidate for candidate in response.json() if candidate["candidate_match_id"] == person_3.match_id
+        ]
+
+        assert not person_2_response_row[0]["candidate_is_possible_twin"]
+        assert person_2_response_row[0]["candidate_match_weight"] > 24
+        assert person_3_response_row[0]["candidate_is_possible_twin"]
+        assert person_3_response_row[0]["candidate_match_weight"] < 0
+
     @staticmethod
     def _build_score_url(match_id: str) -> str:
         return ROUTE.format(match_id=match_id)
