@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import cast
+from typing import Any, cast
 
 import duckdb
 from splink import DuckDBAPI
@@ -122,7 +122,9 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
     return [r[0] for r in result.fetchall()]
 
 
-def get_mutually_excluded_records(connection_duckdb: duckdb.DuckDBPyConnection, duckdb_table_name: str) -> list[str]:
+def get_mutually_excluded_records(
+    connection_duckdb: duckdb.DuckDBPyConnection, duckdb_table_name: str,
+) -> list[tuple[Any, ...]]:
     # check if we have any rows in our data that share a scope, but have distinct markers
     # if we have any such rows, our cluster is invalid
     pipeline = CTEPipeline()
