@@ -1,4 +1,4 @@
-# HMPPS Person Match API
+<# HMPPS Person Match API
 
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://hmpps-person-match-dev.hmpps.service.justice.gov.uk/swagger-ui.html)
 
@@ -9,7 +9,7 @@ of people matches across MoJ systems.
 
 ## Pre-Requisites
 
-* Python 3.13+
+* Python 3.14
 * [uv](https://docs.astral.sh/uv/)
 
 
@@ -22,9 +22,7 @@ Keep `uv` up to date by running `uv self update` to make sure it matches the ver
 If you need to update a transitive dependency (for example to fix a security vulnerability), do this:
 
 0. make sure you are on the latest version of uv
-1. `uv add yourdependency==yourversion`
-2. revert the change to `pyproject.toml`
-3. `uv lock`
+1. `uv lock --upgrade-package <package-name>==<package-version>`
 
 This should result in a small change to the lockfile updating the transitive dependency to the desired version.
 

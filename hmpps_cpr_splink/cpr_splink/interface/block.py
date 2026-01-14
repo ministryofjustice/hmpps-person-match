@@ -59,7 +59,7 @@ def _block_using_rules_sqls(
     input_tablename_l: str,
     input_tablename_r: str,
     blocking_rules: list[BlockingRule],
-    link_type: "LinkTypeLiteralType",
+    link_type: LinkTypeLiteralType,
 ) -> dict[str, str]:
     unique_id_input_columns = combine_unique_id_input_columns(source_dataset_input_column, unique_id_input_column)
 
