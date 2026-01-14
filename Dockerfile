@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.13.8-slim AS base
+FROM python:3.14.0-slim AS base
 
 # load in build details
 ARG BUILD_NUMBER
