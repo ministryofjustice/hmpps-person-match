@@ -1,0 +1,29 @@
+name: SCA
+run-name: SCA ⚡️
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily at midnight UTC
+  pull_request:
+    branches: ["main"]
+
+permissions: {} # Top-level permissions set to none (explicit security)
+
+jobs:
+  sca:
+    name: Software Composition Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      security-events: read
+
+    steps:
+      - name: Run SCA
+        uses: ministryofjustice/devsecops-actions/sca@v1.2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          docker-images-file: "docker-images.json"
