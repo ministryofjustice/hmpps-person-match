@@ -6,7 +6,7 @@ authors = []
 
 requires-python = ">=3.14"
 dependencies = [
-  "duckdb==1.4.3",
+  "duckdb==1.4.4",
   "splink==4.0.12",
   "psycopg2-binary==2.9.11",
   "pytz==2025.2",
