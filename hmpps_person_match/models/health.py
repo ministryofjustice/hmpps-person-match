@@ -1,9 +1,9 @@
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel
 
 
-class Status(str, Enum):
+class Status(StrEnum):
     """
     Application status enum
     """

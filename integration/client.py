@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class Client(str, Enum):
+class Client(StrEnum):
     """
     HMPPS Auth Clients
     Used for authentication for development

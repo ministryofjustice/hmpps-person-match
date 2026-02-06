@@ -12,10 +12,10 @@ class MockPerson(Person):
     Sets random test data values
     """
 
-    match_id: str = Field(alias="matchId", default_factory=lambda: random_test_data.random_match_id())
-    first_name: str = Field(alias="firstName", default_factory=lambda: random_test_data.random_name())
-    middle_names: str = Field(alias="middleNames", default_factory=lambda: random_test_data.random_name())
-    last_name: str = Field(alias="lastName", default_factory=lambda: random_test_data.random_name())
+    match_id: str = Field(alias="matchId", default_factory=random_test_data.random_match_id)
+    first_name: str = Field(alias="firstName", default_factory=random_test_data.random_name)
+    middle_names: str = Field(alias="middleNames", default_factory=random_test_data.random_name)
+    last_name: str = Field(alias="lastName", default_factory=random_test_data.random_name)
     first_name_aliases: list[str] = Field(
         alias="firstNameAliases",
         default_factory=lambda: [random_test_data.random_name()],
@@ -26,7 +26,7 @@ class MockPerson(Person):
     )
     date_of_birth: date | None = Field(
         alias="dateOfBirth",
-        default_factory=lambda: random_test_data.random_date(),
+        default_factory=random_test_data.random_date,
     )
     date_of_birth_aliases: list[date] = Field(
         alias="dateOfBirthAliases",
@@ -41,15 +41,15 @@ class MockPerson(Person):
     )
     source_system: str = Field(
         alias="sourceSystem",
-        default_factory=lambda: random_test_data.random_source_system(),
+        default_factory=random_test_data.random_source_system,
     )
     source_system_id: str = Field(
         alias="sourceSystemId",
-        default_factory=lambda: random_test_data.random_source_system_id(),
+        default_factory=random_test_data.random_source_system_id,
     )
     master_defendant_id: str | None = Field(
         alias="masterDefendantId",
-        default_factory=lambda: random_test_data.random_defendant_id(),
+        default_factory=random_test_data.random_defendant_id,
     )
     override_marker: str | None = Field(alias="overrideMarker", default=None)
     override_scopes: list[str] | None = Field(alias="overrideScopes", default=None)
