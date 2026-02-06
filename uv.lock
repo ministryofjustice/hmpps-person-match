@@ -201,11 +201,11 @@ wheels = [
 
 [[package]]
 name = "cachetools"
-version = "6.2.6"
+version = "7.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/39/91/d9ae9a66b01102a18cd16db0cf4cd54187ffe10f0865cc80071a4104fbb3/cachetools-6.2.6.tar.gz", hash = "sha256:16c33e1f276b9a9c0b49ab5782d901e3ad3de0dd6da9bf9bcd29ac5672f2f9e6", size = 32363, upload-time = "2026-01-27T20:32:59.956Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/af/df70e9b65bc77a1cbe0768c0aa4617147f30f8306ded98c1744bcdc0ae1e/cachetools-7.0.0.tar.gz", hash = "sha256:a9abf18ff3b86c7d05b27ead412e235e16ae045925e531fae38d5fada5ed5b08", size = 35796, upload-time = "2026-02-01T18:59:47.411Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/90/45/f458fa2c388e79dd9d8b9b0c99f1d31b568f27388f2fdba7bb66bbc0c6ed/cachetools-6.2.6-py3-none-any.whl", hash = "sha256:8c9717235b3c651603fff0076db52d6acbfd1b338b8ed50256092f7ce9c85bda", size = 11668, upload-time = "2026-01-27T20:32:58.527Z" },
+    { url = "https://files.pythonhosted.org/packages/28/df/2dd32cce20cbcf6f2ec456b58d44368161ad28320729f64e5e1d5d7bd0ae/cachetools-7.0.0-py3-none-any.whl", hash = "sha256:d52fef60e6e964a1969cfb61ccf6242a801b432790fe520d78720d757c81cbd2", size = 13487, upload-time = "2026-02-01T18:59:45.981Z" },
 ]
 
 [[package]]
@@ -415,17 +415,18 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.128.0"
+version = "0.128.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
     { name = "pydantic" },
     { name = "starlette" },
     { name = "typing-extensions" },
+    { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/52/08/8c8508db6c7b9aae8f7175046af41baad690771c9bcde676419965e338c7/fastapi-0.128.0.tar.gz", hash = "sha256:1cc179e1cef10a6be60ffe429f79b829dce99d8de32d7acb7e6c8dfdf7f2645a", size = 365682, upload-time = "2025-12-27T15:21:13.714Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4f/6e/45fb5390d46d7918426ea1c1ec4b06c1d3fd70be4a47a690ccb4f1f9438a/fastapi-0.128.2.tar.gz", hash = "sha256:7db9eb891866ac3a08e03f844b99e343a2c1cc41247e68e006c90b38d2464ea1", size = 376129, upload-time = "2026-02-05T19:48:33.957Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/05/5cbb59154b093548acd0f4c7c474a118eda06da25aa75c616b72d8fcd92a/fastapi-0.128.0-py3-none-any.whl", hash = "sha256:aebd93f9716ee3b4f4fcfe13ffb7cf308d99c9f3ab5622d8877441072561582d", size = 103094, upload-time = "2025-12-27T15:21:12.154Z" },
+    { url = "https://files.pythonhosted.org/packages/c1/f2/80df24108572630bb2adef3d97f1e774b18ec25bfbab5528f36cba6478c0/fastapi-0.128.2-py3-none-any.whl", hash = "sha256:55bfd9490ca0125707d80e785583c2dc57840bb66e3a0bbc087d20c364964dc0", size = 104032, upload-time = "2026-02-05T19:48:32.118Z" },
 ]
 
 [package.optional-dependencies]
@@ -597,15 +598,15 @@ requires-dist = [
     { name = "asyncpg", specifier = "==0.31.0" },
     { name = "authlib", specifier = "==1.6.6" },
     { name = "azure-monitor-opentelemetry", specifier = "==1.8.4" },
-    { name = "cachetools", specifier = "==6.2.6" },
+    { name = "cachetools", specifier = "==7.0.0" },
     { name = "cryptography", specifier = "==46.0.4" },
     { name = "duckdb", specifier = "==1.4.4" },
-    { name = "fastapi", specifier = "==0.128.0" },
+    { name = "fastapi", specifier = "==0.128.2" },
     { name = "greenlet", specifier = "==3.3.1" },
     { name = "h11", specifier = "==0.16.0" },
     { name = "opentelemetry-instrumentation-sqlalchemy", specifier = "==0.60b0" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
-    { name = "pyjwt", specifier = "==2.10.1" },
+    { name = "pyjwt", specifier = "==2.11.0" },
     { name = "pytz", specifier = "==2025.2" },
     { name = "splink", specifier = "==4.0.12" },
     { name = "types-authlib", specifier = ">=1.6.5.20251005" },
@@ -617,7 +618,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "faker", specifier = "==40.1.2" },
-    { name = "fastapi", extras = ["standard"], specifier = "==0.128.0" },
+    { name = "fastapi", extras = ["standard"], specifier = "==0.128.2" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "mypy", specifier = ">=1.18.2" },
     { name = "pytest", specifier = "==9.0.2" },
@@ -1352,11 +1353,11 @@ wheels = [
 
 [[package]]
 name = "pyjwt"
-version = "2.10.1"
+version = "2.11.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e7/46/bd74733ff231675599650d3e47f361794b22ef3e3770998dda30d3b63726/pyjwt-2.10.1.tar.gz", hash = "sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953", size = 87785, upload-time = "2024-11-28T03:43:29.933Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5c/5a/b46fa56bf322901eee5b0454a34343cdbdae202cd421775a8ee4e42fd519/pyjwt-2.11.0.tar.gz", hash = "sha256:35f95c1f0fbe5d5ba6e43f00271c275f7a1a4db1dab27bf708073b75318ea623", size = 98019, upload-time = "2026-01-30T19:59:55.694Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/ad/689f02752eeec26aed679477e80e632ef1b682313be70793d798c1d5fc8f/PyJWT-2.10.1-py3-none-any.whl", hash = "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb", size = 22997, upload-time = "2024-11-28T03:43:27.893Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/01/c26ce75ba460d5cd503da9e13b21a33804d38c2165dec7b716d06b13010c/pyjwt-2.11.0-py3-none-any.whl", hash = "sha256:94a6bde30eb5c8e04fee991062b534071fd1439ef58d2adc9ccb823e7bcd0469", size = 28224, upload-time = "2026-01-30T19:59:54.539Z" },
 ]
 
 [package.optional-dependencies]
