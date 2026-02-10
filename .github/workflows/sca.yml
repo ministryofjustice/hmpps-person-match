@@ -29,4 +29,4 @@ jobs:
         uses: ministryofjustice/devsecops-actions/sca@v1.2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          docker-images-file: "docker-images.json"
+          docker-images-file: ${{ github.workspace }}/docker-images.json
