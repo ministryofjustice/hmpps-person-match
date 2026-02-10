@@ -6,8 +6,6 @@ on:
     - cron: "0 11 * * *" # Daily at midnight UTC
   pull_request:
     branches: [ "main" ]
-  push:
-    branches: [ "CPR-1056-security-improvements" ]
   workflow_dispatch:
   branch_protection_rule:
 
@@ -28,7 +26,7 @@ jobs:
 
     steps:
       - name: Run SCA
-        uses: ministryofjustice/devsecops-actions/sca@v1.3.0
+        uses: ministryofjustice/devsecops-actions/sca@v1.2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           docker-images-file: "docker-images.json"
