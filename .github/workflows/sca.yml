@@ -13,7 +13,7 @@ jobs:
   sca:
     name: Software Composition Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
 
     permissions:
       contents: write
@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Run SCA
-        uses: ministryofjustice/devsecops-actions/sca@v1.2.0
+        uses: ministryofjustice/devsecops-actions/sca@v1.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           docker-images-file: "docker-images.json"
