@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Run SCA
-        uses: ministryofjustice/devsecops-actions/sca@v1.2.0
+        uses: ministryofjustice/devsecops-actions/sca@v1.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           docker-images-file: ${{ github.workspace }}/docker-images.json
