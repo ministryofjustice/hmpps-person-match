@@ -28,4 +28,5 @@ jobs:
         uses: ministryofjustice/devsecops-actions/sca@v1.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          codeql-upload-findings: "always"
           docker-images-file: ${{ github.workspace }}/docker-images.json
