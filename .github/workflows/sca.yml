@@ -4,8 +4,6 @@ run-name: Security Scanning ⚡️
 on:
   schedule:
     - cron: "34 7 * * 1-5" # Every weekday
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
 
 permissions: {} # Top-level permissions set to none (explicit security)
