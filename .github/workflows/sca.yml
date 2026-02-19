@@ -3,7 +3,7 @@ run-name: Security Scanning ⚡️
 
 on:
   schedule:
-    - cron: "15 11 * * 1-5" # Every weekday
+    - cron: "34 7 * * 1-5" # Every weekday
   workflow_dispatch:
 
 permissions: {} # Top-level permissions set to none (explicit security)
