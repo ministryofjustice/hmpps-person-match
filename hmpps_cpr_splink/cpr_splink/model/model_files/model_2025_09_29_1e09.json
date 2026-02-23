@@ -257,8 +257,8 @@
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.05583549277625895,
-                    "u_probability": 0.99999780173156
+                    "m_probability": 0.00390625,
+                    "u_probability": 1.0
                 }
             ],
             "comparison_description": "CustomComparison"
