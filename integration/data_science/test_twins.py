@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -35,6 +37,7 @@ _TWIN_PARAMETERS = [
             "pncs": [["00/0000000A"], ["99/9999999Z"]],
             "cros": [["00/000000A"], ["99/999999Z"]],
             "master_defendant_id": [None, None],
+            "sentence_dates": [[date(2020, 1, 1)], [date(2020, 1, 1)]],
         },
         True,
         id="Simple twins",
@@ -46,6 +49,7 @@ _TWIN_PARAMETERS = [
             "pncs": [["00/0000000A"], ["99/9999999Z"]],
             "cros": [["00/000000A"], ["99/999999Z"]],
             "master_defendant_id": [None, None],
+            "sentence_dates": [[date(2020, 1, 1)], [date(2020, 1, 1)]],
         },
         True,
         id="Explicitly mismatched IDs, and non-matching (but similar names); twins",
@@ -60,6 +64,7 @@ _TWIN_PARAMETERS = [
             "pncs": [["00/0000000A"], []],
             "cros": [[], ["99/999999Z"]],
             "master_defendant_id": [None, None],
+            "sentence_dates": [[date(2020, 1, 1)], [date(2020, 1, 1)]],
         },
         True,
         id="DOB matches only via alias; twins",
@@ -71,6 +76,7 @@ _TWIN_PARAMETERS = [
             "pncs": [["00/0000000A"], ["99/9999999Z"]],
             "cros": [["00/000000A"], []],
             "master_defendant_id": [None, None],
+            "sentence_dates": [[date(2020, 1, 1)], [date(2020, 1, 1)]],
         },
         True,
         id="One explicitly mismatched ID, and non-matching (but similar names); twins",
@@ -104,6 +110,7 @@ _TWIN_PARAMETERS = [
             "pncs": [[], []],
             "cros": [[], []],
             "master_defendant_id": [None, None],
+            "sentence_dates": [[date(2020, 1, 1)], [date(2020, 1, 1)]],
         },
         True,
         id="Twins, IDs not explicitly mismatched",
@@ -236,7 +243,6 @@ class TestTwinDetection(IntegrationTestBase):
             assert scored_candidates[0].candidate_match_weight < scored_candidates[0].unadjusted_match_weight
         else:
             assert scored_candidates[0].candidate_match_weight == scored_candidates[0].unadjusted_match_weight
-
 
     @pytest.mark.parametrize(
         ["differing_fields", "expected_flagged_as_twins"],
