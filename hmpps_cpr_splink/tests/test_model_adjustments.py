@@ -39,6 +39,9 @@ _FULL_SCHEMA = CLEANED_TABLE_SCHEMA + _TF_SCHEMA + _POSTCODE_TF_SCHEMA
 # The base record has everything populated as null
 _BASE = {col: ([] if dtype.endswith(("[]", "]")) else None) for col, dtype in _FULL_SCHEMA}
 
+# Could consider using comparison_vector_value() from splink/internals/testing.py
+# but possibly more brittle
+
 
 def _compare(left: dict, right: dict) -> dict:
     """Insert a record pair via the production insert path and return the scored row."""
@@ -94,9 +97,9 @@ def test_model_adjustments_dob_year_diff_not_levenshtein() -> None:
         {**_BASE, "id": 1, "date_of_birth": "1990-09-14", "date_of_birth_arr": ["1990-09-14"]},
         {**_BASE, "id": 2, "date_of_birth": "1991-09-14", "date_of_birth_arr": ["1991-09-14"]},
     )
-    # Must NOT be the levenshtein level (gamma=2)
-    assert row["gamma_date_of_birth_arr"] != 2, "pair should not match levenshtein level – year differs"
-    # Must be the 5-year abs level (gamma=1)
+
+    assert row["gamma_date_of_birth_arr"] != 2, "pair should not match levenshtein level - year differs"
+
     assert row["gamma_date_of_birth_arr"] == 1, (
         f"expected 5-year abs level (gamma=1), got gamma={row['gamma_date_of_birth_arr']}"
     )
