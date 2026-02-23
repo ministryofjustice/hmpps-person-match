@@ -37,7 +37,7 @@ _POSTCODE_TF_SCHEMA = [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_a
 _FULL_SCHEMA = CLEANED_TABLE_SCHEMA + _TF_SCHEMA + _POSTCODE_TF_SCHEMA
 
 # The base record has everything populated as null
-_BASE = {col: ([] if dtype.endswith(("[]", "]")) else None) for col, dtype in _FULL_SCHEMA}
+_BASE: dict[str, object] = {col: ([] if dtype.endswith(("[]", "]")) else None) for col, dtype in _FULL_SCHEMA}
 
 # Could consider using comparison_vector_value() from splink/internals/testing.py
 # but possibly more brittle
