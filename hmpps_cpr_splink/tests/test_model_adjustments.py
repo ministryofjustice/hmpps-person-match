@@ -3,92 +3,56 @@ Tests for specific model adjustments made in model_2026_02_23_1e09:
 
   1. DOB comparison: the levenshtein level now requires the year to be identical
      (old: levenshtein on the full date string; new: same year AND levenshtein on month-day).
-     A one-year difference (e.g. 1990-01-01 vs 1991-01-01) was previously captured by
-     the levenshtein level (gamma=2) but must now fall through to the 5-year abs level
-     (gamma=1).
 
   2. ID-comparison ELSE level: m=1/256, u=1.0 gives an exact match weight of -8.
      (old model had m≈0.056, u≈1.0, giving ≈-4 weight.)
 """
 
 import math
-import json
 
 import duckdb
 import pytest
 from splink import DuckDBAPI
 from splink.internals.realtime import compare_records
 
+from hmpps_cpr_splink.cpr_splink.interface.score import insert_data_into_duckdb
 from hmpps_cpr_splink.cpr_splink.model.model import MODEL_PATH
+from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 
 # ---------------------------------------------------------------------------
-# Shared schema / base record (mirrors try_model.py)
+# Build the full schema from canonical sources (mirrors score.py)
 # ---------------------------------------------------------------------------
 
-_SCHEMA = {
-    "id": "INTEGER",
-    "match_id": "VARCHAR",
-    "source_system": "VARCHAR",
-    "cro_single": "VARCHAR",
-    "pnc_single": "VARCHAR",
-    "date_of_birth": "DATE",
-    "date_of_birth_arr": "DATE[]",
-    "sentence_date_single": "DATE",
-    "sentence_date_arr": "DATE[]",
-    "postcode_arr_with_freq": "STRUCT(value VARCHAR, rel_freq DOUBLE)[]",
-    "postcode_arr": "VARCHAR[]",
-    "postcode_outcode_arr": "VARCHAR[]",
-    "forename_std_arr": "VARCHAR[]",
-    "last_name_std_arr": "VARCHAR[]",
-    "name_1_std": "VARCHAR",
-    "name_2_std": "VARCHAR",
-    "name_3_std": "VARCHAR",
-    "last_name_std": "VARCHAR",
-    "first_and_last_name_std": "VARCHAR",
-    "override_marker": "VARCHAR",
-    "override_scopes": "VARCHAR[]",
-    "master_defendant_id": "VARCHAR",
-    "tf_name_1_std": "DOUBLE",
-    "tf_name_2_std": "DOUBLE",
-    "tf_last_name_std": "DOUBLE",
-    "tf_first_and_last_name_std": "DOUBLE",
-    "tf_date_of_birth": "DOUBLE",
-    "tf_pnc_single": "DOUBLE",
-    "tf_cro_single": "DOUBLE",
-}
+_TF_COLUMNS = [
+    "name_1_std",
+    "name_2_std",
+    "last_name_std",
+    "first_and_last_name_std",
+    "date_of_birth",
+    "cro_single",
+    "pnc_single",
+]
+_TF_SCHEMA = [(f"tf_{c}", "FLOAT") for c in _TF_COLUMNS]
+_POSTCODE_TF_SCHEMA = [("postcode_arr_repacked", "VARCHAR[]"), ("postcode_freq_arr", "FLOAT[]")]
+_FULL_SCHEMA = CLEANED_TABLE_SCHEMA + _TF_SCHEMA + _POSTCODE_TF_SCHEMA
 
-_BASE = {col: ([] if dtype.endswith("]") else None) for col, dtype in _SCHEMA.items()}
+# The base record has everything populated as null
+_BASE = {col: ([] if dtype.endswith(("[]", "]")) else None) for col, dtype in _FULL_SCHEMA}
 
 
 def _compare(left: dict, right: dict) -> dict:
-    """Insert a single record pair and return the compare_records result row."""
+    """Insert a record pair via the production insert path and return the scored row."""
     con = duckdb.connect(":memory:")
-    columns_ddl = ", ".join(f"{col} {dtype}" for col, dtype in _SCHEMA.items())
-    con.execute(f"CREATE TABLE records ({columns_ddl})")  # noqa: S608
-    placeholders = ", ".join(["?"] * len(_SCHEMA))
-    insert_sql = f"INSERT INTO records VALUES ({placeholders})"  # noqa: S608
-    for record in (left, right):
-        values = [json.dumps(record[col]) if col == "postcode_arr_with_freq" else record[col] for col in _SCHEMA]
-        con.execute(insert_sql, values)
-    con.execute("CREATE TABLE records_left  AS SELECT * FROM records WHERE id = 1")
-    con.execute("CREATE TABLE records_right AS SELECT * FROM records WHERE id = 2")
+    table_name = insert_data_into_duckdb(con, [left, right], "records")
+    con.execute(f"CREATE TABLE records_left  AS SELECT * FROM {table_name} WHERE id = 1")
+    con.execute(f"CREATE TABLE records_right AS SELECT * FROM {table_name} WHERE id = 2")
     db_api = DuckDBAPI(connection=con)
     rows = compare_records("records_left", "records_right", settings=MODEL_PATH, db_api=db_api).as_record_dict()
     return rows[0]
 
 
-# ---------------------------------------------------------------------------
-# Tests
-# ---------------------------------------------------------------------------
-
-
-def test_model_adjustments_id_mismatch_weight():
-    """ID-comparison ELSE level should give a match weight of exactly -8.
-
-    The new model sets m = 1/256 and u = 1.0, so the Bayes factor is 2^-8.
-    Records have distinct, non-matching PNC and CRO values so all higher
-    comparison levels are skipped and the ELSE level fires.
-    """
+def test_model_adjustments_id_mismatch_weight() -> None:
+    """ID-comparison ELSE level should give a match weight of exactly -8."""
     row = _compare(
         {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
         {**_BASE, "id": 2, "pnc_single": "YY/9999B", "cro_single": "9999/99B"},
@@ -96,10 +60,30 @@ def test_model_adjustments_id_mismatch_weight():
     assert math.log2(row["bf_id_comparison"]) == pytest.approx(-8.0)
 
 
-def test_model_adjustments_dob_year_diff_not_levenshtein():
+def test_id_one_different_other_null_gives_minus_8() -> None:
+    """When one of PNC/CRO differs and the other has a value on one side but NULL
+    on the other, no higher level matches so the ELSE level fires → -8."""
+    row = _compare(
+        {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
+        {**_BASE, "id": 2, "pnc_single": "YY/9999B", "cro_single": None},
+    )
+    assert math.log2(row["bf_id_comparison"]) == pytest.approx(-8.0)
+
+
+def test_id_one_different_other_same_gives_positive_weight() -> None:
+    """When PNC matches but CRO differs, the PNC-match level fires and the
+    match weight should be strongly positive (PNC match is very informative)."""
+    row = _compare(
+        {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
+        {**_BASE, "id": 2, "pnc_single": "XX/1234A", "cro_single": "9999/99B"},
+    )
+    assert math.log2(row["bf_id_comparison"]) > 0
+
+
+def test_model_adjustments_dob_year_diff_not_levenshtein() -> None:
     """A one-year difference in DOB must NOT match the levenshtein comparison level.
 
-    '1990-01-01' vs '1991-01-01' has levenshtein distance 1 on the full string,
+    '1990-01-14' vs '1991-01-14' has levenshtein distance 1 on the full string,
     so the old condition (levenshtein on full date <= 1) would have produced
     gamma_date_of_birth_arr = 2 (levenshtein level).
 
@@ -107,12 +91,36 @@ def test_model_adjustments_dob_year_diff_not_levenshtein():
     pair must fall through to the 5-year absolute-difference level: gamma = 1.
     """
     row = _compare(
-        {**_BASE, "id": 1, "date_of_birth": "1990-01-01", "date_of_birth_arr": ["1990-01-01"]},
-        {**_BASE, "id": 2, "date_of_birth": "1991-01-01", "date_of_birth_arr": ["1991-01-01"]},
+        {**_BASE, "id": 1, "date_of_birth": "1990-09-14", "date_of_birth_arr": ["1990-09-14"]},
+        {**_BASE, "id": 2, "date_of_birth": "1991-09-14", "date_of_birth_arr": ["1991-09-14"]},
     )
     # Must NOT be the levenshtein level (gamma=2)
     assert row["gamma_date_of_birth_arr"] != 2, "pair should not match levenshtein level – year differs"
     # Must be the 5-year abs level (gamma=1)
     assert row["gamma_date_of_birth_arr"] == 1, (
         f"expected 5-year abs level (gamma=1), got gamma={row['gamma_date_of_birth_arr']}"
+    )
+
+
+def test_dob_day_diff_hits_levenshtein_level() -> None:
+    """A one-day difference (same year+month) should match the levenshtein level
+    (gamma=2): same year, and levenshtein('01-01', '01-02') = 1."""
+    row = _compare(
+        {**_BASE, "id": 1, "date_of_birth": "1990-01-01", "date_of_birth_arr": ["1990-01-01"]},
+        {**_BASE, "id": 2, "date_of_birth": "1990-01-02", "date_of_birth_arr": ["1990-01-02"]},
+    )
+    assert row["gamma_date_of_birth_arr"] == 2, (
+        f"expected levenshtein level (gamma=2), got gamma={row['gamma_date_of_birth_arr']}"
+    )
+
+
+def test_dob_month_diff_hits_levenshtein_level() -> None:
+    """A one-month difference (same year+day) should match the levenshtein level
+    (gamma=2): same year, and levenshtein('01-14', '02-14') = 1."""
+    row = _compare(
+        {**_BASE, "id": 1, "date_of_birth": "1990-01-14", "date_of_birth_arr": ["1990-01-14"]},
+        {**_BASE, "id": 2, "date_of_birth": "1990-02-14", "date_of_birth_arr": ["1990-02-14"]},
+    )
+    assert row["gamma_date_of_birth_arr"] == 2, (
+        f"expected levenshtein level (gamma=2), got gamma={row['gamma_date_of_birth_arr']}"
     )
