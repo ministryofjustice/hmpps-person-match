@@ -53,7 +53,7 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v7
         with:
-          version: UV_VERSION
+          version: ${{ UV_VERSION }}
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
@@ -85,7 +85,7 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v7
         with:
-          version: UV_VERSION
+          version: ${{ UV_VERSION }}
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
