@@ -24,6 +24,7 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.14.3"
+  UV_VERSION: "0.10.0"
 
 jobs:
   helm_lint:
@@ -52,6 +53,7 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v7
         with:
+          version: UV_VERSION
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
@@ -83,6 +85,7 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v7
         with:
+          version: UV_VERSION
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
