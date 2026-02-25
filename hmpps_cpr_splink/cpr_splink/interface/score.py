@@ -123,7 +123,8 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
 
 
 def get_mutually_excluded_records(
-    connection_duckdb: duckdb.DuckDBPyConnection, duckdb_table_name: str,
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    duckdb_table_name: str,
 ) -> list[tuple[Any, ...]]:
     # check if we have any rows in our data that share a scope, but have distinct markers
     # if we have any such rows, our cluster is invalid
@@ -156,11 +157,11 @@ def get_mutually_excluded_records(
 
 
 async def get_clusters(
-        match_ids: list[str],
-        pg_db_url: URL,
-        connection_pg: AsyncSession,
-        default_postcode_tf: float = 1.0,
-    ) -> Clusters:
+    match_ids: list[str],
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
+    default_postcode_tf: float = 1.0,
+) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         tablename = "records_to_check"
 
