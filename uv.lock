@@ -631,7 +631,7 @@ requires-dist = [
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pyjwt", specifier = "==2.11.0" },
     { name = "pytz", specifier = "==2025.2" },
-    { name = "splink", specifier = "==4.0.12" },
+    { name = "splink", specifier = "==4.0.15" },
     { name = "types-authlib", specifier = ">=1.6.5.20251005" },
     { name = "types-cachetools", specifier = ">=6.2.0.20251022" },
     { name = "types-requests", specifier = ">=2.32.4.20250913" },
@@ -1763,7 +1763,7 @@ wheels = [
 
 [[package]]
 name = "splink"
-version = "4.0.12"
+version = "4.0.15"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "altair" },
@@ -1774,9 +1774,9 @@ dependencies = [
     { name = "pandas" },
     { name = "sqlglot" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/19/5f/99942822c76a5672cef2a43bbff2bcf1dab3cf4b0721245670ff4417ed15/splink-4.0.12.tar.gz", hash = "sha256:66a7a08e354d174cc9f126a74f3811080804fbc774506952fe618dad80f1900a", size = 2079637, upload-time = "2025-12-22T17:09:03.101Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/75/0a4ebe4225fde43c19b4daf0cd9123fc14a3c0628ebd8923b327c97d7f65/splink-4.0.15.tar.gz", hash = "sha256:7d3769d5771e5b91970511479fc1771882ac2f9c02e24e8882f8e898d223afa5", size = 2080352, upload-time = "2026-02-17T21:59:13.891Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/30/b3/131726f43cbbc563fc592096f2625565db8247117e03e7b64e63e206804b/splink-4.0.12-py3-none-any.whl", hash = "sha256:7d415e532596e5a696b7b622701e86a6ec6cc3b8d406b725c0aefc9479a7b118", size = 2150504, upload-time = "2025-12-22T17:09:01.507Z" },
+    { url = "https://files.pythonhosted.org/packages/74/00/d36267852d6c7cf07517de32329a2e8021ce4d99294485f814397fd1fc9e/splink-4.0.15-py3-none-any.whl", hash = "sha256:828a86a05433bec5c1b22a04e6558610602d31f0ca35003918b303a9af9188b7", size = 2151268, upload-time = "2026-02-17T21:59:15.162Z" },
 ]
 
 [[package]]
