@@ -67,7 +67,8 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         person_1 = await person_factory.create_from(MockPerson(sourceSystem="COMMON_PLATFORM"))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"sourceSystem":"DELIUS"}))
+        await person_factory.create_from(person_1.model_copy(
+            update={"source_system":"DELIUS","match_id":random_test_data.random_match_id}))
 
 
         # Call probation match for person
@@ -87,15 +88,15 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         person_1 = await person_factory.create_from(MockPerson(sourceSystem="COMMON_PLATFORM"))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"sourceSystem":"NOMIS",
+        await person_factory.create_from(person_1.model_copy(update={"source_system":"NOMIS",
                                                                      "match_id": random_test_data.random_match_id()}))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"sourceSystem":"LIBRA",
+        await person_factory.create_from(person_1.model_copy(update={"source_system":"LIBRA",
                                                                      "match_id": random_test_data.random_match_id()}))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"sourceSystem":"COMMON_PLATFORM",
+        await person_factory.create_from(person_1.model_copy(update={"source_system":"COMMON_PLATFORM",
                                                                      "match_id": random_test_data.random_match_id()}))
 
 
@@ -115,12 +116,18 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         """
         pnc = random_test_data.random_pnc()
         date_of_birth = random_test_data.random_date()
+        first_name = random_test_data.random_name()
+        last_name = random_test_data.random_name()
 
         # Create person to match and score
-        person_1 = await person_factory.create_from(MockPerson(pncs=[pnc], dateOfBirth=date_of_birth))
+        person_1 = await person_factory.create_from(MockPerson(
+            pncs=[pnc], dateOfBirth=date_of_birth,
+            firstName= first_name, lastName =last_name ))
 
         # Create different person with different details
-        await person_factory.create_from(MockPerson(pncs=[pnc], sourceSystem="DELIUS", dateOfBirth=date_of_birth))
+        await person_factory.create_from(MockPerson(
+            pncs=[pnc], sourceSystem="DELIUS", dateOfBirth=date_of_birth,
+            firstName = first_name,  lastName = last_name))
 
         # Call probation match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)

@@ -120,9 +120,9 @@ async def get_probation_matches(
 
         probation_matches.sort(reverse=True)
 
-        return PersonProbationMatch(match_status=match_status(int(probation_matches[0])))
+        return PersonProbationMatch(match_status=match_status(float(probation_matches[0])))
 
-def match_status(best_match: int) -> str:
+def match_status(best_match: float) -> str:
     match best_match:
         case best_match if best_match >= 20:
             return "MATCH"
