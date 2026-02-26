@@ -36,13 +36,6 @@ def upgrade() -> None:
         ),
         schema="personmatch",
     )
-    # primary key gives index automatically
-    op.create_primary_key(
-        constraint_name="person_pk",
-        table_name="person",
-        columns=["id"],
-        schema="personmatch",
-    )
     # we get an index for free with unique constraint, so don't duplicate
     op.drop_index(index_name="ik_match_id", table_name="person", schema="personmatch")
 

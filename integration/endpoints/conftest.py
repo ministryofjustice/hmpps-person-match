@@ -54,7 +54,7 @@ def call_endpoint(person_match_url: str, access_token_factory: Callable) -> Call
         data: str | None = None,
     ) -> requests.Response:
         token = access_token_factory(client)
-        headers = {"Authorization": f"Bearer {token}"}
+        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         return requests.request(method, person_match_url + route, json=json, data=data, headers=headers, timeout=30)
 
     return _call_endpoint

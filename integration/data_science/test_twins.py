@@ -237,7 +237,6 @@ class TestTwinDetection(IntegrationTestBase):
         else:
             assert scored_candidates[0].candidate_match_weight == scored_candidates[0].unadjusted_match_weight
 
-
     @pytest.mark.parametrize(
         ["differing_fields", "expected_flagged_as_twins"],
         _TWIN_PARAMETERS,

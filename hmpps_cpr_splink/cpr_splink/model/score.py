@@ -243,4 +243,4 @@ def score(
             f"FROM {scores_with_twins_table}",
         )
     else:
-        return connection_duckdb.sql(f"SELECT * FROM {scores_with_twins_table}")  #noqa: S608
+        return connection_duckdb.sql(f"SELECT * FROM {scores_with_twins_table}")  # noqa: S608

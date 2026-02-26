@@ -3,15 +3,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "34 7 * * 1-5" # Every weekday
-
-permissions:
-  packages: read
-  actions: read
-  contents: read
-  security-events: write
-
 jobs:
   security-kotlin-trivy-check:
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
     name: Project security trivy dependency check
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/security_trivy.yml@v2
     with:
