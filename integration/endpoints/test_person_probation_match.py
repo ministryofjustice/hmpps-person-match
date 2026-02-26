@@ -24,7 +24,7 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         await self.truncate_person_data(db_connection)
         await self.refresh_term_frequencies(db_connection)
 
-    async def test_probation_possible_match_no_matching(self, call_endpoint: Callable) -> None:
+    async def test_probation_match_no_matching(self, call_endpoint: Callable) -> None:
         """
         Test person probation possible match handles no matching match id
         """
@@ -33,10 +33,10 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
             self.build_url(random_test_data.random_match_id()),
             client=Client.HMPPS_PERSON_MATCH,
         )
-        assert response.status_code == 200
-        assert response.json() == {"match_status": "NO_MATCH"}
+        assert response.status_code == 404
+        assert response.json() == {}
 
-    async def test_probation_possible_match_invalid_match_id(self, call_endpoint: Callable) -> None:
+    async def test_probation_match_invalid_match_id(self, call_endpoint: Callable) -> None:
         """
         Test person probation possible match handles non uuid match_id
         """
@@ -45,20 +45,20 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {}
 
-    async def test_probation_possible_match_does_not_return_self(self,
+    async def test_probation_match_does_not_match_self(self,
         call_endpoint: Callable, person_factory: PersonFactory) -> None:
         """
-        Test person probation possible match doesn't return its own record as part of candidates
+        Test person probation possible match doesn't match itsself record
         """
         # Create person
         person = await person_factory.create_from(MockPerson())
 
-        # Call probation possible match for person
+        # Call probation match for person
         response = call_endpoint("get", self.build_url(person.match_id), client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
         assert response.json() == {"match_status": "NO_MATCH"}
 
-    async def test_probation_possible_match_returns_match_when_matching_probation_record_exists(self,
+    async def test_probation_match_returns_match_when_matching_probation_record_exists(self,
         call_endpoint: Callable, person_factory: PersonFactory) -> None:
         """
         Test person probation possible match returns match when a matching probation record exists
@@ -70,18 +70,18 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         await person_factory.create_from(person_1.model_copy(update={"sourceSystem":"DELIUS"}))
 
 
-        # Call probation possible match for person
+        # Call probation match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
         assert response.json() == {"match_status": "MATCH"}
 
-    async def test_probation_possible_match_returns_no_match_when_matching_record_exists_in_other_source_system(
+    async def test_probation_match_returns_no_match_when_matching_record_exists_in_other_source_system(
         self,
         call_endpoint: Callable,
         person_factory: PersonFactory,
     ) -> None:
         """
-        Test person probation possible match returns no match when a matching record exists but not in probation
+        Test person probation match returns no match when a matching record exists but not in probation
         """
         # Create person to match and score
         person_1 = await person_factory.create_from(MockPerson(sourceSystem="COMMON_PLATFORM"))
@@ -99,12 +99,12 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
                                                                      "match_id": random_test_data.random_match_id()}))
 
 
-        # Call probation possible match for person
+        # Call probation match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
         assert response.json() == {"match_status": "NO_MATCH"}
 
-    async def test_probation_possible_match_returns_possible_match_when_possibly_matching_record_exists_in_probation(
+    async def test_probation_match_returns_possible_match_when_possibly_matching_record_exists_in_probation(
         self,
         call_endpoint: Callable,
         person_factory: PersonFactory,
@@ -114,14 +114,15 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         which matches with a probability between negative 10 and positive 20
         """
         pnc = random_test_data.random_pnc()
+        date_of_birth = random_test_data.random_date()
 
         # Create person to match and score
-        person_1 = await person_factory.create_from(MockPerson(pncs=[pnc]))
+        person_1 = await person_factory.create_from(MockPerson(pncs=[pnc], dateOfBirth=date_of_birth))
 
         # Create different person with different details
-        await person_factory.create_from(MockPerson(pncs=[pnc]))
+        await person_factory.create_from(MockPerson(pncs=[pnc], sourceSystem="DELIUS", dateOfBirth=date_of_birth))
 
-        # Call probation possible match for person
+        # Call probation match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
 
         assert response.status_code == 200

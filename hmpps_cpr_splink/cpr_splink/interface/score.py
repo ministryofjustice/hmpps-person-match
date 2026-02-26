@@ -100,7 +100,7 @@ async def get_probation_matches(
     connection_pg: AsyncSession,
 ) -> PersonProbationMatch:
     """
-    Takes a primary record, generates candidates, scores
+    Finds the best matching probation record to the supplied record and returns its status
     """
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         candidates_data = await candidate_search(primary_record_id, connection_pg)
@@ -115,7 +115,7 @@ async def get_probation_matches(
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
 
         probation_matches = [ row["match_weight"] for row in data if row["source_system_r"] == "DELIUS" ]
-        if probation_matches is None:
+        if len(probation_matches) == 0:
             return PersonProbationMatch(match_status="NO_MATCH")
 
         probation_matches.sort(reverse=True)
