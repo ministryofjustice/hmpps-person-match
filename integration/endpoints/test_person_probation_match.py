@@ -3,7 +3,7 @@ from collections.abc import Callable
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.routes.person.score.person_score import ROUTE
+from hmpps_person_match.routes.person.score.person_probation_match import ROUTE
 from integration import random_test_data
 from integration.client import Client
 from integration.mock_person import MockPerson
