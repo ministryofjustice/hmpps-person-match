@@ -121,8 +121,8 @@
                     "u_probability": 4.259585633069581e-06
                 },
                 {
-                    "sql_condition": "levenshtein(CAST(date_of_birth_l AS TEXT), CAST(date_of_birth_r AS TEXT)) <= 1",
-                    "label_for_charts": "Levenshtein distance of cast(date_of_birth as varchar) <= 1",
+                    "sql_condition": "substr(CAST(date_of_birth_l AS TEXT), 1, 4) = substr(CAST(date_of_birth_r AS TEXT), 1, 4) AND levenshtein(substr(CAST(date_of_birth_l AS TEXT), 6, 5), substr(CAST(date_of_birth_r AS TEXT), 6, 5)) <= 1",
+                    "label_for_charts": "Same birth year and Levenshtein distance of month-day <= 1",
                     "m_probability": 0.017251329692897888,
                     "u_probability": 0.001769188292516566
                 },
@@ -257,8 +257,8 @@
                 {
                     "sql_condition": "ELSE",
                     "label_for_charts": "All other comparisons",
-                    "m_probability": 0.05583549277625895,
-                    "u_probability": 0.99999780173156
+                    "m_probability": 0.00390625,
+                    "u_probability": 1.0
                 }
             ],
             "comparison_description": "CustomComparison"
