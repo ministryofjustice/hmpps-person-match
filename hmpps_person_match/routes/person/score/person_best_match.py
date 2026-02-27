@@ -10,7 +10,7 @@ from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.models.person.person_best_match import PersonBestMatch
 
-ROUTE = "/person/best_match/{source_system}/{match_id}"
+ROUTE = "/person/best-match/{source_system}/{match_id}"
 
 DESCRIPTION = f"""
     **Authorization Required:**
