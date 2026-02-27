@@ -21,7 +21,7 @@ from hmpps_cpr_splink.cpr_splink.model.model import (
 from hmpps_cpr_splink.cpr_splink.model.score import enhance_scores_with_twins, score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
-from hmpps_person_match.models.person.person_probation_match import PersonProbationMatch
+from hmpps_person_match.models.person.person_best_match import PersonBestMatch
 from hmpps_person_match.models.person.person_score import PersonScore
 
 
@@ -94,19 +94,20 @@ async def get_scored_candidates(
             for row in data
         ]
 
-async def get_probation_matches(
+async def get_best_match(
     primary_record_id: str,
+    source_system: str,
     pg_db_url: URL,
     connection_pg: AsyncSession,
-) -> PersonProbationMatch:
+) -> PersonBestMatch:
     """
-    Finds the best matching probation record to the supplied record and returns its status
+    Finds the best matching record by source system to the supplied record and returns its status
     """
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         candidates_data = await candidate_search(primary_record_id, connection_pg)
 
         if not candidates_data:
-            return PersonProbationMatch(match_status="NO_MATCH")
+            return PersonBestMatch(match_status="NO_MATCH")
 
         candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
 
@@ -114,13 +115,13 @@ async def get_probation_matches(
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
 
-        probation_matches = [ row["match_weight"] for row in data if row["source_system_r"] == "DELIUS" ]
-        if len(probation_matches) == 0:
-            return PersonProbationMatch(match_status="NO_MATCH")
+        matches = [ row["match_weight"] for row in data if row["source_system_r"] == source_system ]
+        if len(matches) == 0:
+            return PersonBestMatch(match_status="NO_MATCH")
 
-        probation_matches.sort(reverse=True)
+        matches.sort(reverse=True)
 
-        return PersonProbationMatch(match_status=match_status(float(probation_matches[0])))
+        return PersonBestMatch(match_status=match_status(float(matches[0])))
 
 def match_status(best_match: float) -> str:
     match best_match:

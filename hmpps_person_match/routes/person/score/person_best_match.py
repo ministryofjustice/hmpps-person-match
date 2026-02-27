@@ -1,4 +1,3 @@
-from logging import Logger
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
@@ -8,11 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from hmpps_cpr_splink.cpr_splink.interface import score
 from hmpps_person_match.db import get_db_session, url
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
-from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
-from hmpps_person_match.models.person.person_probation_match import PersonProbationMatch
+from hmpps_person_match.models.person.person_best_match import PersonBestMatch
 
-ROUTE = "/person/probation_match/{match_id}"
+ROUTE = "/person/best_match/{source_system}/{match_id}"
 
 DESCRIPTION = f"""
     **Authorization Required:**
@@ -25,19 +23,21 @@ router = APIRouter(
 )
 
 @router.get(ROUTE, description=DESCRIPTION)
-async def get_person_probation_match(
+async def get_person_best_match(
     match_id: str,
+    source_system: str,
     session: Annotated[AsyncSession, Depends(get_db_session)],
-    logger: Annotated[Logger, Depends(get_logger)],
-) -> PersonProbationMatch:
+) -> PersonBestMatch:
     """
-    Person probation match GET request handler
-    Takes a matchId
-    Returns MATCH,NO_MATCH or POSSIBLE_MATCH if there is a matching probation records
+    Person best match GET request handler
+    Takes a matchId and a source system
+    Returns MATCH,NO_MATCH or POSSIBLE_MATCH if there is a matching record
+    in the suppleid source system
     """
     if await score.match_record_exists(match_id, session):
-        match: PersonProbationMatch = await score.get_probation_matches(
+        match: PersonBestMatch = await score.get_best_match(
             match_id,
+            source_system,
             url.pg_database_url,
             session,
         )
