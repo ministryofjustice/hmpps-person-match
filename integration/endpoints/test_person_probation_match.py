@@ -67,8 +67,7 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         person_1 = await person_factory.create_from(MockPerson(sourceSystem="COMMON_PLATFORM"))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(
-            update={"source_system":"DELIUS","match_id":random_test_data.random_match_id}))
+        await person_factory.create_from(person_1.model_copy(update={"source_system":"DELIUS"}))
 
 
         # Call probation match for person
@@ -88,16 +87,13 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
         person_1 = await person_factory.create_from(MockPerson(sourceSystem="COMMON_PLATFORM"))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"source_system":"NOMIS",
-                                                                     "match_id": random_test_data.random_match_id()}))
+        await person_factory.create_from(person_1.model_copy(update={"source_system":"NOMIS"}))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"source_system":"LIBRA",
-                                                                     "match_id": random_test_data.random_match_id()}))
+        await person_factory.create_from(person_1.model_copy(update={"source_system":"LIBRA"}))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"source_system":"COMMON_PLATFORM",
-                                                                     "match_id": random_test_data.random_match_id()}))
+        await person_factory.create_from(person_1.model_copy(update={"source_system":"COMMON_PLATFORM"}))
 
 
         # Call probation match for person
@@ -124,9 +120,9 @@ class TestPersonProbationMatchEndpoint(IntegrationTestBase):
             pncs=[pnc], dateOfBirth=date_of_birth,
             firstName= first_name, lastName =last_name ))
 
-        # Create different person with different details
+        # Create probation person as a possible match
         await person_factory.create_from(MockPerson(
-            pncs=[pnc], sourceSystem="DELIUS", dateOfBirth=date_of_birth,
+            sourceSystem="DELIUS", dateOfBirth=date_of_birth,
             firstName = first_name,  lastName = last_name))
 
         # Call probation match for person
