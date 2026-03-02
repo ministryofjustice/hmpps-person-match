@@ -10,7 +10,6 @@ from .model import (
     MODEL_PATH,
     POSSIBLE_TWINS_ASSIGNED_MATCH_PROBABILITY,
     POSSIBLE_TWINS_ASSIGNED_MATCH_WEIGHT,
-    POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD,
 )
 
 logger = logging.getLogger(__name__)
@@ -129,7 +128,6 @@ def _twins_condition() -> str:
     - Matching date of birth in arrays
     - Same surname
     - Share either a sentence date or postcode
-    - Match weight exceeds the similarity threshold
     """
     # Two paths for alias dissimilarity:
     # 1. Explicit ID mismatch on both CRO and PNC means we flag any records that have no exact alias matches
@@ -156,7 +154,6 @@ def _twins_condition() -> str:
         AND ({_surname_match()})
         AND ({_matching_dob_in_arrays()})
         AND ({_shared_sentence_date_or_postcode()})
-        AND match_weight > {POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD}
     """
 
 
@@ -243,4 +240,4 @@ def score(
             f"FROM {scores_with_twins_table}",
         )
     else:
-        return connection_duckdb.sql(f"SELECT * FROM {scores_with_twins_table}")  #noqa: S608
+        return connection_duckdb.sql(f"SELECT * FROM {scores_with_twins_table}")  # noqa: S608

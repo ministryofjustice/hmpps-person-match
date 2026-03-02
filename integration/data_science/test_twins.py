@@ -5,7 +5,6 @@ from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_clusters, get_scored_candidates
-from hmpps_cpr_splink.cpr_splink.model.model import POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD
 from integration.mock_person import MockPerson
 from integration.person_factory import PersonFactory
 from integration.test_base import IntegrationTestBase
@@ -238,7 +237,6 @@ class TestTwinDetection(IntegrationTestBase):
         scored_candidates = await get_scored_candidates(person.match_id, pg_db_url, db_connection)
         assert len(scored_candidates) == 1
         assert scored_candidates[0].candidate_is_possible_twin == expected_flagged_as_twins
-        assert scored_candidates[0].unadjusted_match_weight > POSSIBLE_TWINS_SIMILARITY_FLAG_THRESHOLD
         if expected_flagged_as_twins:
             assert scored_candidates[0].candidate_match_weight < scored_candidates[0].unadjusted_match_weight
         else:
