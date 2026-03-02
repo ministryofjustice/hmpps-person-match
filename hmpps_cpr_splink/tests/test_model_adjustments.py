@@ -1,8 +1,9 @@
 """
 Tests for specific model adjustments made in model_2026_02_23_1e09:
 
-  1. DOB comparison: the levenshtein level now requires the year to be identical
-     (old: levenshtein on the full date string; new: same year AND levenshtein on month-day).
+    1. DOB comparison: the levenshtein level allows small typos across the year suffix
+         and month-day, but prevents generational decade jumps
+         (new: same first 3 year digits AND levenshtein on year-suffix/month-day <= 1).
 
   2. ID-comparison ELSE level: m=1/256, u=1.0 gives an exact match weight of -8.
      (old model had m≈0.056, u≈1.0, giving ≈-4 weight.)
@@ -83,25 +84,29 @@ def test_id_one_different_other_same_gives_positive_weight() -> None:
     assert math.log2(row["bf_id_comparison"]) > 0
 
 
-def test_model_adjustments_dob_year_diff_not_levenshtein() -> None:
-    """A one-year difference in DOB must NOT match the levenshtein comparison level.
-
-    '1990-01-14' vs '1991-01-14' has levenshtein distance 1 on the full string,
-    so the old condition (levenshtein on full date <= 1) would have produced
-    gamma_date_of_birth_arr = 2 (levenshtein level).
-
-    The new condition additionally requires the year to be identical, so this
-    pair must fall through to the 5-year absolute-difference level: gamma = 1.
-    """
+def test_model_adjustments_dob_one_year_diff_hits_levenshtein() -> None:
+    """A one-year difference should match the levenshtein DOB level."""
     row = _compare(
         {**_BASE, "id": 1, "date_of_birth": "1990-09-14", "date_of_birth_arr": ["1990-09-14"]},
         {**_BASE, "id": 2, "date_of_birth": "1991-09-14", "date_of_birth_arr": ["1991-09-14"]},
     )
 
+    assert row["gamma_date_of_birth_arr"] == 2, (
+        f"expected levenshtein level (gamma=2), got gamma={row['gamma_date_of_birth_arr']}"
+    )
+
+
+def test_model_adjustments_dob_decade_diff_not_levenshtein() -> None:
+    """A decade-style year difference must not hit the levenshtein DOB level."""
+    row = _compare(
+        {**_BASE, "id": 1, "date_of_birth": "1990-09-14", "date_of_birth_arr": ["1990-09-14"]},
+        {**_BASE, "id": 2, "date_of_birth": "1960-09-14", "date_of_birth_arr": ["1960-09-14"]},
+    )
+
     assert row["gamma_date_of_birth_arr"] != 2, "pair should not match levenshtein level - year differs"
 
-    assert row["gamma_date_of_birth_arr"] == 1, (
-        f"expected 5-year abs level (gamma=1), got gamma={row['gamma_date_of_birth_arr']}"
+    assert row["gamma_date_of_birth_arr"] == 0, (
+        f"expected ELSE level (gamma=0), got gamma={row['gamma_date_of_birth_arr']}"
     )
 
 
