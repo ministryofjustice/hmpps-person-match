@@ -21,6 +21,7 @@ from hmpps_cpr_splink.cpr_splink.model.model import (
 from hmpps_cpr_splink.cpr_splink.model.score import enhance_scores_with_twins, score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
+from hmpps_person_match.models.person.person_best_match import PersonBestMatch
 from hmpps_person_match.models.person.person_score import PersonScore
 
 
@@ -93,6 +94,43 @@ async def get_scored_candidates(
             for row in data
         ]
 
+async def get_best_match(
+    primary_record_id: str,
+    source_system: str,
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
+) -> PersonBestMatch:
+    """
+    Finds the best matching record by source system to the supplied record and returns its status
+    """
+    with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
+        candidates_data = await candidate_search(primary_record_id, connection_pg)
+
+        if not candidates_data:
+            return PersonBestMatch(match_status="NO_MATCH")
+
+        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
+
+        res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=False)
+
+        data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
+
+        matches = [ row["match_weight"] for row in data if row["source_system_r"] == source_system ]
+        if len(matches) == 0:
+            return PersonBestMatch(match_status="NO_MATCH")
+
+        matches.sort(reverse=True)
+
+        return PersonBestMatch(match_status=match_status(float(matches[0])))
+
+def match_status(best_match: float) -> str:
+    match best_match:
+        case best_match if best_match >= 20:
+            return "MATCH"
+        case best_match if best_match < 20 and best_match > -10:
+            return "POSSIBLE_MATCH"
+        case _:
+            return "NO_MATCH"
 
 async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
     """
@@ -123,7 +161,8 @@ async def get_missing_record_ids(match_ids: list[str], connection_pg: AsyncSessi
 
 
 def get_mutually_excluded_records(
-    connection_duckdb: duckdb.DuckDBPyConnection, duckdb_table_name: str,
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    duckdb_table_name: str,
 ) -> list[tuple[Any, ...]]:
     # check if we have any rows in our data that share a scope, but have distinct markers
     # if we have any such rows, our cluster is invalid
@@ -156,11 +195,11 @@ def get_mutually_excluded_records(
 
 
 async def get_clusters(
-        match_ids: list[str],
-        pg_db_url: URL,
-        connection_pg: AsyncSession,
-        default_postcode_tf: float = 1.0,
-    ) -> Clusters:
+    match_ids: list[str],
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
+    default_postcode_tf: float = 1.0,
+) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         tablename = "records_to_check"
 

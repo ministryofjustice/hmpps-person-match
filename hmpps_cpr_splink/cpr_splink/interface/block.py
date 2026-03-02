@@ -82,11 +82,11 @@ def _block_using_rules_sqls(
 
 
 def enqueue_join_term_frequency_tables(
-        pipeline: CTEPipeline,
-        table_to_join_to: str,
-        output_table_name: str,
-        default_postcode_tf: float = 1.0,
-    ) -> None:
+    pipeline: CTEPipeline,
+    table_to_join_to: str,
+    output_table_name: str,
+    default_postcode_tf: float = 1.0,
+) -> None:
     """
     Given a CTEPipeline, enqueue SQL to join term frequency tables.
 
