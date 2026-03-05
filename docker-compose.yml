@@ -81,6 +81,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health/ping"]
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB=DEBUG
 
 networks:
   hmpps:
