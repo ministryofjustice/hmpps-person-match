@@ -66,6 +66,7 @@ jobs:
         with:
           name: unit-test-results
           path: test_results/pytest-unit-test-report.xml
+          archive: false
   
   int-test:
     runs-on: ubuntu-latest
@@ -97,6 +98,7 @@ jobs:
         with:
           name: int-test-results
           path: test_results/pytest-integration-test-report.xml
+          archive: false
     
   build:
     name: Build docker image from hmpps-github-actions
