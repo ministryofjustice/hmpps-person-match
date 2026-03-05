@@ -79,9 +79,11 @@ services:
       - "9090:9090"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9090/auth/health"]
+
     environment:
       - SERVER_PORT=9090
       - SPRING_PROFILES_ACTIVE=dev
+      - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
 
 networks:
   hmpps:
