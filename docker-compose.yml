@@ -78,11 +78,9 @@ services:
     ports:
       - "9090:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health/ping"]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8080"]
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
-      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB=DEBUG
 
 networks:
   hmpps:
