@@ -76,12 +76,10 @@ services:
     networks:
       - hmpps
     ports:
-      - "9090:9090"
+      - "9090:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090/auth/health/ping"]
-
+      test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health/ping"]
     environment:
-      - SERVER_PORT=9090
       - SPRING_PROFILES_ACTIVE=dev
 
 networks:
