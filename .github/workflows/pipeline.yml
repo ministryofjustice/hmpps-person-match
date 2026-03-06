@@ -62,10 +62,11 @@ jobs:
         run: make test-ci
         
       - name: Upload test results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: unit-test-results
           path: test_results/pytest-unit-test-report.xml
+          archive: false
   
   int-test:
     runs-on: ubuntu-latest
@@ -93,10 +94,11 @@ jobs:
         run: make test-integration-ci
         
       - name: Upload test results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: int-test-results
           path: test_results/pytest-integration-test-report.xml
+          archive: false
     
   build:
     name: Build docker image from hmpps-github-actions
