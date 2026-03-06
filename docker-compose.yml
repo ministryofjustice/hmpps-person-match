@@ -78,10 +78,10 @@ services:
     ports:
       - "9090:9090"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090/auth/health"]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9090"]
     environment:
-      - SERVER_PORT=9090
       - SPRING_PROFILES_ACTIVE=dev
+      - SERVER_PORT=9090
 
 networks:
   hmpps:
