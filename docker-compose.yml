@@ -45,8 +45,8 @@ services:
       DATABASE_PORT: 5432
       DATABASE_HOST: postgres-hmpps-person-match
       DB_SSL_ENABLED: False
-      OAUTH_BASE_URL: http://hmpps-auth:8080
-      OAUTH_ISSUER_URL_KEY: http://localhost:8080
+      OAUTH_BASE_URL: http://hmpps-auth:9090
+      OAUTH_ISSUER_URL_KEY: http://localhost:9090
     depends_on: 
       migrations:
         condition: service_completed_successfully
@@ -76,12 +76,12 @@ services:
     networks:
       - hmpps
     ports:
-      - "9090:8080"
+      - "9090:9090"
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8080"]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9090"]
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - LOGGING_LEVEL_UK_GOV_JUSTICE_DIGITAL_HMPPS=TRACE
+      - SERVER_PORT=9090
 
 networks:
   hmpps:
