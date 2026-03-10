@@ -638,8 +638,8 @@ requires-dist = [
     { name = "pytz", specifier = "==2026.1.post1" },
     { name = "splink", specifier = "==4.0.15" },
     { name = "types-authlib", specifier = "==1.6.9.20260303" },
-    { name = "types-cachetools", specifier = ">=6.2.0.20251022" },
-    { name = "types-requests", specifier = ">=2.32.4.20250913" },
+    { name = "types-cachetools", specifier = "==6.2.0.20251022" },
+    { name = "types-requests", specifier = "==2.32.4.20260107" },
     { name = "uvicorn", specifier = "==0.41.0" },
 ]
 

@@ -24,8 +24,8 @@ dependencies = [
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
   "types-authlib==1.6.9.20260303",
-  "types-cachetools>=6.2.0.20251022",
-  "types-requests>=2.32.4.20250913",
+  "types-cachetools==6.2.0.20251022",
+  "types-requests==2.32.4.20260107",
 ]
 
 [tool.uv]
