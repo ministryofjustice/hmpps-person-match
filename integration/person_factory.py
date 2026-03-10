@@ -15,7 +15,6 @@ class PersonFactory:
             update={
                 "match_id": random_test_data.random_match_id(),
                 "source_system_id": random_test_data.random_source_system_id(),
-                "source_system": random_test_data.random_source_system(),
             },
             deep=True,
         )
