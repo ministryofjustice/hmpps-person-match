@@ -7,7 +7,7 @@ authors = []
 requires-python = ">=3.14"
 dependencies = [
   "duckdb==1.4.4",
-  "splink==4.0.15",
+  "splink==4.0.16",
   "psycopg2-binary==2.9.11",
   "pytz==2026.1.post1",
   "azure-monitor-opentelemetry==1.8.6",
