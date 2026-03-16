@@ -2,11 +2,11 @@
 Tests for specific model adjustments made in model_2026_02_23_1e09:
 
     1. DOB comparison: the levenshtein level allows small typos across the year suffix
-         and month-day, but prevents generational decade jumps
-         (new: same first 3 year digits AND levenshtein on year-suffix/month-day <= 1).
+        and month-day, but prevents generational decade jumps
 
-  2. ID-comparison ELSE level: m=1/256, u=1.0 gives an exact match weight of -8.
-     (old model had m≈0.056, u≈1.0, giving ≈-4 weight.)
+    2. ID comparison penalties:
+        - explicit mismatch on both PNC and CRO gives -14
+        - the ELSE level now gives -10, covering mismatch on one ID with no match on the other
 """
 
 import math
@@ -55,23 +55,22 @@ def _compare(left: dict, right: dict) -> dict:
     return rows[0]
 
 
-def test_model_adjustments_id_mismatch_weight() -> None:
-    """ID-comparison ELSE level should give a match weight of exactly -8."""
+def test_explicit_mismatch_on_both_ids_gives_minus_14() -> None:
+    """Explicit mismatch on both PNC and CRO should give a match weight of -14."""
     row = _compare(
         {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
         {**_BASE, "id": 2, "pnc_single": "YY/9999B", "cro_single": "9999/99B"},
     )
-    assert math.log2(row["bf_id_comparison"]) == pytest.approx(-8.0)
+    assert math.log2(row["bf_id_comparison"]) == pytest.approx(-14.0)
 
 
-def test_id_one_different_other_null_gives_minus_8() -> None:
-    """When one of PNC/CRO differs and the other has a value on one side but NULL
-    on the other, no higher level matches so the ELSE level fires → -8."""
+def test_id_one_different_other_null_gives_minus_10() -> None:
+    """Mismatch on one ID and no match on the other should now fall through to ELSE at -10."""
     row = _compare(
         {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
         {**_BASE, "id": 2, "pnc_single": "YY/9999B", "cro_single": None},
     )
-    assert math.log2(row["bf_id_comparison"]) == pytest.approx(-8.0)
+    assert math.log2(row["bf_id_comparison"]) == pytest.approx(-10.0)
 
 
 def test_id_one_different_other_same_gives_positive_weight() -> None:
