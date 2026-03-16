@@ -15,7 +15,7 @@ dependencies = [
   "uvicorn==0.41.0",
   "authlib==1.6.9",
   "cachetools==7.0.5",
-  "pyjwt==2.11.0",
+  "pyjwt==2.12.0",
   "cryptography==46.0.5",
   "alembic==1.18.4",
   "asyncpg==0.31.0",
