@@ -45,7 +45,8 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {}
 
-    async def test_best_match_does_not_match_self(self, call_endpoint: Callable, person_factory: PersonFactory) -> None:
+    async def test_best_match_does_not_match_self(self,
+        call_endpoint: Callable, person_factory: PersonFactory) -> None:
         """
         Test person best match doesn't match itsself record
         """
@@ -94,6 +95,7 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
 
         # Create different matching person
         await person_factory.create_from(person_1.model_copy(update={"source_system":"COMMON_PLATFORM"}))
+
 
         # Call best match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
