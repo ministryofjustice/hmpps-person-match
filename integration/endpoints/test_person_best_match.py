@@ -70,7 +70,6 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         # Create different matching person
         await person_factory.create_from(person_1.model_copy(update={"source_system":"DELIUS"}))
 
-
         # Call best match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
         assert response.status_code == 200
@@ -118,14 +117,21 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         last_name = random_test_data.random_name()
 
         # Create person to match and score
-        person_1 = await person_factory.create_from(MockPerson(
-            pncs=[pnc], dateOfBirth=date_of_birth,
-            firstName= first_name, lastName =last_name ))
+        person_1 = await person_factory.create_from(
+            MockPerson(pncs=[pnc], dateOfBirth=date_of_birth, firstName=first_name, lastName=last_name),
+        )
 
-        # Create probation person as a possible match
-        await person_factory.create_from(MockPerson(
-            sourceSystem="DELIUS", dateOfBirth=date_of_birth,
-            firstName = first_name,  lastName = last_name))
+        # Create probation person as a possible match, but clear random IDs from MockPerson defaults.
+        await person_factory.create_from(
+            MockPerson(
+                sourceSystem="DELIUS",
+                pncs=[],
+                cros=[],
+                dateOfBirth=date_of_birth,
+                firstName=first_name,
+                lastName=last_name,
+            ),
+        )
 
         # Call best match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
