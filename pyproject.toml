@@ -10,7 +10,7 @@ dependencies = [
   "splink==4.0.15",
   "psycopg2-binary==2.9.11",
   "pytz==2026.1.post1",
-  "azure-monitor-opentelemetry==1.8.6",
+  "azure-monitor-opentelemetry==1.8.7",
   "fastapi==0.135.2",
   "uvicorn==0.42.0",
   "authlib==1.6.9",
