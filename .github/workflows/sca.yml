@@ -24,9 +24,6 @@ jobs:
       actions: read
 
     steps:
-      - name: Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: SCA
         uses: ministryofjustice/devsecops-actions/sca@f965eb1771ec66cfc41d7d57dc607fa6dfbc10ed # v1.4.0
         with:
