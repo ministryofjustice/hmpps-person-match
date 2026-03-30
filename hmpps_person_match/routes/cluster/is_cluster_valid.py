@@ -11,7 +11,7 @@ from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
-from hmpps_person_match.models.cluster.is_cluster_valid import IsClusterValidRequest, IsClusterValid, MissingRecordIds
+from hmpps_person_match.models.cluster.is_cluster_valid import IsClusterValid, IsClusterValidRequest, MissingRecordIds
 
 ROUTE = "/is-cluster-valid"
 
@@ -46,7 +46,12 @@ async def get_cluster_validity(
     match_ids = cluster_request.match_ids
     missing_ids = await score.get_missing_record_ids(match_ids, session)
     if not missing_ids:
-        clusters_info = await score.get_clusters(match_ids, url.pg_database_url, session)
+        clusters_info = await score.get_clusters(
+            match_ids,
+            cluster_request.clustering_threshold,
+            url.pg_database_url,
+            session,
+        )
         logger.info(
             TelemetryEvents.IS_CLUSTER_VALID,
             extra=dict(isClusterValid=clusters_info.is_single_cluster, clusters=str(clusters_info.clusters_groupings)),
