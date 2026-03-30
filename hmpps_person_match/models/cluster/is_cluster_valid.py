@@ -1,6 +1,10 @@
 from pydantic import BaseModel, Field
 
 
+class IsClusterValidRequest(BaseModel):
+    match_ids: list[str] = Field(alias="matchIds", examples=["ea59b57f-f3b6-4f77-88dd-64f86d37dffd"])
+
+
 class IsClusterValid(BaseModel):
     is_cluster_valid: bool = Field(alias="isClusterValid", examples=[False])
     clusters: list[list[str]] = Field(
