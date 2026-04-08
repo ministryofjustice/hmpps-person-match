@@ -31,7 +31,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         Test is cluster valid handles an unknown match id
         """
         match_id = random_test_data.random_match_id()
-        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=[match_id])
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json={"matchIds": [match_id]})
         assert response.status_code == 404
         assert response.json() == {"unknownIds": [match_id]}
 
@@ -40,7 +40,7 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         Test is cluster valid handles non uuid match_id
         """
         match_id = "invalid_!!id123"
-        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=[match_id])
+        response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json={"matchIds": [match_id]})
         assert response.status_code == 404
         assert response.json() == {"unknownIds": [match_id]}
 
@@ -62,7 +62,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         person_3 = await person_factory.create_from(person_1)
 
         # Call is-cluster-valid endpoint - should all be in same cluster
-        data = [person_1.match_id, person_2.match_id, person_3.match_id]
+        data = {
+            "matchIds": [person_1.match_id, person_2.match_id, person_3.match_id],
+        }
 
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
@@ -95,7 +97,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         person_3 = await person_factory.create_from(MockPerson())
 
         # Call is-cluster-valid endpoint - should all be in same cluster
-        data = [person_1.match_id, person_2.match_id, person_3.match_id]
+        data = {
+            "matchIds": [person_1.match_id, person_2.match_id, person_3.match_id],
+        }
 
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
@@ -137,7 +141,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         person_data.override_scopes = [scope]
         person_3 = await person_factory.create_from(person_data)
 
-        data = [person_1.match_id, person_2.match_id, person_3.match_id]
+        data = {
+            "matchIds": [person_1.match_id, person_2.match_id, person_3.match_id],
+        }
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
         response_data = response.json()
@@ -169,7 +175,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         person_data.override_scopes = [self.new_scope()]
         person_3 = await person_factory.create_from(person_data)
 
-        data = [person_1.match_id, person_2.match_id, person_3.match_id]
+        data = {
+            "matchIds": [person_1.match_id, person_2.match_id, person_3.match_id],
+        }
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
         response_data = response.json()
@@ -196,7 +204,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         non_matching_person_3 = await person_factory.create_from(MockPerson())
 
         # Call is-cluster-valid endpoint - should all be in same cluster
-        record_match_ids_data = [person_1.match_id, non_matching_person_2.match_id, non_matching_person_3.match_id]
+        record_match_ids_data = {
+            "matchIds": [person_1.match_id, non_matching_person_2.match_id, non_matching_person_3.match_id],
+        }
 
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=record_match_ids_data)
         assert response.status_code == 200
@@ -266,7 +276,9 @@ class TestIsClusterValidEndpoint(IntegrationTestBase):
         assert score_response_data[0]["unadjusted_match_weight"] > 18
 
         # now check that is-cluster-valid rejects the cluster
-        data = [person_1.match_id, person_2.match_id]
+        data = {
+            "matchIds": [person_1.match_id, person_2.match_id],
+        }
         response = call_endpoint("post", ROUTE, client=Client.HMPPS_PERSON_MATCH, json=data)
         assert response.status_code == 200
         response_data = response.json()
