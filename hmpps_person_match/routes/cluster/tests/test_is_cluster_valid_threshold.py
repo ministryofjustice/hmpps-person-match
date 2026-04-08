@@ -8,12 +8,12 @@ from fastapi.testclient import TestClient
 from hmpps_cpr_splink.cpr_splink.interface.score import Clusters
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
-from hmpps_person_match.routes.cluster.is_cluster_valid import ROUTE
+from hmpps_person_match.routes.cluster.is_cluster_valid_threshold import ROUTE
 
 
-class TestIsClusterValidRoute:
+class TestIsClusterValidThresholdRoute:
     """
-    Test Is Cluster Valid Route
+    Test Is Cluster Valid Threshold Route
     """
 
     @staticmethod
@@ -48,7 +48,9 @@ class TestIsClusterValidRoute:
         match_id_2 = str(uuid.uuid4())
         mock_ids_check.return_value = [match_id_1]
 
-        data = [match_id_1, match_id_2]
+        data = {
+            "matchIds": [match_id_1, match_id_2],
+        }
         response = call_endpoint(
             "post",
             ROUTE,
@@ -73,7 +75,9 @@ class TestIsClusterValidRoute:
         mock_ids_check.return_value = []
         mock_cluster_results.return_value = Clusters([[match_id_1, match_id_2]])
 
-        data = [match_id_1, match_id_2]
+        data = {
+            "matchIds": [match_id_1, match_id_2],
+        }
         response = call_endpoint(
             "post",
             ROUTE,
@@ -109,7 +113,9 @@ class TestIsClusterValidRoute:
         mock_ids_check.return_value = []
         mock_cluster_results.return_value = Clusters([[match_id_1, match_id_2], [match_id_3]])
 
-        data = [match_id_1, match_id_2, match_id_3]
+        data = {
+            "matchIds": [match_id_1, match_id_2, match_id_3],
+        }
         response = call_endpoint(
             "post",
             ROUTE,

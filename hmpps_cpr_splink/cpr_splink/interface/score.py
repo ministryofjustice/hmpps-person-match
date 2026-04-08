@@ -93,6 +93,7 @@ async def get_scored_candidates(
             for row in data
         ]
 
+
 async def get_best_match(
     primary_record_id: str,
     source_system: str,
@@ -114,13 +115,14 @@ async def get_best_match(
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
 
-        matches = [ row["match_weight"] for row in data if row["source_system_r"] == source_system ]
+        matches = [row["match_weight"] for row in data if row["source_system_r"] == source_system]
         if len(matches) == 0:
             return PersonBestMatch(match_status="NO_MATCH")
 
         matches.sort(reverse=True)
 
         return PersonBestMatch(match_status=match_status(float(matches[0])))
+
 
 def match_status(best_match: float) -> str:
     match best_match:
@@ -130,6 +132,7 @@ def match_status(best_match: float) -> str:
             return "POSSIBLE_MATCH"
         case _:
             return "NO_MATCH"
+
 
 async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
     """

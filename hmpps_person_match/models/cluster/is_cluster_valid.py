@@ -6,7 +6,9 @@ from hmpps_cpr_splink.cpr_splink.model.model import IS_CLUSTER_VALID_MATCH_WEIGH
 class IsClusterValidRequest(BaseModel):
     match_ids: list[str] = Field(alias="matchIds", examples=[["ea59b57f-f3b6-4f77-88dd-64f86d37dffd"]])
     clustering_threshold: float = Field(
-        default=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD, alias="clusteringThreshold", examples=[21.0],
+        default=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
+        alias="clusteringThreshold",
+        examples=[21.0],
     )
 
 
