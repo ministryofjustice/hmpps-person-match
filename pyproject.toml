@@ -23,7 +23,7 @@ dependencies = [
   "opentelemetry-instrumentation-sqlalchemy==0.60b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
-  "types-authlib==1.6.9.20260303",
+  "types-authlib==1.6.9.20260408",
   "types-cachetools==6.2.0.20260317",
   "types-requests==2.33.0.20260327",
 ]
