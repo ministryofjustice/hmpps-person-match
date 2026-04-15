@@ -1,12 +1,14 @@
 from logging import Logger
-from fastapi import APIRouter, Depends
 from typing import Annotated
+
+from fastapi import APIRouter, Depends
+
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
+from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
+from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_score import PersonScore
-from hmpps_person_match.domain.telemetry_events import TelemetryEvents
-from hmpps_person_match.dependencies.logger.log import get_logger
 
 ROUTE = "/person/search"
 
