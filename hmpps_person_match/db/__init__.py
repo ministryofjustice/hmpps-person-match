@@ -29,3 +29,10 @@ async def get_db_session() -> AsyncGenerator[AsyncSession]:
     """
     async with AsyncSessionLocal() as session, session.begin():
         yield session
+
+
+def get_db_engine() -> AsyncEngine:
+    """
+    Get the shared async engine.
+    """
+    return engine

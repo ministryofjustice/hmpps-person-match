@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from hmpps_person_match.app import PersonMatchApplication
-from hmpps_person_match.db import get_db_session
+from hmpps_person_match.db import get_db_engine, get_db_session
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.utils.environment import EnvVars, get_env_var
 
@@ -38,6 +38,13 @@ def mock_db_connection(app: FastAPI) -> Generator[Mock]:
     mock_connection = AsyncMock()
     app.dependency_overrides[get_db_session] = lambda: mock_connection
     yield mock_connection
+
+
+@pytest.fixture(autouse=True)
+def mock_db_engine(app: FastAPI) -> Generator[Mock]:
+    mock_engine = Mock()
+    app.dependency_overrides[get_db_engine] = lambda: mock_engine
+    yield mock_engine
 
 
 @pytest.fixture(autouse=True)
