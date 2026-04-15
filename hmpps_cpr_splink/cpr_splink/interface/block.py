@@ -10,7 +10,7 @@ from splink.internals.input_column import InputColumn
 from splink.internals.pipeline import CTEPipeline
 from splink.internals.settings import LinkTypeLiteralType
 from sqlalchemy import RowMapping, text
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.model.blocking_rules import (
     blocking_rules_for_prediction_tight_for_candidate_search,
@@ -184,7 +184,7 @@ def enqueue_join_term_frequency_tables(
 
 async def candidate_search(
     primary_record_id: str,
-    connection_pg: AsyncSession,
+    connection_pg: AsyncConnection | AsyncSession,
     *,
     primary_table_name: str = "personmatch.person",
     candidates_table_name: str = "personmatch.person",

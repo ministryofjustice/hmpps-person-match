@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 import duckdb
 from sqlalchemy import URL, text
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
 
 @contextmanager
@@ -18,7 +18,7 @@ def duckdb_connected_to_postgres(pg_db_url: URL) -> Generator[duckdb.DuckDBPyCon
 async def insert_duckdb_table_into_postgres_table(
     ddb_tab: duckdb.DuckDBPyRelation,
     pg_table_name: str,
-    connection_pg: AsyncSession,
+    connection_pg: AsyncConnection | AsyncSession,
     *,
     upsert: bool = True,
     commit: bool = True,

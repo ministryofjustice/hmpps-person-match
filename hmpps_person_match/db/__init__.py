@@ -23,6 +23,13 @@ SQLAlchemyInstrumentor().instrument(
 AsyncSessionLocal = async_sessionmaker(engine)
 
 
+def get_db_engine() -> AsyncEngine:
+    """
+    Get the shared async engine.
+    """
+    return engine
+
+
 async def get_db_session() -> AsyncGenerator[AsyncSession]:
     """
     Get the database async connection

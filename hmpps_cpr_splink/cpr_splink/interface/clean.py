@@ -1,5 +1,5 @@
 import duckdb
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.db import insert_duckdb_table_into_postgres_table
 from hmpps_cpr_splink.cpr_splink.model_cleaning import simple_clean_whole_joined_table
@@ -10,7 +10,7 @@ from hmpps_person_match.models.person.person_batch import PersonBatch
 
 async def clean_and_insert(
     records: PersonBatch,
-    connection_pg: AsyncSession,
+    connection_pg: AsyncConnection | AsyncSession,
     target_table_name: str = "personmatch.person",
     *,
     upsert: bool = True,
