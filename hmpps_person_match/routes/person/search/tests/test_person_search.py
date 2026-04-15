@@ -1,13 +1,15 @@
 from collections.abc import Callable
+from unittest.mock import Mock
 
 from fastapi.testclient import TestClient
 
 from hmpps_person_match.domain.roles import Roles
+from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 from hmpps_person_match.routes.person.search.person_search import ROUTE
 
 
 class TestPersonSearchRoute:
-    def test_person_search_success(self, call_endpoint: Callable) -> None:
+    def test_person_search_success(self, call_endpoint: Callable, mock_logger: Mock) -> None:
         response = call_endpoint(
             "post",
             ROUTE,
@@ -17,6 +19,10 @@ class TestPersonSearchRoute:
 
         assert response.status_code == 200
         assert response.json() == []
+        mock_logger.info.assert_called_with(
+            TelemetryEvents.PERSON_SEARCH,
+            extra={"candidate_size": 0},
+        )
 
     def test_invalid_role_unauthorized(self, call_endpoint: Callable) -> None:
         response = call_endpoint(
