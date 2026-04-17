@@ -14,7 +14,6 @@ from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_cpr_splink.cpr_splink.model.model import (
     FRACTURE_MATCH_WEIGHT_THRESHOLD,
-    IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
     JOINING_MATCH_WEIGHT_THRESHOLD,
     MODEL_PATH,
 )
@@ -94,6 +93,7 @@ async def get_scored_candidates(
             for row in data
         ]
 
+
 async def get_best_match(
     primary_record_id: str,
     source_system: str,
@@ -115,13 +115,14 @@ async def get_best_match(
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
 
-        matches = [ row["match_weight"] for row in data if row["source_system_r"] == source_system ]
+        matches = [row["match_weight"] for row in data if row["source_system_r"] == source_system]
         if len(matches) == 0:
             return PersonBestMatch(match_status="NO_MATCH")
 
         matches.sort(reverse=True)
 
         return PersonBestMatch(match_status=match_status(float(matches[0])))
+
 
 def match_status(best_match: float) -> str:
     match best_match:
@@ -131,6 +132,7 @@ def match_status(best_match: float) -> str:
             return "POSSIBLE_MATCH"
         case _:
             return "NO_MATCH"
+
 
 async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
     """
@@ -196,6 +198,7 @@ def get_mutually_excluded_records(
 
 async def get_clusters(
     match_ids: list[str],
+    match_weight_threshold: float,
     pg_db_url: URL,
     connection_pg: AsyncSession,
     default_postcode_tf: float = 1.0,
@@ -244,7 +247,7 @@ async def get_clusters(
             edges=scores_with_twins_table_name,
             db_api=db_api,
             node_id_column_name="match_id",
-            threshold_match_weight=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
+            threshold_match_weight=match_weight_threshold,
         )
         clusters = connection_duckdb.execute(
             f"SELECT match_id, cluster_id FROM {df_clusters.physical_name} "  # noqa: S608

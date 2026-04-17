@@ -5,6 +5,7 @@ from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.score import get_clusters, get_scored_candidates
+from hmpps_cpr_splink.cpr_splink.model.model import IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD
 from integration.mock_person import MockPerson
 from integration.person_factory import PersonFactory
 from integration.test_base import IntegrationTestBase
@@ -268,5 +269,11 @@ class TestTwinDetection(IntegrationTestBase):
             )
         # use a high postcode default tf so that we match more highly - effectively making
         # the random postcodes we use 'rare'
-        clusters = await get_clusters(person_ids, pg_db_url, db_connection, default_postcode_tf=0.000001)
+        clusters = await get_clusters(
+            person_ids,
+            IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
+            pg_db_url,
+            db_connection,
+            default_postcode_tf=0.000001,
+        )
         assert clusters.is_single_cluster == (not expected_flagged_as_twins)
