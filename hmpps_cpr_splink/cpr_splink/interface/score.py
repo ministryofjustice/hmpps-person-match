@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
 import duckdb
@@ -61,6 +61,40 @@ def insert_data_into_duckdb(
     return table_with_postcode_tf_tablename
 
 
+def score_records_to_person_scores(
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    primary_record_id: str,
+    records_with_tf: Sequence[Mapping[str, Any]],
+    table_name: str = "all_records",
+) -> list[PersonScore]:
+    tf_enhanced_table_name = insert_data_into_duckdb(
+        connection_duckdb,
+        records_with_tf,
+        base_table_name=table_name,
+    )
+
+    res = score(
+        connection_duckdb,
+        primary_record_id,
+        tf_enhanced_table_name,
+        return_scores_only=True,
+    )
+
+    data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
+    return [
+        PersonScore(
+            candidate_match_id=row["match_id_r"],
+            candidate_match_probability=row["match_probability"],
+            candidate_match_weight=row["match_weight"],
+            candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
+            candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
+            candidate_is_possible_twin=row["possible_twins"],
+            unadjusted_match_weight=row["unaltered_match_weight"],
+        )
+        for row in data
+    ]
+
+
 async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
@@ -69,30 +103,19 @@ async def get_scored_candidates(
     """
     Takes a primary record, generates candidates, scores
     """
-    # TODO: allow a threshold cutoff? (depending on blocking rules)
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
         candidates_data = await candidate_search(primary_record_id, connection_pg)
 
         if not candidates_data:
             return []
 
-        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
+        return score_records_to_person_scores(
+            connection_duckdb,
+            primary_record_id,
+            candidates_data,
+            table_name="candidates",
+        )
 
-        res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=True)
-
-        data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
-        return [
-            PersonScore(
-                candidate_match_id=row["match_id_r"],  # match_id_l is primary record
-                candidate_match_probability=row["match_probability"],
-                candidate_match_weight=row["match_weight"],
-                candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
-                candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
-                candidate_is_possible_twin=row["possible_twins"],
-                unadjusted_match_weight=row["unaltered_match_weight"],
-            )
-            for row in data
-        ]
 
 async def get_best_match(
     primary_record_id: str,
@@ -115,7 +138,7 @@ async def get_best_match(
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
 
-        matches = [ row["match_weight"] for row in data if row["source_system_r"] == source_system ]
+        matches = [row["match_weight"] for row in data if row["source_system_r"] == source_system]
         if len(matches) == 0:
             return PersonBestMatch(match_status="NO_MATCH")
 
@@ -123,14 +146,16 @@ async def get_best_match(
 
         return PersonBestMatch(match_status=match_status(float(matches[0])))
 
+
 def match_status(best_match: float) -> str:
     match best_match:
         case best_match if best_match >= 20:
             return "MATCH"
-        case best_match if best_match < 20 and best_match > -10:
+        case best_match if -10 < best_match < 20:
             return "POSSIBLE_MATCH"
         case _:
             return "NO_MATCH"
+
 
 async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
     """
