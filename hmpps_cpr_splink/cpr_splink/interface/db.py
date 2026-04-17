@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 import duckdb
 from sqlalchemy import URL, text
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
 
 @contextmanager
@@ -33,3 +33,27 @@ async def insert_duckdb_table_into_postgres_table(
     )
     await connection_pg.execute(query, data)
     await connection_pg.commit()
+
+
+async def insert_duckdb_table_into_postgres_table_in_transaction(
+    ddb_tab: duckdb.DuckDBPyRelation,
+    pg_table_name: str,
+    connection_pg: AsyncConnection | AsyncSession,
+) -> None:
+    """
+    Transaction-scoped insert for temp-table workflows.
+
+    Inserts rows into the target PostgreSQL table using plain INSERT semantics
+    and does not commit. The caller is responsible for the surrounding
+    transaction lifecycle.
+    """
+    values = ddb_tab.fetchall()
+    columns = [desc[0] for desc in ddb_tab.description]
+
+    data = [dict(zip(columns, row, strict=True)) for row in values]
+
+    placeholders = ", ".join([f":{col}" for col in columns])
+    query = text(
+        f"INSERT INTO {pg_table_name}({', '.join(columns)}) VALUES ({placeholders})",  # noqa: S608
+    )
+    await connection_pg.execute(query, data)
