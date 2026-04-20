@@ -6,7 +6,7 @@ from splink import DuckDBAPI
 from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
 from splink.internals.pipeline import CTEPipeline
 from splink.internals.realtime import compare_records
-from sqlalchemy import URL, text
+from sqlalchemy import URL, RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search, enqueue_join_term_frequency_tables
@@ -87,7 +87,7 @@ async def get_scored_candidates(
 def score_candidates(
     connection_duckdb: duckdb.DuckDBPyConnection,
     primary_record_id: str,
-    records_with_tf: Sequence[Mapping[str, Any]],
+    records_with_tf: Sequence[RowMapping | Mapping[str, Any]],
     table_name: str = "all_records",
 ) -> list[PersonScore]:
     tf_enhanced_table_name = insert_data_into_duckdb(connection_duckdb, records_with_tf, base_table_name=table_name)

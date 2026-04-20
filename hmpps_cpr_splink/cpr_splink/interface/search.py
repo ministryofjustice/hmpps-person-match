@@ -4,7 +4,7 @@ from typing import Any
 
 import duckdb
 from splink.internals.pipeline import CTEPipeline
-from sqlalchemy import URL, text
+from sqlalchemy import URL, RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine
 
 from hmpps_cpr_splink.cpr_splink.interface.block import (
@@ -18,14 +18,14 @@ from hmpps_person_match.models.person.person_batch import PersonBatch
 from hmpps_person_match.models.person.person_score import PersonScore
 
 
-def _materialise_rows(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+def _materialise_rows(rows: Sequence[RowMapping | Mapping[str, Any]]) -> list[dict[str, Any]]:
     return [dict(row) for row in rows]
 
 
 async def _run_postgres_search_phase(
     person: Person,
     pg_conn: AsyncConnection,
-) -> None:
+) -> tuple[str, list[dict[str, Any]]]:
     """
     Run the temp-table / PostgreSQL blocking phase on one explicit connection.
 
