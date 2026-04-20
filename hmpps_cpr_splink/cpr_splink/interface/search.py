@@ -70,10 +70,10 @@ async def _run_postgres_search_phase(
     result = await pg_conn.execute(text(sql))
     search_record_with_tf = result.mappings().all()
 
-    full_records = [
-        *_materialise_rows(search_record_with_tf),
-        *_materialise_rows(candidates),
-    ]
+    full_records = {
+        "search_record_with_tf": _materialise_rows(search_record_with_tf),
+        "blocked_candidates": _materialise_rows(candidates),
+    }
 
     return full_records
 
