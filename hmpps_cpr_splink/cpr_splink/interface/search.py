@@ -22,9 +22,12 @@ async def _run_postgres_search_phase(
     search_match_id = str(uuid.uuid4())
     person_with_search_id = person.model_copy(update={"match_id": search_match_id})
 
+    # Can't use CREATE TEMP TABLE person_search_input_temp (LIKE personmatch.person) because
+    # it'll copy over the non-nullability of id, and here it's fine for id to be null
     await pg_conn.execute(
         text(
-            "CREATE TEMP TABLE person_search_input_temp ON COMMIT DROP AS SELECT * FROM personmatch.person WHERE FALSE",
+            "CREATE TEMP TABLE person_search_input_temp ON COMMIT DROP AS "
+            "SELECT * FROM personmatch.person WITH NO DATA",
         ),
     )
 
