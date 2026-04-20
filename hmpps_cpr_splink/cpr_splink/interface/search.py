@@ -24,7 +24,7 @@ async def _run_postgres_search_phase(
 
     await pg_conn.execute(
         text(
-            "CREATE TEMP TABLE person_search_input_temp (LIKE personmatch.person INCLUDING CONSTRAINTS) ON COMMIT DROP",
+            "CREATE TEMP TABLE person_search_input_temp ON COMMIT DROP AS SELECT * FROM personmatch.person WHERE FALSE",
         ),
     )
 
