@@ -22,8 +22,8 @@ jobs:
       actions: read
 
     steps:
-      - name: Run SCA
-        uses: ministryofjustice/devsecops-actions/sca@v1.3.0
+      - name: SCA
+        uses: ministryofjustice/devsecops-actions/sca@f965eb1771ec66cfc41d7d57dc607fa6dfbc10ed # v1.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           codeql-upload-findings: "always"
