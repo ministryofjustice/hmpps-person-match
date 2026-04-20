@@ -2,6 +2,7 @@ import uuid
 from collections.abc import Mapping, Sequence
 from typing import Any
 
+import duckdb
 from splink.internals.pipeline import CTEPipeline
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine
@@ -11,6 +12,7 @@ from hmpps_cpr_splink.cpr_splink.interface.block import (
     enqueue_join_term_frequency_tables,
 )
 from hmpps_cpr_splink.cpr_splink.interface.clean import clean_and_insert_in_transaction
+from hmpps_cpr_splink.cpr_splink.interface.score import score_candidates
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
 from hmpps_person_match.models.person.person_score import PersonScore
@@ -70,12 +72,12 @@ async def _run_postgres_search_phase(
     result = await pg_conn.execute(text(sql))
     search_record_with_tf = result.mappings().all()
 
-    full_records = {
-        "search_record_with_tf": _materialise_rows(search_record_with_tf),
-        "blocked_candidates": _materialise_rows(candidates),
-    }
+    full_records = [
+        *_materialise_rows(search_record_with_tf),
+        *_materialise_rows(candidates),
+    ]
 
-    return full_records
+    return search_match_id, full_records
 
 
 async def search_candidates(
@@ -86,7 +88,7 @@ async def search_candidates(
     async with pg_engine.connect() as pg_conn:
         tx = await pg_conn.begin()
         try:
-            rows = await _run_postgres_search_phase(
+            search_match_id, full_records = await _run_postgres_search_phase(
                 person=person,
                 pg_conn=pg_conn,
             )
@@ -94,4 +96,13 @@ async def search_candidates(
             if tx.is_active:
                 await tx.rollback()
 
-    return rows
+    if not full_records:
+        return []
+
+    with duckdb.connect(":memory:") as duckdb_conn:
+        return score_candidates(
+            duckdb_conn,
+            search_match_id,
+            full_records,
+            table_name="all_records",
+        )
