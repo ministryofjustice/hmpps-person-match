@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine
 
+from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
 from hmpps_cpr_splink.cpr_splink.interface.clean import clean_and_insert_in_transaction
 from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_batch import PersonBatch
@@ -36,13 +37,14 @@ async def _run_postgres_search_phase(
         connection_pg=pg_conn,
         target_table_name="person_search_input_temp",
     )
-
-    result = await pg_conn.execute(
-        text("SELECT * FROM person_search_input_temp"),
+    candidates = await candidate_search(
+        primary_record_id=search_match_id,
+        connection_pg=pg_conn,
+        primary_table_name="person_search_input_temp",
+        candidates_table_name="personmatch.person",
     )
 
-    rows = result.mappings().all()
-    return [dict(row) for row in rows]
+    return [dict(row) for row in candidates]
 
 
 async def search_candidates(

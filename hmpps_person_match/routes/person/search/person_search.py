@@ -31,7 +31,8 @@ async def search_person(
     person: Person,
     pg_engine: Annotated[AsyncEngine, Depends(get_db_engine)],
     logger: Annotated[Logger, Depends(get_logger)],
-):
+) -> list[dict]:
+    # -> list[PersonScore]:
     """
     Temporary shell endpoint.
 
