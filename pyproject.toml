@@ -13,7 +13,7 @@ dependencies = [
   "azure-monitor-opentelemetry==1.8.6",
   "fastapi==0.136.0",
   "uvicorn==0.42.0",
-  "authlib==1.6.9",
+  "authlib==1.6.11",
   "cachetools==7.0.5",
   "pyjwt==2.12.0",
   "cryptography==46.0.7",
@@ -23,7 +23,7 @@ dependencies = [
   "opentelemetry-instrumentation-sqlalchemy==0.60b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
-  "types-authlib==1.6.9.20260303",
+  "types-authlib==1.6.11.20260418",
   "types-cachetools==6.2.0.20260317",
   "types-requests==2.33.0.20260408",
 ]
