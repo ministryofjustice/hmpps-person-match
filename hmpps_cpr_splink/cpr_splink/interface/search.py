@@ -1,11 +1,16 @@
+import uuid
+
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine
 
+from hmpps_cpr_splink.cpr_splink.interface.clean import clean_and_insert_in_transaction
 from hmpps_person_match.models.person.person import Person
+from hmpps_person_match.models.person.person_batch import PersonBatch
 from hmpps_person_match.models.person.person_score import PersonScore
 
 
 async def _run_postgres_search_phase(
+    person: Person,
     pg_conn: AsyncConnection,
 ) -> None:
     """
@@ -14,11 +19,27 @@ async def _run_postgres_search_phase(
     This function assumes the caller already owns the surrounding transaction.
     Nothing in this phase should commit.
     """
+    search_match_id = str(uuid.uuid4())
+    person_with_search_id = person.model_copy(update={"match_id": search_match_id})
+
     await pg_conn.execute(
         text(
             "CREATE TEMP TABLE person_search_input_temp (LIKE personmatch.person INCLUDING CONSTRAINTS) ON COMMIT DROP",
         ),
     )
+
+    await clean_and_insert_in_transaction(
+        records=PersonBatch(records=[person_with_search_id]),
+        connection_pg=pg_conn,
+        target_table_name="person_search_input_temp",
+    )
+
+    result = await pg_conn.execute(
+        text("SELECT * FROM person_search_input_temp"),
+    )
+
+    rows = result.mappings().all()
+    return [dict(row) for row in rows]
 
 
 async def search_candidates(
@@ -29,9 +50,12 @@ async def search_candidates(
     async with pg_engine.connect() as pg_conn:
         tx = await pg_conn.begin()
         try:
-            await _run_postgres_search_phase(pg_conn=pg_conn)
+            rows = await _run_postgres_search_phase(
+                person=person,
+                pg_conn=pg_conn,
+            )
         finally:
             if tx.is_active:
                 await tx.rollback()
 
-    return []
+    return rows
