@@ -33,6 +33,6 @@ async def get_db_session() -> AsyncGenerator[AsyncSession]:
 
 def get_db_engine() -> AsyncEngine:
     """
-    Get the shared async engine.
+    Get the database async engine
     """
     return engine

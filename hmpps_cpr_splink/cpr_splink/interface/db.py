@@ -40,13 +40,6 @@ async def insert_duckdb_table_into_postgres_table_in_transaction(
     pg_table_name: str,
     connection_pg: AsyncConnection | AsyncSession,
 ) -> None:
-    """
-    Transaction-scoped insert for temp-table workflows.
-
-    Inserts rows into the target PostgreSQL table using plain INSERT semantics
-    and does not commit. The caller is responsible for the surrounding
-    transaction lifecycle.
-    """
     values = ddb_tab.fetchall()
     columns = [desc[0] for desc in ddb_tab.description]
 

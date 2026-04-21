@@ -33,10 +33,8 @@ async def search_person(
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> list[PersonScore]:
     """
-    Temporary shell endpoint.
-
-    Later this will search for candidate matches without persisting the
-    input record. For now it delegates to a stub service.
+    Person search POST request handler
+    Returns a list of scored candidates against the provided person record
     """
     scores = await search_candidates(
         person=person,

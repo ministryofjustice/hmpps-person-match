@@ -27,10 +27,8 @@ async def _run_postgres_search_phase(
     pg_conn: AsyncConnection,
 ) -> tuple[str, list[dict[str, Any]]]:
     """
-    Run the temp-table / PostgreSQL blocking phase on one explicit connection.
-
-    This function assumes the caller already owns the surrounding transaction.
-    Nothing in this phase should commit.
+    Run the postgres search phase against the provided person record
+    Returns the generated match identifier and records to score
     """
     search_match_id = str(uuid.uuid4())
     person_with_search_id = person.model_copy(update={"match_id": search_match_id})
@@ -84,6 +82,10 @@ async def search_candidates(
     person: Person,
     pg_engine: AsyncEngine,
 ) -> list[PersonScore]:
+    """
+    Search for candidate matches against the provided person record
+    Returns scored candidates without persisting the search record
+    """
     async with pg_engine.connect() as pg_conn:
         tx = await pg_conn.begin()
         try:

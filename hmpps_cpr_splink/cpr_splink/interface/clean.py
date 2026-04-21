@@ -38,11 +38,10 @@ async def clean_and_insert_in_transaction(
     target_table_name: str,
 ) -> None:
     """
-    Transaction-scoped insert behaviour.
+    Takes in records in joined format.
 
-    Cleans the input records, inserts them into the target PostgreSQL table
-    using plain INSERT semantics, and does not commit. The caller is
-    responsible for the surrounding transaction lifecycle.
+    Cleans the records and inserts into the provided postgres table
+    without committing the transaction
     """
     connection_duckdb = duckdb.connect(":memory:")
     try:
