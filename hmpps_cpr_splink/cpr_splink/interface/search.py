@@ -4,7 +4,7 @@ from typing import Any
 
 import duckdb
 from splink.internals.pipeline import CTEPipeline
-from sqlalchemy import URL, RowMapping, text
+from sqlalchemy import RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine
 
 from hmpps_cpr_splink.cpr_splink.interface.block import (
@@ -83,7 +83,6 @@ async def _run_postgres_search_phase(
 async def search_candidates(
     person: Person,
     pg_engine: AsyncEngine,
-    pg_db_url: URL,
 ) -> list[PersonScore]:
     async with pg_engine.connect() as pg_conn:
         tx = await pg_conn.begin()
