@@ -49,13 +49,12 @@ class TestSearchCandidates(IntegrationTestBase):
         person_factory: PersonFactory,
         db_connection: AsyncSession,
     ) -> None:
+        """
+        If the client supplies a match_id that already exists in the database,
+        then search_candidates should still return the stored record as a candidate.
+        """
         stored_record = await person_factory.create_from(MockPerson())
-        search_person = stored_record.model_copy(
-            update={
-                "source_system_id": "SEARCH-SOURCE-ID-0002",
-            },
-            deep=True,
-        )
+        search_person = stored_record.model_copy(deep=True)
 
         scores = await search_candidates(
             person=search_person,
