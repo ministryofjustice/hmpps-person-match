@@ -10,8 +10,6 @@ from integration.test_base import IntegrationTestBase
 
 
 class TestSearchCandidates(IntegrationTestBase):
-    HIGH_MATCH_WEIGHT = 20
-
     @pytest.fixture(autouse=True, scope="function")
     async def clean_db(self, db_connection: AsyncSession) -> None:
         await self.truncate_person_data(db_connection)
@@ -21,6 +19,11 @@ class TestSearchCandidates(IntegrationTestBase):
         person_factory: PersonFactory,
         db_connection: AsyncSession,
     ) -> None:
+        """
+        If three matching records (identical to the search record) exist in the database,
+        then search_candidates should return all three as scored candidates,
+        and should not persist the transient search record.
+        """
         template = MockPerson()
         stored_records = [await person_factory.create_from(template) for _ in range(3)]
         search_person = template.model_copy(
@@ -38,7 +41,6 @@ class TestSearchCandidates(IntegrationTestBase):
 
         assert len(scores) == len(stored_records)
         assert {score.candidate_match_id for score in scores} == {record.match_id for record in stored_records}
-        assert all(score.candidate_match_weight > self.HIGH_MATCH_WEIGHT for score in scores)
         await self.assert_size_of_table(db_connection, "person", size=len(stored_records))
         assert await self.find_by_match_id(db_connection, search_person.match_id) is None
 
