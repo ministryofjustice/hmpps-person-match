@@ -143,7 +143,7 @@ class TestPersonSearchRoute:
         mock_search_candidates: AsyncMock,
     ) -> None:
         payload = self._search_payload()
-        payload["sourceSystem"] = ["DELIUS", "NOMIS"]
+        payload["sourceSystem"] = 1
 
         response = call_endpoint(
             "post",
@@ -159,7 +159,7 @@ class TestPersonSearchRoute:
                 "type": "string_type",
                 "loc": ["body", "sourceSystem"],
                 "msg": "Input should be a valid string",
-                "input": ["DELIUS", "NOMIS"],
+                "input": 1,
             },
         ]
         mock_search_candidates.assert_not_awaited()
