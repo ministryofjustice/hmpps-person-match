@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from hmpps_cpr_splink.cpr_splink.interface.search import search_candidates
+from hmpps_cpr_splink.cpr_splink.interface import search
 from hmpps_person_match.db import get_db_engine
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
@@ -36,7 +36,7 @@ async def search_person(
     Person search POST request handler
     Returns a list of scored candidates against the provided person record
     """
-    scores = await search_candidates(
+    scores = await search.search_candidates(
         person=person,
         pg_engine=pg_engine,
     )
