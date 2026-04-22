@@ -1,5 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>ministryofjustice/hmpps-renovate-config:base.json"],
-  "lockFileMaintenance": { "enabled": true }
+  "packageRules": [
+    {
+      "matchCategories": ["python"],
+      "stabilityDays": 3
+    }
+  ]
 }
