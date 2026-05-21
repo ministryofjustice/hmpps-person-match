@@ -16,7 +16,7 @@ dependencies = [
   "authlib==1.6.12",
   "cachetools==7.1.2",
   "pyjwt==2.12.0",
-  "cryptography==46.0.7",
+  "cryptography==48.0.0",
   "alembic==1.18.4",
   "asyncpg==0.31.0",
   "greenlet==3.5.0",
@@ -24,7 +24,7 @@ dependencies = [
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
   "types-authlib==1.6.11.20260514",
-  "types-cachetools==6.2.0.20260408",
+  "types-cachetools==7.0.0.20260518",
   "types-requests==2.33.0.20260513",
 ]
 
