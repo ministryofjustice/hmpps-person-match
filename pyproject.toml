@@ -25,7 +25,7 @@ dependencies = [
   "h11==0.16.0",
   "types-authlib==1.6.11.20260518",
   "types-cachetools==7.0.0.20260518",
-  "types-requests==2.33.0.20260513",
+  "types-requests==2.33.0.20260518",
 ]
 
 [tool.uv]
