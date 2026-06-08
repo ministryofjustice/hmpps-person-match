@@ -41,7 +41,7 @@ jobs:
     name: test
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # 6.2.0
@@ -73,7 +73,7 @@ jobs:
     name: int-test
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
@@ -117,12 +117,12 @@ jobs:
     name: Generate Database Schema Report
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Start Required Services
         run: make start-containers
     
-      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@410c03497c0fe20f972354f2068b1b8ca175a54c # v1.0.14
+      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@363199fd594247fefadda32f839edb5d4f7ac7d8 # v1.0.15
         with:
           schema: personmatch
 
