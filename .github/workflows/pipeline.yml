@@ -122,7 +122,7 @@ jobs:
       - name: Start Required Services
         run: make start-containers
     
-      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@410c03497c0fe20f972354f2068b1b8ca175a54c # v1.0.14
+      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@363199fd594247fefadda32f839edb5d4f7ac7d8 # v1.0.15
         with:
           schema: personmatch
 
