@@ -1,7 +1,10 @@
 import duckdb
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
-from hmpps_cpr_splink.cpr_splink.interface.db import insert_duckdb_table_into_postgres_table
+from hmpps_cpr_splink.cpr_splink.interface.db import (
+    insert_duckdb_table_into_postgres_table,
+    insert_duckdb_table_into_postgres_table_in_transaction,
+)
 from hmpps_cpr_splink.cpr_splink.model_cleaning import simple_clean_whole_joined_table
 from hmpps_cpr_splink.cpr_splink.schemas import DUCKDB_COLUMNS_WITH_TYPES
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
@@ -27,3 +30,38 @@ async def clean_and_insert(records: PersonBatch, connection_pg: AsyncSession) ->
         "personmatch.person",
         connection_pg,
     )
+
+
+async def clean_and_insert_in_transaction(
+    records: PersonBatch,
+    connection_pg: AsyncConnection | AsyncSession,
+    target_table_name: str,
+) -> None:
+    """
+    Takes in records in joined format.
+
+    Cleans the records and inserts into the provided postgres table
+    without committing the transaction
+    """
+    connection_duckdb = duckdb.connect(":memory:")
+    try:
+        record_table_name = "record_table"
+        person_records = records.model_dump()["records"]
+        create_table_from_records(
+            connection_duckdb,
+            person_records,
+            record_table_name,
+            DUCKDB_COLUMNS_WITH_TYPES,
+        )
+
+        t_cleaned = simple_clean_whole_joined_table(record_table_name)
+        sql = t_cleaned.create_table_sql
+        connection_duckdb.sql(sql)
+
+        await insert_duckdb_table_into_postgres_table_in_transaction(
+            connection_duckdb.table(t_cleaned.name),
+            target_table_name,
+            connection_pg,
+        )
+    finally:
+        connection_duckdb.close()
