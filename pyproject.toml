@@ -16,7 +16,7 @@ dependencies = [
   "authlib==1.6.12",
   "cachetools==7.1.4",
   "pyjwt==2.12.0",
-  "cryptography==48.0.0",
+  "cryptography==48.0.1",
   "alembic==1.18.4",
   "asyncpg==0.31.0",
   "greenlet==3.5.1",
