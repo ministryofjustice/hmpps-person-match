@@ -3,6 +3,7 @@ generic-service:
 
   scheduledDowntime:
     enabled: true
+    timeZone: Europe/London
 
   ingress:
     host: hmpps-person-match-preprod.hmpps.service.justice.gov.uk
