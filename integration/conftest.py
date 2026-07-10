@@ -1,3 +1,4 @@
+import os
 import time
 from collections.abc import AsyncGenerator, Callable, Generator
 from enum import Enum
@@ -67,7 +68,7 @@ async def db_connection() -> AsyncGenerator[AsyncSession]:
         username="root",
         password="dev",  # noqa: S106
         host="localhost",
-        port=5432,
+        port=int(os.getenv("INTEGRATION_DATABASE_PORT", "5432")),
         database="postgres",
     )
 
@@ -91,7 +92,7 @@ def pg_db_url() -> URL:
         username="root",
         password="dev",  # noqa: S106
         host="localhost",
-        port=5432,
+        port=int(os.getenv("INTEGRATION_DATABASE_PORT", "5432")),
         database="postgres",
     )
 

@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import Any, cast
+from uuid import uuid4
 
 import duckdb
 from splink import DuckDBAPI
@@ -9,7 +10,12 @@ from splink.internals.realtime import compare_records
 from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search, enqueue_join_term_frequency_tables
+from hmpps_cpr_splink.cpr_splink.interface.block import (
+    candidate_search,
+    candidate_search_for_record,
+    enqueue_join_term_frequency_tables,
+)
+from hmpps_cpr_splink.cpr_splink.interface.clean import clean_person
 from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_cpr_splink.cpr_splink.model.model import (
@@ -21,6 +27,7 @@ from hmpps_cpr_splink.cpr_splink.model.model import (
 from hmpps_cpr_splink.cpr_splink.model.score import enhance_scores_with_twins, score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
+from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_best_match import PersonBestMatch
 from hmpps_person_match.models.person.person_score import PersonScore
 
@@ -84,6 +91,42 @@ async def get_scored_candidates(
         return [
             PersonScore(
                 candidate_match_id=row["match_id_r"],  # match_id_l is primary record
+                candidate_match_probability=row["match_probability"],
+                candidate_match_weight=row["match_weight"],
+                candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
+                candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
+                candidate_is_possible_twin=row["possible_twins"],
+                unadjusted_match_weight=row["unaltered_match_weight"],
+            )
+            for row in data
+        ]
+
+
+async def search_scored_candidates(
+    person: Person,
+    pg_db_url: URL,
+    connection_pg: AsyncSession,
+) -> list[PersonScore]:
+    internal_match_id = str(uuid4())
+    cleaned_person = clean_person(person, internal_match_id)
+
+    with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
+        candidates_data = await candidate_search_for_record(cleaned_person, connection_pg)
+        if not any(candidate["match_id"] != internal_match_id for candidate in candidates_data):
+            return []
+
+        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
+        result = score(
+            connection_duckdb,
+            internal_match_id,
+            candidates_with_postcode_tf,
+            return_scores_only=True,
+        )
+
+        data = [dict(zip(result.columns, row, strict=True)) for row in result.fetchall()]
+        return [
+            PersonScore(
+                candidate_match_id=row["match_id_r"],
                 candidate_match_probability=row["match_probability"],
                 candidate_match_weight=row["match_weight"],
                 candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
