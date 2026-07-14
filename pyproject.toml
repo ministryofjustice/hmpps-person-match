@@ -11,13 +11,13 @@ dependencies = [
   "psycopg2-binary==2.9.12",
   "pytz==2026.2",
   "azure-monitor-opentelemetry==1.8.6",
-  "fastapi==0.138.2",
+  "fastapi==0.139.0",
   "uvicorn==0.49.0",
   "authlib==1.6.12",
   "cachetools==7.1.4",
   "pyjwt==2.13.0",
   "cryptography==49.0.0",
-  "alembic==1.18.4",
+  "alembic==1.18.5",
   "asyncpg==0.31.0",
   "greenlet==3.5.3",
   "opentelemetry-instrumentation-sqlalchemy==0.60b0",
@@ -34,7 +34,7 @@ default-groups = ["dev"]
 
 [dependency-groups]
 dev = [
-  "fastapi[standard]==0.138.2",
+  "fastapi[standard]==0.139.0",
   "ruff==0.15.5",
   "pyyaml==6.0.3",
   "pytest==9.1.1",
