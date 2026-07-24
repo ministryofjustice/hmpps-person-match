@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from typing import Any, cast
 from uuid import uuid4
 
@@ -7,7 +7,7 @@ from splink import DuckDBAPI
 from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
 from splink.internals.pipeline import CTEPipeline
 from splink.internals.realtime import compare_records
-from sqlalchemy import URL, text
+from sqlalchemy import URL, RowMapping, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import (
@@ -68,6 +68,35 @@ def insert_data_into_duckdb(
     return table_with_postcode_tf_tablename
 
 
+def score_candidates(
+    connection_duckdb: duckdb.DuckDBPyConnection,
+    primary_record_id: str,
+    candidates_data: Sequence[RowMapping | Mapping[str, Any]],
+    table_name: str = "candidates",
+) -> list[PersonScore]:
+    candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, table_name)
+    result = score(
+        connection_duckdb,
+        primary_record_id,
+        candidates_with_postcode_tf,
+        return_scores_only=True,
+    )
+
+    data = [dict(zip(result.columns, row, strict=True)) for row in result.fetchall()]
+    return [
+        PersonScore(
+            candidate_match_id=row["match_id_r"],
+            candidate_match_probability=row["match_probability"],
+            candidate_match_weight=row["match_weight"],
+            candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
+            candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
+            candidate_is_possible_twin=row["possible_twins"],
+            unadjusted_match_weight=row["unaltered_match_weight"],
+        )
+        for row in data
+    ]
+
+
 async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
@@ -83,59 +112,23 @@ async def get_scored_candidates(
         if not candidates_data:
             return []
 
-        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
-
-        res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=True)
-
-        data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
-        return [
-            PersonScore(
-                candidate_match_id=row["match_id_r"],  # match_id_l is primary record
-                candidate_match_probability=row["match_probability"],
-                candidate_match_weight=row["match_weight"],
-                candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
-                candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
-                candidate_is_possible_twin=row["possible_twins"],
-                unadjusted_match_weight=row["unaltered_match_weight"],
-            )
-            for row in data
-        ]
+        return score_candidates(connection_duckdb, primary_record_id, candidates_data)
 
 
 async def search_scored_candidates(
     person: Person,
-    pg_db_url: URL,
     connection_pg: AsyncSession,
 ) -> list[PersonScore]:
     internal_match_id = str(uuid4())
     cleaned_person = clean_person(person, internal_match_id)
 
-    with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
+    with duckdb.connect(":memory:") as connection_duckdb:
         candidates_data = await candidate_search_for_record(cleaned_person, connection_pg)
         if not any(candidate["match_id"] != internal_match_id for candidate in candidates_data):
             return []
 
-        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
-        result = score(
-            connection_duckdb,
-            internal_match_id,
-            candidates_with_postcode_tf,
-            return_scores_only=True,
-        )
+        return score_candidates(connection_duckdb, internal_match_id, candidates_data)
 
-        data = [dict(zip(result.columns, row, strict=True)) for row in result.fetchall()]
-        return [
-            PersonScore(
-                candidate_match_id=row["match_id_r"],
-                candidate_match_probability=row["match_probability"],
-                candidate_match_weight=row["match_weight"],
-                candidate_should_join=row["match_weight"] >= JOINING_MATCH_WEIGHT_THRESHOLD,
-                candidate_should_fracture=row["match_weight"] < FRACTURE_MATCH_WEIGHT_THRESHOLD,
-                candidate_is_possible_twin=row["possible_twins"],
-                unadjusted_match_weight=row["unaltered_match_weight"],
-            )
-            for row in data
-        ]
 
 async def get_best_match(
     primary_record_id: str,
@@ -158,13 +151,14 @@ async def get_best_match(
 
         data = [dict(zip(res.columns, row, strict=True)) for row in res.fetchall()]
 
-        matches = [ row["match_weight"] for row in data if row["source_system_r"] == source_system ]
+        matches = [row["match_weight"] for row in data if row["source_system_r"] == source_system]
         if len(matches) == 0:
             return PersonBestMatch(match_status="NO_MATCH")
 
         matches.sort(reverse=True)
 
         return PersonBestMatch(match_status=match_status(float(matches[0])))
+
 
 def match_status(best_match: float) -> str:
     match best_match:
@@ -174,6 +168,7 @@ def match_status(best_match: float) -> str:
             return "POSSIBLE_MATCH"
         case _:
             return "NO_MATCH"
+
 
 async def match_record_exists(match_id: str, connection_pg: AsyncSession) -> bool:
     """

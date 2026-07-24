@@ -166,7 +166,6 @@ class TestPersonSearchEndpoint(IntegrationTestBase):
 
         assert all(status_code == 200 for status_code, _ in responses)
         assert all(
-            [result["candidate_match_id"] for result in results] == [candidate.match_id]
-            for _, results in responses
+            [result["candidate_match_id"] for result in results] == [candidate.match_id] for _, results in responses
         )
         await self.assert_size_of_table(db_connection, "person", size=1)

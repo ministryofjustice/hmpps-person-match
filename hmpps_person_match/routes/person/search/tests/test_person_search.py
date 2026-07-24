@@ -48,6 +48,7 @@ class TestPersonSearchRoute:
         call_endpoint: Callable,
         person_json: dict,
         mock_search_results: AsyncMock,
+        mock_db_connection: Mock,
         mock_logger: Mock,
     ) -> None:
         mock_search_results.return_value = []
@@ -58,6 +59,7 @@ class TestPersonSearchRoute:
         assert response.json() == []
         mock_search_results.assert_awaited_once()
         assert mock_search_results.await_args.args[0].match_id == "caller-match-id"
+        assert mock_search_results.await_args.args[1] is mock_db_connection
         mock_logger.info.assert_called_once_with(
             TelemetryEvents.PERSON_SEARCH_COMPLETED,
             extra={"candidate_size": 0},

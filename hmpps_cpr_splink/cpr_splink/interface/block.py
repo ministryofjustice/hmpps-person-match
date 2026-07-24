@@ -269,8 +269,7 @@ async def candidate_search_for_record(
 
     sql = pipeline.generate_cte_pipeline_sql()
     parameters = {
-        f"search_{column_name}": primary_record_with_id[column_name]
-        for column_name, _ in CLEANED_TABLE_SCHEMA
+        f"search_{column_name}": primary_record_with_id[column_name] for column_name, _ in CLEANED_TABLE_SCHEMA
     }
     result = await connection_pg.execute(text(sql), parameters)
     return result.mappings().fetchall()
