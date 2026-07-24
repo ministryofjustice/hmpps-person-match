@@ -33,7 +33,7 @@ unique_id_input_column = InputColumn("id", sqlglot_dialect_str="postgres")
 source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
 
 
-def _postgres_column_type(column_type: str) -> str:
+def _postgres_type_for_duckdb_type(column_type: str) -> str:
     return {
         "VARCHAR": "TEXT",
         "VARCHAR[]": "TEXT[]",
@@ -236,7 +236,7 @@ async def candidate_search_for_record(
 
     primary_record_with_id = {"id": 0, **primary_record}
     primary_select = ",\n".join(
-        f"CAST(:search_{column_name} AS {_postgres_column_type(column_type)}) AS {column_name}"
+        f"CAST(:search_{column_name} AS {_postgres_type_for_duckdb_type(column_type)}) AS {column_name}"
         for column_name, column_type in CLEANED_TABLE_SCHEMA
     )
     pipeline.enqueue_sql(
