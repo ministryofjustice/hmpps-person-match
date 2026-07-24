@@ -1,4 +1,4 @@
-from hmpps_cpr_splink.cpr_splink.interface.clean import clean_person
+from hmpps_cpr_splink.cpr_splink.interface.clean import clean_person_for_search
 from integration.mock_person import MockPerson
 
 
@@ -14,7 +14,7 @@ def test_clean_person_uses_internal_identity_without_persisting() -> None:
         pncs=[],
     )
 
-    cleaned = clean_person(person, "request-scoped-id")
+    cleaned = clean_person_for_search(person, "request-scoped-id")
 
     assert cleaned["match_id"] == "request-scoped-id"
     assert cleaned["name_1_std"] is None

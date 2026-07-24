@@ -1,4 +1,4 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 from typing import Any, cast
 
 import duckdb
@@ -6,7 +6,7 @@ from splink import DuckDBAPI
 from splink.internals.clustering import cluster_pairwise_predictions_at_threshold
 from splink.internals.pipeline import CTEPipeline
 from splink.internals.realtime import compare_records
-from sqlalchemy import URL, RowMapping, text
+from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import (
@@ -15,6 +15,7 @@ from hmpps_cpr_splink.cpr_splink.interface.block import (
 )
 from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
+from hmpps_cpr_splink.cpr_splink.interface.records import ScoringCandidateRecord
 from hmpps_cpr_splink.cpr_splink.model.model import (
     FRACTURE_MATCH_WEIGHT_THRESHOLD,
     IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
@@ -67,10 +68,10 @@ def insert_data_into_duckdb(
 def score_candidates(
     connection_duckdb: duckdb.DuckDBPyConnection,
     primary_record_id: str,
-    candidates_data: Sequence[RowMapping | Mapping[str, Any]],
+    candidate_records: Sequence[ScoringCandidateRecord],
     table_name: str = "candidates",
 ) -> list[PersonScore]:
-    candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, table_name)
+    candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidate_records, table_name)
     result = score(
         connection_duckdb,
         primary_record_id,
@@ -103,12 +104,12 @@ async def get_scored_candidates(
     """
     # TODO: allow a threshold cutoff? (depending on blocking rules)
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
-        candidates_data = await candidate_search(primary_record_id, connection_pg)
+        candidate_records = await candidate_search(primary_record_id, connection_pg)
 
-        if not candidates_data:
+        if not candidate_records:
             return []
 
-        return score_candidates(connection_duckdb, primary_record_id, candidates_data)
+        return score_candidates(connection_duckdb, primary_record_id, candidate_records)
 
 
 async def get_best_match(
@@ -121,12 +122,12 @@ async def get_best_match(
     Finds the best matching record by source system to the supplied record and returns its status
     """
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
-        candidates_data = await candidate_search(primary_record_id, connection_pg)
+        candidate_records = await candidate_search(primary_record_id, connection_pg)
 
-        if not candidates_data:
+        if not candidate_records:
             return PersonBestMatch(match_status="NO_MATCH")
 
-        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidates_data, "candidates")
+        candidates_with_postcode_tf = insert_data_into_duckdb(connection_duckdb, candidate_records, "candidates")
 
         res = score(connection_duckdb, primary_record_id, candidates_with_postcode_tf, return_scores_only=False)
 

@@ -21,9 +21,9 @@ async def test_search_candidates_returns_empty_when_only_primary_record_is_retri
             return_value=UUID(int=1),
         ) as mock_uuid4,
         patch(
-            "hmpps_cpr_splink.cpr_splink.interface.search.clean_person",
+            "hmpps_cpr_splink.cpr_splink.interface.search.clean_person_for_search",
             return_value=cleaned_person,
-        ) as mock_clean_person,
+        ) as mock_clean_person_for_search,
         patch(
             "hmpps_cpr_splink.cpr_splink.interface.search.candidate_search_for_record",
             new=AsyncMock(return_value=[{"match_id": str(UUID(int=1))}]),
@@ -39,7 +39,7 @@ async def test_search_candidates_returns_empty_when_only_primary_record_is_retri
     internal_match_id = str(UUID(int=1))
     mock_uuid4.assert_called_once_with()
     assert internal_match_id != person.match_id
-    mock_clean_person.assert_called_once_with(person, internal_match_id)
+    mock_clean_person_for_search.assert_called_once_with(person, internal_match_id)
     mock_candidate_search.assert_awaited_once_with(cleaned_person, connection_pg)
     mock_score_candidates.assert_not_called()
     connection_duckdb.__exit__.assert_called_once()
@@ -69,7 +69,7 @@ async def test_search_candidates_scores_retrieved_candidates_and_closes_duckdb()
     with (
         patch("hmpps_cpr_splink.cpr_splink.interface.search.uuid4", return_value=UUID(int=2)),
         patch(
-            "hmpps_cpr_splink.cpr_splink.interface.search.clean_person",
+            "hmpps_cpr_splink.cpr_splink.interface.search.clean_person_for_search",
             return_value=cleaned_person,
         ),
         patch(

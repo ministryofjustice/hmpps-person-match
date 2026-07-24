@@ -1,9 +1,8 @@
-from typing import Any
-
 import duckdb
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.db import insert_duckdb_table_into_postgres_table
+from hmpps_cpr_splink.cpr_splink.interface.records import CleanedRecord
 from hmpps_cpr_splink.cpr_splink.model_cleaning import simple_clean_whole_joined_table
 from hmpps_cpr_splink.cpr_splink.schemas import DUCKDB_COLUMNS_WITH_TYPES
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
@@ -21,7 +20,7 @@ def _clean_records(records: PersonBatch, connection_duckdb: duckdb.DuckDBPyConne
     return connection_duckdb.table(cleaned_table.name)
 
 
-def clean_person(person: Person, internal_match_id: str) -> dict[str, Any]:
+def clean_person_for_search(person: Person, internal_match_id: str) -> CleanedRecord:
     search_person = person.model_copy(update={"match_id": internal_match_id})
     with duckdb.connect(":memory:") as connection_duckdb:
         cleaned = _clean_records(PersonBatch(records=[search_person]), connection_duckdb)

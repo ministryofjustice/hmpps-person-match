@@ -1,6 +1,5 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
-from collections.abc import Mapping, Sequence
-from typing import Any
+from collections.abc import Sequence
 
 from splink.internals.blocking import (
     BlockingRule,
@@ -10,9 +9,10 @@ from splink.internals.blocking import (
 from splink.internals.input_column import InputColumn
 from splink.internals.pipeline import CTEPipeline
 from splink.internals.settings import LinkTypeLiteralType
-from sqlalchemy import RowMapping, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from hmpps_cpr_splink.cpr_splink.interface.records import CleanedRecord, ScoringCandidateRecord
 from hmpps_cpr_splink.cpr_splink.model.blocking_rules import (
     blocking_rules_for_prediction_tight_for_candidate_search,
 )
@@ -191,7 +191,7 @@ def enqueue_join_term_frequency_tables(
     pipeline.enqueue_sql(sql=sql, output_table_name=output_table_name)
 
 
-async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[RowMapping]:
+async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[ScoringCandidateRecord]:
     """
     Given a primary record id, return a table of these records
     along with the primary, ready to be scored.
@@ -227,9 +227,9 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
 
 
 async def candidate_search_for_record(
-    primary_record: Mapping[str, Any],
+    primary_record: CleanedRecord,
     connection_pg: AsyncSession,
-) -> Sequence[RowMapping]:
+) -> Sequence[ScoringCandidateRecord]:
     pipeline = CTEPipeline()
     cleaned_table_name = "personmatch.person"
     table_name_primary = "primary_record"
