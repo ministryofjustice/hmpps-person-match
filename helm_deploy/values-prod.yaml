@@ -23,6 +23,8 @@ generic-service:
         DB_USER_PREPROD: "database_username"
         DB_PASS_PREPROD: "database_password"
         DB_HOST_PREPROD: "rds_instance_address"
+      person-match-database-backup-s3:
+        BUCKET_NAME: "bucket_name"
     env: 
       SCHEMA_TO_RESTORE: "personmatch"
       MIGRATIONS_VENDOR: "alembic"
