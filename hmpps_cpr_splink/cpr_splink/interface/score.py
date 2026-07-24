@@ -1,6 +1,5 @@
 from collections.abc import Mapping, Sequence
 from typing import Any, cast
-from uuid import uuid4
 
 import duckdb
 from splink import DuckDBAPI
@@ -12,10 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import (
     candidate_search,
-    candidate_search_for_record,
     enqueue_join_term_frequency_tables,
 )
-from hmpps_cpr_splink.cpr_splink.interface.clean import clean_person
 from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_cpr_splink.cpr_splink.model.model import (
@@ -27,7 +24,6 @@ from hmpps_cpr_splink.cpr_splink.model.model import (
 from hmpps_cpr_splink.cpr_splink.model.score import enhance_scores_with_twins, score
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 from hmpps_cpr_splink.cpr_splink.utils import create_table_from_records
-from hmpps_person_match.models.person.person import Person
 from hmpps_person_match.models.person.person_best_match import PersonBestMatch
 from hmpps_person_match.models.person.person_score import PersonScore
 
@@ -113,21 +109,6 @@ async def get_scored_candidates(
             return []
 
         return score_candidates(connection_duckdb, primary_record_id, candidates_data)
-
-
-async def search_scored_candidates(
-    person: Person,
-    connection_pg: AsyncSession,
-) -> list[PersonScore]:
-    internal_match_id = str(uuid4())
-    cleaned_person = clean_person(person, internal_match_id)
-
-    with duckdb.connect(":memory:") as connection_duckdb:
-        candidates_data = await candidate_search_for_record(cleaned_person, connection_pg)
-        if not any(candidate["match_id"] != internal_match_id for candidate in candidates_data):
-            return []
-
-        return score_candidates(connection_duckdb, internal_match_id, candidates_data)
 
 
 async def get_best_match(

@@ -38,7 +38,7 @@ class TestPersonSearchRoute:
     @pytest.fixture(autouse=True)
     def mock_search_results() -> Generator[AsyncMock]:
         with patch(
-            "hmpps_cpr_splink.cpr_splink.interface.score.search_scored_candidates",
+            "hmpps_cpr_splink.cpr_splink.interface.search.search_candidates",
             new_callable=AsyncMock,
         ) as mocked_search:
             yield mocked_search

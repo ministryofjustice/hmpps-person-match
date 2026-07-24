@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_cpr_splink.cpr_splink.interface import score
+from hmpps_cpr_splink.cpr_splink.interface import search
 from hmpps_person_match.db import get_db_session
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
@@ -32,7 +32,7 @@ async def post_person_search(
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> list[PersonScore]:
-    scored_candidates = await score.search_scored_candidates(person, session)
+    scored_candidates = await search.search_candidates(person, session)
     logger.info(
         TelemetryEvents.PERSON_SEARCH_COMPLETED,
         extra={"candidate_size": len(scored_candidates)},
