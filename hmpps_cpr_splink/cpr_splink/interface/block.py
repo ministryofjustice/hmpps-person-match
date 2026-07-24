@@ -1,5 +1,6 @@
 # this isn't really app-facing, but also feels like it lives with this stuff
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 from splink.internals.blocking import (
     BlockingRule,
@@ -15,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from hmpps_cpr_splink.cpr_splink.model.blocking_rules import (
     blocking_rules_for_prediction_tight_for_candidate_search,
 )
+from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 
 # TODO: this doesn't work directly, as our indexing doesnt work, but enough for now
 # Splink 4.0.7 should have requisite change
@@ -29,6 +31,13 @@ for n, br in enumerate(_blocking_rules_concrete):
 
 unique_id_input_column = InputColumn("id", sqlglot_dialect_str="postgres")
 source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
+
+
+def _postgres_column_type(column_type: str) -> str:
+    return {
+        "VARCHAR": "TEXT",
+        "VARCHAR[]": "TEXT[]",
+    }.get(column_type, column_type)
 
 
 # modified version of br.create_blocked_pairs_sql
@@ -215,3 +224,52 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     res = await connection_pg.execute(text(sql), {"mid": primary_record_id})
 
     return res.mappings().fetchall()
+
+
+async def candidate_search_for_record(
+    primary_record: Mapping[str, Any],
+    connection_pg: AsyncSession,
+) -> Sequence[RowMapping]:
+    pipeline = CTEPipeline()
+    cleaned_table_name = "personmatch.person"
+    table_name_primary = "primary_record"
+
+    primary_record_with_id = {"id": 0, **primary_record}
+    primary_select = ",\n".join(
+        f"CAST(:search_{column_name} AS {_postgres_column_type(column_type)}) AS {column_name}"
+        for column_name, column_type in CLEANED_TABLE_SCHEMA
+    )
+    pipeline.enqueue_sql(
+        sql=f"SELECT {primary_select}",
+        output_table_name=table_name_primary,
+    )
+
+    sql_info = _block_using_rules_sqls(
+        input_tablename_l=table_name_primary,
+        input_tablename_r=cleaned_table_name,
+        blocking_rules=_blocking_rules_concrete,
+        link_type="link_only",
+    )
+    pipeline.enqueue_sql(**sql_info)
+
+    cleaned_columns = ", ".join(column_name for column_name, _ in CLEANED_TABLE_SCHEMA)
+    pipeline.enqueue_sql(
+        sql=f"""
+        SELECT {cleaned_columns} FROM {table_name_primary}
+        UNION ALL
+        SELECT {cleaned_columns} FROM {pipeline.output_table_name}
+        """,  # noqa: S608
+        output_table_name="primary_with_blocked_candidates",
+    )
+    enqueue_join_term_frequency_tables(
+        pipeline,
+        table_to_join_to=pipeline.output_table_name,
+        output_table_name="blocked_pairs_with_tfs",
+    )
+
+    sql = pipeline.generate_cte_pipeline_sql()
+    parameters = {
+        f"search_{column_name}": primary_record_with_id[column_name] for column_name, _ in CLEANED_TABLE_SCHEMA
+    }
+    result = await connection_pg.execute(text(sql), parameters)
+    return result.mappings().fetchall()
