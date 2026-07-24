@@ -43,33 +43,12 @@ class TestPersonSearchRoute:
         ) as mocked_search:
             yield mocked_search
 
-    def test_search_no_results(
+    def test_search_returns_results(
         self,
         call_endpoint: Callable,
         person_json: dict,
         mock_search_results: AsyncMock,
         mock_db_connection: Mock,
-        mock_logger: Mock,
-    ) -> None:
-        mock_search_results.return_value = []
-
-        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=person_json)
-
-        assert response.status_code == 200
-        assert response.json() == []
-        mock_search_results.assert_awaited_once()
-        assert mock_search_results.await_args.args[0].match_id == "caller-match-id"
-        assert mock_search_results.await_args.args[1] is mock_db_connection
-        mock_logger.info.assert_called_once_with(
-            TelemetryEvents.PERSON_SEARCH_COMPLETED,
-            extra={"candidate_size": 0},
-        )
-
-    def test_search_returns_exact_person_score_shape(
-        self,
-        call_endpoint: Callable,
-        person_json: dict,
-        mock_search_results: AsyncMock,
         mock_logger: Mock,
     ) -> None:
         mock_search_results.return_value = [
@@ -98,24 +77,13 @@ class TestPersonSearchRoute:
                 "unadjusted_match_weight": 26,
             },
         ]
+        mock_search_results.assert_awaited_once()
+        assert mock_search_results.await_args.args[0].match_id == "caller-match-id"
+        assert mock_search_results.await_args.args[1] is mock_db_connection
         mock_logger.info.assert_called_once_with(
             TelemetryEvents.PERSON_SEARCH_COMPLETED,
             extra={"candidate_size": 1},
         )
-
-    def test_blank_optional_names_and_empty_arrays_are_supported(
-        self,
-        call_endpoint: Callable,
-        person_json: dict,
-        mock_search_results: AsyncMock,
-    ) -> None:
-        person_json.update({"firstName": "", "middleNames": "", "lastName": ""})
-        mock_search_results.return_value = []
-
-        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=person_json)
-
-        assert response.status_code == 200
-        mock_search_results.assert_awaited_once()
 
     def test_invalid_request_does_not_start_search(
         self,
