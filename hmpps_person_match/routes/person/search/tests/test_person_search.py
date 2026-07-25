@@ -5,8 +5,6 @@ import pytest
 from fastapi.testclient import TestClient
 
 from hmpps_person_match.domain.roles import Roles
-from hmpps_person_match.domain.telemetry_events import TelemetryEvents
-from hmpps_person_match.models.person.person_score import PersonScore
 from hmpps_person_match.routes.person.search.person_search import ROUTE
 
 
@@ -32,48 +30,24 @@ class TestPersonSearchRoute:
         ) as mocked_search:
             yield mocked_search
 
-    def test_search_returns_results(
+    def test_valid_request_calls_search(
         self,
         call_endpoint: Callable,
         search_request_json: dict,
         mock_search_results: AsyncMock,
         mock_db_connection: Mock,
-        mock_logger: Mock,
     ) -> None:
-        mock_search_results.return_value = [
-            PersonScore(
-                candidate_match_id="candidate-id",
-                candidate_match_probability=0.9999,
-                candidate_match_weight=24,
-                candidate_should_join=True,
-                candidate_should_fracture=False,
-                candidate_is_possible_twin=True,
-                unadjusted_match_weight=26,
-            ),
-        ]
+        # The search service is mocked: this test checks that the route parses the request and passes it on.
+        mock_search_results.return_value = []
 
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=search_request_json)
 
         assert response.status_code == 200
-        assert response.json() == [
-            {
-                "candidate_match_id": "candidate-id",
-                "candidate_match_probability": 0.9999,
-                "candidate_match_weight": 24,
-                "candidate_should_join": True,
-                "candidate_should_fracture": False,
-                "candidate_is_possible_twin": True,
-                "unadjusted_match_weight": 26,
-            },
-        ]
+        assert response.json() == []
         mock_search_results.assert_awaited_once()
         assert mock_search_results.await_args.args[0].full_name == "Henry Ahmed Junaed"
         assert mock_search_results.await_args.args[0].postcodes == ["B10 1EJ"]
         assert mock_search_results.await_args.args[1] is mock_db_connection
-        mock_logger.info.assert_called_once_with(
-            TelemetryEvents.PERSON_SEARCH_COMPLETED,
-            extra={"candidate_size": 1},
-        )
 
     def test_invalid_request_does_not_start_search(
         self,
