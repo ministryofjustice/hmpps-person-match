@@ -1,3 +1,5 @@
+import datetime
+
 from hmpps_cpr_splink.cpr_splink.interface.clean import clean_person_for_search
 from hmpps_person_match.models.person.person_search_request import (
     PersonSearchRequest,
@@ -31,10 +33,10 @@ def test_clean_person_uses_internal_identity_without_persisting() -> None:
 def test_search_request_full_name_is_mapped_and_cleaned() -> None:
     search_request = PersonSearchRequest(
         fullName="John Paul Smith",
-        dateOfBirth="1989-04-12",
+        dateOfBirth=datetime.date(1989, 4, 12),
         firstNameAliases=["Johnny"],
         lastNameAliases=["Smithson"],
-        dateOfBirthAliases=["1989-04-13"],
+        dateOfBirthAliases=[datetime.date(1989, 4, 13)],
         postcodes=["AB1 2CD"],
     )
 
