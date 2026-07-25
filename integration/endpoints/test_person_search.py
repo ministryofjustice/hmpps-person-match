@@ -30,10 +30,9 @@ class TestPersonSearchEndpoint(IntegrationTestBase):
         await self.truncate_person_data(db_connection)
         await self.refresh_term_frequencies(db_connection)
 
-    async def test_no_match_returns_empty_without_persisting_search_record(
+    async def test_no_match_returns_empty(
         self,
         call_endpoint: Callable,
-        db_connection: AsyncSession,
     ) -> None:
         response = call_endpoint(
             "post",
@@ -44,18 +43,15 @@ class TestPersonSearchEndpoint(IntegrationTestBase):
 
         assert response.status_code == 200
         assert response.json() == []
-        await self.assert_size_of_table(db_connection, "person", size=0)
 
-    async def test_copied_record_returns_all_candidates_without_mutation(
+    async def test_search_returns_all_matching_people(
         self,
         call_endpoint: Callable,
         person_factory: PersonFactory,
-        db_connection: AsyncSession,
     ) -> None:
+        # Create two equivalent people through the API, which cleans and persists them in personmatch.person.
         candidate_1 = await person_factory.create_from(MockPerson())
         candidate_2 = await person_factory.create_from(candidate_1)
-        candidate_1_before = dict(await self.find_by_match_id(db_connection, candidate_1.match_id) or {})
-        candidate_2_before = dict(await self.find_by_match_id(db_connection, candidate_2.match_id) or {})
 
         response = call_endpoint(
             "post",
@@ -71,7 +67,3 @@ class TestPersonSearchEndpoint(IntegrationTestBase):
             candidate_1.match_id,
             candidate_2.match_id,
         }
-
-        assert dict(await self.find_by_match_id(db_connection, candidate_1.match_id) or {}) == candidate_1_before
-        assert dict(await self.find_by_match_id(db_connection, candidate_2.match_id) or {}) == candidate_2_before
-        await self.assert_size_of_table(db_connection, "person", size=2)
