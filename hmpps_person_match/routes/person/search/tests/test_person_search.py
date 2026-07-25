@@ -11,25 +11,14 @@ from hmpps_person_match.routes.person.search.person_search import ROUTE
 
 
 @pytest.fixture()
-def person_json() -> dict:
+def search_request_json() -> dict:
     return {
-        "matchId": "caller-match-id",
-        "sourceSystem": "DELIUS",
-        "sourceSystemId": "A12345BC",
-        "masterDefendantId": None,
-        "firstName": "Henry",
-        "middleNames": "Ahmed",
-        "lastName": "Junaed",
+        "fullName": "Henry Ahmed Junaed",
         "dateOfBirth": "1992-03-02",
-        "firstNameAliases": [],
-        "lastNameAliases": [],
-        "dateOfBirthAliases": [],
-        "postcodes": [],
-        "cros": [],
-        "pncs": [],
-        "sentenceDates": [],
-        "overrideMarker": None,
-        "overrideScopes": None,
+        "firstNameAliases": ["Harry"],
+        "lastNameAliases": ["June"],
+        "dateOfBirthAliases": ["1992-03-03"],
+        "postcodes": ["B10 1EJ"],
     }
 
 
@@ -46,7 +35,7 @@ class TestPersonSearchRoute:
     def test_search_returns_results(
         self,
         call_endpoint: Callable,
-        person_json: dict,
+        search_request_json: dict,
         mock_search_results: AsyncMock,
         mock_db_connection: Mock,
         mock_logger: Mock,
@@ -63,7 +52,7 @@ class TestPersonSearchRoute:
             ),
         ]
 
-        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=person_json)
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=search_request_json)
 
         assert response.status_code == 200
         assert response.json() == [
@@ -78,7 +67,8 @@ class TestPersonSearchRoute:
             },
         ]
         mock_search_results.assert_awaited_once()
-        assert mock_search_results.await_args.args[0].match_id == "caller-match-id"
+        assert mock_search_results.await_args.args[0].full_name == "Henry Ahmed Junaed"
+        assert mock_search_results.await_args.args[0].postcodes == ["B10 1EJ"]
         assert mock_search_results.await_args.args[1] is mock_db_connection
         mock_logger.info.assert_called_once_with(
             TelemetryEvents.PERSON_SEARCH_COMPLETED,
@@ -91,6 +81,20 @@ class TestPersonSearchRoute:
         mock_search_results: AsyncMock,
     ) -> None:
         response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=None)
+
+        assert response.status_code == 400
+        assert response.json()["detail"] == "Invalid request."
+        mock_search_results.assert_not_awaited()
+
+    def test_unsupported_search_field_does_not_start_search(
+        self,
+        call_endpoint: Callable,
+        search_request_json: dict,
+        mock_search_results: AsyncMock,
+    ) -> None:
+        search_request_json["pncs"] = ["2000/1234567A"]
+
+        response = call_endpoint("post", ROUTE, roles=[Roles.ROLE_PERSON_MATCH], json=search_request_json)
 
         assert response.status_code == 400
         assert response.json()["detail"] == "Invalid request."

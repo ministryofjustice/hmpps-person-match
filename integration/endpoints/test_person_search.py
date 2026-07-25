@@ -10,6 +10,20 @@ from integration.person_factory import PersonFactory
 from integration.test_base import IntegrationTestBase
 
 
+def search_request_from(person: MockPerson) -> dict[str, object]:
+    assert person.date_of_birth is not None
+    return {
+        "fullName": " ".join(
+            name_part for name_part in (person.first_name, person.middle_names, person.last_name) if name_part
+        ),
+        "dateOfBirth": person.date_of_birth.isoformat(),
+        "firstNameAliases": person.first_name_aliases,
+        "lastNameAliases": person.last_name_aliases,
+        "dateOfBirthAliases": [alias.isoformat() for alias in person.date_of_birth_aliases],
+        "postcodes": person.postcodes,
+    }
+
+
 class TestPersonSearchEndpoint(IntegrationTestBase):
     @pytest.fixture(autouse=True, scope="function")
     async def before_each(self, db_connection: AsyncSession) -> None:
@@ -21,29 +35,15 @@ class TestPersonSearchEndpoint(IntegrationTestBase):
         call_endpoint: Callable,
         db_connection: AsyncSession,
     ) -> None:
-        search_person = MockPerson(
-            firstName="",
-            middleNames="",
-            lastName="",
-            firstNameAliases=[],
-            lastNameAliases=[],
-            dateOfBirthAliases=[],
-            postcodes=[],
-            cros=[],
-            pncs=[],
-            sentenceDates=[],
-        )
-
         response = call_endpoint(
             "post",
             ROUTE,
-            data=search_person.as_json(),
+            json={},
             client=Client.HMPPS_PERSON_MATCH,
         )
 
         assert response.status_code == 200
         assert response.json() == []
-        assert await self.find_by_match_id(db_connection, search_person.match_id) is None
         await self.assert_size_of_table(db_connection, "person", size=0)
 
     async def test_copied_record_returns_all_candidates_without_mutation(
@@ -60,7 +60,7 @@ class TestPersonSearchEndpoint(IntegrationTestBase):
         response = call_endpoint(
             "post",
             ROUTE,
-            data=candidate_1.as_json(),
+            json=search_request_from(candidate_1),
             client=Client.HMPPS_PERSON_MATCH,
         )
 
