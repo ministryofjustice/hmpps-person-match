@@ -1,6 +1,8 @@
 generic-service:
   nameOverride: hmpps-person-match
 
+  serviceAccountName: "person-match-service"
+
   replicaCount: 4
 
   autoscaling:
