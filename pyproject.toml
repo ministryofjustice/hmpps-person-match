@@ -9,7 +9,7 @@ dependencies = [
   "duckdb==1.5.4",
   "splink==4.0.15",
   "psycopg2-binary==2.9.12",
-  "pytz==2026.2",
+  "pytz==2026.3.post1",
   "azure-monitor-opentelemetry==1.8.9",
   "fastapi==0.140.0",
   "uvicorn==0.51.0",
