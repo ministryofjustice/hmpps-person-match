@@ -9,9 +9,9 @@ dependencies = [
   "duckdb==1.5.4",
   "splink==4.0.15",
   "psycopg2-binary==2.9.12",
-  "pytz==2026.2",
+  "pytz==2026.3.post1",
   "azure-monitor-opentelemetry==1.8.9",
-  "fastapi==0.139.2",
+  "fastapi==0.140.0",
   "uvicorn==0.51.0",
   "authlib==1.6.12",
   "cachetools==7.1.6",
@@ -19,11 +19,11 @@ dependencies = [
   "cryptography==49.0.0",
   "alembic==1.18.5",
   "asyncpg==0.31.0",
-  "greenlet==3.5.3",
+  "greenlet==3.5.4",
   "opentelemetry-instrumentation-sqlalchemy==0.64b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
-  "types-authlib==1.6.11.20260518",
+  "types-authlib==1.7.2.20260724",
   "types-cachetools==7.0.0.20260713",
   "types-requests==2.33.0.20260712",
 ]
@@ -34,13 +34,13 @@ default-groups = ["dev"]
 
 [dependency-groups]
 dev = [
-  "fastapi[standard]==0.139.2",
+  "fastapi[standard]==0.140.0",
   "ruff==0.15.5",
   "pyyaml==6.0.3",
   "pytest==9.1.1",
   "pytest-cov==7.1.0",
   "pytest-asyncio==1.4.0",
-  "faker==40.35.0",
+  "faker==40.36.0",
   "httpx==0.28.1",
   "requests-mock==1.12.1",
   "mypy>=1.18.2",
