@@ -3,10 +3,10 @@ from collections.abc import Sequence
 from datetime import date
 
 import pytest
-from sqlalchemy import RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.block import candidate_search
+from hmpps_cpr_splink.cpr_splink.interface.records import ScoringCandidateRecord
 from integration import random_test_data
 from integration.mock_person import MockPerson
 from integration.person_factory import PersonFactory
@@ -347,7 +347,7 @@ class TestCandidateSearch(IntegrationTestBase):
         return [random_test_data.random_date() for _ in range(size)]
 
     @staticmethod
-    def extract_match_ids(candidate_data: Sequence[RowMapping]) -> set[str]:
+    def extract_match_ids(candidate_data: Sequence[ScoringCandidateRecord]) -> set[str]:
         """
         Extract a list of match_ids from
         """
