@@ -1,7 +1,7 @@
 from logging import Logger
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +11,7 @@ from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
-from hmpps_person_match.models.cluster.is_cluster_valid import IsClusterValid, MissingRecordIds
+from hmpps_person_match.models.cluster.is_cluster_valid import IsClusterValid, IsClusterValidRequest, MissingRecordIds
 
 ROUTE = "/is-cluster-valid"
 
@@ -34,7 +34,7 @@ router = APIRouter(
 
 @router.post(ROUTE, description=DESCRIPTION)
 async def get_cluster_validity(
-    match_ids: Annotated[list[str], Body(examples=["ea59b57f-f3b6-4f77-88dd-64f86d37dffd"])],
+    cluster_request: IsClusterValidRequest,
     session: Annotated[AsyncSession, Depends(get_db_session)],
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> IsClusterValid:
@@ -43,9 +43,15 @@ async def get_cluster_validity(
     Returns an indication of whether all supplied match_ids belong to the same cluster,
     as well as the cluster groupings for casese where they don't
     """
+    match_ids = cluster_request.match_ids
     missing_ids = await score.get_missing_record_ids(match_ids, session)
     if not missing_ids:
-        clusters_info = await score.get_clusters(match_ids, url.pg_database_url, session)
+        clusters_info = await score.get_clusters(
+            match_ids,
+            cluster_request.clustering_threshold,
+            url.pg_database_url,
+            session,
+        )
         logger.info(
             TelemetryEvents.IS_CLUSTER_VALID,
             extra=dict(isClusterValid=clusters_info.is_single_cluster, clusters=str(clusters_info.clusters_groupings)),

@@ -18,7 +18,6 @@ from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgre
 from hmpps_cpr_splink.cpr_splink.interface.records import ScoringCandidateRecord
 from hmpps_cpr_splink.cpr_splink.model.model import (
     FRACTURE_MATCH_WEIGHT_THRESHOLD,
-    IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
     JOINING_MATCH_WEIGHT_THRESHOLD,
     MODEL_PATH,
 )
@@ -216,6 +215,7 @@ def get_mutually_excluded_records(
 
 async def get_clusters(
     match_ids: list[str],
+    match_weight_threshold: float,
     pg_db_url: URL,
     connection_pg: AsyncSession,
     default_postcode_tf: float = 1.0,
@@ -264,7 +264,7 @@ async def get_clusters(
             edges=scores_with_twins_table_name,
             db_api=db_api,
             node_id_column_name="match_id",
-            threshold_match_weight=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
+            threshold_match_weight=match_weight_threshold,
         )
         clusters = connection_duckdb.execute(
             f"SELECT match_id, cluster_id FROM {df_clusters.physical_name} "  # noqa: S608
