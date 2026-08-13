@@ -37,6 +37,12 @@ blocking_rules_tight = [
     block_on("master_defendant_id"),
 ]
 
+# for now we use the same set of rules, but we can extend these
+# once we have investigated options
+blocking_rules_looser = [
+    *blocking_rules_tight,
+]
+
 
 # TODO: this doesn't work directly, as our indexing doesnt work, but enough for now
 # Splink 4.0.7 should have requisite change
@@ -48,3 +54,12 @@ blocking_rules_tight_dialected = list(
 )
 for n, br in enumerate(blocking_rules_tight_dialected):
     br.add_preceding_rules(blocking_rules_tight_dialected[:n])
+
+blocking_rules_looser_dialected = list(
+    map(
+        lambda brc: brc.get_blocking_rule("postgres"),
+        blocking_rules_looser,
+    ),
+)
+for n, br in enumerate(blocking_rules_looser_dialected):
+    br.add_preceding_rules(blocking_rules_looser_dialected[:n])
