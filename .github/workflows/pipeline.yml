@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
-  PYTHON_VERSION: "3.14.5"
+  PYTHON_VERSION: "3.14.7"
 
 jobs:
   helm_lint:
@@ -122,7 +122,7 @@ jobs:
       - name: Start Required Services
         run: make start-containers
     
-      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@35bb5e74a025299cddf50909c1968444d966c1dc # v1.0.21
+      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@860f18498f2263bb888da24cafc3c47cc87e3543 # v1.1.0
         with:
           schema: personmatch
 

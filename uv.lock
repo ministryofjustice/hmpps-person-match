@@ -676,7 +676,7 @@ requires-dist = [
     { name = "pyjwt", specifier = "==2.13.0" },
     { name = "pytz", specifier = "==2026.3.post1" },
     { name = "splink", specifier = "==4.0.15" },
-    { name = "types-authlib", specifier = "==1.7.2.20260724" },
+    { name = "types-authlib", specifier = "==1.7.2.20260807" },
     { name = "types-cachetools", specifier = "==7.0.0.20260713" },
     { name = "types-requests", specifier = "==2.33.0.20260712" },
     { name = "uvicorn", specifier = "==0.52.1" },
@@ -1932,14 +1932,14 @@ wheels = [
 
 [[package]]
 name = "types-authlib"
-version = "1.7.2.20260724"
+version = "1.7.2.20260807"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/37/ed/2f209e2a7331dd7475ba489d23ec5a6d500416f594940cb910e6defee4c9/types_authlib-1.7.2.20260724.tar.gz", hash = "sha256:ce1f40fa4269daf029e9b288d82083675b45c9e88c2787be6a4bfdd5484607f1", size = 49508, upload-time = "2026-07-24T04:59:55.977Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4a/37/d593b802080f0ed39e2c321fd5d8d86f9f1ee191d1e28b22396d4f9eebb0/types_authlib-1.7.2.20260807.tar.gz", hash = "sha256:b2f557c15c7447296174d2fb33048ae61dac4b1399a953b6f917b9e8e5995186", size = 49716, upload-time = "2026-08-07T04:17:44.304Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/d6/eb96fb554d2fdcf95e39edb815a86b490f061a8e33a5743cc9ba789377ae/types_authlib-1.7.2.20260724-py3-none-any.whl", hash = "sha256:ed5ad55d94eadfc4df8ac6396df36e28bd188bf50e05ae892463ff6d85456e03", size = 109384, upload-time = "2026-07-24T04:59:54.957Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/28/9a92b19827b3d839133044f2237e801ffa791962b3a799174477bc349eef/types_authlib-1.7.2.20260807-py3-none-any.whl", hash = "sha256:3e343fd5d589bdbf645a1696f2b11c1cb254e2b3b12df78134c16e7ed6d9572c", size = 109488, upload-time = "2026-08-07T04:17:43.254Z" },
 ]
 
 [[package]]
