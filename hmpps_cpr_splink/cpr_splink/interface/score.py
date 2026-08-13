@@ -16,6 +16,7 @@ from hmpps_cpr_splink.cpr_splink.interface.block import (
 from hmpps_cpr_splink.cpr_splink.interface.clusters import Clusters
 from hmpps_cpr_splink.cpr_splink.interface.db import duckdb_connected_to_postgres
 from hmpps_cpr_splink.cpr_splink.interface.records import ScoringCandidateRecord
+from hmpps_cpr_splink.cpr_splink.model.blocking_rules import BlockingRuleSetName
 from hmpps_cpr_splink.cpr_splink.model.model import (
     FRACTURE_MATCH_WEIGHT_THRESHOLD,
     IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
@@ -98,13 +99,18 @@ async def get_scored_candidates(
     primary_record_id: str,
     pg_db_url: URL,
     connection_pg: AsyncSession,
+    blocking_rule_set: BlockingRuleSetName = "tight",
 ) -> list[PersonScore]:
     """
     Takes a primary record, generates candidates, scores
     """
     # TODO: allow a threshold cutoff? (depending on blocking rules)
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
-        candidate_records = await candidate_search(primary_record_id, connection_pg)
+        candidate_records = await candidate_search(
+            primary_record_id,
+            connection_pg,
+            blocking_rule_set=blocking_rule_set,
+        )
 
         if not candidate_records:
             return []

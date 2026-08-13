@@ -14,7 +14,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.records import CleanedRecord, ScoringCandidateRecord
 from hmpps_cpr_splink.cpr_splink.model.blocking_rules import (
-    blocking_rules_tight_dialected,
+    BlockingRuleSetName,
+    blocking_rule_sets,
 )
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
 
@@ -180,7 +181,11 @@ def enqueue_join_term_frequency_tables(
     pipeline.enqueue_sql(sql=sql, output_table_name=output_table_name)
 
 
-async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[ScoringCandidateRecord]:
+async def candidate_search(
+    primary_record_id: str,
+    connection_pg: AsyncSession,
+    blocking_rule_set: BlockingRuleSetName = "tight",
+) -> Sequence[ScoringCandidateRecord]:
     """
     Given a primary record id, return a table of these records
     along with the primary, ready to be scored.
@@ -195,11 +200,13 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     sql = f"SELECT * FROM {cleaned_table_name} WHERE match_id = :mid"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
+    rules_to_use = blocking_rule_sets[blocking_rule_set]
+
     sql_info = _block_using_rules_sqls(
         input_tablename_l=table_name_primary,
         input_tablename_r=cleaned_table_name,
         link_type="link_only",
-        blocking_rules=blocking_rules_tight_dialected,
+        blocking_rules=rules_to_use,
     )
     pipeline.enqueue_sql(**sql_info)
 
@@ -237,7 +244,7 @@ async def candidate_search_for_record(
         input_tablename_l=table_name_primary,
         input_tablename_r=cleaned_table_name,
         link_type="link_only",
-        blocking_rules=blocking_rules_tight_dialected,
+        blocking_rules=blocking_rule_sets["tight"],
     )
     pipeline.enqueue_sql(**sql_info)
 

@@ -1,5 +1,8 @@
+from typing import Literal
+
 from splink import block_on
 from splink.blocking_rule_library import And, CustomRule
+from splink.internals.blocking import BlockingRule
 
 POSTCODE_INTERSECT = CustomRule("l.postcode_arr && r.postcode_arr")
 SENTENCE_DATE_INTERSECT = CustomRule("l.sentence_date_arr && r.sentence_date_arr")
@@ -63,3 +66,10 @@ blocking_rules_looser_dialected = list(
 )
 for n, br in enumerate(blocking_rules_looser_dialected):
     br.add_preceding_rules(blocking_rules_looser_dialected[:n])
+
+type BlockingRuleSetName = Literal["tight", "looser"]
+
+blocking_rule_sets: dict[BlockingRuleSetName, list[BlockingRule]] = {
+    "tight": blocking_rules_tight_dialected,
+    "looser": blocking_rules_looser_dialected,
+}
