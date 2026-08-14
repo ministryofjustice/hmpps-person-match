@@ -14,20 +14,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface.records import CleanedRecord, ScoringCandidateRecord
 from hmpps_cpr_splink.cpr_splink.model.blocking_rules import (
-    blocking_rules_for_prediction_tight_for_candidate_search,
+    BlockingRuleSetName,
+    blocking_rule_sets,
 )
 from hmpps_cpr_splink.cpr_splink.model_cleaning import CLEANED_TABLE_SCHEMA
-
-# TODO: this doesn't work directly, as our indexing doesnt work, but enough for now
-# Splink 4.0.7 should have requisite change
-_blocking_rules_concrete = list(
-    map(
-        lambda brc: brc.get_blocking_rule("postgres"),
-        blocking_rules_for_prediction_tight_for_candidate_search,
-    ),
-)
-for n, br in enumerate(_blocking_rules_concrete):
-    br.add_preceding_rules(_blocking_rules_concrete[:n])
 
 unique_id_input_column = InputColumn("id", sqlglot_dialect_str="postgres")
 source_dataset_input_column = InputColumn("source_dataset", sqlglot_dialect_str="postgres")
@@ -191,7 +181,11 @@ def enqueue_join_term_frequency_tables(
     pipeline.enqueue_sql(sql=sql, output_table_name=output_table_name)
 
 
-async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) -> Sequence[ScoringCandidateRecord]:
+async def candidate_search(
+    primary_record_id: str,
+    connection_pg: AsyncSession,
+    blocking_rule_set: BlockingRuleSetName = "tight",
+) -> Sequence[ScoringCandidateRecord]:
     """
     Given a primary record id, return a table of these records
     along with the primary, ready to be scored.
@@ -206,11 +200,13 @@ async def candidate_search(primary_record_id: str, connection_pg: AsyncSession) 
     sql = f"SELECT * FROM {cleaned_table_name} WHERE match_id = :mid"  # noqa: S608
     pipeline.enqueue_sql(sql=sql, output_table_name=table_name_primary)
 
+    rules_to_use = blocking_rule_sets[blocking_rule_set]
+
     sql_info = _block_using_rules_sqls(
         input_tablename_l=table_name_primary,
         input_tablename_r=cleaned_table_name,
-        blocking_rules=_blocking_rules_concrete,
         link_type="link_only",
+        blocking_rules=rules_to_use,
     )
     pipeline.enqueue_sql(**sql_info)
 
@@ -247,8 +243,8 @@ async def candidate_search_for_record(
     sql_info = _block_using_rules_sqls(
         input_tablename_l=table_name_primary,
         input_tablename_r=cleaned_table_name,
-        blocking_rules=_blocking_rules_concrete,
         link_type="link_only",
+        blocking_rules=blocking_rule_sets["tight"],
     )
     pipeline.enqueue_sql(**sql_info)
 
