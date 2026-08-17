@@ -3,11 +3,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface import score
-from hmpps_person_match.db import get_db_session, url
+from hmpps_person_match.db import url
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
+from hmpps_person_match.dependencies.database import TransactionalSession
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
@@ -35,7 +35,7 @@ router = APIRouter(
 @router.post(ROUTE, description=DESCRIPTION)
 async def get_cluster_validity(
     match_ids: Annotated[list[str], Body(examples=["ea59b57f-f3b6-4f77-88dd-64f86d37dffd"])],
-    session: Annotated[AsyncSession, Depends(get_db_session)],
+    session: TransactionalSession,
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> IsClusterValid:
     """
