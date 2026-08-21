@@ -4,9 +4,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmpps_person_match.db import get_db_session
+from hmpps_person_match.dependencies.database import TransactionalSession
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 
@@ -17,7 +16,7 @@ router = APIRouter()
 
 @router.post(ROUTE, include_in_schema=False)
 async def post_record_count_report(
-    session: Annotated[AsyncSession, Depends(get_db_session)],
+    session: TransactionalSession,
     logger: Annotated[Logger, Depends(get_logger)],
 ) -> JSONResponse:
     """
