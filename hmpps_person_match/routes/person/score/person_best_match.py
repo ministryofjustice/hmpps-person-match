@@ -1,12 +1,11 @@
-from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from hmpps_cpr_splink.cpr_splink.interface import score
-from hmpps_person_match.db import get_db_session, url
+from hmpps_person_match.db import url
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
+from hmpps_person_match.dependencies.database import TransactionalSession
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.models.person.person_best_match import PersonBestMatch
 
@@ -26,7 +25,7 @@ router = APIRouter(
 async def get_person_best_match(
     match_id: str,
     source_system: str,
-    session: Annotated[AsyncSession, Depends(get_db_session)],
+    session: TransactionalSession,
 ) -> PersonBestMatch:
     """
     Person best match GET request handler
