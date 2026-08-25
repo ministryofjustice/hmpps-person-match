@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
-  PYTHON_VERSION: "3.14.5"
+  PYTHON_VERSION: "3.14.7"
 
 jobs:
   helm_lint:
@@ -50,7 +50,7 @@ jobs:
 
       - name: Setup uv
         id: setup-uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -82,7 +82,7 @@ jobs:
 
       - name: Setup uv
         id: setup-uv
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -122,7 +122,7 @@ jobs:
       - name: Start Required Services
         run: make start-containers
     
-      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@35bb5e74a025299cddf50909c1968444d966c1dc # v1.0.21
+      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@22d87963ea96458c47d7c1dff8670448a0be99ec # v1.1.1
         with:
           schema: personmatch
 
