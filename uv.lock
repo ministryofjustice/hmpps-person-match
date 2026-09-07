@@ -206,11 +206,11 @@ wheels = [
 
 [[package]]
 name = "cachetools"
-version = "7.1.7"
+version = "7.1.8"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/70/d2/47e8bc06fe2a06d3f5bdf20f1126ab66c4e99dc48d940e7ba873f7ac7131/cachetools-7.1.7.tar.gz", hash = "sha256:a3e2a00b14d8f8a6b70c1dae7b4685e7ad3bc965c5b42124a2d6ce895da6cf50", size = 40680, upload-time = "2026-08-01T21:20:40.434Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/39/9a4689914dd907915cee74733b95888fc1d8a21aad47a24a0a2deec73ac4/cachetools-7.1.8.tar.gz", hash = "sha256:1221d547a0b24b7f26fa891d40d488b5258beab9aebd8ed68c729be3af849c43", size = 40909, upload-time = "2026-08-31T19:02:53.985Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/d8/767faeda872075724b95dd675466a645f1b92aadcdcf2d1429dcfd76c176/cachetools-7.1.7-py3-none-any.whl", hash = "sha256:ef98ef375ad188819ef2f9b3645e3987f4b8c5b7550e436ad998c2de78296df0", size = 16830, upload-time = "2026-08-01T21:20:38.977Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/3d/9487690d0e937854db587205c66bab3c3cf88d9f00ed380b74cb88cc94ee/cachetools-7.1.8-py3-none-any.whl", hash = "sha256:a81e3844acaa7355b6567f97bd67a94a14ec3a9bc2cbbdae45b9592cc036775b", size = 16842, upload-time = "2026-08-31T19:02:52.554Z" },
 ]
 
 [[package]]
@@ -665,7 +665,7 @@ requires-dist = [
     { name = "asyncpg", specifier = "==0.31.0" },
     { name = "authlib", specifier = "==1.6.12" },
     { name = "azure-monitor-opentelemetry", specifier = "==1.8.9" },
-    { name = "cachetools", specifier = "==7.1.7" },
+    { name = "cachetools", specifier = "==7.1.8" },
     { name = "cryptography", specifier = "==50.0.1" },
     { name = "duckdb", specifier = "==1.5.5" },
     { name = "fastapi", specifier = "==0.141.1" },
@@ -676,7 +676,7 @@ requires-dist = [
     { name = "pyjwt", specifier = "==2.13.0" },
     { name = "pytz", specifier = "==2026.3.post1" },
     { name = "splink", specifier = "==4.0.17" },
-    { name = "types-authlib", specifier = "==1.7.2.20260827" },
+    { name = "types-authlib", specifier = "==1.7.2.20260901" },
     { name = "types-cachetools", specifier = "==7.0.0.20260713" },
     { name = "types-requests", specifier = "==2.33.0.20260712" },
     { name = "uvicorn", specifier = "==0.52.4" },
@@ -1932,14 +1932,14 @@ wheels = [
 
 [[package]]
 name = "types-authlib"
-version = "1.7.2.20260827"
+version = "1.7.2.20260901"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6e/a9/47337e39d569933ec88297c0eba3480236f0b363534bef251987c0e033c7/types_authlib-1.7.2.20260827.tar.gz", hash = "sha256:e75a01ef3c26dae933696a3f79361756c37a3b7cd775553111fd41b297181064", size = 50614, upload-time = "2026-08-27T12:07:18.348Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/a0/7b3764f8e110c41785b105ba1017e144f2c9719cfca317b42dd7fdbfd438/types_authlib-1.7.2.20260901.tar.gz", hash = "sha256:31de04aa6b7b43781dd28cc23634bf5c908a7fbb7b56e1ceaf0431d202956a92", size = 50826, upload-time = "2026-09-01T06:54:52.452Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/e6/2a20465b6d17ee22ac4964d06f362c836778e81822211cd447209aa47878/types_authlib-1.7.2.20260827-py3-none-any.whl", hash = "sha256:688b537716a36a2dd99d44724a9934dd6f5fc1d05f9b65f33bd2b023454c6c10", size = 110319, upload-time = "2026-08-27T12:07:17.235Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/fc/f2b250c69f4ff5d13f0528ce40d53cb5b35e65e169ec2eaf8b44042558aa/types_authlib-1.7.2.20260901-py3-none-any.whl", hash = "sha256:2884d46c6f45f3a9831451b5549b7723d1712a4427f7357eb5089ac2e8028496", size = 110373, upload-time = "2026-09-01T06:54:51.268Z" },
 ]
 
 [[package]]

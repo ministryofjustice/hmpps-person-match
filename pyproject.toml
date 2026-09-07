@@ -14,7 +14,7 @@ dependencies = [
   "fastapi==0.141.1",
   "uvicorn==0.52.4",
   "authlib==1.6.12",
-  "cachetools==7.1.7",
+  "cachetools==7.1.8",
   "pyjwt==2.13.0",
   "cryptography==50.0.1",
   "alembic==1.19.1",
@@ -23,7 +23,7 @@ dependencies = [
   "opentelemetry-instrumentation-sqlalchemy==0.64b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
-  "types-authlib==1.7.2.20260827",
+  "types-authlib==1.7.2.20260901",
   "types-cachetools==7.0.0.20260713",
   "types-requests==2.33.0.20260712",
 ]
