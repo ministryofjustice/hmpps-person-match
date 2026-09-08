@@ -17,7 +17,7 @@ dependencies = [
   "cachetools==7.1.8",
   "pyjwt==2.13.0",
   "cryptography==50.0.1",
-  "alembic==1.19.1",
+  "alembic==1.19.2",
   "asyncpg==0.31.0",
   "greenlet==3.5.5",
   "opentelemetry-instrumentation-sqlalchemy==0.64b0",
