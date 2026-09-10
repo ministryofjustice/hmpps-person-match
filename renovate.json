@@ -4,7 +4,8 @@
   "packageRules": [
     {
       "matchCategories": ["python"],
-      "stabilityDays": 3
+      "stabilityDays": 3,
+      "minimumReleaseAge": "3 days"
     }
   ]
 }
