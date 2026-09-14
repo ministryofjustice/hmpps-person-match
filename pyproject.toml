@@ -8,7 +8,7 @@ requires-python = ">=3.14"
 dependencies = [
   "duckdb==1.5.5",
   "splink==4.0.17",
-  "psycopg2-binary==2.9.12",
+  "psycopg2-binary==2.9.13",
   "pytz==2026.3.post1",
   "azure-monitor-opentelemetry==1.8.9",
   "fastapi==0.141.1",
