@@ -18,14 +18,14 @@ dependencies = [
   "pyjwt==2.15.0",
   "cryptography==50.0.2",
   "alembic==1.20.0",
-  "asyncpg==0.31.0",
+  "asyncpg==0.32.0",
   "greenlet==3.5.6",
   "opentelemetry-instrumentation-sqlalchemy==0.64b0",
   # h11 is required by uvicorn and httpx to fix CVE-2025-43859
   "h11==0.16.0",
   "types-authlib==1.8.0.20260911",
   "types-cachetools==7.0.0.20260713",
-  "types-requests==2.33.0.20260906",
+  "types-requests==2.33.0.20261006",
 ]
 
 [tool.uv]
