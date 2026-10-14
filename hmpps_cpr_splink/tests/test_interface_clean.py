@@ -1,6 +1,10 @@
 import datetime
 
 from hmpps_cpr_splink.cpr_splink.interface.clean import clean_person_for_search
+from hmpps_person_match.models.person.emdi_exact_match_request import (
+    EmdiExactMatchRequest,
+    emdi_exact_match_request_to_person,
+)
 from hmpps_person_match.models.person.person_search_request import (
     PersonSearchRequest,
     person_search_request_to_person,
@@ -57,3 +61,24 @@ def test_search_request_full_name_is_mapped_and_cleaned() -> None:
     assert cleaned["last_name_std_arr"] == ["SMITH", "SMITHSON"]
     assert [str(value) for value in cleaned["date_of_birth_arr"]] == ["1989-04-12", "1989-04-13"]
     assert cleaned["postcode_arr"] == ["AB12CD"]
+
+
+def test_emdi_exact_match_request_is_mapped_and_cleaned() -> None:
+    request = EmdiExactMatchRequest(
+        firstName="Henry Ahmed",
+        lastName="Junaed",
+        dateOfBirth=datetime.date(1992, 3, 2),
+        pnc="2000/1234567a",
+    )
+
+    person = emdi_exact_match_request_to_person(request, "request-scoped-id")
+    cleaned = clean_person_for_search(person, "request-scoped-id")
+
+    assert person.match_id == person.source_system_id == "request-scoped-id"
+    assert person.source_system == "PERSON_SEARCH"
+    assert person.middle_names is None
+    assert person.pncs == ["2000/1234567a"]
+    assert cleaned["name_1_std"] == "HENRY"
+    assert cleaned["last_name_std"] == "JUNAED"
+    assert cleaned["date_of_birth"] == datetime.date(1992, 3, 2)
+    assert cleaned["pnc_single"] == "2000/1234567A"
