@@ -50,7 +50,7 @@ jobs:
 
       - name: Setup uv
         id: setup-uv
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -62,7 +62,7 @@ jobs:
         run: make test-ci
         
       - name: Upload test results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: unit-test-results
           path: test_results/pytest-unit-test-report.xml
@@ -82,7 +82,7 @@ jobs:
 
       - name: Setup uv
         id: setup-uv
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
@@ -94,7 +94,7 @@ jobs:
         run: make test-integration-ci
         
       - name: Upload test results
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: int-test-results
           path: test_results/pytest-integration-test-report.xml
@@ -122,7 +122,7 @@ jobs:
       - name: Start Required Services
         run: make start-containers
     
-      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@2848496f6e2f4144b17fd3f23519c851789e4b87 # v1.1.7
+      - uses: ministryofjustice/hmpps-github-shared-actions/.github/actions/database_schema_report@38a8e31c789777d02669f8b2de309d66ebf00f55 # v1.1.8
         with:
           schema: personmatch
 
