@@ -17,7 +17,6 @@ router = APIRouter(
     dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))],
 )
 
-
 @router.post(ROUTE, include_in_schema=False)
 async def post_record_count_report(
     session: TransactionalSession,
