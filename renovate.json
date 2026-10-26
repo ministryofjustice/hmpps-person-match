@@ -1,11 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>ministryofjustice/hmpps-renovate-config:base.json"],
-  "packageRules": [
-    {
-      "matchCategories": ["python"],
-      "stabilityDays": 3,
-      "minimumReleaseAge": "3 days"
-    }
-  ]
+  "minimumReleaseAge": "7 days"
 }
