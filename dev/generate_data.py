@@ -10,7 +10,7 @@ fake = Faker(["en_GB"])
 Faker.seed(4321)
 
 
-def stringify_list_element(datum):
+def stringify_list_element(datum: str | int | float | datetime | None) -> str:
     """
     Correctly formats a single element for use inside a DuckDB list constructor.
     """
@@ -22,7 +22,7 @@ def stringify_list_element(datum):
     return f"'{str(datum).replace("'", "''")}'"
 
 
-def make_person(id_val):
+def make_person(id_val: int) -> dict[str, str | list[str] | None]:
     sentence_dates = [
         fake.date_between(datetime(1990, 1, 1), datetime(2025, 3, 1)),  # noqa: DTZ001
         fake.date_between(datetime(1990, 1, 1), datetime(2025, 3, 1)),  # noqa: DTZ001

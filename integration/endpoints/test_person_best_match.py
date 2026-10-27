@@ -58,7 +58,7 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         assert response.json() == {"match_status": "NO_MATCH"}
 
     async def test_best_match_returns_match_when_matching_record_exists(
-        self, call_endpoint: Callable, person_factory: PersonFactory
+        self, call_endpoint: Callable, person_factory: PersonFactory,
     ) -> None:
         """
         Test person best match returns match when a matching record exists
