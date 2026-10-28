@@ -28,10 +28,10 @@ run-docker:
 	docker run -p 5000:5000 -t hmpps_person_match
 
 start-containers:
-	docker compose up -d
+	docker compose up -d --build
 
 start-containers-local:
-	docker compose up -d migrations hmpps-person-match
+	docker compose up -d --build migrations hmpps-person-match
 
 stop-containers:
 	docker compose down

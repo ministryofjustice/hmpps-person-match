@@ -384,18 +384,17 @@ wheels = [
 
 [[package]]
 name = "duckdb"
-version = "1.2.2"
+version = "1.5.5"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/28/b8/0f86278684fb7a1fac7c0c869fc6d68ed005cdc91c963eb4373e0551bc0a/duckdb-1.2.2.tar.gz", hash = "sha256:1e53555dece49201df08645dbfa4510c86440339889667702f936b7d28d39e43", size = 11595514, upload-time = "2025-04-08T08:47:20.234Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/19/e57151753576373c6696a12022648546cca6038e8833fda2908ee2342d9b/duckdb-1.5.5.tar.gz", hash = "sha256:72f33ee57ca7595b23957671a2cc7f7fe2be0ecc2d68f63abedcfcaa3a5c1238", size = 18066741, upload-time = "2026-07-22T10:55:17.819Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/41/31/5e2f68cbd000137f6ed52092ad83a8e9c09eca70c59e0b4c5eb679709997/duckdb-1.2.2-cp313-cp313-macosx_12_0_arm64.whl", hash = "sha256:fb9a2c77236fae079185a990434cb9d8432902488ba990235c702fc2692d2dcd", size = 15272507, upload-time = "2025-04-08T08:46:15.605Z" },
-    { url = "https://files.pythonhosted.org/packages/d2/15/aa9078fc897e744e077c0c1510e34db4c809de1d51ddb5cb62e1f9c61312/duckdb-1.2.2-cp313-cp313-macosx_12_0_universal2.whl", hash = "sha256:d8bb89e580cb9a3aaf42e4555bf265d3db9446abfb118e32150e1a5dfa4b5b15", size = 31965548, upload-time = "2025-04-08T08:46:18.593Z" },
-    { url = "https://files.pythonhosted.org/packages/9f/28/943773d44fd97055c59b58dde9182733661c2b6e3b3549f15dc26b2e139e/duckdb-1.2.2-cp313-cp313-macosx_12_0_x86_64.whl", hash = "sha256:88916d7f0532dc926bed84b50408c00dcbe6d2097d0de93c3ff647d8d57b4f83", size = 16800600, upload-time = "2025-04-08T08:46:21.51Z" },
-    { url = "https://files.pythonhosted.org/packages/39/51/2caf01e7791e490290798c8c155d4d702ed61d69e815915b42e72b3e7473/duckdb-1.2.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:30bece4f58a6c7bb0944a02dd1dc6de435a9daf8668fa31a9fe3a9923b20bd65", size = 18735886, upload-time = "2025-04-08T08:46:24.26Z" },
-    { url = "https://files.pythonhosted.org/packages/87/0c/48ae1d485725af3a452303af409a9022d751ecab260cb9ca2f8c9fb670bc/duckdb-1.2.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2bd2c6373b8b54474724c2119f6939c4568c428e1d0be5bcb1f4e3d7f1b7c8bb", size = 20210481, upload-time = "2025-04-08T08:46:26.717Z" },
-    { url = "https://files.pythonhosted.org/packages/69/c7/95fcd7bde0f754ea6700208d36b845379cbd2b28779c0eff4dd4a7396369/duckdb-1.2.2-cp313-cp313-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:72f688a8b0df7030c5a28ca6072817c1f090979e08d28ee5912dee37c26a7d0c", size = 18756619, upload-time = "2025-04-08T08:46:29.035Z" },
-    { url = "https://files.pythonhosted.org/packages/ad/1b/c9eab9e84d4a70dd5f7e2a93dd6e9d7b4d868d3df755cd58b572d82d6c5d/duckdb-1.2.2-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:26e9c349f56f7c99341b5c79bbaff5ba12a5414af0261e79bf1a6a2693f152f6", size = 22294667, upload-time = "2025-04-08T08:46:31.295Z" },
-    { url = "https://files.pythonhosted.org/packages/3f/3d/ce68db53084746a4a62695a4cb064e44ce04123f8582bb3afbf6ee944e16/duckdb-1.2.2-cp313-cp313-win_amd64.whl", hash = "sha256:e1aec7102670e59d83512cf47d32a6c77a79df9df0294c5e4d16b6259851e2e9", size = 11370206, upload-time = "2025-04-08T08:46:33.472Z" },
+    { url = "https://files.pythonhosted.org/packages/47/37/4a38116e7700720fd152c666292214fd3abdf916496991296d8d1f66efbf/duckdb-1.5.5-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:cd98829b67788609017e65c761bd42a5dd0f9129441bed8bda4d6881ccf819f0", size = 32754294, upload-time = "2026-07-22T10:54:29.822Z" },
+    { url = "https://files.pythonhosted.org/packages/66/42/7d392f1ba1eee0eaf4ab4c8c7a604bfe3536cd63f979cf5c98798664f807/duckdb-1.5.5-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:feead93c56679b79592d437c62975d39cb67adedffa7592c763baf8160ac7366", size = 17368211, upload-time = "2026-07-22T10:54:33.359Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/a5/0a6f4fa60562faa615e55e15bd1953a2f2b17a8edd8105e5cda215e43457/duckdb-1.5.5-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:49c963d9469373d7aba8d750d9ea565ab823e94166efed953f184dd9b169b98c", size = 15509136, upload-time = "2026-07-22T10:54:36.369Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/cb/023c89f51978545b9fab318581bba0c457a58e7530d2d933e54ae7d8647c/duckdb-1.5.5-cp313-cp313-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:a736217825461732b5442d05a220f3da2e23a0dae114efbf08c9bf171b53098a", size = 19392147, upload-time = "2026-07-22T10:54:39.551Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/c5/41bef391fb8b23dbc133c9f2ba016e7a7a8124513d2cc1b430f1897d87e4/duckdb-1.5.5-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:078e6a60dd8eedde5832f45422ca5c4a6b8c837aeabd8a56ca0b7d933f588053", size = 21511060, upload-time = "2026-07-22T10:54:42.788Z" },
+    { url = "https://files.pythonhosted.org/packages/07/9f/c44dfc1f924ac29b3252dc1b91393c01d009dbfe9f8ed33f10b986151bd1/duckdb-1.5.5-cp313-cp313-win_amd64.whl", hash = "sha256:6826504277dba513c0c5d71d828456c94d729c9d2482f94b2e289f90a9167e28", size = 13168028, upload-time = "2026-07-22T10:54:46.127Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/88/591384b2cd59abddd6f5dc175e60374f9abae6064429f0c4402854c10f44/duckdb-1.5.5-cp313-cp313-win_arm64.whl", hash = "sha256:baa9c5702002fabb559ded2a39008f9f421fcbc7237d388b8213eff1e08858de", size = 13989955, upload-time = "2026-07-22T10:54:49.262Z" },
 ]
 
 [[package]]
@@ -590,7 +589,7 @@ requires-dist = [
     { name = "azure-monitor-opentelemetry", specifier = "==1.8.9" },
     { name = "cachetools", specifier = "==7.2.3" },
     { name = "cryptography", specifier = "==50.0.2" },
-    { name = "duckdb", specifier = "==1.2.2" },
+    { name = "duckdb", specifier = "==1.5.5" },
     { name = "fastapi", specifier = "==0.141.1" },
     { name = "greenlet", specifier = "==3.5.6" },
     { name = "h11", specifier = "==0.16.0" },

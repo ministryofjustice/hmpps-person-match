@@ -23,6 +23,7 @@ services:
   hmpps-person-match:
     container_name: hmpps-person-match
     image: hmpps-person-match:latest
+    pull_policy: never
     command: uvicorn asgi:app --host 0.0.0.0 --port 5000 --workers 1
     networks:
       - hmpps
@@ -57,10 +58,19 @@ services:
 
   migrations:
     image: hmpps-person-match:latest
+    pull_policy: never
     container_name: db-migrations
     command: alembic upgrade head
     networks:
       - hmpps
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_NUMBER: local
+        GIT_REF: ref
+        GIT_BRANCH: branch
+      target: final
     volumes:
       - ./hmpps_person_match:/app/hmpps_person_match/
     environment:
