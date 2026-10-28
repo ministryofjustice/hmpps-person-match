@@ -1,11 +1,9 @@
-#!/bin/bash
-set -e
+#!/bin/sh
+set -eu
 
-source /app/.venv/bin/activate
-
-exec uvicorn \
+exec /app/.venv/bin/python -m uvicorn \
     --host 0.0.0.0 \
     --port 5000 \
     --forwarded-allow-ips='*' \
     asgi:app \
-    --workers 1 \
+    --workers 1
