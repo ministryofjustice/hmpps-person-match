@@ -9,7 +9,7 @@ of people matches across MoJ systems.
 
 ## Pre-Requisites
 
-* Python 3.14
+* Python 3.13
 * [uv](https://docs.astral.sh/uv/)
 
 

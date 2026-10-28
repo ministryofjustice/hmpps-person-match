@@ -26,9 +26,9 @@ class TestRecordCountReportEndPoint:
 
         # Call record count report endpoint
         response = call_endpoint(
-                    "post",
-                    ROUTE,
-                    roles=[Roles.ROLE_PERSON_MATCH],
+            "post",
+            ROUTE,
+            roles=[Roles.ROLE_PERSON_MATCH],
         )
 
         assert response.status_code == 200
@@ -70,9 +70,9 @@ class TestRecordCountReportEndPoint:
 
         # Call record count report endpoint
         response = call_endpoint(
-                        "post",
-                        ROUTE,
-                        roles=[Roles.ROLE_PERSON_MATCH],
+            "post",
+            ROUTE,
+            roles=[Roles.ROLE_PERSON_MATCH],
         )
         assert response.status_code == 200
 

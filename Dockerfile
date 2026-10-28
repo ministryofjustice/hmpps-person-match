@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
-FROM python:3.14.8-slim AS base
+FROM ghcr.io/ministryofjustice/hmpps-python:python3.13-alpine AS base
+USER root
 
 # load in build details
 ARG BUILD_NUMBER
@@ -12,23 +13,18 @@ ENV APP_BUILD_NUMBER=${BUILD_NUMBER} \
     APP_GIT_REF=${GIT_REF} \
     APP_GIT_BRANCH=${GIT_BRANCH}
 
-RUN apt-get update \
-    && apt-get -y upgrade 
-
 # Update pip
-RUN pip install --upgrade pip
+RUN python -m pip install --upgrade pip
 
+# prevents python creating .pyc files
 ENV PYTHONUNBUFFERED=1 \
-    # prevents python creating .pyc files
     PYTHONDONTWRITEBYTECODE=1 \
-    \
-    # pip
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    # uv args
     UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy
+    UV_LINK_MODE=copy \
+    UV_LOCK_TIMEOUT=600
 
 ##############
 # BUILD stage
@@ -36,11 +32,9 @@ ENV PYTHONUNBUFFERED=1 \
 FROM base AS build
 COPY --from=ghcr.io/astral-sh/uv:0.13.4 /uv /bin/uv
 
-RUN apt-get update && apt-get install --no-install-recommends -y \
-        # deps for installing uv
-        curl \
-        # deps for building python deps
-        build-essential
+RUN apk add --no-cache build-base
+
+ENV CMAKE_BUILD_PARALLEL_LEVEL=1
 
 WORKDIR /app
 
@@ -70,16 +64,17 @@ ENV PATH="/app/.venv/bin:$PATH"
 WORKDIR /app
 
 # create app user
-RUN groupadd -g 1001 appuser && \
-    useradd -u 1001 -g appuser -m -s /bin/bash appuser
+RUN apk add --no-cache bash libstdc++ && \
+    mkdir -p /home/appuser/.postgresql && \
+    chown -R appuser:appgroup /app /home/appuser
 
-RUN mkdir /home/appuser/.postgresql
-ADD --chown=appuser:appuser https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
+ADD --chown=appuser:appgroup https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/appuser/.postgresql/root.crt
 
-RUN chown -R appuser:appuser /app/
-
-USER 1001
+USER appuser
 
 EXPOSE 5000
 
-CMD ["./docker-entrypoint.sh"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD bash -c 'exec 3<>/dev/tcp/127.0.0.1/5000 && printf "GET /health HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n" >&3 && grep -q "200 OK" <&3'
+
+CMD ["/bin/sh", "/app/docker-entrypoint.sh"]
