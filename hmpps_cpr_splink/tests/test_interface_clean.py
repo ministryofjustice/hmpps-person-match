@@ -1,9 +1,9 @@
 import datetime
 
 from hmpps_cpr_splink.cpr_splink.interface.clean import clean_person_for_search
-from hmpps_person_match.models.person.emdi_exact_match_request import (
-    EmdiExactMatchRequest,
-    emdi_exact_match_request_to_person,
+from hmpps_person_match.models.person.exact_match_request import (
+    ExactMatchRequest,
+    exact_match_request_to_person,
 )
 from hmpps_person_match.models.person.person_search_request import (
     PersonSearchRequest,
@@ -63,15 +63,15 @@ def test_search_request_full_name_is_mapped_and_cleaned() -> None:
     assert cleaned["postcode_arr"] == ["AB12CD"]
 
 
-def test_emdi_exact_match_request_is_mapped_and_cleaned() -> None:
-    request = EmdiExactMatchRequest(
+def test_exact_match_request_is_mapped_and_cleaned() -> None:
+    request = ExactMatchRequest(
         firstName="Henry Ahmed",
         lastName="Junaed",
         dateOfBirth=datetime.date(1992, 3, 2),
         pnc="2000/1234567a",
     )
 
-    person = emdi_exact_match_request_to_person(request, "request-scoped-id")
+    person = exact_match_request_to_person(request, "request-scoped-id")
     cleaned = clean_person_for_search(person, "request-scoped-id")
 
     assert person.match_id == person.source_system_id == "request-scoped-id"

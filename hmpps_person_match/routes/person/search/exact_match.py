@@ -3,17 +3,17 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from hmpps_cpr_splink.cpr_splink.interface import emdi_exact_match
+from hmpps_cpr_splink.cpr_splink.interface import exact_match
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.database import TransactionalSession
 from hmpps_person_match.dependencies.logger.log import get_logger
 from hmpps_person_match.domain.constants.error_messages import ErrorMessages
 from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
-from hmpps_person_match.models.person.emdi_exact_match_request import EmdiExactMatchRequest
-from hmpps_person_match.models.person.emdi_exact_match_response import EmdiExactMatchResponse
+from hmpps_person_match.models.person.exact_match_request import ExactMatchRequest
+from hmpps_person_match.models.person.exact_match_response import ExactMatchResponse
 
-ROUTE = "/person/search/emdi-exact-match"
+ROUTE = "/person/search/exact-match"
 
 DESCRIPTION = f"""
     **Authorization Required:**
@@ -27,17 +27,17 @@ router = APIRouter(
 
 
 @router.post(ROUTE, description=DESCRIPTION)
-async def post_emdi_exact_match(
-    request: EmdiExactMatchRequest,
+async def post_exact_match(
+    request: ExactMatchRequest,
     session: TransactionalSession,
     logger: Annotated[Logger, Depends(get_logger)],
-) -> EmdiExactMatchResponse:
+) -> ExactMatchResponse:
     try:
-        match_ids = await emdi_exact_match.emdi_exact_match(request, session)
-    except emdi_exact_match.InvalidEmdiExactMatchInputError as error:
+        match_ids = await exact_match.exact_match(request, session)
+    except exact_match.InvalidExactMatchInputError as error:
         raise HTTPException(status_code=400, detail=ErrorMessages.INVALID_REQUEST) from error
     logger.info(
-        TelemetryEvents.EMDI_EXACT_MATCH_COMPLETED,
+        TelemetryEvents.EXACT_MATCH_COMPLETED,
         extra={"candidate_size": len(match_ids)},
     )
-    return EmdiExactMatchResponse(matchIds=match_ids)
+    return ExactMatchResponse(matchIds=match_ids)

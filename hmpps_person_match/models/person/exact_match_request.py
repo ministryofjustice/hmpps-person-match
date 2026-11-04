@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from hmpps_person_match.models.person.person import Person
 
 
-class EmdiExactMatchRequest(BaseModel):
+class ExactMatchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     first_name: str = Field(alias="firstName", examples=["Henry"], min_length=1, pattern=r"\S")
@@ -18,8 +18,8 @@ class EmdiExactMatchRequest(BaseModel):
     pnc: str = Field(alias="pnc", examples=["2000/1234567A"], min_length=1, pattern=r"\S")
 
 
-def emdi_exact_match_request_to_person(
-    request: EmdiExactMatchRequest,
+def exact_match_request_to_person(
+    request: ExactMatchRequest,
     internal_match_id: str,
 ) -> Person:
     return Person(

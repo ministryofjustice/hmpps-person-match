@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
 
 
-class EmdiExactMatchResponse(BaseModel):
+class ExactMatchResponse(BaseModel):
     match_ids: list[str] = Field(alias="matchIds")

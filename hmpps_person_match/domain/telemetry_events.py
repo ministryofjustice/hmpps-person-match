@@ -9,7 +9,7 @@ class TelemetryEvents:
     PERSON_SCORE = "PersonMatchScoresCollected"
     PERSON_SEARCH_BY_MATCH_ID = "PersonMatchSearchByMatchIdCompleted"
     PERSON_SEARCH_COMPLETED = "PersonMatchSearchCompleted"
-    EMDI_EXACT_MATCH_COMPLETED = "PersonMatchEmdiExactMatchCompleted"
+    EXACT_MATCH_COMPLETED = "PersonMatchExactMatchCompleted"
     IS_CLUSTER_VALID = "IsClusterValidCheck"
     CLUSTER_VISUALIZE_REQUESTED = "ClusterVisualisationRequested"
     JOBS_TERM_FREQUENCY_REFRESH = "JobsTermFrequencyRefreshTriggered"
