@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from unittest.mock import Mock
 
+from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 from hmpps_person_match.routes.jobs.record_count_report import ROUTE
 
@@ -24,7 +25,12 @@ class TestRecordCountReportEndPoint:
         mock_db_connection.execute.return_value = mock_db_result
 
         # Call record count report endpoint
-        response = call_endpoint("post", ROUTE)
+        response = call_endpoint(
+                    "post",
+                    ROUTE,
+                    roles=[Roles.ROLE_PERSON_MATCH],
+        )
+
         assert response.status_code == 200
 
         mock_logger.info.assert_called_with(
@@ -63,7 +69,11 @@ class TestRecordCountReportEndPoint:
         mock_db_connection.execute.return_value = mock_db_result
 
         # Call record count report endpoint
-        response = call_endpoint("post", ROUTE)
+        response = call_endpoint(
+                        "post",
+                        ROUTE,
+                        roles=[Roles.ROLE_PERSON_MATCH],
+        )
         assert response.status_code == 200
 
         mock_logger.info.assert_called_with(

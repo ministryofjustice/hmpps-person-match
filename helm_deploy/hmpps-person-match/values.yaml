@@ -32,10 +32,6 @@ generic-service:
           deny all;
           return 401;
         }
-        location /jobs/recordcountreport {
-          deny all;
-          return 401;
-        }
 
   livenessProbe:
     httpGet:
@@ -72,7 +68,6 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-person-match
-  alertSeverity: hmpps-person-record-alerts-prod
 
 cron:
   generateTermFrequencies: "0 12 * * *"

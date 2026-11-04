@@ -5,14 +5,17 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
+from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
 from hmpps_person_match.dependencies.database import TransactionalSession
 from hmpps_person_match.dependencies.logger.log import get_logger
+from hmpps_person_match.domain.roles import Roles
 from hmpps_person_match.domain.telemetry_events import TelemetryEvents
 
 ROUTE = "/jobs/recordcountreport"
 
-router = APIRouter()
-
+router = APIRouter(
+    dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))],
+)
 
 @router.post(ROUTE, include_in_schema=False)
 async def post_record_count_report(
