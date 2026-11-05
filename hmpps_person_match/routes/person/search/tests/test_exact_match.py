@@ -32,15 +32,14 @@ class TestExactMatchRoute:
         ) as mocked_lookup:
             yield mocked_lookup
 
-    @pytest.mark.parametrize("match_ids", [["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"], []])
-    def test_valid_request(
+    def test_valid_request_finds_match(
         self,
         call_endpoint: Callable,
         mock_exact_match: AsyncMock,
         mock_db_connection: Mock,
         mock_logger: Mock,
-        match_ids: list[str],
     ) -> None:
+        match_ids = ["ec30e2d2-b4c2-4c42-9e14-514aa58edff5"]
         mock_exact_match.return_value = match_ids
         request = ExactMatchRequest(
             firstName="Henry",
@@ -58,6 +57,37 @@ class TestExactMatchRoute:
 
         assert response.status_code == 200
         assert response.json() == {"matchIds": match_ids}
+        mock_exact_match.assert_awaited_once_with(request, mock_db_connection)
+        mock_logger.info.assert_called_once_with(
+            TelemetryEvents.EXACT_MATCH_COMPLETED,
+            extra={"candidate_size": len(match_ids)},
+        )
+
+    def test_valid_request_finds_no_matches(
+        self,
+        call_endpoint: Callable,
+        mock_exact_match: AsyncMock,
+        mock_db_connection: Mock,
+        mock_logger: Mock,
+    ) -> None:
+        match_ids:list[str] = []
+        mock_exact_match.return_value = match_ids
+        request = ExactMatchRequest(
+            firstName="Henry",
+            lastName="Junaed",
+            dateOfBirth=datetime.date(1992, 3, 2),
+            pnc="2000/1234567A",
+        )
+
+        response = call_endpoint(
+            "post",
+            ROUTE,
+            roles=[Roles.ROLE_PERSON_MATCH],
+            json=request.model_dump(mode="json", by_alias=True),
+        )
+
+        assert response.status_code == 404
+        assert response.json() == {}
         mock_exact_match.assert_awaited_once_with(request, mock_db_connection)
         mock_logger.info.assert_called_once_with(
             TelemetryEvents.EXACT_MATCH_COMPLETED,

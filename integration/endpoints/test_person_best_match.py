@@ -45,8 +45,7 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         assert response.status_code == 404
         assert response.json() == {}
 
-    async def test_best_match_does_not_match_self(self,
-        call_endpoint: Callable, person_factory: PersonFactory) -> None:
+    async def test_best_match_does_not_match_self(self, call_endpoint: Callable, person_factory: PersonFactory) -> None:
         """
         Test person best match doesn't match itsself record
         """
@@ -58,8 +57,9 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         assert response.status_code == 200
         assert response.json() == {"match_status": "NO_MATCH"}
 
-    async def test_best_match_returns_match_when_matching_record_exists(self,
-        call_endpoint: Callable, person_factory: PersonFactory) -> None:
+    async def test_best_match_returns_match_when_matching_record_exists(
+        self, call_endpoint: Callable, person_factory: PersonFactory,
+    ) -> None:
         """
         Test person best match returns match when a matching record exists
         in supplied source system
@@ -68,7 +68,7 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         person_1 = await person_factory.create_from(MockPerson(sourceSystem="COMMON_PLATFORM"))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"source_system":"DELIUS"}))
+        await person_factory.create_from(person_1.model_copy(update={"source_system": "DELIUS"}))
 
         # Call best match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
@@ -88,14 +88,13 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
         person_1 = await person_factory.create_from(MockPerson(sourceSystem="COMMON_PLATFORM"))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"source_system":"NOMIS"}))
+        await person_factory.create_from(person_1.model_copy(update={"source_system": "NOMIS"}))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"source_system":"LIBRA"}))
+        await person_factory.create_from(person_1.model_copy(update={"source_system": "LIBRA"}))
 
         # Create different matching person
-        await person_factory.create_from(person_1.model_copy(update={"source_system":"COMMON_PLATFORM"}))
-
+        await person_factory.create_from(person_1.model_copy(update={"source_system": "COMMON_PLATFORM"}))
 
         # Call best match for person
         response = call_endpoint("get", self.build_url(person_1.match_id), client=Client.HMPPS_PERSON_MATCH)
@@ -141,4 +140,4 @@ class TestPersonBestMatchEndpoint(IntegrationTestBase):
 
     @staticmethod
     def build_url(match_id: str, source_system: str = "DELIUS") -> str:
-        return ROUTE.format(match_id=match_id, source_system = source_system)
+        return ROUTE.format(match_id=match_id, source_system=source_system)
