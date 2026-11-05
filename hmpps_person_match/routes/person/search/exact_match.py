@@ -43,7 +43,7 @@ async def post_exact_match(
     )
     if len(match_ids) == 0:
         return JSONResponse(
-            content={},
+            content={"matchIds":[]},
             status_code=status.HTTP_404_NOT_FOUND,
         ) # type: ignore
     return ExactMatchResponse(matchIds=match_ids)

@@ -70,7 +70,7 @@ class TestExactMatchRoute:
         mock_db_connection: Mock,
         mock_logger: Mock,
     ) -> None:
-        match_ids:list[str] = []
+        match_ids: list[str] = []
         mock_exact_match.return_value = match_ids
         request = ExactMatchRequest(
             firstName="Henry",
@@ -87,7 +87,7 @@ class TestExactMatchRoute:
         )
 
         assert response.status_code == 404
-        assert response.json() == {}
+        assert response.json() == {"matchIds": []}
         mock_exact_match.assert_awaited_once_with(request, mock_db_connection)
         mock_logger.info.assert_called_once_with(
             TelemetryEvents.EXACT_MATCH_COMPLETED,
