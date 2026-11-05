@@ -1,7 +1,8 @@
 from logging import Logger
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 
 from hmpps_cpr_splink.cpr_splink.interface import exact_match
 from hmpps_person_match.dependencies.auth.jwt_bearer import JWTBearer
@@ -40,4 +41,9 @@ async def post_exact_match(
         TelemetryEvents.EXACT_MATCH_COMPLETED,
         extra={"candidate_size": len(match_ids)},
     )
+    if len(match_ids) == 0:
+        return JSONResponse(
+            content={"matchIds":[]},
+            status_code=status.HTTP_404_NOT_FOUND,
+        ) # type: ignore
     return ExactMatchResponse(matchIds=match_ids)

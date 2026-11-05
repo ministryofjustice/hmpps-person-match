@@ -85,7 +85,7 @@ class TestExactMatchEndpoint(IntegrationTestBase):
     ) -> None:
         response = call_endpoint("post", ROUTE, json=exact_match_request_json, client=Client.HMPPS_PERSON_MATCH)
 
-        assert response.status_code == 200
+        assert response.status_code == 404
         assert response.json() == {"matchIds": []}
 
     async def test_multiple_matches_are_sorted(
@@ -126,7 +126,7 @@ class TestExactMatchEndpoint(IntegrationTestBase):
 
         response = call_endpoint("post", ROUTE, json=exact_match_request_json, client=Client.HMPPS_PERSON_MATCH)
 
-        assert response.status_code == 200
+        assert response.status_code == 404
         assert response.json() == {"matchIds": []}
 
     async def test_only_first_sorted_pnc_matches(
@@ -147,7 +147,7 @@ class TestExactMatchEndpoint(IntegrationTestBase):
         exact_match_request_json["pnc"] = "2001/1234567A"
         response = call_endpoint("post", ROUTE, json=exact_match_request_json, client=Client.HMPPS_PERSON_MATCH)
 
-        assert response.status_code == 200
+        assert response.status_code == 404
         assert response.json() == {"matchIds": []}
 
     async def test_invalid_cleaned_input(

@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
@@ -20,6 +19,7 @@ DESCRIPTION = f"""
 router = APIRouter(
     dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))],
 )
+
 
 @router.get(ROUTE, description=DESCRIPTION)
 async def get_person_best_match(

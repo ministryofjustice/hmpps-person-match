@@ -24,6 +24,7 @@ router = APIRouter(
     dependencies=[Depends(JWTBearer(required_roles=[Roles.ROLE_PERSON_MATCH]))],
 )
 
+
 @router.delete(ROUTE, description=DESCRIPTION)
 async def delete_person(
     person_identifier: PersonIdentifier,
