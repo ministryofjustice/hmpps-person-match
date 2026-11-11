@@ -40,7 +40,7 @@ dev = [
   "pytest==9.2.0",
   "pytest-cov==7.1.0",
   "pytest-asyncio==1.4.1.post1",
-  "faker==40.43.0",
+  "faker==40.44.0",
   "httpx==0.28.1",
   "requests-mock==1.12.1",
   "mypy>=1.18.2",
