@@ -11,6 +11,7 @@ class TelemetryEvents:
     PERSON_SEARCH_COMPLETED = "PersonMatchSearchCompleted"
     EXACT_MATCH_COMPLETED = "PersonMatchExactMatchCompleted"
     IS_CLUSTER_VALID = "IsClusterValidCheck"
+    IS_CLUSTER_VALID_AT_THRESHOLD = "IsClusterValidAtThresholdCheck"
     CLUSTER_VISUALIZE_REQUESTED = "ClusterVisualisationRequested"
     JOBS_TERM_FREQUENCY_REFRESH = "JobsTermFrequencyRefreshTriggered"
     PERSON_MATCH_RECORD_COUNT_REPORT = "PersonMatchRecordCountReport"
