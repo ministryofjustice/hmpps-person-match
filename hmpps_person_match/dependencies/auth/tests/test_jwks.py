@@ -24,7 +24,7 @@ class TestJwks:
         public_key = await JWKS().get_public_key_from_jwt(token)
         assert public_key is not None
         assert public_key.kid == "test_kid"
-        assert public_key.kty == "RSA"
+        assert public_key.key_type == "RSA"
 
     def test_missing_oauth_env_var_throws_error(self) -> None:
         """

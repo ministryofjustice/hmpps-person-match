@@ -40,7 +40,7 @@ class JWTBearer(HTTPBearer):
         try:
             # Fetch the public key based on the 'kid' in the JWT header
             public_key = await JWKS().get_public_key_from_jwt(token)
-            pem_key = public_key.as_pem(is_private=False)
+            pem_key = public_key.as_pem(private=False)
 
             issuer = f"{get_env_var(EnvVars.OAUTH_ISSUER_URL_KEY)}/auth/issuer"
 
