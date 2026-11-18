@@ -24,7 +24,7 @@ dependencies = [
   "h11==0.16.0",
   "types-cachetools==7.0.0.20260713",
   "types-requests==2.33.0.20261030",
-  "joserfc==1.7.7",
+  "joserfc==1.8.0",
 ]
 
 [tool.uv]
