@@ -2,8 +2,8 @@ from typing import ClassVar
 
 import jwt
 import requests
-from authlib.jose import JsonWebKey, Key
 from cachetools import TTLCache
+from joserfc.jwk import RSAKey
 from requests import Response
 from requests import exceptions as rq_ex
 
@@ -30,7 +30,7 @@ class JWKS:
     def __init__(self) -> None:
         self._jwk_url = self._get_jwk_url()
 
-    async def get_public_key_from_jwt(self, jwt_token: str) -> JsonWebKey | Key:
+    async def get_public_key_from_jwt(self, jwt_token: str) -> RSAKey:
         """
         Fetch the public key from the JWT token
         """
@@ -41,7 +41,7 @@ class JWKS:
 
         for jwk in jwks:
             if jwk["kid"] == kid:
-                return JsonWebKey.import_key(jwk)
+                return RSAKey.import_key(jwk)
 
         raise ValueError(f"Public key for kid: '{kid}' not found.")
 

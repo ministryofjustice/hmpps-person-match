@@ -5,10 +5,10 @@ from unittest.mock import AsyncMock, Mock, patch
 import jwt
 import pytest
 import requests_mock
-from authlib.jose import JsonWebKey, Key, RSAKey
 from cryptography.hazmat.primitives.asymmetric import rsa
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from joserfc.jwk import RSAKey
 
 from hmpps_person_match.app import PersonMatchApplication
 from hmpps_person_match.db import get_db_session
@@ -100,14 +100,8 @@ def jwks(context: TestContext, public_key: rsa.RSAPublicKey) -> dict:
     """
     Return a JWKS for testing purposes
     """
-    jwk: RSAKey | Key = JsonWebKey.import_key(
-        public_key,  # type: ignore
-        {
-            "kty": "RSA",
-            "kid": context.kid,
-        },
-    )
-    jwks = {"keys": [jwk.as_dict()]}
+    jwk = RSAKey.import_key(public_key, {"kid": context.kid})
+    jwks = {"keys": [jwk.as_dict(private=False)]}
     return jwks
 
 
