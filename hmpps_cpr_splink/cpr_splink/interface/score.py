@@ -224,6 +224,7 @@ async def get_clusters(
     match_ids: list[str],
     pg_db_url: URL,
     connection_pg: AsyncSession,
+    clustering_match_weight_threshold: float | None = None,
     default_postcode_tf: float = 1.0,
 ) -> Clusters:
     with duckdb_connected_to_postgres(pg_db_url) as connection_duckdb:
@@ -265,12 +266,15 @@ async def get_clusters(
 
         scores_with_twins_table_name = enhance_scores_with_twins(connection_duckdb, scores.physical_name)
 
+        if clustering_match_weight_threshold is None:
+            clustering_match_weight_threshold = IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD
+
         df_clusters = cluster_pairwise_predictions_at_threshold(
             nodes=tablename,
             edges=scores_with_twins_table_name,
             db_api=db_api,
             node_id_column_name="match_id",
-            threshold_match_weight=IS_CLUSTER_VALID_MATCH_WEIGHT_THRESHOLD,
+            threshold_match_weight=clustering_match_weight_threshold,
         )
         clusters = connection_duckdb.execute(
             f"SELECT match_id, cluster_id FROM {df_clusters.physical_name} "  # noqa: S608
