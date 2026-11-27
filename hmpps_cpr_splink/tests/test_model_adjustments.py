@@ -9,8 +9,6 @@ Tests for specific model adjustments made in model_2026_02_23_1e09:
         - the ELSE level now gives -10, covering mismatch on one ID with no match on the other
 """
 
-import math
-
 import duckdb
 import pytest
 from splink import DuckDBAPI
@@ -51,7 +49,7 @@ def _compare(left: dict, right: dict) -> dict:
     con.execute(f"CREATE TABLE records_left  AS SELECT * FROM {table_name} WHERE id = 1")
     con.execute(f"CREATE TABLE records_right AS SELECT * FROM {table_name} WHERE id = 2")
     db_api = DuckDBAPI(connection=con)
-    rows = compare_records("records_left", "records_right", settings=MODEL_PATH, db_api=db_api).as_record_dict()
+    rows = compare_records("records_left", "records_right", settings=MODEL_PATH, db_api=db_api).as_record_list()
     return rows[0]
 
 
@@ -61,7 +59,7 @@ def test_explicit_mismatch_on_both_ids_gives_minus_14() -> None:
         {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
         {**_BASE, "id": 2, "pnc_single": "YY/9999B", "cro_single": "9999/99B"},
     )
-    assert math.log2(row["bf_id_comparison"]) == pytest.approx(-14.0)
+    assert row["mw_id_comparison"] == pytest.approx(-14.0)
 
 
 def test_id_one_different_other_null_gives_minus_10() -> None:
@@ -70,7 +68,7 @@ def test_id_one_different_other_null_gives_minus_10() -> None:
         {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
         {**_BASE, "id": 2, "pnc_single": "YY/9999B", "cro_single": None},
     )
-    assert math.log2(row["bf_id_comparison"]) == pytest.approx(-10.0)
+    assert row["mw_id_comparison"] == pytest.approx(-10.0)
 
 
 def test_id_one_different_other_same_gives_positive_weight() -> None:
@@ -80,7 +78,7 @@ def test_id_one_different_other_same_gives_positive_weight() -> None:
         {**_BASE, "id": 1, "pnc_single": "XX/1234A", "cro_single": "1234/56A"},
         {**_BASE, "id": 2, "pnc_single": "XX/1234A", "cro_single": "9999/99B"},
     )
-    assert math.log2(row["bf_id_comparison"]) > 0
+    assert row["mw_id_comparison"] > 0
 
 
 def test_model_adjustments_dob_one_year_diff_hits_levenshtein() -> None:
